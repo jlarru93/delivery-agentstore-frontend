@@ -5,9 +5,10 @@ import { MainComponent } from "./main.component";
 import { NgModule } from "@angular/core";
 import { MainRoutingModule } from "./main-routing.module";
 import { CardModule } from "primeng/card";
+import { CircleProgress } from "src/app/utils/circleProgress/circleprogress.component";
 
 @NgModule({
-    declarations: [MainComponent],
+    declarations: [MainComponent,CircleProgress],
     imports: [
       CommonModule,
       MainRoutingModule,

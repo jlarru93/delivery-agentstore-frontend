@@ -69,8 +69,11 @@
                     <div class="p-col-6 overview-box-text">
                         <h5>457454</h5>
                     </div>
-                    <div class="p-col-3 overview-box-status">
-                        nueva
+                    <div class="p-col-3">
+                        <p>
+                            <span> <circle-progress [progress]="progress"></circle-progress></span>
+                            {{ progress }} %
+                        </p>
                     </div>
                 </div>
             </div>
