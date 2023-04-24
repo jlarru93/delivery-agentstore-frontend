@@ -3,6 +3,8 @@ import { MenuService } from './app.menu.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { PrimeNGConfig } from 'primeng/api';
 import {AppComponent} from './app.component';
+import { StoreService } from './modules/main/service/store.service';
+import { OpenStoreRequest } from './modules/main/service/data/request';
 
 @Component({
     selector: 'app-main',
@@ -56,7 +58,7 @@ export class AppMainComponent {
     configActive: boolean;
 
     constructor(public renderer: Renderer2, private menuService: MenuService,
-                private primengConfig: PrimeNGConfig, public app: AppComponent) {}
+                private primengConfig: PrimeNGConfig, public app: AppComponent,private storeService:StoreService) {}
 
     onLayoutClick() {
         if (!this.topbarItemClick) {
@@ -95,30 +97,12 @@ export class AppMainComponent {
         this.rightPanelClick = false;
     }
 
-    onMegaMenuButtonClick(event) {
-        this.megaMenuClick = true;
-        this.megaMenuActive = !this.megaMenuActive;
-        event.preventDefault();
-    }
-
-    onMegaMenuClick(event) {
-        this.megaMenuClick = true;
-        event.preventDefault();
-    }
-
     onTopbarItemClick(event, item) {
         this.topbarItemClick = true;
 
         if (this.activeTopbarItem === item) {
             this.activeTopbarItem = null; } else {
             this.activeTopbarItem = item; }
-
-        event.preventDefault();
-    }
-
-    onRightPanelButtonClick(event) {
-        this.rightPanelClick = true;
-        this.rightPanelActive = !this.rightPanelActive;
 
         event.preventDefault();
     }
@@ -132,31 +116,6 @@ export class AppMainComponent {
 
     onRightPanelClick(event) {
         this.rightPanelClick = true;
-
-        event.preventDefault();
-    }
-
-    onTopbarMobileMenuButtonClick(event) {
-        this.topbarMobileMenuClick = true;
-        this.topbarMobileMenuActive = !this.topbarMobileMenuActive;
-
-        event.preventDefault();
-    }
-
-    onMegaMenuMobileButtonClick(event) {
-        this.megaMenuMobileClick = true;
-        this.megaMenuMobileActive = !this.megaMenuMobileActive;
-
-        event.preventDefault();
-    }
-
-    onMenuButtonClick(event) {
-        this.menuClick = true;
-        this.topbarMenuActive = false;
-
-        if (this.isMobile()) {
-            this.menuMobileActive = !this.menuMobileActive;
-        }
 
         event.preventDefault();
     }
@@ -187,4 +146,11 @@ export class AppMainComponent {
         return this.app.horizontalMenu === true;
     }
 
+    getStatusOpen(){
+        return this.storeService.getStatusOpen()
+    }
+
+    changeStatusOpenStore(request:OpenStoreRequest){
+        return this.storeService.changeStatusOpen(request)
+    }
 }
