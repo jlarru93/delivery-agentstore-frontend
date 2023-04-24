@@ -8,9 +8,9 @@ import { AuthService } from './utils/auth.service';
     templateUrl:'app.topbar.component.html'
 })
 export class AppTopBarComponent {
-
+    displayOpenStore:boolean=false
     activeItem: number;
-
+    isOpenStore:boolean=false
     constructor(private auth: AuthService,private router: Router,public appMain: AppMainComponent) {}
 
     mobileMegaMenuItemClick(index) {
@@ -21,4 +21,5 @@ export class AppTopBarComponent {
 		await this.auth.signOut();
 		this.router.navigate(['/login']);
 	}
+
 }

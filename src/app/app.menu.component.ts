@@ -10,8 +10,6 @@ import { Zone } from './models';
 export class AppMenuComponent implements OnInit {
 
     model: any[];
-    zones: Zone[]
-    selectedZone: Zone
     constructor(public appMain: AppMainComponent, private service: MenuService) { }
 
     ngOnInit() {
@@ -124,38 +122,10 @@ export class AppMenuComponent implements OnInit {
                 label: 'Buy Now', icon: 'pi pi-fw pi-money-bill', url: ['https://www.primefaces.org/store']
             }
         ];
-        this.listZone();
     }
 
     onMenuClick() {
         this.appMain.menuClick = true;
     }
 
-    listZone() {
-        this.service.getZone().subscribe(
-            (resp) => {
-                this.zones = resp.data
-                this.setDefault()
-            },
-            (err) => { },
-            () => { }
-        );
-    }
-    setZoneId(e: any) {
-        localStorage.setItem('zoneId', e.value.id);
-        window.location.reload()
-    }
-    setDefault() {
-        if (localStorage.getItem('zoneId')) {
-            const zoneId = Number(localStorage.getItem('zoneId'));
-            this.selectedZone = this.zones.find(e => e.id === zoneId)!;
-            console.log("console.log(this.selectedZone)")
-            console.log(this.selectedZone)
-        } else {
-            console.log(this.zones)
-            this.selectedZone = this.zones[0]
-            localStorage.setItem('zoneId', this.selectedZone.id + "")
-
-        }
-    }
 }

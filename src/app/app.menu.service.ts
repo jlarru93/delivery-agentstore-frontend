@@ -19,7 +19,5 @@ export class MenuService {
     reset() {
         this.resetSource.next();
     }
-    getZone() {
-        return this.http.get<ZoneListResponse>(env.url.backEnd+"/zone");
-    }
+    
 }

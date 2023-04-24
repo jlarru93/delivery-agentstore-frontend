@@ -10,8 +10,6 @@
             <span class="app-name">Admin</span>
         </a>
     </div>
-    <p-dropdown *ngIf="zones && zones.length" [options]="zones" [(ngModel)]="selectedZone" optionLabel="name" (onChange)="setZoneId($event)"></p-dropdown>
-
     <div class="layout-menu-container" (click)="onMenuClick()">
         <ul class="layout-menu">
             <li app-menuitem *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true"></li>

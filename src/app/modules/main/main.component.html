@@ -57,7 +57,7 @@
                         <h5>457454</h5>
                     </div>
                     <div class="p-col-3 overview-box-status">
-                        nueva
+                        <circle-progress [minutes]="5"></circle-progress>
                     </div>
                 </div>
             </div>
@@ -69,10 +69,8 @@
                     <div class="p-col-6 overview-box-text">
                         <h5>457454</h5>
                     </div>
-                    <div class="p-col-3">
-                        <p>
-                            <span> <circle-progress [minutes]="minutes"></circle-progress></span>
-                        </p>
+                    <div class="p-col-3 overview-box-status">
+                        <circle-progress [minutes]="minutes"></circle-progress>
                     </div>
                 </div>
             </div>
