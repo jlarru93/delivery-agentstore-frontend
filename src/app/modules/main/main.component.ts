@@ -8,6 +8,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
   })
   export class MainComponent implements OnInit {
     minutes: number = 2;
+    displayOrder:boolean=true
     ngOnInit(): void {
     }
   
