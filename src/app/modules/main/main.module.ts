@@ -8,6 +8,7 @@ import { CardModule } from "primeng/card";
 import { CircleProgress } from "src/app/utils/circle/circleprogress.component";
 import { DialogModule } from "primeng/dialog";
 import { ButtonModule } from "primeng/button";
+import { TableModule } from "primeng/table";
 
 @NgModule({
     declarations: [MainComponent,CircleProgress],
@@ -16,6 +17,7 @@ import { ButtonModule } from "primeng/button";
       MainRoutingModule,
       DialogModule,
       ButtonModule,
+      TableModule,
       AgmCoreModule.forRoot({
         apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
         libraries: ['drawing']

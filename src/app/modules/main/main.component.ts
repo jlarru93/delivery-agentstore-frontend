@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Product } from "src/app/demo/domain/product";
+import { ProductService } from "src/app/demo/service/productservice";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -9,7 +11,10 @@ import { ConfirmationService, MessageService } from 'primeng/api';
   export class MainComponent implements OnInit {
     minutes: number = 2;
     displayOrder:boolean=true
+    products: Product[];
+    constructor(private productService: ProductService){}
     ngOnInit(): void {
+      this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
     }
   
 }
