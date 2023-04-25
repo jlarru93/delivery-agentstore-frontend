@@ -91,7 +91,7 @@
         </div>
     </div>
 </div>
-<p-dialog [(visible)]="displayOrder" [modal]="true" [style]="{width: '50vw'}" >
+<p-dialog [(visible)]="displayOrder" [modal]="true" [style]="{width: '80vw'}" >
     <ng-template pTemplate="header">
         <div class="p-d-flex">
             <div class="p-mr-2"><b><h5>Orden 20231</h5></b></div>
@@ -101,27 +101,450 @@
     </ng-template>
     <ng-template pTemplate="body">
         <div class="p-grid">
-            <div class="p-col-8">
-                <div class="card widget-tasks">
-                    <p-card>
-                        <ng-template pTemplate="header">
-                            <b><h5>Prductos</h5></b>
-                        </ng-template>                        
-                    </p-card>
+    
+            <div class="p-col-12 p-lg-8">
+                <div class="card widget-store-items">
+                    <div class="p-grid p-nogutter">
+                        <div class="p-col-6 title">
+                            <h5>Store Items</h5>
+                        </div>
+                        <div class="p-col-6 store-info">
+                            <div class="info-item add"><i class="pi pi-plus"></i> Add Item</div>
+                            <div class="info-item library">
+                                <img src="assets/layout/images/dashboard/icon-library.svg" alt="mirage-layout" />
+                                Library</div>
+                        </div>
+                    </div>
+        
+                    <div class="store-cards-container">
+                        <div class="p-grid store-cards">
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-sugar.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Sugar</h5>
+                                        <span>Collector's Edition</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-seed.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Seed</h5>
+                                        <span>Pretty rare type</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-egg.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Egg</h5>
+                                        <span>Chicken babies</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-americano.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Americano</h5>
+                                        <span>Best coffee type</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-orange-slice.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Orange</h5>
+                                        <span>Slice of slice</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-espresso.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Espresso</h5>
+                                        <span>Quic awakening</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-brussel.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Brussels Sprouts</h5>
+                                        <span>For soups</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-cherry.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Cherry</h5>
+                                        <span>Summer fruit</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-americano.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Americano</h5>
+                                        <span>Best coffee type</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-egg.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Egg</h5>
+                                        <span>Chicken babies</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-seed.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Seed</h5>
+                                        <span>Pretty rare type</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-6 p-lg-3 p-md-4">
+                                <div class="store-card">
+                                    <div class="store-card-icons">
+                                        <div class="p-grid p-nogutter">
+                                            <div class="p-col-4">
+                                                <i class="pi pi-heart"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-pencil"></i>
+                                            </div>
+                                            <div class="p-col-4">
+                                                <i class="pi pi-trash"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="store-card-image">
+                                        <img src="assets/layout/images/dashboard/asset-image-sugar.jpg" alt="mirage-layout" />
+                                    </div>
+                                    <div class="store-card-content">
+                                        <h5>Sugar</h5>
+                                        <span>Collector's Edition</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-effect"></div>
                 </div>
             </div>
-            <div class="p-col-4">
-                <div class="card widget-tasks">
-                    <p-card>
-                        <ng-template pTemplate="header">
-                            <b><h5>Cliente</h5></b>
-                            nombre: Jhon Larru <br>
-                            telefono: +51933685784
-                        </ng-template>                        
-                    </p-card>
+            <div class="p-col-12 p-lg-4">
+                <div class="card widget-download-files">
+                    <div class="card-header">
+                        <div class="title">
+                            <h5>Download Files</h5>
+                        </div>
+                        <div class="files-info">
+                            <span>Download All</span>
+                        </div>
+                    </div>
+                    <ul>
+                        <li>
+                            <div class="p-grid list-item">
+                                <div class="p-col-2 icon">
+                                    <img src="assets/layout/images/dashboard/icon-sapphire.svg" alt="mirage-layout" />
+                                </div>
+                                <div class="p-col-10 file-name">
+                                    <h6 class="name">Sapphire Documentation</h6>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="p-grid list-item">
+                                <div class="p-col-2 icon">
+                                    <img src="assets/layout/images/dashboard/icon-mirage.svg" alt="mirage-layout" />
+                                </div>
+                                <div class="p-col-8 file-name">
+                                    <h6 class="name">Mirage Marketing Asset</h6>
+                                </div>
+                                <div class="p-col-2 new">
+                                    <div class="new-tag">
+                                        New
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="p-grid list-item">
+                                <div class="p-col-2 icon">
+                                    <img src="assets/layout/images/dashboard/icon-primefaces.svg"
+                                                    alt="mirage-layout" />
+                                </div>
+                                <div class="p-col-10 file-name">
+                                    <h6 class="name">PrimeFaces Elite Report 2019-Q3</h6>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="p-grid list-item">
+                                <div class="p-col-2 icon">
+                                    <img src="assets/layout/images/dashboard/icon-ngconf.svg" alt="mirage-layout" />
+                                </div>
+                                <div class="p-col-10 file-name">
+                                    <h6 class="name">NG-Conf 2020 Presentation</h6>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="p-grid list-item">
+                                <div class="p-col-2 icon">
+                                    <img src="assets/layout/images/dashboard/icon-internship.svg"
+                                                    alt="mirage-layout" />
+                                </div>
+                                <div class="p-col-10 file-name">
+                                    <h6 class="name">Internship Reviews</h6>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="p-grid list-item">
+                                <div class="p-col-2 icon">
+                                    <img src="assets/layout/images/dashboard/icon-design.svg" alt="mirage-layout" />
+                                </div>
+                                <div class="p-col-10 file-name">
+                                    <h6 class="name">Design Team | Spring 021</h6>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="p-grid list-item">
+                                <div class="p-col-2 icon">
+                                    <img src="assets/layout/images/dashboard/icon-art.svg" alt="mirage-layout" />
+                                </div>
+                                <div class="p-col-10 file-name">
+                                    <h6 class="name">M02-Feedback Session</h6>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="p-grid list-item">
+                                <div class="p-col-2 icon">
+                                    <img src="assets/layout/images/dashboard/icon-process.svg" alt="mirage-layout" />
+                                </div>
+                                <div class="p-col-10 file-name">
+                                    <h6 class="name">.gitignore</h6>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="p-grid list-item">
+                                <div class="p-col-2 icon">
+                                    <img src="assets/layout/images/dashboard/icon-cd.svg" alt="mirage-layout" />
+                                </div>
+                                <div class="p-col-10 file-name">
+                                    <h6 class="name">Mirage Playlist on Spotify</h6>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="p-grid list-item">
+                                <div class="p-col-2 icon">
+                                    <img src="assets/layout/images/dashboard/icon-movie.svg" alt="mirage-layout" />
+                                </div>
+                                <div class="p-col-10 file-name">
+                                    <h6 class="name">Launch Movie</h6>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="p-grid list-item">
+                                <div class="p-col-2 icon">
+                                    <img src="assets/layout/images/dashboard/icon-padlock.svg" alt="mirage-layout" />
+                                </div>
+                                <div class="p-col-10 file-name">
+                                    <h6 class="name">Keychain 00279.88</h6>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="list-effect"></div>
                 </div>
             </div>
         </div>
+        
 
     </ng-template>
     <ng-template pTemplate="footer">
