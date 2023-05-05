@@ -156,6 +156,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { JWTInterceptor } from './utils/jwt-interceptor';
 import { ErrorInterceptor } from './utils/error-interceptor';
 import { SignInComponent } from './login/sign-in/sign-in.component';
+import { MqttService } from './modules/service/mqtt.service';
+import { MqttRoutingService } from './modules/service/mqtt.routing.service';
+import { OrderHandler } from './modules/service/handlers/order.handler';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -306,7 +309,8 @@ FullCalendarModule.registerPlugins([
         { provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
         CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService, MenuService, BreadcrumbService
+        PhotoService, ProductService, MenuService, BreadcrumbService,
+        MqttService,MqttRoutingService,OrderHandler
     ],
     bootstrap: [AppComponent]
 })

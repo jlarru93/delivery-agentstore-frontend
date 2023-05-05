@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import {AppMainComponent} from './app.main.component';
 import { AuthService } from './utils/auth.service';
 import { OpenStoreRequest } from './modules/main/service/data/request';
+import { MqttService } from './modules/service/mqtt.service';
 
 @Component({
     selector: 'app-topbar',
@@ -13,7 +14,7 @@ export class AppTopBarComponent implements OnInit{
     activeItem: number;
     isOpenStore:boolean=false
     isLoadingOpenStatusStore:boolean=false
-    constructor(private auth: AuthService,private router: Router,public appMain: AppMainComponent) {}
+    constructor(private auth: AuthService,private router: Router,public appMain: AppMainComponent,private mqtt:MqttService) {}
     
     ngOnInit(): void {
         this.getStatusOpenStore()
@@ -33,6 +34,12 @@ export class AppTopBarComponent implements OnInit{
         this.appMain.getStatusOpen().subscribe((resp)=>{
             this.isOpenStore=resp.data.status
             this.isLoadingOpenStatusStore=false
+            const chanelStore="store/"+this.auth.getIdStore()
+            if(this.isOpenStore){
+                this.mqtt.subscribe(chanelStore)
+            }else{
+                this.mqtt.unSubscribe(chanelStore)
+            }
         },(error)=>{
             this.isLoadingOpenStatusStore=false
         },()=>{})
@@ -47,6 +54,12 @@ export class AppTopBarComponent implements OnInit{
         this.isLoadingOpenStatusStore=true
         this.appMain.changeStatusOpenStore(request).subscribe((resp)=>{
             this.isOpenStore=!this.isOpenStore
+            const chanelStore="store/"+this.auth.getIdStore()
+            if(this.isOpenStore){
+                this.mqtt.subscribe(chanelStore)
+            }else{
+                this.mqtt.unSubscribe(chanelStore)
+            }
             this.isLoadingOpenStatusStore=false
         },(error)=>{
             this.isLoadingOpenStatusStore=false

@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {PrimeNGConfig} from 'primeng/api';
+import { MqttService } from './modules/service/mqtt.service';
 
 @Component({
     selector: 'app-root',
@@ -23,7 +24,7 @@ export class AppComponent implements OnInit{
 
     inputStyle = 'outlined';
 
-    constructor(private primengConfig: PrimeNGConfig) {}
+    constructor(private primengConfig: PrimeNGConfig,private mqtt:MqttService) {}
 
     ngOnInit() {
         this.primengConfig.ripple = true;

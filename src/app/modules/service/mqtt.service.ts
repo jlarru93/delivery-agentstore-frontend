@@ -1,0 +1,56 @@
+import { Injectable } from "@angular/core";
+import { Client } from "paho-mqtt";
+import { v4 as uuidv4 } from 'uuid';
+import { MqttRoutingService } from "./mqtt.routing.service";
+import { threadId } from "worker_threads";
+@Injectable({
+    providedIn: 'root'
+})
+export class MqttService {
+    client: Client
+    message: string = ""
+    constructor(private routing: MqttRoutingService) {
+        let host = "34.201.73.116"
+        let wsport = 15675
+        let idTransaccion = uuidv4();
+        const clientId = "AgentStore-" + idTransaccion;
+
+        this.client = new Client(host, wsport, "/ws", clientId);
+        // set callback handlers
+        // called when the client loses its connection
+        this.client.onConnectionLost = (responseObject: Paho.MQTT.MQTTError) => {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+            }
+        };
+        // called when a message arrives
+        this.client.onMessageArrived = (message: Paho.MQTT.Message) => {
+            console.log("onMessageArrived:", message);
+            let topic = message.destinationName
+            let payload = message.payloadString
+            this.routing.route(topic,payload)
+        };
+        // connect the client
+        this.client.connect({
+            timeout: 3,
+            keepAliveInterval: 30,
+            onSuccess: () => {
+                // Once a connection has been made, make a subscription and send a message.
+                console.log("onConnect");
+                //this.client.subscribe("store-general");
+            },
+            onFailure: (message) => {
+                console.log("CONNECTION FAILURE - ", message);
+            }
+        });
+    }
+
+
+    subscribe(channel: string) {
+        this.client.subscribe(channel)
+    }
+
+    unSubscribe(channel: string) {
+        this.client.unsubscribe(channel)
+    }
+}
