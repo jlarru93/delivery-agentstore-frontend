@@ -1,4 +1,4 @@
-import { MainService } from "./service/order.service";
+import { OrderService } from "./service/order.service";
 import {AgmCoreModule} from '../../../agm/core';
 import { CommonModule } from "@angular/common";
 import { MainComponent } from "./main.component";
@@ -24,6 +24,6 @@ import { TableModule } from "primeng/table";
       }),
       CardModule
     ],
-    providers:[MainService]
+    providers:[OrderService]
   })
 export class MainModule { }
