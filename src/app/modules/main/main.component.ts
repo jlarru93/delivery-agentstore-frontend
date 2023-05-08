@@ -6,6 +6,7 @@ import { OrderHandler } from "../service/handlers/order.handler";
 //import { MqttService } from "../service/mqtt.service";
 import { OrderService } from "./service/order.service";
 import { OrderResponse } from "./service/data/response";
+import { OrderBean } from "./data";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -14,15 +15,22 @@ import { OrderResponse } from "./service/data/response";
   })
   export class MainComponent implements OnInit {
     minutes: number = 2;
-    displayOrder:boolean=true
+    displayOrder:boolean=false
     products: Product[];
+    orders:OrderBean[]
+    ordersOpen:OrderBean[]
+    orderSelected:OrderBean
+
+
     title:string="Aceptar"
     constructor(private productService: ProductService,private orderService:OrderService,private orderHandler:OrderHandler,private store:OrderHandler){}
     ngOnInit(): void {
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
       this.orderService.getOrders().subscribe((resp)=>{
-        const order=resp.data.map((it)=>OrderResponse.toBean(it))
-        console.log("ORDER",order)
+        this.orders=resp.data.map((it)=>OrderResponse.toBean(it))
+        this.ordersOpen=this.orders.filter((order)=>order.status=="open")
+        console.log("ordersOpen",this.ordersOpen[0].getSubTotalPriceAndCurrency())
+        //this.ordersOpen.forEach((orde)=>orde.products.forEach((p)=>p.getTotalPriceAndCurrency()))
       })
       this.orderHandler._data.subscribe((data)=>{
         if(data){
@@ -34,6 +42,11 @@ import { OrderResponse } from "./service/data/response";
           console.log("ORDER recibida",data)
         }
       })
+    }
+    openOrderDialog(order:OrderBean){
+      this.displayOrder=true
+      this.orderSelected=order
+      
     }
   
 }

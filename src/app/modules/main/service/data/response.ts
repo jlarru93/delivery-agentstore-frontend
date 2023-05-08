@@ -1,4 +1,4 @@
-import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, OptionBean, OrderBean, PaymentBean, ProductBean, StoreBean, SubOptionBean, UserBean } from "../../data"
+import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, OptionBean, OrderBean, PaymentBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UserBean } from "../../data"
 
 export class StatusOpenStoreResponse {
     status: boolean
@@ -7,16 +7,40 @@ export class StatusOpenStoreResponse {
 export class SubOptionResponse {
     id?: number
     name?: string
-    unitPrice?: number
+    price?: PriceResponse
     quantity?: number
-    static toBean(self: SubOptionResponse): SubOptionBean {
-        const bean = {
-            id: self.id,
-            name: self.name,
-            unitPrice: self.unitPrice,
-            quantity: self?.quantity
-        } as SubOptionBean
-        return bean
+    static toBean(self: SubOptionResponse, control: string): SubOptionBean {
+        switch (control) {
+            case "SS": {
+                let bean = new SubOptionAggregable()
+                bean.id = self.id
+                bean.name = self.name
+                bean.price = PriceResponse.toBean(self.price)
+                bean.quantity = self?.quantity
+                return bean
+            }
+            case "SM": {
+                let bean = new SubOptionMultiple()
+                bean.id = self.id,
+                    bean.name = self.name,
+                    bean.price = PriceResponse.toBean(self.price)
+                return bean
+            }
+            case "SU": {
+                let bean = new SubOptionUnique()
+                bean.id = self.id,
+                    bean.name = self.name,
+                    bean.price = PriceResponse.toBean(self.price)
+                return bean
+            }
+            default: {
+                let bean = new SubOptionUnique()
+                bean.id = self.id,
+                    bean.name = self.name,
+                    bean.price = PriceResponse.toBean(self.price)
+                return bean
+            }
+        }
     }
 }
 
@@ -26,30 +50,42 @@ export class OptionResponse {
     control?: string
     subOption?: SubOptionResponse[]
     static toBean(self?: OptionResponse): OptionBean {
-        const bean = {
-            id: self.id,
-            name: self.name,
-            control: self.control,
-            subOption: self.subOption.map((it) => SubOptionResponse.toBean(it))
-        } as OptionBean
+        let bean = new OptionBean()
+        bean.id = self.id,
+            bean.name = self.name,
+            bean.control = self.control,
+            bean.subOptions = self.subOption.map((it) => SubOptionResponse.toBean(it, self.control))
+
         return bean
     }
 }
-
+export class PriceResponse {
+    currency: String
+    value: number
+    id?: number
+    currencyId?: number
+    static toBean(selft: PriceResponse): PriceBean {
+        const bean = new PriceBean()
+        bean.id = selft.id
+        bean.currencyId = selft.currencyId
+        bean.value = selft.value
+        bean.currency = selft.currency
+        return bean
+    }
+}
 export class ProductResponse {
     id?: number
     name?: string
-    unitPrice?: number
+    price?: PriceResponse
     quantity?: number
     options?: OptionResponse[]
     static toBean(self: ProductResponse): ProductBean {
-        const bean = {
-            id: self.id,
-            name: self.name,
-            unitPrice: self.unitPrice,
-            quantity: self.quantity,
-            options: self?.options.map((it) => OptionResponse.toBean(it))
-        } as ProductBean
+        const bean = new ProductBean()
+        bean.id = self.id,
+            bean.name = self.name,
+            bean.price = PriceResponse.toBean(self.price),
+            bean.quantity = self.quantity,
+            bean.options = self?.options.map((it) => OptionResponse.toBean(it))
         return bean
     }
 }
@@ -58,10 +94,9 @@ export class EstimationTimeResponse {
     min?: number
     max?: number
     static toBean(self: EstimationTimeResponse): EstimationTimeBean {
-        const bean = {
-            min: self.min,
-            max: self.max
-        } as EstimationTimeBean
+        const bean = new EstimationTimeBean()
+        bean.min = self.min
+        bean.max = self.max
         return bean
     }
 }
@@ -73,13 +108,11 @@ export class StoreResponse {
     addressStreet: string
     location?: Point
     static toBean(self: StoreResponse): StoreBean {
-        console.log("StoreResponse", self)
-        const bean = {
-            id: self.id,
-            name: self?.name,
-            addressStreet: self.addressStreet,
-            location: self.location
-        } as StoreBean
+        const bean = new StoreBean()
+        bean.id = self.id,
+            bean.name = self?.name,
+            bean.addressStreet = self.addressStreet,
+            bean.location = self.location
         return bean
     }
 }
@@ -90,16 +123,15 @@ export class DeliveryManResponse {
     name: string
     phone: string
     status: string
-    static toBean(self?: DeliveryManResponse): DeliveryManBean|null {
-        if(!self){
+    static toBean(self?: DeliveryManResponse): DeliveryManBean | null {
+        if (!self) {
             return null
         }
-        const bean = {
-            id: self!.id,
-            name: self!.name,
-            phone: self!.phone,
-            status: self!.status,
-        } as DeliveryManBean
+        const bean = new DeliveryManBean()
+        bean.id = self!.id
+        bean.name = self!.name
+        bean.phone = self!.phone
+        bean.status = self!.status
         return bean
     }
 }
@@ -117,15 +149,14 @@ export class AddressResponse {
     floor?: string
     alias?: string
     static toBean(self?: AddressResponse): AddressBean | null {
-        if( !self) return null
-        const bean = {
-            id: self.id,
-            location: self.location,
-            reference: self?.reference,
-            addressStreet: self.addressStreet,
-            floor: self?.floor,
-            alias: self?.alias,
-        } as AddressBean
+        if (!self) return null
+        const bean = new AddressBean()
+        bean.id = self.id
+        bean.location = self.location
+        bean.reference = self?.reference
+        bean.addressStreet = self.addressStreet
+        bean.floor = self?.floor
+        bean.alias = self?.alias
         return bean
     }
 }
@@ -135,23 +166,20 @@ export class UserResponse {
     fullName?: string
     address?: AddressResponse
     static toBean(self: UserResponse): UserBean {
-        console.log("UserResponse", self)
-        const bean = {
-            id: self.id,
-            fullName: self.fullName,
-            address: AddressResponse.toBean(self.address)
-        } as UserBean
+        const bean = new UserBean()
+        bean.id = self.id,
+            bean.fullName = self.fullName,
+            bean.address = AddressResponse.toBean(self.address)
         return bean
     }
 }
 
 export class CardResponse {
     id?: string
-    static toBean(self?: CardResponse): CardBean | null{
-        if(!self) return null
-        const bean = {
-            id: self?.id
-        } as CardBean
+    static toBean(self?: CardResponse): CardBean | null {
+        if (!self) return null
+        const bean = new CardBean()
+        bean.id = self?.id
         return bean
     }
 }
@@ -161,12 +189,11 @@ export class PaymentResponse {
     method?: string
     card?: CardResponse
     static toBean(self?: PaymentResponse): PaymentBean {
-        const bean = {
-            id: self?.id,
-            amount: self?.amount,
-            method: self?.method,
-            card: CardResponse.toBean(self?.card)
-        } as PaymentBean
+        const bean = new PaymentBean()
+        bean.id = self?.id
+        bean.amount = self?.amount
+        bean.method = self?.method
+        bean.card = CardResponse.toBean(self?.card)
         return bean
     }
 }
@@ -189,25 +216,23 @@ export class OrderResponse {
     status?: string
     createdAt: number
     static toBean(self: OrderResponse): OrderBean {
-        console.log("OrderResponse", self)
-        const bean = {
-            id: self?.id,
-            uuid: self?.uuid,
-            zoneId: self?.zoneId,
-            productPrice: self.productPrice,
-            servicePrice: self.servicePrice,
-            deliveryPrice: self.deliveryPrice,
-            tip: self.tip,
-            total: self.total,
-            user: UserResponse.toBean(self.user),
-            store: StoreResponse.toBean(self.store),
-            estimationTime: EstimationTimeResponse.toBean(self.estimationTime),
-            payment: PaymentResponse.toBean(self.payment),
-            products: self.products.map((it) => ProductResponse.toBean(it)),
-            deliveryMan: DeliveryManResponse.toBean(self?.deliveryMan),
-            status: self.status,
-            createdAt: self.createdAt,
-        } as OrderBean
+        const bean = new OrderBean()
+        bean.id = self?.id
+        bean.uuid = self?.uuid
+        bean.zoneId = self?.zoneId
+        bean.productPrice = self.productPrice
+        bean.servicePrice = self.servicePrice
+        bean.deliveryPrice = self.deliveryPrice
+        bean.tip = self.tip
+        bean.total = self.total
+        bean.user = UserResponse.toBean(self.user)
+        bean.store = StoreResponse.toBean(self.store)
+        bean.estimationTime = EstimationTimeResponse.toBean(self.estimationTime)
+        bean.payment = PaymentResponse.toBean(self.payment)
+        bean.products = self.products.map((it) => ProductResponse.toBean(it))
+        bean.deliveryMan = DeliveryManResponse.toBean(self?.deliveryMan)
+        bean.status = self.status
+        bean.createdAt = self.createdAt
         return bean
     }
 }
