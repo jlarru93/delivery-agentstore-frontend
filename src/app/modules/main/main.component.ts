@@ -7,11 +7,13 @@ import { OrderHandler } from "../service/handlers/order.handler";
 import { OrderService } from "./service/order.service";
 import { OrderResponse } from "./service/data/response";
 import { OrderBean } from "./data";
+import { DialogService } from "primeng/dynamicdialog";
+import { OrderDialogComponent } from "./dialog/orderDialog.component";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.scss'],
-    providers: [ConfirmationService, MessageService]
+    providers: [ConfirmationService, MessageService,DialogService]
   })
   export class MainComponent implements OnInit {
     minutes: number = 2;
@@ -23,13 +25,13 @@ import { OrderBean } from "./data";
 
 
     title:string="Aceptar"
-    constructor(private productService: ProductService,private orderService:OrderService,private orderHandler:OrderHandler,private store:OrderHandler){}
+    constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private orderHandler:OrderHandler,private store:OrderHandler){}
     ngOnInit(): void {
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
       this.orderService.getOrders().subscribe((resp)=>{
         this.orders=resp.data.map((it)=>OrderResponse.toBean(it))
         this.ordersOpen=this.orders.filter((order)=>order.status=="open")
-        console.log("ordersOpen",this.ordersOpen[0].getSubTotalPriceAndCurrency())
+        console.log("this.ordersOpen[1].products[0].options[0].subOptions",this.ordersOpen[1].products[0].options[0]?.subOptions)
         //this.ordersOpen.forEach((orde)=>orde.products.forEach((p)=>p.getTotalPriceAndCurrency()))
       })
       this.orderHandler._data.subscribe((data)=>{
@@ -46,7 +48,14 @@ import { OrderBean } from "./data";
     openOrderDialog(order:OrderBean){
       this.displayOrder=true
       this.orderSelected=order
-      
+      /*this.dialogService.open(
+        OrderDialogComponent
+        ,{
+        header: 'Choose a Product',
+        width: '70%',
+        contentStyle: { 'max-height': '500px', overflow: 'auto' },
+        baseZIndex: 10000,
+      })*/
     }
   
 }

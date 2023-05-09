@@ -1,371 +1,293 @@
 <div class="p-grid">
     <div class="p-col-12 p-lg-4 p-md-6">
-        <div class="card widget-tasks">
-            <div class="card-header">
+       <div class="card widget-tasks">
+          <div class="card-header">
+             <div class="title">
+                <h5>{{title}}</h5>
+             </div>
+             <div class=" task-info">
+                <span>You have</span><span class="highlighted"> 2 tasks</span><span> today</span>
+             </div>
+          </div>
+          <div *ngFor="let order of ordersOpen; let i = index">
+             <div class="p-col-12" (click)=" openOrderDialog(order)">
+                <div class="p-grid p-nogutter widget-overview-box overview-box-3">
+                   <div class="p-col-3 overview-box-icon">
+                      <h5>ID</h5>
+                   </div>
+                   <div class="p-col-6 overview-box-text">
+                      <h5>{{order.id}}</h5>
+                   </div>
+                   <div class="p-col-3 overview-box-status">
+                      nueva
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+    <div class="p-col-12 p-lg-4 p-md-6">
+       <div class="card widget-support-request">
+          <div class="p-grid p-nogutter">
+             <div class="p-col-6 title">
+                <h5>En preparación</h5>
+             </div>
+             <div class="p-col-6 support-info">
+                <p>⏰ Estimated wait time</p>
+                <span class="highlighted">21 minutes</span>
+             </div>
+          </div>
+          <div class="p-col-12">
+             <div class="p-grid p-nogutter widget-overview-box overview-box-1 p-shadow-24">
+                <div class="p-col-3 overview-box-icon">
+                   <h5>ID</h5>
+                </div>
+                <div class="p-col-6 overview-box-text">
+                   <h5>457454</h5>
+                </div>
+                <div class="p-col-3 overview-box-status">
+                   <circle-progress [minutes]="5"></circle-progress>
+                </div>
+             </div>
+          </div>
+          <div class="p-col-12">
+             <div class="p-grid p-nogutter widget-overview-box overview-box-1 p-shadow-24">
+                <div class="p-col-3 overview-box-icon">
+                   <h5>ID</h5>
+                </div>
+                <div class="p-col-6 overview-box-text">
+                   <h5>457454</h5>
+                </div>
+                <div class="p-col-3 overview-box-status">
+                   <circle-progress [minutes]="minutes"></circle-progress>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+    <div class="p-col-12 p-lg-4 p-md-6">
+       <div class="card widget-support-request">
+          <div class="p-grid p-nogutter">
+             <div class="p-col-6 title">
+                <h5>Por Entregar</h5>
+             </div>
+             <div class="p-col-6 support-info">
+                <p>⏰ Estimated wait time</p>
+                <span class="highlighted">21 minutes</span>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+ <p-dialog [(visible)]="displayOrder" [modal]="true" [style]="{width: '80vw'}">
+ <ng-template pTemplate="header">
+    <div class="p-d-flex">
+       <div class="p-mr-2">
+          <b>
+             <h5>{{orderSelected.id}}</h5>
+          </b>
+       </div>
+       <div class="p-mr-2"></div>
+       <div class="p-mr-8"><button pButton type="button" icon="pi pi-print"
+          class="p-button-secondary p-button-rounded"></button></div>
+    </div>
+ </ng-template>
+ <ng-template pTemplate="body">
+    <div class="p-grid">
+       <div class="p-col-12 p-lg-8">
+          <div class="card widget-store-items">
+             <div class="p-grid p-nogutter">
+                <div class="p-col-6 title">
+                   <h5>Detalle</h5>
+                </div>
+             </div>
+             <div class="p-col-12">
+                <p-table [value]="orderSelected.products" dataKey="name"
+                   styleClass="p-datatable-customers rowexpand-table">
+                   <ng-template pTemplate="body" let-product let-expanded="expanded">
+                      <tr>
+                         <td>
+                            <button type="button" pButton pRipple [pRowToggler]="product"
+                            class="p-button-text p-button-rounded p-button-plain"
+                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                         </td>
+                         <td><span class="p-column-title">Name</span>X{{product.quantity}}</td>
+                         <td><span class="p-column-title">Image</span>{{product.name}}</td>
+                         <td><span class="p-column-title">Price</span>{{product.getTotalPriceAndCurrency()}}
+                         </td>
+                         <!--td><span class="p-column-title">Category</span>{{product.category}}</td>
+                            <td><span class="p-column-title">Reviews</span><p-rating [ngModel]="product.rating"
+                                [readonly]="true" [cancel]="false"></p-rating>
+                            </td>
+                            <td><span class="p-column-title">Status</span><span
+                                [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span>
+                            </td-->
+                      </tr>
+                   </ng-template>
+                   <ng-template pTemplate="rowexpansion" let-product>
+                      <tr>
+                         <td colspan="7">
+                            <div class="p-p-3">
+                               <p-table [value]="product.options" dataKey="id">
+                                  <ng-template pTemplate="body" let-option>
+                      <tr>                  
+                        <td><span class="p-column-title"><b>nombre</b></span>{{option?.name}}</td>
+                        <td>
+                           <tr>
+                              <p-table [value]="option.subOptions" dataKey="id">
+                                 <ng-template pTemplate="body" let-subOption>
+                                    <tr>
+                                       {{subOption?.name}}
+                                    </tr>
+                                 </ng-template>
+                              </p-table>
+                           </tr>
+                        </td>
+                      </tr>
+                      </ng-template>
+                      </p-table>
+                      </div>
+                      </td>
+                      </tr>
+                   </ng-template>
+                </p-table>
+             </div>
+          </div>
+       </div>
+       <div class="p-col-12 p-lg-4">
+          <div class="card widget-download-files">
+             <div class="card-header">
                 <div class="title">
-                    <h5>{{title}}</h5>
+                   <h5>Download Files</h5>
                 </div>
-                <div class=" task-info">
-                    <span>You have</span><span class="highlighted"> 2 tasks</span><span> today</span>
+                <div class="files-info">
+                   <span>Download All</span>
                 </div>
-            </div>
-            <div *ngFor="let order of ordersOpen; let i = index">
-                <div class="p-col-12" (click)=" openOrderDialog(order)">
-                    <div class="p-grid p-nogutter widget-overview-box overview-box-3">
-                        <div class="p-col-3 overview-box-icon">
-                            <h5>ID</h5>
-                        </div>
-                        <div class="p-col-6 overview-box-text">
-                            <h5>{{order.id}}</h5>
-                        </div>
-                        <div class="p-col-3 overview-box-status">
-                            nueva
-                        </div>
-                    </div>
-                </div>
-            </div>
-       
-        </div>
+             </div>
+             <ul>
+                <li>
+                   <div class="p-grid list-item">
+                      <div class="p-col-2 icon">
+                         <img src="assets/layout/images/dashboard/icon-sapphire.svg" alt="mirage-layout" />
+                      </div>
+                      <div class="p-col-10 file-name">
+                         <h6 class="name">Sapphire Documentation</h6>
+                      </div>
+                   </div>
+                </li>
+                <li>
+                   <div class="p-grid list-item">
+                      <div class="p-col-2 icon">
+                         <img src="assets/layout/images/dashboard/icon-mirage.svg" alt="mirage-layout" />
+                      </div>
+                      <div class="p-col-8 file-name">
+                         <h6 class="name">Mirage Marketing Asset</h6>
+                      </div>
+                      <div class="p-col-2 new">
+                         <div class="new-tag">
+                            New
+                         </div>
+                      </div>
+                   </div>
+                </li>
+                <li>
+                   <div class="p-grid list-item">
+                      <div class="p-col-2 icon">
+                         <img src="assets/layout/images/dashboard/icon-primefaces.svg" alt="mirage-layout" />
+                      </div>
+                      <div class="p-col-10 file-name">
+                         <h6 class="name">PrimeFaces Elite Report 2019-Q3</h6>
+                      </div>
+                   </div>
+                </li>
+                <li>
+                   <div class="p-grid list-item">
+                      <div class="p-col-2 icon">
+                         <img src="assets/layout/images/dashboard/icon-ngconf.svg" alt="mirage-layout" />
+                      </div>
+                      <div class="p-col-10 file-name">
+                         <h6 class="name">NG-Conf 2020 Presentation</h6>
+                      </div>
+                   </div>
+                </li>
+                <li>
+                   <div class="p-grid list-item">
+                      <div class="p-col-2 icon">
+                         <img src="assets/layout/images/dashboard/icon-internship.svg" alt="mirage-layout" />
+                      </div>
+                      <div class="p-col-10 file-name">
+                         <h6 class="name">Internship Reviews</h6>
+                      </div>
+                   </div>
+                </li>
+                <li>
+                   <div class="p-grid list-item">
+                      <div class="p-col-2 icon">
+                         <img src="assets/layout/images/dashboard/icon-design.svg" alt="mirage-layout" />
+                      </div>
+                      <div class="p-col-10 file-name">
+                         <h6 class="name">Design Team | Spring 021</h6>
+                      </div>
+                   </div>
+                </li>
+                <li>
+                   <div class="p-grid list-item">
+                      <div class="p-col-2 icon">
+                         <img src="assets/layout/images/dashboard/icon-art.svg" alt="mirage-layout" />
+                      </div>
+                      <div class="p-col-10 file-name">
+                         <h6 class="name">M02-Feedback Session</h6>
+                      </div>
+                   </div>
+                </li>
+                <li>
+                   <div class="p-grid list-item">
+                      <div class="p-col-2 icon">
+                         <img src="assets/layout/images/dashboard/icon-process.svg" alt="mirage-layout" />
+                      </div>
+                      <div class="p-col-10 file-name">
+                         <h6 class="name">.gitignore</h6>
+                      </div>
+                   </div>
+                </li>
+                <li>
+                   <div class="p-grid list-item">
+                      <div class="p-col-2 icon">
+                         <img src="assets/layout/images/dashboard/icon-cd.svg" alt="mirage-layout" />
+                      </div>
+                      <div class="p-col-10 file-name">
+                         <h6 class="name">Mirage Playlist on Spotify</h6>
+                      </div>
+                   </div>
+                </li>
+                <li>
+                   <div class="p-grid list-item">
+                      <div class="p-col-2 icon">
+                         <img src="assets/layout/images/dashboard/icon-movie.svg" alt="mirage-layout" />
+                      </div>
+                      <div class="p-col-10 file-name">
+                         <h6 class="name">Launch Movie</h6>
+                      </div>
+                   </div>
+                </li>
+                <li>
+                   <div class="p-grid list-item">
+                      <div class="p-col-2 icon">
+                         <img src="assets/layout/images/dashboard/icon-padlock.svg" alt="mirage-layout" />
+                      </div>
+                      <div class="p-col-10 file-name">
+                         <h6 class="name">Keychain 00279.88</h6>
+                      </div>
+                   </div>
+                </li>
+             </ul>
+             <div class="list-effect"></div>
+          </div>
+       </div>
     </div>
-    <div class="p-col-12 p-lg-4 p-md-6">
-        <div class="card widget-support-request">
-            <div class="p-grid p-nogutter">
-                <div class="p-col-6 title">
-                    <h5>En preparación</h5>
-                </div>
-                <div class="p-col-6 support-info">
-                    <p>⏰ Estimated wait time</p>
-                    <span class="highlighted">21 minutes</span>
-                </div>
-            </div>
-            <div class="p-col-12">
-                <div class="p-grid p-nogutter widget-overview-box overview-box-1 p-shadow-24">
-                    <div class="p-col-3 overview-box-icon">
-                        <h5>ID</h5>
-                    </div>
-                    <div class="p-col-6 overview-box-text">
-                        <h5>457454</h5>
-                    </div>
-                    <div class="p-col-3 overview-box-status">
-                        <circle-progress [minutes]="5"></circle-progress>
-                    </div>
-                </div>
-            </div>
-            <div class="p-col-12">
-                <div class="p-grid p-nogutter widget-overview-box overview-box-1 p-shadow-24">
-                    <div class="p-col-3 overview-box-icon">
-                        <h5>ID</h5>
-                    </div>
-                    <div class="p-col-6 overview-box-text">
-                        <h5>457454</h5>
-                    </div>
-                    <div class="p-col-3 overview-box-status">
-                        <circle-progress [minutes]="minutes"></circle-progress>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="p-col-12 p-lg-4 p-md-6">
-        <div class="card widget-support-request">
-            <div class="p-grid p-nogutter">
-                <div class="p-col-6 title">
-                    <h5>Por Entregar</h5>
-                </div>
-                <div class="p-col-6 support-info">
-                    <p>⏰ Estimated wait time</p>
-                    <span class="highlighted">21 minutes</span>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-<p-dialog [(visible)]="displayOrder" [modal]="true" [style]="{width: '80vw'}" >
-    <ng-template pTemplate="header">
-        <div class="p-d-flex">
-            <div class="p-mr-2"><b><h5>{{orderSelected.id}}</h5></b></div>
-            <div class="p-mr-2"></div>
-            <div class="p-mr-8"><button pButton type="button" icon="pi pi-print" class="p-button-secondary p-button-rounded"></button></div>
-        </div>
-    </ng-template>
-    <ng-template pTemplate="body">
-        <div class="p-grid">
-    
-            <div class="p-col-12 p-lg-8">
-                <div class="card widget-store-items">
-                    <div class="p-grid p-nogutter">
-                        <div class="p-col-6 title">
-                            <h5>Detalle</h5>
-                        </div>
-                    </div>
-
-                    <div class="p-col-12">
-                        <p-table [value]="orderSelected.products" dataKey="name" styleClass="p-datatable-customers rowexpand-table">
-                            <ng-template pTemplate="body" let-product let-expanded="expanded">
-                                <tr>
-                                <td>
-                                    <button type="button" pButton pRipple [pRowToggler]="product"
-                                    class="p-button-text p-button-rounded p-button-plain"
-                                    [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                                </td>
-                                <td><span class="p-column-title">Name</span>{{product.name}}</td>
-                                <!--td><span class="p-column-title">Image</span><img
-                                    [src]="'assets/demo/images/product/' + product.image" [alt]="product.name" width="100"
-                                    class="p-shadow-4" />
-                                </td-->
-                                <td><span class="p-column-title">Price</span>{{product.getTotalPriceAndCurrency()}}</td>
-                                <!--td><span class="p-column-title">Category</span>{{product.category}}</td>
-                                <td><span class="p-column-title">Reviews</span><p-rating [ngModel]="product.rating"
-                                    [readonly]="true" [cancel]="false"></p-rating>
-                                </td>
-                                <td><span class="p-column-title">Status</span><span
-                                    [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span>
-                                </td-->
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="rowexpansion" let-product>
-                                <tr>
-                                <td colspan="7">
-                                    <div class="p-p-3">
-                                        <p-table [value]="product.orders" dataKey="id">
-                                            <ng-template pTemplate="header">
-                                <tr>
-                                <th pSortableColumn="id">Id <p-sortIcon field="price"></p-sortIcon></th>
-                                <th pSortableColumn="customer">Customer <p-sortIcon field="customer"></p-sortIcon></th>
-                                <th pSortableColumn="date">Date <p-sortIcon field="date"></p-sortIcon></th>
-                                <th pSortableColumn="amount">Amount <p-sortIcon field="amount"></p-sortIcon></th>
-                                <th pSortableColumn="stats">Status <p-sortIcon field="status"></p-sortIcon></th>
-                                <th style="width: 4rem"></th>
-                                </tr>
-                                </ng-template>
-                                <ng-template pTemplate="body" let-order>
-                                <tr>
-                                <td><span class="p-column-title">Id</span>{{order.id}}</td>
-                                <td><span class="p-column-title">Customer</span>{{order.customer}}</td>
-                                <td><span class="p-column-title">Date</span>{{order.date}}</td>
-                                <td><span class="p-column-title">Amount</span>{{order.amount | currency:'USD'}}</td>
-                                <td><span class="p-column-title">Status</span><span
-                                [class]="'order-badge order-' + order.status.toLowerCase()">{{order.status}}</span></td>
-                                <td><p-button type="button" icon="pi pi-search"></p-button></td>
-                                </tr>
-                                </ng-template>
-                                <ng-template pTemplate="emptymessage">
-                                <tr>
-                                <td colspan="6">There are no order for this product yet.</td>
-                                </tr>
-                                </ng-template>
-                                </p-table>
-                                </div>
-                                </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                     </div>
-
-                    <div class="p-col-12">
-                        <p-table [value]="products" dataKey="name" styleClass="p-datatable-customers rowexpand-table">
-                            <ng-template pTemplate="body" let-product let-expanded="expanded">
-                                <tr>
-                                <td>
-                                    <button type="button" pButton pRipple [pRowToggler]="product"
-                                    class="p-button-text p-button-rounded p-button-plain"
-                                    [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                                </td>
-                                <td><span class="p-column-title">Name</span>{{product.name}}</td>
-                                <td><span class="p-column-title">Image</span><img
-                                    [src]="'assets/demo/images/product/' + product.image" [alt]="product.name" width="100"
-                                    class="p-shadow-4" />
-                                </td>
-                                <td><span class="p-column-title">Price</span>{{product.price | currency:'USD'}}</td>
-                                <td><span class="p-column-title">Category</span>{{product.category}}</td>
-                                <td><span class="p-column-title">Reviews</span><p-rating [ngModel]="product.rating"
-                                    [readonly]="true" [cancel]="false"></p-rating>
-                                </td>
-                                <td><span class="p-column-title">Status</span><span
-                                    [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span>
-                                </td>
-                                </tr>
-                            </ng-template>
-                            <!--ng-template pTemplate="rowexpansion" let-product>
-                                <tr>
-                                <td colspan="7">
-                                    <div class="p-p-3">
-                                        <p-table [value]="product.orders" dataKey="id">
-                                            <ng-template pTemplate="header">
-                                <tr>
-                                <th pSortableColumn="id">Id <p-sortIcon field="price"></p-sortIcon></th>
-                                <th pSortableColumn="customer">Customer <p-sortIcon field="customer"></p-sortIcon></th>
-                                <th pSortableColumn="date">Date <p-sortIcon field="date"></p-sortIcon></th>
-                                <th pSortableColumn="amount">Amount <p-sortIcon field="amount"></p-sortIcon></th>
-                                <th pSortableColumn="stats">Status <p-sortIcon field="status"></p-sortIcon></th>
-                                <th style="width: 4rem"></th>
-                                </tr>
-                                </ng-template>
-                                <ng-template pTemplate="body" let-order>
-                                <tr>
-                                <td><span class="p-column-title">Id</span>{{order.id}}</td>
-                                <td><span class="p-column-title">Customer</span>{{order.customer}}</td>
-                                <td><span class="p-column-title">Date</span>{{order.date}}</td>
-                                <td><span class="p-column-title">Amount</span>{{order.amount | currency:'USD'}}</td>
-                                <td><span class="p-column-title">Status</span><span
-                                [class]="'order-badge order-' + order.status.toLowerCase()">{{order.status}}</span></td>
-                                <td><p-button type="button" icon="pi pi-search"></p-button></td>
-                                </tr>
-                                </ng-template>
-                                <ng-template pTemplate="emptymessage">
-                                <tr>
-                                <td colspan="6">There are no order for this product yet.</td>
-                                </tr>
-                                </ng-template>
-                                </p-table>
-                                </div>
-                                </td>
-                                </tr>
-                            </ng-template-->
-                        </p-table>
-                     </div>
-                </div>
-            </div>
-            <div class="p-col-12 p-lg-4">
-                <div class="card widget-download-files">
-                    <div class="card-header">
-                        <div class="title">
-                            <h5>Download Files</h5>
-                        </div>
-                        <div class="files-info">
-                            <span>Download All</span>
-                        </div>
-                    </div>
-                    <ul>
-                        <li>
-                            <div class="p-grid list-item">
-                                <div class="p-col-2 icon">
-                                    <img src="assets/layout/images/dashboard/icon-sapphire.svg" alt="mirage-layout" />
-                                </div>
-                                <div class="p-col-10 file-name">
-                                    <h6 class="name">Sapphire Documentation</h6>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="p-grid list-item">
-                                <div class="p-col-2 icon">
-                                    <img src="assets/layout/images/dashboard/icon-mirage.svg" alt="mirage-layout" />
-                                </div>
-                                <div class="p-col-8 file-name">
-                                    <h6 class="name">Mirage Marketing Asset</h6>
-                                </div>
-                                <div class="p-col-2 new">
-                                    <div class="new-tag">
-                                        New
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="p-grid list-item">
-                                <div class="p-col-2 icon">
-                                    <img src="assets/layout/images/dashboard/icon-primefaces.svg"
-                                                    alt="mirage-layout" />
-                                </div>
-                                <div class="p-col-10 file-name">
-                                    <h6 class="name">PrimeFaces Elite Report 2019-Q3</h6>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="p-grid list-item">
-                                <div class="p-col-2 icon">
-                                    <img src="assets/layout/images/dashboard/icon-ngconf.svg" alt="mirage-layout" />
-                                </div>
-                                <div class="p-col-10 file-name">
-                                    <h6 class="name">NG-Conf 2020 Presentation</h6>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="p-grid list-item">
-                                <div class="p-col-2 icon">
-                                    <img src="assets/layout/images/dashboard/icon-internship.svg"
-                                                    alt="mirage-layout" />
-                                </div>
-                                <div class="p-col-10 file-name">
-                                    <h6 class="name">Internship Reviews</h6>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="p-grid list-item">
-                                <div class="p-col-2 icon">
-                                    <img src="assets/layout/images/dashboard/icon-design.svg" alt="mirage-layout" />
-                                </div>
-                                <div class="p-col-10 file-name">
-                                    <h6 class="name">Design Team | Spring 021</h6>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="p-grid list-item">
-                                <div class="p-col-2 icon">
-                                    <img src="assets/layout/images/dashboard/icon-art.svg" alt="mirage-layout" />
-                                </div>
-                                <div class="p-col-10 file-name">
-                                    <h6 class="name">M02-Feedback Session</h6>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="p-grid list-item">
-                                <div class="p-col-2 icon">
-                                    <img src="assets/layout/images/dashboard/icon-process.svg" alt="mirage-layout" />
-                                </div>
-                                <div class="p-col-10 file-name">
-                                    <h6 class="name">.gitignore</h6>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="p-grid list-item">
-                                <div class="p-col-2 icon">
-                                    <img src="assets/layout/images/dashboard/icon-cd.svg" alt="mirage-layout" />
-                                </div>
-                                <div class="p-col-10 file-name">
-                                    <h6 class="name">Mirage Playlist on Spotify</h6>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="p-grid list-item">
-                                <div class="p-col-2 icon">
-                                    <img src="assets/layout/images/dashboard/icon-movie.svg" alt="mirage-layout" />
-                                </div>
-                                <div class="p-col-10 file-name">
-                                    <h6 class="name">Launch Movie</h6>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="p-grid list-item">
-                                <div class="p-col-2 icon">
-                                    <img src="assets/layout/images/dashboard/icon-padlock.svg" alt="mirage-layout" />
-                                </div>
-                                <div class="p-col-10 file-name">
-                                    <h6 class="name">Keychain 00279.88</h6>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="list-effect"></div>
-                </div>
-            </div>
-        </div>
-        
-
-    </ng-template>
-    <ng-template pTemplate="footer">
-        <button pButton type="button" label="Aceptar orden" icon="pi pi-check"></button>
-        <button pButton type="button" label="Rechazar orden" icon="pi pi-times" class="p-button-danger"></button>
-
-    </ng-template>
-</p-dialog>
+ </ng-template>
+ <ng-template pTemplate="footer">
+    <button pButton type="button" label="Aceptar orden" icon="pi pi-check"></button>
+    <button pButton type="button" label="Rechazar orden" icon="pi pi-times" class="p-button-danger"></button>
+ </ng-template>
+ </p-dialog>
