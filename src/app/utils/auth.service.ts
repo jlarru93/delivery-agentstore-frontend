@@ -3,6 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { Auth } from 'aws-amplify';
 import { CognitoUser } from 'amazon-cognito-identity-js';
 import { environment } from 'src/environments/environment';
+import jwt_decode from 'jwt-decode';
 const serviceToken = 'CognitoIdentityServiceProvider.';
 
 @Injectable({
@@ -106,6 +107,12 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
 
     resetSecurityObject(): void {
       this.signOut();
+    }
+
+    getIdStore(){
+      const tokenId=this.getAutorizationToken()
+      const decode = jwt_decode(tokenId) as any
+      return decode.idStore
     }
   
   }

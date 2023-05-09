@@ -1,4 +1,4 @@
-import { MainService } from "./service/order.service";
+import { OrderService } from "./service/order.service";
 import {AgmCoreModule} from '../../../agm/core';
 import { CommonModule } from "@angular/common";
 import { MainComponent } from "./main.component";
@@ -9,9 +9,10 @@ import { CircleProgress } from "src/app/utils/circle/circleprogress.component";
 import { DialogModule } from "primeng/dialog";
 import { ButtonModule } from "primeng/button";
 import { TableModule } from "primeng/table";
-
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { OrderDialogComponent } from "./dialog/orderDialog.component";
 @NgModule({
-    declarations: [MainComponent,CircleProgress],
+    declarations: [MainComponent,CircleProgress,OrderDialogComponent],
     imports: [
       CommonModule,
       MainRoutingModule,
@@ -22,8 +23,9 @@ import { TableModule } from "primeng/table";
         apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
         libraries: ['drawing']
       }),
-      CardModule
+      CardModule,
+      DynamicDialogModule
     ],
-    providers:[MainService]
+    providers:[OrderService]
   })
 export class MainModule { }
