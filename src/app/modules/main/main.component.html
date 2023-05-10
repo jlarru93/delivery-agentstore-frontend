@@ -37,32 +37,21 @@
                 <span class="highlighted">21 minutes</span>
              </div>
           </div>
-          <div class="p-col-12">
-             <div class="p-grid p-nogutter widget-overview-box overview-box-1 p-shadow-24">
-                <div class="p-col-3 overview-box-icon">
-                   <h5>ID</h5>
-                </div>
-                <div class="p-col-6 overview-box-text">
-                   <h5>457454</h5>
-                </div>
-                <div class="p-col-3 overview-box-status">
-                   <circle-progress [minutes]="5"></circle-progress>
-                </div>
-             </div>
-          </div>
-          <div class="p-col-12">
-             <div class="p-grid p-nogutter widget-overview-box overview-box-1 p-shadow-24">
-                <div class="p-col-3 overview-box-icon">
-                   <h5>ID</h5>
-                </div>
-                <div class="p-col-6 overview-box-text">
-                   <h5>457454</h5>
-                </div>
-                <div class="p-col-3 overview-box-status">
-                   <circle-progress [minutes]="minutes"></circle-progress>
-                </div>
-             </div>
-          </div>
+          <div *ngFor="let order of ordersPreparing; let i = index">
+            <div class="p-col-12" (click)=" openOrderDialog(order)">
+               <div class="p-grid p-nogutter widget-overview-box overview-box-1 p-shadow-24">
+                  <div class="p-col-3 overview-box-icon">
+                     <h5>ID</h5>
+                  </div>
+                  <div class="p-col-6 overview-box-text">
+                     <h5>{{order.id}}</h5>
+                  </div>
+                  <div class="p-col-3 overview-box-status">
+                     <circle-progress [minutes]="5"></circle-progress>
+                  </div>
+               </div>
+            </div>
+         </div>
        </div>
     </div>
     <div class="p-col-12 p-lg-4 p-md-6">
@@ -287,7 +276,9 @@
     </div>
  </ng-template>
  <ng-template pTemplate="footer">
-    <button pButton type="button" label="Aceptar orden" icon="pi pi-check" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
+    <button *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" icon="pi pi-check" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
+    <button *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" icon="pi pi-check" [loading]="loadingButtonAcept" (click)="readyOrder()"></button>
+    <button *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" icon="pi pi-check" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()"></button>
     <button pButton type="button" label="Rechazar orden" icon="pi pi-times" class="p-button-danger"></button>
  </ng-template>
  </p-dialog>

@@ -9,6 +9,7 @@ import { OrderResponse } from "./service/data/response";
 import { OrderBean } from "./data";
 import { DialogService } from "primeng/dynamicdialog";
 import { OrderDialogComponent } from "./dialog/orderDialog.component";
+import { PREPARING_ORDER_STATUS, OPEN_ORDER_STATUS, READY_ORDER_STATUS } from "src/app/utils/constant";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -21,6 +22,8 @@ import { OrderDialogComponent } from "./dialog/orderDialog.component";
     products: Product[];
     orders:OrderBean[]
     ordersOpen:OrderBean[]
+    ordersPreparing:OrderBean[]
+    ordersReady:OrderBean[]
     orderSelected:OrderBean
 
 
@@ -30,12 +33,17 @@ import { OrderDialogComponent } from "./dialog/orderDialog.component";
     constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private orderHandler:OrderHandler,private store:OrderHandler){}
     ngOnInit(): void {
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
+      this.connectMqtt()
+      this.getOrders()
+
+    }
+    getOrders(){
       this.orderService.getOrders().subscribe((resp)=>{
         this.orders=resp.data.map((it)=>OrderResponse.toBean(it))
-        this.ordersOpen=this.orders.filter((order)=>order.status=="open")
-        console.log("this.ordersOpen[1].products[0].options[0].subOptions",this.ordersOpen[1].products[0].options[0]?.subOptions)
-        //this.ordersOpen.forEach((orde)=>orde.products.forEach((p)=>p.getTotalPriceAndCurrency()))
+        this.shortOrders()
       })
+    }
+    connectMqtt(){
       this.orderHandler._data.subscribe((data)=>{
         if(data){
           this.title=data
@@ -60,11 +68,21 @@ import { OrderDialogComponent } from "./dialog/orderDialog.component";
       })*/
     }
 
+    shortOrders(){
+      this.ordersOpen=this.orders.filter((order)=>order.status==OPEN_ORDER_STATUS)
+      this.ordersPreparing=this.orders.filter((order)=>order.status==PREPARING_ORDER_STATUS)
+      this.ordersReady=this.orders.filter((order)=>order.status==READY_ORDER_STATUS)
+
+      
+    }
 
     aceptOrder(){
       const order=this.orderSelected
       this.loadingButtonAcept=true
       this.orderService.aceptOder(order.id.toString()).subscribe((resp)=>{
+        
+        order.status=PREPARING_ORDER_STATUS
+        this.shortOrders()
         this.displayOrder=false
         this.loadingButtonAcept=false
       },()=>{
@@ -73,5 +91,12 @@ import { OrderDialogComponent } from "./dialog/orderDialog.component";
       },()=>{
       })
     }
+    readyOrder(){
+      
+    }
+    giveOrderToDriver(){
+
+    }
+
   
 }
