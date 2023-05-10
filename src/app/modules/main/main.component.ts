@@ -25,6 +25,8 @@ import { OrderDialogComponent } from "./dialog/orderDialog.component";
 
 
     title:string="Aceptar"
+
+    loadingButtonAcept:boolean=false
     constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private orderHandler:OrderHandler,private store:OrderHandler){}
     ngOnInit(): void {
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
@@ -56,6 +58,20 @@ import { OrderDialogComponent } from "./dialog/orderDialog.component";
         contentStyle: { 'max-height': '500px', overflow: 'auto' },
         baseZIndex: 10000,
       })*/
+    }
+
+
+    aceptOrder(){
+      const order=this.orderSelected
+      this.loadingButtonAcept=true
+      this.orderService.aceptOder(order.id.toString()).subscribe((resp)=>{
+        this.displayOrder=false
+        this.loadingButtonAcept=false
+      },()=>{
+
+        this.loadingButtonAcept=false
+      },()=>{
+      })
     }
   
 }

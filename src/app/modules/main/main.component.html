@@ -287,7 +287,7 @@
     </div>
  </ng-template>
  <ng-template pTemplate="footer">
-    <button pButton type="button" label="Aceptar orden" icon="pi pi-check"></button>
+    <button pButton type="button" label="Aceptar orden" icon="pi pi-check" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
     <button pButton type="button" label="Rechazar orden" icon="pi pi-times" class="p-button-danger"></button>
  </ng-template>
  </p-dialog>
