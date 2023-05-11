@@ -3,10 +3,14 @@ import { Client } from "paho-mqtt";
 import { v4 as uuidv4 } from 'uuid';
 import { MqttRoutingService } from "./mqtt.routing.service";
 import { threadId } from "worker_threads";
+import { BehaviorSubject } from "rxjs";
 @Injectable({
     providedIn: 'root'
 })
 export class MqttService {
+    public _onConnect: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+    onConnect$ = this._onConnect.asObservable();
+
     client: Client
     message: string = ""
     constructor(private routing: MqttRoutingService) {
@@ -38,9 +42,11 @@ export class MqttService {
                 // Once a connection has been made, make a subscription and send a message.
                 console.log("onConnect");
                 //this.client.subscribe("store-general");
+                this._onConnect.next(true)
             },
             onFailure: (message) => {
                 console.log("CONNECTION FAILURE - ", message);
+                this._onConnect.next(false)
             }
         });
     }

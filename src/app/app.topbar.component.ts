@@ -14,12 +14,35 @@ export class AppTopBarComponent implements OnInit{
     activeItem: number;
     isOpenStore:boolean=false
     isLoadingOpenStatusStore:boolean=false
+
+
+
+    isConnectMqtt:boolean=false
+    isDoneGetStatusOpenStore:boolean=false
     constructor(private auth: AuthService,private router: Router,public appMain: AppMainComponent,private mqtt:MqttService) {}
     
     ngOnInit(): void {
         this.getStatusOpenStore()
+        this.mqtt._onConnect.subscribe((isConnect)=>{
+            this.isConnectMqtt=isConnect
+            this.validateConnectMqttAndGetStatus()
+        })
     }
 
+    validateConnectMqttAndGetStatus(){
+        if(this.isConnectMqtt && this.isDoneGetStatusOpenStore){
+            this.processSubsCribeStore()
+        }
+    }
+
+    processSubsCribeStore(){
+        const chanelStore="store/"+this.auth.getIdStore()
+        if(this.isOpenStore){
+            this.mqtt.subscribe(chanelStore)
+        }else{
+            this.mqtt.unSubscribe(chanelStore)
+        }
+    }
     mobileMegaMenuItemClick(index) {
         this.appMain.megaMenuMobileClick = true;
         this.activeItem = this.activeItem === index ? null : index;
@@ -34,12 +57,8 @@ export class AppTopBarComponent implements OnInit{
         this.appMain.getStatusOpen().subscribe((resp)=>{
             this.isOpenStore=resp.data.status
             this.isLoadingOpenStatusStore=false
-            const chanelStore="store/"+this.auth.getIdStore()
-            if(this.isOpenStore){
-                this.mqtt.subscribe(chanelStore)
-            }else{
-                this.mqtt.unSubscribe(chanelStore)
-            }
+            this.isDoneGetStatusOpenStore=true
+            this.validateConnectMqttAndGetStatus()
         },(error)=>{
             this.isLoadingOpenStatusStore=false
         },()=>{})
@@ -54,12 +73,7 @@ export class AppTopBarComponent implements OnInit{
         this.isLoadingOpenStatusStore=true
         this.appMain.changeStatusOpenStore(request).subscribe((resp)=>{
             this.isOpenStore=!this.isOpenStore
-            const chanelStore="store/"+this.auth.getIdStore()
-            if(this.isOpenStore){
-                this.mqtt.subscribe(chanelStore)
-            }else{
-                this.mqtt.unSubscribe(chanelStore)
-            }
+            this.processSubsCribeStore()
             this.isLoadingOpenStatusStore=false
         },(error)=>{
             this.isLoadingOpenStatusStore=false

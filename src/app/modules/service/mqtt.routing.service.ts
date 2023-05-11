@@ -14,7 +14,7 @@ export class MqttRoutingService{
         if(topic=='store-general'){
             
             
-        }else if(topic=='order'){
+        }else if(topic.startsWith("order")){
             this.orderHandler.handle(payload)
         }
         else if(topic.startsWith('store')){
