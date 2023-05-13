@@ -38,6 +38,7 @@ import { StoreHandler } from "../service/handlers/store.handler";
 
     constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private mqtt:MqttService,private orderHandler:OrderHandler,private storeHandler:StoreHandler){}
     ngOnInit(): void {
+      console.log("MAIN")
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
       this.getOrders()
       this.mqtt._onConnect.subscribe((isConnect)=>{
@@ -51,7 +52,7 @@ import { StoreHandler } from "../service/handlers/store.handler";
 
     validOrdersSubscribe(){
       if(this.isMqttConnect && this.isDoneGetOrders){
-        this.orders.forEach((order)=>this.mqtt.subscribe("order/"+order.uuid))
+        this.orders.forEach((order)=>this.subscribeOrder(order.uuid))
       }
     }
 
@@ -67,16 +68,18 @@ import { StoreHandler } from "../service/handlers/store.handler";
       this.orderHandler._data.subscribe((asyncData)=>{
         if(asyncData){
           let orderMqtt=OrderResponse.toBean(asyncData.data)
-          console.log("orderMqtt",orderMqtt)
-          let order=this.orders.find((order)=>order.id === orderMqtt.id)
-          console.log("order",order)
-          order=orderMqtt
+          let orderIndex=this.orders.findIndex((order)=>order.id === orderMqtt.id)
+          this.orders[orderIndex]=orderMqtt
+          console.log(orderMqtt)
           this.sortOrders()
         }
       })
-      this.storeHandler._data.subscribe((data)=>{
-        if(data){
-          console.log("ORDER recibida",data)
+      this.storeHandler._data.subscribe((asyncData)=>{
+        if(asyncData){
+          let orderMqtt=OrderResponse.toBean(asyncData.data)
+          this.orders.push(orderMqtt)
+          this.sortOrders()
+          this.subscribeOrder(orderMqtt.uuid)
         }
       })
     }
