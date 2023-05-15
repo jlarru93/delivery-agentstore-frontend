@@ -41,7 +41,6 @@ export class MqttService {
             onSuccess: () => {
                 // Once a connection has been made, make a subscription and send a message.
                 console.log("onConnect");
-                //this.client.subscribe("store-general");
                 this._onConnect.next(true)
             },
             onFailure: (message) => {

@@ -36,8 +36,9 @@ import { StoreHandler } from "../service/handlers/store.handler";
     isMqttConnect:boolean=false
     isDoneGetOrders:boolean=false
 
-    constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private mqtt:MqttService,private orderHandler:OrderHandler,private storeHandler:StoreHandler){}
+    constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private mqtt:MqttService,private orderHandler:OrderHandler,private storeHandler:StoreHandler,private messageService: MessageService){}
     ngOnInit(): void {
+      this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
       console.log("MAIN")
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
       this.getOrders()
@@ -76,6 +77,7 @@ import { StoreHandler } from "../service/handlers/store.handler";
       })
       this.storeHandler._data.subscribe((asyncData)=>{
         if(asyncData){
+          
           let orderMqtt=OrderResponse.toBean(asyncData.data)
           this.orders.push(orderMqtt)
           this.sortOrders()

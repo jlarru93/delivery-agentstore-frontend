@@ -159,6 +159,7 @@ import { SignInComponent } from './login/sign-in/sign-in.component';
 import { MqttService } from './modules/service/mqtt.service';
 import { MqttRoutingService } from './modules/service/mqtt.routing.service';
 import { OrderHandler } from './modules/service/handlers/order.handler';
+import { StoreHandler } from './modules/service/handlers/store.handler';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -310,7 +311,7 @@ FullCalendarModule.registerPlugins([
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, BreadcrumbService,
-        MqttService,MqttRoutingService,OrderHandler
+        MqttService,MqttRoutingService,OrderHandler,StoreHandler
     ],
     bootstrap: [AppComponent]
 })
