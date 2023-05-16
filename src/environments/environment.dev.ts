@@ -6,20 +6,19 @@ export const environment = {
   production: false,
   url:{
     backEndInit : [
-      'http://127.0.0.1:3000/dev',
+      'https://yei6npe8j1.execute-api.us-east-1.amazonaws.com/dev',
       "https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev"
     ],
-    backEnd: 'http://127.0.0.1:3000/dev',
+    backEnd: 'https://yei6npe8j1.execute-api.us-east-1.amazonaws.com/dev',
     util_banckEnd:"https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev",
     //util_dev : "https://nkdqe8xd51.execute-api.us-east-1.amazonaws.com/dev"
    
   },
   region: 'us-east-1',
-  userPoolId: 'us-east-1_b7xfBGxa3',
-  userPoolWebClientId: '3n0ffgtikf79iuuop47l94hc0v',
+  userPoolId: 'us-east-1_431zyrUar',
+  userPoolWebClientId: '7g2ofa36fep4l2nre1g9gh8bq',
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/dev',
-
 };
 
 /*
