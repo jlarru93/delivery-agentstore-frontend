@@ -48,6 +48,10 @@ const routes: Routes = [
                 path: "main",
                 loadChildren: () => import('./modules/main/main.module').then(m => m.MainModule), canActivate: [IsAuthenticated]
             },
+            {
+                path: "product",
+                loadChildren: () => import('./modules/product/product.module').then(m => m.ProductModule), canActivate: [IsAuthenticated]
+            },
 
             //THEME
             { path: '', component: DashboardDemoComponent },
