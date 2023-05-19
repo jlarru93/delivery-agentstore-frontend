@@ -55,6 +55,8 @@ export class ProductBean {
     price?: PriceBean
     quantity?: number
     options?: OptionBean[]
+    review?: string
+    comment?: string
 
     getTotalPrice(): number {
         return this.quantity * this.getUnitPrice()

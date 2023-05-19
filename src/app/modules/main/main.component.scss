@@ -174,3 +174,118 @@ footer{
     margin-left: 0rem;
     margin-top: 4rem;
 }
+
+// .main-content{
+//     background: #0066ff;
+//     width: 500px;
+//     margin: 20px auto;
+//     min-height: 30vh;
+//     padding:  5px 0;
+//     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+//     color: #fff;
+// }
+// .main-content h3 {
+//     text-align: center;
+// }
+// .main-content p {
+//     font-size: 21px;
+//     font-weight: 200;
+// }
+// .main-content input{
+//     display: none;
+//     visibility: hidden;
+// }
+// .main-content label{
+//     display: block;
+//     padding: 0.5em;
+//     text-align: center;
+//     border-bottom: 5px dashed #666;
+//     color: #333;
+//     transition: 0.2s;
+// }
+// .main-content label:hover{
+//     color: #000
+// }
+// .main-content label:before{
+//     font-weight: 800;
+//     font-size: 25px;
+// }
+// #expand{
+//     height: 0;
+//     overflow: hidden;
+//     transition: height 0.5s;
+//     color: #000;
+// }
+
+// .main-content section {
+//     padding: 0 15px;
+// }
+
+// #toggle:checked ~ #expand{
+//    height: 300px; 
+// }
+
+main{
+    display: flex;
+    
+    justify-content: center;
+}
+.accordion{
+    max-width: 700px;
+    width: 100%;
+    margin: 0 15px;
+    padding: 15px;
+}
+
+.accordion .accordion-content{
+    margin: 10px 0 0 0;
+    background-color: #fff;
+    border-top: 1px solid #EEF2F6;
+    border-left: 1px solid #EEF2F6;
+    border-right: 1px solid #EEF2F6;
+    overflow: hidden;
+}
+
+.accordion-content.open{
+    padding-bottom: 10px;
+}
+
+.accordion-content .header {
+    display: flex;
+    min-height: 50px;
+    padding: 0 15px;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s linear;
+}
+
+.accordion-content .header .accordion-title{
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+#subname{
+    color: #000;
+    font-size: 14px;
+    font-weight: 400;
+}
+.accordion-content .accordion-description{
+    height: 0;
+    font-size: 12px;
+    padding: 0 15px;
+    font-weight: 400;
+    color: #333;
+    transition: all 0.2s linear;
+} 
+section{
+    font-size: 12px;
+    padding: 7px 15px 0 15px;
+    font-weight: 400;
+    color: #333; 
+    background-color: #fff;
+    border-top: 1px solid #EEF2F6;
+    border-left: 1px solid #EEF2F6;
+    border-right: 1px solid #EEF2F6;
+    border-bottom: 1px solid #EEF2F6;
+}

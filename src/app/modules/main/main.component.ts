@@ -87,9 +87,18 @@ import { StoreHandler } from "../service/handlers/store.handler";
         }
       })
     }
+    priceValueFormat: string[] = []
+    totalPriceValueFormat : string
     openOrderDialog(order:OrderBean){
       this.displayOrder=true
       this.orderSelected=order
+      this.orderSelected.products.forEach(element => {
+        let priceformat = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(element.price.value)
+        this.priceValueFormat.push(priceformat)
+      })
+
+      let totalPrice = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(this.orderSelected.total)
+      this.totalPriceValueFormat = totalPrice
       /*this.dialogService.open(
         OrderDialogComponent
         ,{
@@ -146,5 +155,28 @@ import { StoreHandler } from "../service/handlers/store.handler";
     }
     onDecrement() {
       this.count -= 5;
+    }
+    accordionContent: any
+    accordionFunction(){
+      
+      this.accordionContent = document.querySelectorAll(".accordion-content");
+
+      this.accordionContent.forEach((item, index) => {
+        let header = item.querySelector(".header") as HTMLElement | null;
+        //header.style.borderBottom = '1px solid #EEF2F6'
+        header.addEventListener("click", ()=> {
+          item.classList.toggle("open");
+
+          let description = item.querySelector(".accordion-description") as HTMLElement | null;
+          //let open = 'open'
+          if(item.classList.contains('open')){
+            description.style.height = `${description.scrollHeight}px`
+            //accordion-description
+          } else {
+            description.style.height = "0px"
+            header.style.borderBottom = '0px'
+          }
+        })
+      })
     }
 }

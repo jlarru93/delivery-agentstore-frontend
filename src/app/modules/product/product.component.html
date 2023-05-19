@@ -221,20 +221,19 @@
         <div class="p-grid">
             <div class="p-col-5">
                 <div class="productImg">
-                    <img src="{{product.picture}}" alt="" class="imgCover">
-
+                    <img src="{{product?.picture}}" alt="" class="imgCover">
                 </div>
             </div>
             <div class="p-col-7">
                 <div class="productContent">
-                    <h1>{{product.name}}</h1>
+                    <h1>{{product?.name}}</h1>
                 </div>
             </div>
         </div>
         <hr>
         <div>
             <h3>Información del Producto</h3>
-            <p>{{product.review}}</p>
+            <p>{{product?.review}}</p>
         </div>
     </div>
 </p-dialog>

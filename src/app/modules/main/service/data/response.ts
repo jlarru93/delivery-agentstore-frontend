@@ -9,6 +9,7 @@ export class SubOptionResponse {
     name?: string
     price?: PriceResponse
     quantity?: number
+    control?: string
     static toBean(self: SubOptionResponse, control: string): SubOptionBean {
         switch (control) {
             case "SS": {
@@ -79,13 +80,17 @@ export class ProductResponse {
     price?: PriceResponse
     quantity?: number
     options?: OptionResponse[]
+    review?: string
+    comment?: string
     static toBean(self: ProductResponse): ProductBean {
         const bean = new ProductBean()
         bean.id = self.id,
             bean.name = self.name,
             bean.price = PriceResponse.toBean(self.price),
             bean.quantity = self.quantity,
-            bean.options = self?.options.map((it) => OptionResponse.toBean(it))
+            bean.options = self?.options.map((it) => OptionResponse.toBean(it)),
+            bean.review = self?.review,
+            bean.comment = self?.comment
         return bean
     }
 }
