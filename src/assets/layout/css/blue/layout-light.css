@@ -10183,8 +10183,8 @@ a {
   transition: color 0.15s;
 }
 .widget-store-items .store-cards-container .store-cards {
-  max-height: 489px;
-  overflow: auto;
+  /* max-height: 489px;
+  overflow: auto; */
 }
 .widget-store-items .store-cards-container .store-cards .store-card {
   -moz-border-radius: 2px;
@@ -10258,7 +10258,7 @@ a {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  max-height: 500px;
+  /* max-height: 500px; */
   overflow: auto;
 }
 .widget-download-files ul li {

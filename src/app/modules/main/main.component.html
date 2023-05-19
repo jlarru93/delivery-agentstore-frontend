@@ -1,6 +1,6 @@
 <div class="p-grid">
     <div class="p-col-12 p-lg-4 p-md-6">
-       <div class="card widget-tasks">
+       <div class="card widget-support-request" style="height: 50vh;">
           <div class="card-header">
              <div class="title">
                 <h5>{{title}}</h5>
@@ -11,23 +11,26 @@
           </div>
           <div *ngFor="let order of ordersOpen; let i = index">
              <div class="p-col-12" (click)=" openOrderDialog(order)">
-                <div class="p-grid p-nogutter widget-overview-box overview-box-1">
+                <div class="p-grid p-nogutter widget-overview-box overview-box-1 p-shadow-24">
                    <div class="p-col-3 overview-box-icon">
-                      <h5>ID</h5>
+                     <img src="{{order.store.logo}}" alt="" onError="this.src='https:/demofree.sirv.com/nope-not-here.jpg'"> 
+                     <!-- <h5>ID</h5> -->
                    </div>
                    <div class="p-col-6 overview-box-text">
-                      <h5>{{order.id}}</h5>
+                      <h5>Orden: {{order.id}}</h5>
+                      <span>Precio: S/. {{order.total}}0</span>
                    </div>
-                   <div class="p-col-3 overview-box-status">
-                      nueva
+                   <div class="p-col-3 overview-box-status" style="background-color: transparent;">
+                      Nueva
                    </div>
                 </div>
              </div>
+             <pre>{{order.store.logo}}</pre>
           </div>
        </div>
     </div>
     <div class="p-col-12 p-lg-4 p-md-6">
-       <div class="card widget-support-request">
+       <div class="card widget-support-request" style="height: 50vh;">
           <div class="p-grid p-nogutter">
              <div class="p-col-6 title">
                 <h5>En preparación</h5>
@@ -55,7 +58,7 @@
        </div>
     </div>
     <div class="p-col-12 p-lg-4 p-md-6">
-       <div class="card widget-support-request">
+       <div class="card widget-support-request" style="height: 50vh;">
           <div class="p-grid p-nogutter">
              <div class="p-col-6 title">
                 <h5>Por Entregar</h5>
@@ -69,7 +72,8 @@
             <div class="p-col-12" (click)=" openOrderDialog(order)">
                <div class="p-grid p-nogutter widget-overview-box overview-box-3 p-shadow-24">
                   <div class="p-col-3 overview-box-icon">
-                     <h5>ID</h5>
+                     <img src="{{order.store.logo}}" alt="mirage-layout" /> 
+                     <!-- <h5>ID</h5> -->
                   </div>
                   <div class="p-col-6 overview-box-text">
                      <h5>{{order.id}}</h5>
@@ -83,217 +87,135 @@
        </div>
     </div>
  </div>
- <p-dialog [(visible)]="displayOrder" [modal]="true" [style]="{width: '80vw'}">
+ <p-dialog [(visible)]="displayOrder" [modal]="true" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '70vw'}">
  <ng-template pTemplate="header">
-    <div class="p-d-flex">
-       <div class="p-mr-2">
-          <b>
-             <h5>{{orderSelected.id}}</h5>
-          </b>
-       </div>
-       <div class="p-mr-2"></div>
-       <div class="p-mr-8"><button pButton type="button" icon="pi pi-print"
-          class="p-button-secondary p-button-rounded"></button></div>
-    </div>
+   <div class="p-toolbar-group-left">
+      <b><h3>Orden: {{orderSelected.id}}</h3></b>
+   </div>
+  
+   <div class="p-toolbar-group-right">
+      <button pButton pRipple type="button" icon="pi pi-print" class="p-button-rounded p-button-secondary p-button-outlined"></button>     
+      <button pButton pRipple type="button" icon="pi pi-phone" class="p-button-rounded p-button-secondary p-button-outlined" style="margin-left: 14px;"></button>
+   </div>
  </ng-template>
  <ng-template pTemplate="body">
-    <div class="p-grid">
-       <div class="p-col-12 p-lg-8">
-          <div class="card widget-store-items">
-             <div class="p-grid p-nogutter">
-                <div class="p-col-6 title">
-                   <h5>Detalle</h5>
-                </div>
-             </div>
-             <div class="p-col-12">
-                <p-table [value]="orderSelected.products" dataKey="name"
-                   styleClass="p-datatable-customers rowexpand-table">
-                   <ng-template pTemplate="body" let-product let-expanded="expanded">
-                      <tr>
-                         <td>
-                            <button type="button" pButton pRipple [pRowToggler]="product"
-                            class="p-button-text p-button-rounded p-button-plain"
-                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                         </td>
-                         <td><span class="p-column-title">Name</span>X{{product.quantity}}</td>
-                         <td><span class="p-column-title">Image</span>{{product.name}}</td>
-                         <td><span class="p-column-title">Price</span>{{product.getTotalPriceAndCurrency()}}
-                         </td>
-                         <!--td><span class="p-column-title">Category</span>{{product.category}}</td>
-                            <td><span class="p-column-title">Reviews</span><p-rating [ngModel]="product.rating"
-                                [readonly]="true" [cancel]="false"></p-rating>
-                            </td>
-                            <td><span class="p-column-title">Status</span><span
-                                [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span>
-                            </td-->
-                      </tr>
-                   </ng-template>
-                   <ng-template pTemplate="rowexpansion" let-product>
-                      <tr>
-                         <td colspan="7">
-                            <div class="p-p-3">
-                               <p-table [value]="product.options" dataKey="id">
-                                  <ng-template pTemplate="body" let-option>
-                      <tr>                  
-                        <td><span class="p-column-title"><b>nombre</b></span>{{option?.name}}</td>
-                        <td>
-                           <tr>
-                              <p-table [value]="option.subOptions" dataKey="id">
-                                 <ng-template pTemplate="body" let-subOption>
-                                    <tr>
-                                       {{subOption?.name}}
-                                    </tr>
-                                 </ng-template>
-                              </p-table>
-                           </tr>
-                        </td>
-                      </tr>
-                      </ng-template>
-                      </p-table>
-                      </div>
-                      </td>
-                      </tr>
-                   </ng-template>
-                </p-table>
-             </div>
-          </div>
-       </div>
-       <div class="p-col-12 p-lg-4">
-          <div class="card widget-download-files">
-             <div class="card-header">
-                <div class="title">
-                   <h5>Download Files</h5>
-                </div>
-                <div class="files-info">
-                   <span>Download All</span>
-                </div>
-             </div>
-             <ul>
-                <li>
-                   <div class="p-grid list-item">
-                      <div class="p-col-2 icon">
-                         <img src="assets/layout/images/dashboard/icon-sapphire.svg" alt="mirage-layout" />
-                      </div>
-                      <div class="p-col-10 file-name">
-                         <h6 class="name">Sapphire Documentation</h6>
-                      </div>
-                   </div>
-                </li>
-                <li>
-                   <div class="p-grid list-item">
-                      <div class="p-col-2 icon">
-                         <img src="assets/layout/images/dashboard/icon-mirage.svg" alt="mirage-layout" />
-                      </div>
-                      <div class="p-col-8 file-name">
-                         <h6 class="name">Mirage Marketing Asset</h6>
-                      </div>
-                      <div class="p-col-2 new">
-                         <div class="new-tag">
-                            New
-                         </div>
-                      </div>
-                   </div>
-                </li>
-                <li>
-                   <div class="p-grid list-item">
-                      <div class="p-col-2 icon">
-                         <img src="assets/layout/images/dashboard/icon-primefaces.svg" alt="mirage-layout" />
-                      </div>
-                      <div class="p-col-10 file-name">
-                         <h6 class="name">PrimeFaces Elite Report 2019-Q3</h6>
-                      </div>
-                   </div>
-                </li>
-                <li>
-                   <div class="p-grid list-item">
-                      <div class="p-col-2 icon">
-                         <img src="assets/layout/images/dashboard/icon-ngconf.svg" alt="mirage-layout" />
-                      </div>
-                      <div class="p-col-10 file-name">
-                         <h6 class="name">NG-Conf 2020 Presentation</h6>
-                      </div>
-                   </div>
-                </li>
-                <li>
-                   <div class="p-grid list-item">
-                      <div class="p-col-2 icon">
-                         <img src="assets/layout/images/dashboard/icon-internship.svg" alt="mirage-layout" />
-                      </div>
-                      <div class="p-col-10 file-name">
-                         <h6 class="name">Internship Reviews</h6>
-                      </div>
-                   </div>
-                </li>
-                <li>
-                   <div class="p-grid list-item">
-                      <div class="p-col-2 icon">
-                         <img src="assets/layout/images/dashboard/icon-design.svg" alt="mirage-layout" />
-                      </div>
-                      <div class="p-col-10 file-name">
-                         <h6 class="name">Design Team | Spring 021</h6>
-                      </div>
-                   </div>
-                </li>
-                <li>
-                   <div class="p-grid list-item">
-                      <div class="p-col-2 icon">
-                         <img src="assets/layout/images/dashboard/icon-art.svg" alt="mirage-layout" />
-                      </div>
-                      <div class="p-col-10 file-name">
-                         <h6 class="name">M02-Feedback Session</h6>
-                      </div>
-                   </div>
-                </li>
-                <li>
-                   <div class="p-grid list-item">
-                      <div class="p-col-2 icon">
-                         <img src="assets/layout/images/dashboard/icon-process.svg" alt="mirage-layout" />
-                      </div>
-                      <div class="p-col-10 file-name">
-                         <h6 class="name">.gitignore</h6>
-                      </div>
-                   </div>
-                </li>
-                <li>
-                   <div class="p-grid list-item">
-                      <div class="p-col-2 icon">
-                         <img src="assets/layout/images/dashboard/icon-cd.svg" alt="mirage-layout" />
-                      </div>
-                      <div class="p-col-10 file-name">
-                         <h6 class="name">Mirage Playlist on Spotify</h6>
-                      </div>
-                   </div>
-                </li>
-                <li>
-                   <div class="p-grid list-item">
-                      <div class="p-col-2 icon">
-                         <img src="assets/layout/images/dashboard/icon-movie.svg" alt="mirage-layout" />
-                      </div>
-                      <div class="p-col-10 file-name">
-                         <h6 class="name">Launch Movie</h6>
-                      </div>
-                   </div>
-                </li>
-                <li>
-                   <div class="p-grid list-item">
-                      <div class="p-col-2 icon">
-                         <img src="assets/layout/images/dashboard/icon-padlock.svg" alt="mirage-layout" />
-                      </div>
-                      <div class="p-col-10 file-name">
-                         <h6 class="name">Keychain 00279.88</h6>
-                      </div>
-                   </div>
-                </li>
-             </ul>
-             <div class="list-effect"></div>
-          </div>
-       </div>
+   <div class="container-dialog">
+      <main>
+         <p-table [value]="orderSelected.products" dataKey="name"
+         styleClass="p-datatable-customers rowexpand-table">
+         <ng-template pTemplate="body" let-product let-expanded="expanded">
+            <tr>
+               <td>
+                  <button type="button" pButton pRipple [pRowToggler]="product"
+                  class="p-button-text p-button-rounded p-button-plain"
+                  [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+               </td>
+               <td><span class="p-column-title">Name</span>X{{product.quantity}}</td>
+               <td><span class="p-column-title">Image</span>{{product.name}}</td>
+               <td><span class="p-column-title">Price</span>{{product.getTotalPriceAndCurrency()}}
+               </td>
+            </tr>
+         </ng-template>
+         <ng-template pTemplate="rowexpansion" let-product>
+            <tr>
+               <td colspan="7">
+                  <div class="p-p-3">
+                     <p-table [value]="product.options" dataKey="id">
+                        <ng-template pTemplate="body" let-option>
+            <tr>                  
+              <td><span class="p-column-title"><b>nombre</b></span>{{option?.name}}</td>
+              <td>
+                 <tr>
+                    <p-table [value]="option.subOptions" dataKey="id">
+                       <ng-template pTemplate="body" let-subOption>
+                          <tr>
+                             {{subOption?.name}}
+                          </tr>
+                       </ng-template>
+                    </p-table>
+                 </tr>
+              </td>
+            </tr>
+            </ng-template>
+            </p-table>
+            </div>
+            </td>
+            </tr>
+         </ng-template>
+         </p-table>
+      </main>
+      <div id="sidebar">
+         <div class="sidebar-grid sidebar-container">
+            <div class="p-col-12">
+               <div class="sidebar-container-title"><h5>Cliente</h5></div>
+               <div class="card-client">
+                  <h5>{{orderSelected?.user?.fullName}}</h5>
+                  <p>+51 999 888 777</p>
+               </div>
+            </div>
+            <div class="p-col-12">
+               <div *ngIf="orderSelected.status=='open'">
+                  <div class="sidebar-container-title"><h5>Tiempo de preparación</h5></div>
+                  <div class="card-time">
+                     <div class="p-grid">
+                        <div class="p-col-4">
+                           <button pButton pRipple type="button" icon="pi pi-minus" 
+                           class="p-button-rounded p-button-text" (click)="onDecrement()"></button>
+                        </div>
+                        <div class="p-col-4" id="counter-value">
+                           {{count}} <br>
+                           <div class="counte-min">min</div>
+                        </div>
+                        <div class="p-col-4">
+                           <button pButton pRipple type="button" icon="pi pi-plus" style="float: right;"
+                           class="p-button-rounded p-button-text" (click)="onIncrement()"></button>
+                        </div>
+                     </div>
+                     <div class="card-recommend">
+                        <div class="">
+                           <div class="" style="text-align: center;">
+                              <span>Tiempo sugerido para esta orden</span>
+                           </div>
+                        </div>           
+                     </div>
+                  </div>
+               </div>
+               <div *ngIf="orderSelected.status=='preparingOrder'">
+                  <div class="sidebar-container-title"><h5>Repartidor</h5></div>
+                  <div class="card-time">
+                     <div class="card-repartidor">
+                        <div class="p-grid">
+                           <!-- <div class="p-col-3 repartidor-img" style="text-align: center;">
+                              <img src="assets/images/iconfinder-icon.svg" alt="">
+                           </div> -->
+                           <div class="p-col-12" style="text-align: center;">
+                              <span>Estamos buscando al repartidor más adecuado para recoger esta orden.</span>
+                           </div>
+                        </div>           
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="p-col-12">
+               <hr style="border: 1px solid #EEF2F6;">
+               <button class="btn-order" *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
+               <button class="btn-order" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" [loading]="loadingButtonAcept" (click)="readyOrder()"></button>
+               <button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()"></button>
+               <button pButton type="button" label="Rechazar orden" class="p-button-danger btn-reject" style="margin-top: 10px;"></button>
+            </div>
+         </div>
+      </div>
+      <footer id="footer-main">
+         
+         <div class="footer-grid">
+            <div class="p-col-3">
+               <h4>Valor Total</h4>
+            </div>
+            <div class="p-col-9">
+               <h4 style="float: right;">S/.{{orderSelected.productPrice}}.00</h4>
+            </div>
+         </div>
+      </footer>
     </div>
- </ng-template>
- <ng-template pTemplate="footer">
-    <button *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" icon="pi pi-check" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
-    <button *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" icon="pi pi-check" [loading]="loadingButtonAcept" (click)="readyOrder()"></button>
-    <button *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" icon="pi pi-check" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()"></button>
-    <button pButton type="button" label="Rechazar orden" icon="pi pi-times" class="p-button-danger"></button>
  </ng-template>
  </p-dialog>

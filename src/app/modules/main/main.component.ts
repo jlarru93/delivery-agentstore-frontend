@@ -28,6 +28,8 @@ import { StoreHandler } from "../service/handlers/store.handler";
     ordersReady:OrderBean[]
     orderSelected:OrderBean
 
+    count: number = 10
+
 
     title:string="Aceptar"
 
@@ -137,5 +139,12 @@ import { StoreHandler } from "../service/handlers/store.handler";
   
     subscribeOrder(orderUuid:string){
       this.mqtt.subscribe("order/"+orderUuid)
+    }
+
+    onIncrement(){
+      this.count += 5;
+    }
+    onDecrement() {
+      this.count -= 5;
     }
 }

@@ -9,6 +9,11 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ProductComponent } from "./product.component";
 import { ProductRoutingModule } from "./product-routing.module";
 import { ProductService } from './service/product.service';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { TreeModule } from 'primeng/tree';
+import { ToastModule } from 'primeng/toast';
+
+
 @NgModule({
     declarations: [ProductComponent],
     imports: [
@@ -18,7 +23,10 @@ import { ProductService } from './service/product.service';
       ButtonModule,
       TableModule,
       CardModule,
-      DynamicDialogModule
+      DynamicDialogModule,
+      ProgressBarModule,
+      TreeModule,
+      ToastModule,
     ],
     providers:[ProductService]
   })
