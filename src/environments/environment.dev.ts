@@ -15,11 +15,10 @@ export const environment = {
    
   },
   region: 'us-east-1',
-  userPoolId: 'us-east-1_b7xfBGxa3',
-  userPoolWebClientId: '3n0ffgtikf79iuuop47l94hc0v',
+  userPoolId: 'us-east-1_431zyrUar',
+  userPoolWebClientId: '7g2ofa36fep4l2nre1g9gh8bq',
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/dev',
-
 };
 
 /*
