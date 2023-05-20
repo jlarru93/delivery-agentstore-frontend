@@ -30,6 +30,7 @@ import { StoreHandler } from "../service/handlers/store.handler";
 
     count: number = 10
 
+    displayOrderReject: boolean = false
 
     title:string="Aceptar"
 
@@ -50,6 +51,25 @@ import { StoreHandler } from "../service/handlers/store.handler";
           this.mqttListener()
           this.validOrdersSubscribe()
         }
+      })
+    }
+
+    ngAfterViewInit(){
+      const accordionContent = document.querySelectorAll(".accordion-item");
+      console.log('selector', accordionContent)
+      accordionContent.forEach((item, index) => {
+        let header = item.querySelector(".header") as HTMLElement | null;
+        header.addEventListener("click", ()=> {
+          item.classList.toggle("open");
+
+          let description = item.querySelector(".accordion-description") as HTMLElement | null;
+          if(item.classList.contains('open')){
+            description.style.height = `${description.scrollHeight}px`
+          } else {
+            description.style.height = "0px"
+            header.style.borderBottom = '0px'
+          }
+        })
       })
     }
 
@@ -107,6 +127,24 @@ import { StoreHandler } from "../service/handlers/store.handler";
         contentStyle: { 'max-height': '500px', overflow: 'auto' },
         baseZIndex: 10000,
       })*/
+      setTimeout(() => {
+        var button2 = document.getElementById('btnOnClicked')
+        button2.click()
+      }, 500)
+    }
+
+    showconsole(){
+      debugger
+      var button = document.getElementById('btn-order')
+      button.click()
+      console.log("primer click", button)
+      this.excuteAddEvent(button)
+    }
+
+    excuteAddEvent(btn){
+      btn?.addEventListener('click', () => {
+        console.log('button clicked');
+      });
     }
 
     sortOrders(){
@@ -159,24 +197,31 @@ import { StoreHandler } from "../service/handlers/store.handler";
     accordionContent: any
     accordionFunction(){
       
-      this.accordionContent = document.querySelectorAll(".accordion-content");
-
-      this.accordionContent.forEach((item, index) => {
+      const accordionContent = document.querySelectorAll(".accordion-item");
+      accordionContent.forEach((item, index) => {
         let header = item.querySelector(".header") as HTMLElement | null;
-        //header.style.borderBottom = '1px solid #EEF2F6'
         header.addEventListener("click", ()=> {
           item.classList.toggle("open");
 
           let description = item.querySelector(".accordion-description") as HTMLElement | null;
-          //let open = 'open'
           if(item.classList.contains('open')){
             description.style.height = `${description.scrollHeight}px`
-            //accordion-description
           } else {
             description.style.height = "0px"
             header.style.borderBottom = '0px'
           }
         })
       })
+    }
+
+    openDialogDenyOrder(){
+      this.displayOrderReject = true
+      this.selectedTab = false
+    }
+
+    selectedTab: boolean
+    closeModalOrder(){
+      this.displayOrderReject = false
+      this.selectedTab = false
     }
 }

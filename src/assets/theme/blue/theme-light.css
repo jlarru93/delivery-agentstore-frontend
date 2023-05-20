@@ -3563,7 +3563,7 @@ p-togglebutton.ng-dirty.ng-invalid > .p-togglebutton.p-button {
   padding: 1rem 1.25rem;
   border: 1px solid #dee2e6;
   color: #212529;
-  background: #efefef;
+  background: transparent;
   font-weight: 600;
   border-radius: 4px;
   transition: box-shadow 0.15s;

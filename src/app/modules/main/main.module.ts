@@ -11,6 +11,8 @@ import { ButtonModule } from "primeng/button";
 import { TableModule } from "primeng/table";
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { OrderDialogComponent } from "./dialog/orderDialog.component";
+import { AccordionModule } from "primeng/accordion";
+import { TreeTableModule } from "primeng/treetable";
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
     imports: [
@@ -18,7 +20,9 @@ import { OrderDialogComponent } from "./dialog/orderDialog.component";
       MainRoutingModule,
       DialogModule,
       ButtonModule,
+      AccordionModule,
       TableModule,
+      TreeTableModule,
       AgmCoreModule.forRoot({
         apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
         libraries: ['drawing']

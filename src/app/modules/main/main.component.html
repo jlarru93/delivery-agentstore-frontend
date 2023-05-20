@@ -11,21 +11,30 @@
           </div>
           <div *ngFor="let order of ordersOpen; let i = index">
              <div class="p-col-12" (click)=" openOrderDialog(order)">
-                <div class="p-grid p-nogutter widget-overview-box overview-box-1 p-shadow-24">
-                   <div class="p-col-3 overview-box-icon">
-                     <img src="{{order.store.logo}}" alt="" onError="this.src='https:/demofree.sirv.com/nope-not-here.jpg'"> 
-                     <!-- <h5>ID</h5> -->
-                   </div>
-                   <div class="p-col-6 overview-box-text">
-                      <h5>Orden: {{order.id}}</h5>
-                      <span>Precio: S/. {{order.total}}0</span>
-                   </div>
-                   <div class="p-col-3 overview-box-status" style="background-color: transparent;">
-                      Nueva
-                   </div>
+                <div class="p-grid p-nogutter widget-overview-box p-shadow-24">
+                  <div class="p-col-12">
+                     <div class="p-grid">
+                        <div class="p-col-10">
+                           <h5>ID: {{order.id}}</h5>
+                           <p>{{order?.store?.addressStreet}}</p>
+                        </div>
+                        <div class="p-col-2">
+                           <img src="assets/images/iconfinder-icon.svg" style="float: right;" alt="" width="28">
+                        </div>
+                     </div>
+                 </div>
+                   <div class="p-col-12">
+                     <hr>  
+                    </div>
+                    <div class="p-col-12">
+                     <div class="p-grid">
+                        <div class="p-col-12">
+                           <button class="btn-preparation" pButton pRipple type="button" style="float: right;">Aceptar Orden</button>
+                        </div>
+                     </div>
+                    </div>
                 </div>
              </div>
-             <pre>{{order.store.logo}}</pre>
           </div>
        </div>
     </div>
@@ -41,17 +50,38 @@
              </div>
           </div>
           <div *ngFor="let order of ordersPreparing; let i = index">
-            <div class="p-col-12" (click)=" openOrderDialog(order)">
-               <div class="p-grid p-nogutter widget-overview-box overview-box-2 p-shadow-24">
-                  <div class="p-col-3 overview-box-icon">
-                     <h5>ID</h5>
+            <div class="p-col-12" id="btn-order" (click)=" openOrderDialog(order)">
+               <div class="p-grid p-nogutter widget-overview-box p-shadow-24">
+                 <div class="p-col-12">
+                     <div class="p-grid">
+                        <div class="p-col-10">
+                           <h5>ID: {{order.id}}</h5>
+                        </div>
+                        <div class="p-col-2">
+                           <circle-progress [minutes]="5"  style="float: right;"></circle-progress>
+                        </div>
+                     </div>
+                 </div>
+                 <div class="p-col-12">
+                  <hr>  
+                 </div>
+                 <div class="p-col-12">
+                  <div class="p-grid">
+                     <div class="p-col-6">
+                        <div class="p-grid">
+                           <div class="p-col-1">
+                              <img src="assets/images/icon-bike.svg" alt="" width="25">
+                           </div>
+                           <div class="p-col-11" style="margin-top: 3px;">
+                              <span style="padding-left: 10px;">Repartidor en camino</span>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="p-col-6">
+                        <button class="btn-preparation" pButton pRipple type="button" style="float: right;">Pedido listo</button>
+                     </div>
                   </div>
-                  <div class="p-col-6 overview-box-text">
-                     <h5>{{order.id}}</h5>
-                  </div>
-                  <div class="p-col-3 overview-box-status">
-                     <circle-progress [minutes]="5"></circle-progress>
-                  </div>
+                 </div>
                </div>
             </div>
          </div>
@@ -70,17 +100,28 @@
           </div>
           <div *ngFor="let order of ordersReady; let i = index">
             <div class="p-col-12" (click)=" openOrderDialog(order)">
-               <div class="p-grid p-nogutter widget-overview-box overview-box-3 p-shadow-24">
-                  <div class="p-col-3 overview-box-icon">
-                     <img src="{{order.store.logo}}" alt="mirage-layout" /> 
-                     <!-- <h5>ID</h5> -->
+               <div class="p-grid p-nogutter widget-overview-box p-shadow-24">
+                  <div class="p-col-12">
+                     <div class="p-grid">
+                        <div class="p-col-10">
+                           <h5>ID: {{order.id}}</h5>
+                           <p>{{order?.store?.addressStreet}}</p>
+                        </div>
+                        <div class="p-col-2">
+                           <img src="assets/images/icon-store.svg" style="float: right;" alt="" width="28">
+                        </div>
+                     </div>
+                 </div>
+                 <div class="p-col-12">
+                  <hr>  
+                 </div>
+                 <div class="p-col-12">
+                  <div class="p-grid">
+                     <div class="p-col-12">
+                        <button class="btn-preparation" pButton pRipple type="button" style="float: right;">Entregar pedido</button>
+                     </div>
                   </div>
-                  <div class="p-col-6 overview-box-text">
-                     <h5>{{order.id}}</h5>
-                  </div>
-                  <div class="p-col-3 overview-box-status">
-                     <circle-progress [minutes]="5"></circle-progress>
-                  </div>
+                 </div>
                </div>
             </div>
          </div>
@@ -102,29 +143,44 @@
    <div class="container-dialog">
       <main>
          <div class="accordion">
-            <!-- console.log(new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(number)); -->
+            <button id="btnOnClicked" (click)="accordionFunction()"></button>
             <div *ngFor="let product of orderSelected.products; index as i">
                <div class="accordion-content">
                   <div class="accordion-item"> 
-                     <div (click)="accordionFunction()">
+                     <div>
                         <div class="header">
-                           <span class="accordion-title">{{product.name.toUpperCase()}}</span>
+                           <span class="accordion-title"><i class="pi pi-angle-right"></i>{{product.name.toUpperCase()}}</span>
                            <span>{{priceValueFormat[i]}}</span>
                         </div>
    
                      </div>
                      <div class="accordion-description">
-                        <p>{{(product.review.charAt(0)).toUpperCase() + product.review.slice(1)}}</p>
-                        <div class="accordio-options">
-                           <div *ngFor="let subOption of product.options">
-                              <div style="padding-left: 10px; border-left: 2px solid #EEF2F6;">
-                                 <div style="padding-top: 10px;">
-                                    <p style="color: #c2cad3">{{subOption.control}} <br>
-                                       <span id="subname">{{(subOption.name.charAt(0)).toUpperCase() + subOption.name.slice(1)}}</span>
-                                    </p>
+                        <div *ngIf="product.options.length > 0">
+                           <div class="accordion-options">
+                              <div *ngFor="let option of product.options">
+                                 <div style="padding-left: 10px;">
+                                    <div style="padding-top: 10px;">
+                                       <p style="color: #c2cad3">{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}<br></p>
+                                       <div *ngFor="let sub of option.subOptions">
+                                          <div class="p-grid">
+                                             <div class="p-col-6">
+                                                <p>{{sub.name}}</p>
+                                             </div>
+                                             <div class="p-col-6">
+                                                <p style="float: right;">{{sub.quantity > 0 ? sub.quantity : '-' }}</p>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
                                  </div>
                               </div>
                            </div>
+                           <!-- <p-accordion>
+                              <p-accordionTab header="Opciones" [selected]="false">
+                                 
+                              </p-accordionTab>
+                          </p-accordion> -->
+
                         </div>
                         <p style="color: #c2cad3; font-size: 14px; padding-top: 15px;">Comentarios</p>
                         <div style="padding-left: 10px; padding-bottom: 10px;">
@@ -147,65 +203,6 @@
             </div>
             
          </div>
-         
-         <!-- <div *ngFor="product of orderSelected.products; let i = index">
-            <div class="main-content">
-               <h3>CSS Expand/Collapse Seccion</h3>
-               <input id="toggle" type="checkbox">
-               <label for="toggle">Click to expand</label>
-               <div id="expand" [class]="'expanded-' + i" style="background-color: white;">
-                  <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum in, quibusdam corporis nemo.</p>
-               </div>
-               <section>
-                  <h4>Content</h4>
-                  <p>Subtotal</p><p>$15000</p>
-               </section>
-   
-            </div>
-
-         </div> -->
-         <!-- <p-table [value]="orderSelected.products" dataKey="name"
-         styleClass="p-datatable-customers rowexpand-table">
-         <ng-template pTemplate="body" let-product let-expanded="expanded">
-            <tr>
-               <td>
-                  <button type="button" pButton pRipple [pRowToggler]="product"
-                  class="p-button-text p-button-rounded p-button-plain"
-                  [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-               </td>
-               <td><span class="p-column-title">Name</span>X{{product.quantity}}</td>
-               <td><span class="p-column-title">Image</span>{{product.name}}</td>
-               <td><span class="p-column-title">Price</span>{{product.getTotalPriceAndCurrency()}}
-               </td>
-            </tr>
-         </ng-template>
-         <ng-template pTemplate="rowexpansion" let-product>
-            <tr>
-               <td colspan="7">
-                  <div class="p-p-3">
-                     <p-table [value]="product.options" dataKey="id">
-                        <ng-template pTemplate="body" let-option>
-            <tr>                  
-              <td><span class="p-column-title"><b>nombre</b></span>{{option?.name}}</td>
-              <td>
-                 <tr>
-                    <p-table [value]="option.subOptions" dataKey="id">
-                       <ng-template pTemplate="body" let-subOption>
-                          <tr>
-                             {{subOption?.name}}
-                          </tr>
-                       </ng-template>
-                    </p-table>
-                 </tr>
-              </td>
-            </tr>
-            </ng-template>
-            </p-table>
-            </div>
-            </td>
-            </tr>
-         </ng-template>
-         </p-table> -->
       </main>
       <div id="sidebar">
          <div class="sidebar-grid sidebar-container">
@@ -227,7 +224,7 @@
                         </div>
                         <div class="p-col-4" id="counter-value">
                            {{count}} <br>
-                           <div class="counte-min">min</div>
+                           <div class="counter-min">min</div>
                         </div>
                         <div class="p-col-4">
                            <button pButton pRipple type="button" icon="pi pi-plus" style="float: right;"
@@ -246,15 +243,31 @@
                <div *ngIf="orderSelected.status=='preparingOrder'">
                   <div class="sidebar-container-title"><h5>Repartidor</h5></div>
                   <div class="card-time">
-                     <div class="card-repartidor">
-                        <div class="p-grid">
-                           <!-- <div class="p-col-3 repartidor-img" style="text-align: center;">
-                              <img src="assets/images/iconfinder-icon.svg" alt="">
-                           </div> -->
-                           <div class="p-col-12" style="text-align: center;">
-                              <span>Estamos buscando al repartidor más adecuado para recoger esta orden.</span>
+                     <div *ngIf="orderSelected.deliveryMan">
+                        <div class="delivery-content">
+                           <div class="deliveryman">
+                              <b>{{orderSelected?.deliveryMan?.name}}</b><br>
+                              <p>Tel: {{orderSelected?.deliveryMan?.phone}}</p>
                            </div>
-                        </div>           
+                           <div class="deliveryman-img">
+                              <img src="" alt=""  onError="this.src='assets/images/user.png'" width="40">
+                           </div>
+                        </div>
+                        <div class="deliveryman-content">
+                           <div class="delivery-status">
+                              <img src="assets/images/icon-store.svg" alt="" width="20">
+                              <p>DM está en la tienda</p>
+                           </div>
+                        </div>
+                     </div>
+                     <div *ngIf="!orderSelected.deliveryMan">
+                        <div class="card-repartidor">
+                           <div class="p-grid">
+                              <div class="p-col-12" style="text-align: center;">
+                                 <span>Estamos buscando al repartidor más adecuado para recoger esta orden.</span>
+                              </div>                        
+                           </div>           
+                        </div>
                      </div>
                   </div>
                </div>
@@ -264,7 +277,7 @@
                <button class="btn-order" *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" [loading]="loadingButtonAcept" (click)="readyOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()"></button>
-               <button pButton type="button" label="Rechazar orden" class="p-button-danger btn-reject" style="margin-top: 10px;"></button>
+               <button pButton type="button" label="Rechazar orden" class="p-button-danger btn-reject" style="margin-top: 10px;" (click)="openDialogDenyOrder()"></button>
             </div>
          </div>
       </div>
@@ -281,4 +294,74 @@
       </footer>
     </div>
  </ng-template>
+ </p-dialog>
+
+ <p-dialog [(visible)]="displayOrderReject" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" (onHide)="closeModalOrder()">
+   <ng-template pTemplate="header">
+      <h4>Seleccione una opción</h4>
+   </ng-template>
+   <div style="padding: 10px;">
+      <p-accordion>
+         <p-accordionTab header="Producto agotado temporalmente" [selected]="selectedTab">
+            <div class="p-grid">
+               <div class="p-col-9">
+                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
+               </div>
+               <div class="p-col-3">
+                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               </div>
+            </div>
+         </p-accordionTab>
+         <p-accordionTab header="Producto mal configurado (precio, horario)" [selected]="false">
+            <div class="p-grid">
+               <div class="p-col-9">
+                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
+               </div>
+               <div class="p-col-3">
+                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               </div>
+            </div>
+         </p-accordionTab>
+         <p-accordionTab header="Ya no manejo este producto" [selected]="false">
+            <div class="p-grid">
+               <div class="p-col-9">
+                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
+               </div>
+               <div class="p-col-3">
+                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               </div>
+            </div>   
+         </p-accordionTab>
+         <p-accordionTab header="Problemas operativos" [selected]="false">
+            <div class="p-grid">
+               <div class="p-col-9">
+                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
+               </div>
+               <div class="p-col-3">
+                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               </div>
+            </div>   
+         </p-accordionTab>
+         <p-accordionTab header="Tienda saturada" [selected]="false">
+            <div class="p-grid">
+               <div class="p-col-9">
+                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
+               </div>
+               <div class="p-col-3">
+                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               </div>
+            </div>  
+         </p-accordionTab>
+         <p-accordionTab header="Cerramos temprano" [selected]="false">
+            <div class="p-grid">
+               <div class="p-col-9">
+                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
+               </div>
+               <div class="p-col-3">
+                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               </div>
+            </div>
+         </p-accordionTab>
+     </p-accordion>
+   </div>
  </p-dialog>

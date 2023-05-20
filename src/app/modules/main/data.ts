@@ -6,6 +6,7 @@ export abstract class SubOptionBean {
     id?: number
     name?: string
     price?: PriceBean
+    quantity? : number
     abstract getPrice(): number
     
     //abstract select(recipe: SubOptionBean,parent:OptionBean)

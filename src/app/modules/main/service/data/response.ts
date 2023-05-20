@@ -24,6 +24,7 @@ export class SubOptionResponse {
                 let bean = new SubOptionMultiple()
                 bean.id = self.id,
                     bean.name = self.name,
+                    bean.quantity = self.quantity,
                     bean.price = PriceResponse.toBean(self.price)
                 return bean
             }

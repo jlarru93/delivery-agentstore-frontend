@@ -91,6 +91,14 @@ footer{
     border: 1px solid #EEF2F6;
 }
 
+.deliveryMan{
+    padding: 2rem;
+}
+
+.deliveryman-img{
+    padding: 2rem;
+}
+
 .card-time{
     background-color: #FFFFFF;
     padding: 1rem;
@@ -102,7 +110,7 @@ footer{
     text-align: center;
     align-items: center;
 }
-.counte-min {
+.counter-min {
     font-size: 13px;
 }
 
@@ -162,6 +170,17 @@ footer{
     
 }
 
+.btn-preparation{
+    text-align: center;
+    background-color: #00B3A7;
+    border: 1px solid #00B3A7;
+}
+
+.btn-preparation:hover{
+    background-color: #21998d;
+    border: 1px solid #21998d;
+}
+
 .line-divisor{
     width: 100%;
     border: 1px solid #EEF2F6;
@@ -175,56 +194,6 @@ footer{
     margin-top: 4rem;
 }
 
-// .main-content{
-//     background: #0066ff;
-//     width: 500px;
-//     margin: 20px auto;
-//     min-height: 30vh;
-//     padding:  5px 0;
-//     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
-//     color: #fff;
-// }
-// .main-content h3 {
-//     text-align: center;
-// }
-// .main-content p {
-//     font-size: 21px;
-//     font-weight: 200;
-// }
-// .main-content input{
-//     display: none;
-//     visibility: hidden;
-// }
-// .main-content label{
-//     display: block;
-//     padding: 0.5em;
-//     text-align: center;
-//     border-bottom: 5px dashed #666;
-//     color: #333;
-//     transition: 0.2s;
-// }
-// .main-content label:hover{
-//     color: #000
-// }
-// .main-content label:before{
-//     font-weight: 800;
-//     font-size: 25px;
-// }
-// #expand{
-//     height: 0;
-//     overflow: hidden;
-//     transition: height 0.5s;
-//     color: #000;
-// }
-
-// .main-content section {
-//     padding: 0 15px;
-// }
-
-// #toggle:checked ~ #expand{
-//    height: 300px; 
-// }
-
 main{
     display: flex;
     
@@ -235,6 +204,11 @@ main{
     width: 100%;
     margin: 0 15px;
     padding: 15px;
+    overflow: auto;
+}
+
+#btnOnClicked{
+    display: none;
 }
 
 .accordion .accordion-content{
@@ -250,6 +224,14 @@ main{
     padding-bottom: 10px;
 }
 
+.delivery-content{
+    display: flex;
+    min-height: 50px;
+    padding: 0 15px;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .accordion-content .header {
     display: flex;
     min-height: 50px;
@@ -259,11 +241,30 @@ main{
     cursor: pointer;
     transition: all 0.2s linear;
 }
+.delivery-status{
+    display: flex;
+    min-height: 50px;
+    padding: 0 12px;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #EEF2F6;
+    border-radius: 8px;
+}
+.delivery-status p{
+    color: #4BCCBD;
+    font-weight: 600;
+    padding-left: 5px;
+
+}
 
 .accordion-content .header .accordion-title{
     font-size: 14px;
     font-weight: 500;
     color: #333;
+}
+
+.accordion-options{
+    border-left: 1px solid #EEF2F6;
 }
 #subname{
     color: #000;
@@ -278,6 +279,16 @@ main{
     color: #333;
     transition: all 0.2s linear;
 } 
+.deliveryman-content{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+// .accordion-description{
+//     overflow: auto;
+// }
+
 section{
     font-size: 12px;
     padding: 7px 15px 0 15px;
@@ -289,3 +300,19 @@ section{
     border-right: 1px solid #EEF2F6;
     border-bottom: 1px solid #EEF2F6;
 }
+
+:host ::ng-deep {
+    .p-accordion-tab:not(.p-accordion-tab-active) {
+      .p-toggleable-content {
+        height: 0;
+        overflow: hidden;
+      }
+    }
+  
+    .p-accordion-tab.p-accordion-tab-active {
+      .p-toggleable-content {
+        height: auto !important;
+        overflow: auto !important;
+      }
+    }
+  }
