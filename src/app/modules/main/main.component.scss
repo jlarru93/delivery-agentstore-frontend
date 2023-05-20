@@ -176,6 +176,12 @@ footer{
     border: 1px solid #00B3A7;
 }
 
+.btn-preparation-2{
+    background-color: #fff;
+    border: 1px solid #fff;
+    color: #000;
+}
+
 .btn-preparation:hover{
     background-color: #21998d;
     border: 1px solid #21998d;
@@ -251,10 +257,8 @@ main{
     border-radius: 8px;
 }
 .delivery-status p{
-    color: #4BCCBD;
     font-weight: 600;
     padding-left: 5px;
-
 }
 
 .accordion-content .header .accordion-title{

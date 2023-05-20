@@ -11,15 +11,12 @@
           </div>
           <div *ngFor="let order of ordersOpen; let i = index">
              <div class="p-col-12" (click)=" openOrderDialog(order)">
-                <div class="p-grid p-nogutter widget-overview-box p-shadow-24">
+                <div class="p-grid p-nogutter widget-overview-box p-shadow-24" style="background-color: #4BCCBD">
                   <div class="p-col-12">
                      <div class="p-grid">
-                        <div class="p-col-10">
+                        <div class="p-col">
                            <h5>ID: {{order.id}}</h5>
                            <p>{{order?.store?.addressStreet}}</p>
-                        </div>
-                        <div class="p-col-2">
-                           <img src="assets/images/iconfinder-icon.svg" style="float: right;" alt="" width="28">
                         </div>
                      </div>
                  </div>
@@ -29,7 +26,7 @@
                     <div class="p-col-12">
                      <div class="p-grid">
                         <div class="p-col-12">
-                           <button class="btn-preparation" pButton pRipple type="button" style="float: right;">Aceptar Orden</button>
+                           <button class="btn-preparation-2" pButton pRipple type="button" style="float: right;">Aceptar Orden</button>
                         </div>
                      </div>
                     </div>
@@ -56,6 +53,7 @@
                      <div class="p-grid">
                         <div class="p-col-10">
                            <h5>ID: {{order.id}}</h5>
+                           <p>{{order?.store?.addressStreet}}</p>
                         </div>
                         <div class="p-col-2">
                            <circle-progress [minutes]="5"  style="float: right;"></circle-progress>
@@ -68,12 +66,34 @@
                  <div class="p-col-12">
                   <div class="p-grid">
                      <div class="p-col-6">
-                        <div class="p-grid">
-                           <div class="p-col-1">
-                              <img src="assets/images/icon-bike.svg" alt="" width="25">
+                        <div *ngIf="order?.deliveryMan?.status == 'toStore'">
+                           <div class="p-grid">
+                              <div class="p-col-1">
+                                 <img src="assets/images/icon-bike.svg" alt="" width="25">
+                              </div>
+                              <div class="p-col-11" style="margin-top: 3px;">
+                                 <span style="padding-left: 10px;">Repartidor en camino</span>
+                              </div>
                            </div>
-                           <div class="p-col-11" style="margin-top: 3px;">
-                              <span style="padding-left: 10px;">Repartidor en camino</span>
+                        </div>
+                        <div *ngIf="order?.deliveryMan?.status == 'inStore'">
+                           <div class="p-grid">
+                              <div class="p-col-1">
+                                 <img src="assets/images/icon-store.svg" alt="" width="25">
+                              </div>
+                              <div class="p-col-11" style="margin-top: 3px;">
+                                 <span style="padding-left: 10px;">Repartidor está en la tienda</span>
+                              </div>
+                           </div>
+                        </div>
+                        <div *ngIf="order?.deliveryMan == null">
+                           <div class="p-grid">
+                              <div class="p-col-1">
+                                 <img src="assets/images/icon-target.svg" alt="" width="25">
+                              </div>
+                              <div class="p-col-11" style="margin-top: 3px;">
+                                 <span style="padding-left: 10px;">Buscando repartidor</span>
+                              </div>
                            </div>
                         </div>
                      </div>
@@ -107,9 +127,6 @@
                            <h5>ID: {{order.id}}</h5>
                            <p>{{order?.store?.addressStreet}}</p>
                         </div>
-                        <div class="p-col-2">
-                           <img src="assets/images/icon-store.svg" style="float: right;" alt="" width="28">
-                        </div>
                      </div>
                  </div>
                  <div class="p-col-12">
@@ -117,7 +134,39 @@
                  </div>
                  <div class="p-col-12">
                   <div class="p-grid">
-                     <div class="p-col-12">
+                     <div class="p-col-6">
+                        <div *ngIf="order?.deliveryMan?.status == 'toStore'">
+                           <div class="p-grid">
+                              <div class="p-col-1">
+                                 <img src="assets/images/icon-bike.svg" alt="" width="25">
+                              </div>
+                              <div class="p-col-11" style="margin-top: 3px;">
+                                 <span style="padding-left: 10px;">Repartidor en camino</span>
+                              </div>
+                           </div>
+                        </div>
+                        <div *ngIf="order?.deliveryMan?.status == 'inStore'">
+                           <div class="p-grid">
+                              <div class="p-col-1">
+                                 <img src="assets/images/icon-store.svg" alt="" width="25">
+                              </div>
+                              <div class="p-col-11" style="margin-top: 3px;">
+                                 <span style="padding-left: 10px;">Repartidor está en la tienda</span>
+                              </div>
+                           </div>
+                        </div>
+                        <div *ngIf="order?.deliveryMan == null">
+                           <div class="p-grid">
+                              <div class="p-col-1">
+                                 <img src="assets/images/icon-target.svg" alt="" width="25">
+                              </div>
+                              <div class="p-col-11" style="margin-top: 3px;">
+                                 <span style="padding-left: 10px;">Buscando repartidor</span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="p-col-6">
                         <button class="btn-preparation" pButton pRipple type="button" style="float: right;">Entregar pedido</button>
                      </div>
                   </div>
@@ -160,11 +209,11 @@
                               <div *ngFor="let option of product.options">
                                  <div style="padding-left: 10px;">
                                     <div style="padding-top: 10px;">
-                                       <p style="color: #c2cad3">{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}<br></p>
+                                       <p style="font-size: 15px; color: #c2cad3">{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}</p>
                                        <div *ngFor="let sub of option.subOptions">
-                                          <div class="p-grid">
+                                          <div class="p-grid" style="margin-top: -20px;">
                                              <div class="p-col-6">
-                                                <p>{{sub.name}}</p>
+                                                <p style="font-size: 17px;">{{sub.name}}</p>
                                              </div>
                                              <div class="p-col-6">
                                                 <p style="float: right;">{{sub.quantity > 0 ? sub.quantity : '-' }}</p>
@@ -240,6 +289,21 @@
                      </div>
                   </div>
                </div>
+               <div *ngIf="orderSelected.status== 'orderReady'">
+                  <div class="sidebar-container-title"><h5>Repartidor</h5></div>
+                  <div class="card-time">
+                     <div style="padding: 15px 0;">
+                        <h5>Buscando Repartidor</h5>
+                     </div>
+                     <div class="card-repartidor">
+                        <div class="p-grid">
+                           <div class="p-col-12" style="text-align: center;">
+                              <span>Estamos buscando al repartidor más adecuado para recoger esta orden.</span>
+                           </div>                        
+                        </div>           
+                     </div>
+                  </div>
+               </div>
                <div *ngIf="orderSelected.status=='preparingOrder'">
                   <div class="sidebar-container-title"><h5>Repartidor</h5></div>
                   <div class="card-time">
@@ -254,13 +318,21 @@
                            </div>
                         </div>
                         <div class="deliveryman-content">
-                           <div class="delivery-status">
-                              <img src="assets/images/icon-store.svg" alt="" width="20">
-                              <p>DM está en la tienda</p>
+                           <div *ngIf="orderSelected?.deliveryMan?.status == 'toStore'">
+                              <div class="delivery-status">
+                                 <img src="assets/images/icon-bike.svg" alt="" width="20">
+                                 <p style="color: #FFAC09;">DM está en camino a la Tienda</p>
+                              </div>
+                           </div>
+                           <div *ngIf="orderSelected?.deliveryMan?.status == 'inStore'">
+                              <div class="delivery-status">
+                                 <img src="assets/images/icon-store.svg" alt="" width="20">
+                                 <p style="color: #4BCCBD;">DM está en la tienda</p>
+                              </div>
                            </div>
                         </div>
                      </div>
-                     <div *ngIf="!orderSelected.deliveryMan">
+                     <div *ngIf="orderSelected.deliveryMan == null">
                         <div class="card-repartidor">
                            <div class="p-grid">
                               <div class="p-col-12" style="text-align: center;">
