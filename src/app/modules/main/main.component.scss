@@ -36,7 +36,7 @@ footer{
 @media only screen and (max-width: 1600px){
     .container-dialog{
         grid-template-columns: 1fr;
-        grid-template-rows: 2fr 2fr 2fr;
+        grid-template-rows: 2fr .5fr 2fr;
         grid-template-areas: 
             "main"
             "footer"
