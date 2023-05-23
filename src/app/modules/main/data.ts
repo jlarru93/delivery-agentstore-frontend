@@ -142,6 +142,7 @@ export class OrderBean {
     deliveryMan?: DeliveryManBean
     status?: string
     createdAt: number
+    readyToDmAt:number
     getCurrency(): String {
         return this.products[0].price.currency
     }
