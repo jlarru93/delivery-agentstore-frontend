@@ -11,4 +11,5 @@ export const GENDERDEFAULT:Gender={name:"Masculino",code:"MALE"}
 export const PREPARING_ORDER_STATUS = "preparingOrder";
 export const OPEN_ORDER_STATUS = "open";
 export const READY_ORDER_STATUS = "orderReady";
+export const DEFAULT_TIME_WAIT_DM_IN_MINUTES = 10;
 

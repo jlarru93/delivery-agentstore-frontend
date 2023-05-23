@@ -9,7 +9,7 @@ import { OrderResponse } from "./service/data/response";
 import { OrderBean } from "./data";
 import { DialogService } from "primeng/dynamicdialog";
 import { OrderDialogComponent } from "./dialog/orderDialog.component";
-import { PREPARING_ORDER_STATUS, OPEN_ORDER_STATUS, READY_ORDER_STATUS } from "src/app/utils/constant";
+import { PREPARING_ORDER_STATUS, OPEN_ORDER_STATUS, READY_ORDER_STATUS, DEFAULT_TIME_WAIT_DM_IN_MINUTES } from "src/app/utils/constant";
 import { MqttService } from "../service/mqtt.service";
 import { StoreHandler } from "../service/handlers/store.handler";
 @Component({
@@ -152,13 +152,13 @@ import { StoreHandler } from "../service/handlers/store.handler";
       this.ordersPreparing=this.orders.filter((order)=>order.status==PREPARING_ORDER_STATUS)
       this.ordersReady=this.orders.filter((order)=>order.status==READY_ORDER_STATUS)
 
-      
+      this.ordersOpen.forEach((order)=>order.readyToDmAt=DEFAULT_TIME_WAIT_DM_IN_MINUTES)
     }
 
     aceptOrder(){
       const order=this.orderSelected
       this.loadingButtonAcept=true
-      this.orderService.aceptOder(order.id.toString()).subscribe((resp)=>{
+      this.orderService.aceptOder(order.id.toString(),order.readyToDmAt).subscribe((resp)=>{
         this.displayOrder=false
         this.loadingButtonAcept=false
       },()=>{
@@ -189,10 +189,10 @@ import { StoreHandler } from "../service/handlers/store.handler";
     }
 
     onIncrement(){
-      this.count += 5;
+      this.orderSelected.readyToDmAt += 5;
     }
     onDecrement() {
-      this.count -= 5;
+      this.orderSelected.readyToDmAt -= 5;
     }
     accordionContent: any
     accordionFunction(){

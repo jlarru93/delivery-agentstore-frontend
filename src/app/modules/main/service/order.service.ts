@@ -15,10 +15,10 @@ export class OrderService {
     return this.http.get<ObjetResponse<OrderResponse[]>>(env.url.backEnd + "/order")
   }
 
-  aceptOder(orderId:string){
+  aceptOder(orderId:string,readyToDmAt:number){
     let path="/order/:orderId/status"
     path=path.replace(":orderId",orderId)
-    const body={status:PREPARING_ORDER_STATUS} as AceptOrderRequest
+    const body={status:PREPARING_ORDER_STATUS,readyToDmAt:readyToDmAt} as AceptOrderRequest
     return this.http.put<ObjetResponse<any>>(env.url.backEnd + path,body)
   }
 
