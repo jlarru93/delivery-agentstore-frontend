@@ -11,7 +11,7 @@
           </div>
           <div *ngFor="let order of ordersOpen; let i = index">
              <div class="p-col-12" (click)=" openOrderDialog(order)">
-                <div class="p-grid p-nogutter widget-overview-box p-shadow-24" style="background-color: #4BCCBD">
+                <div class="p-grid p-nogutter widget-overview-box p-shadow-3" style="background-color: #4BCCBD">
                   <div class="p-col-12">
                      <div class="p-grid">
                         <div class="p-col">
@@ -48,7 +48,7 @@
           </div>
           <div *ngFor="let order of ordersPreparing; let i = index">
             <div class="p-col-12" id="btn-order" (click)=" openOrderDialog(order)">
-               <div class="p-grid p-nogutter widget-overview-box p-shadow-24">
+               <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
                  <div class="p-col-12">
                      <div class="p-grid">
                         <div class="p-col-10">
@@ -120,7 +120,7 @@
           </div>
           <div *ngFor="let order of ordersReady; let i = index">
             <div class="p-col-12" (click)=" openOrderDialog(order)">
-               <div class="p-grid p-nogutter widget-overview-box p-shadow-24">
+               <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
                   <div class="p-col-12">
                      <div class="p-grid">
                         <div class="p-col-10">
