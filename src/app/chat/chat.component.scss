@@ -1,0 +1,116 @@
+// .cardContainer{
+//     padding: 0;
+//     width: 300px;
+//     height: 500px;
+//     position: fixed;
+//     top: 0.5rem;
+//     left: 0.5rem;
+
+// }
+// .card-header{
+//     background-color: rgb(102, 102, 243);
+//     color: white;
+//     font-weight: 700;
+// }
+// .card-body{
+//     padding: 0.5rem;
+//     background-image: url('https://i.pinimg.com/564x/e4/47/67/e447674a551ec0ae215883a81c2b87d5.jpg');
+//     overflow: scroll;
+// }
+// .btn-send:active{
+//     transform: scale(0.9);
+// }
+// .enviado{
+//     display: block;
+//     float: right;
+//     background-color: teal;
+//     color: white;
+//     min-width: 50.01%;
+//     text-align: left;
+//     border-radius: 10px
+// }
+// .recibido{
+//     display: block;
+//     float: left;
+//     background-color: gray;
+//     color: white;
+//     text-align: left;
+//     min-width: 50.01%;
+//     border-radius: 10px
+// }
+// .card-body::-webkit-scrollbar{
+//     display: none;
+// }
+.container{
+    display: flex;
+    height: calc(50vh - 70px);
+}
+.messages{
+    width: 380px;
+    margin: 16px;
+    border-radius: 16px;
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.05);
+}
+.messages-header{
+    display: flex;
+    margin-bottom: 8px;
+}
+.messages-header > .icon-chat{
+    background-color: steelblue;
+    border-radius: 50%;
+    margin-right: 16px;
+    height: 35px;
+    width: 35px;
+}
+.messages-header > h2 {
+    margin: 0;
+}
+.chat-area{
+    height: calc(50vh - 270px);
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+.chat-area > :first-child {
+    margin-top: auto;
+}
+.input-area > mat-form-field{
+    width: 100%;
+}
+.input-area {
+    padding-top: 16px;
+    padding-bottom: 8px;
+}
+.chat-bubble-container{
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.chat-bubble-container.sender{
+    justify-content: flex-end;
+}
+.chat-bubble-container.sender > .chat-bubble{
+    background: #c5cae9;
+}
+
+.chat-bubble{
+    background: white;
+    padding-top: 8px;
+    padding-bottom: 18px;
+    padding-left: 8px;
+    padding-right: 100px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    width: fit-content;
+    position: relative
+}
+
+.chat-bubble > .chat-date{
+    position: absolute;
+    bottom: 2px;
+    right: 8px;
+    font-size: 0.7rem;
+    color: rgba(0,0,0,0.6);
+}

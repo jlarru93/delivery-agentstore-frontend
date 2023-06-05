@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -160,6 +160,13 @@ import { MqttService } from './modules/service/mqtt.service';
 import { MqttRoutingService } from './modules/service/mqtt.routing.service';
 import { OrderHandler } from './modules/service/handlers/order.handler';
 import { StoreHandler } from './modules/service/handlers/store.handler';
+//import { ChatComponent } from './chat/chat.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -171,6 +178,7 @@ FullCalendarModule.registerPlugins([
     imports: [
         BrowserModule,
         FormsModule,
+        ReactiveFormsModule,
         AppRoutingModule,
         AppCodeModule,
         HttpClientModule,
@@ -255,6 +263,11 @@ FullCalendarModule.registerPlugins([
         TreeModule,
         TreeTableModule,
         VirtualScrollerModule,
+        MatDividerModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule
     ],
     declarations: [
         AppComponent,
@@ -304,6 +317,7 @@ FullCalendarModule.registerPlugins([
         WidgetsComponent,
 
         SignInComponent,
+        //ChatComponent,
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},

@@ -10,13 +10,16 @@
              </div>
           </div>
           <div *ngFor="let order of ordersOpen; let i = index">
-             <div class="p-col-12" (click)=" openOrderDialog(order)">
+             <div class="p-col-12">
                 <div class="p-grid p-nogutter widget-overview-box p-shadow-3" style="background-color: #4BCCBD">
                   <div class="p-col-12">
                      <div class="p-grid">
-                        <div class="p-col">
+                        <div class="p-col" (click)=" openOrderDialog(order)">
                            <h5>ID: {{order.id}}</h5>
                            <p>{{order?.store?.addressStreet}}</p>
+                        </div>
+                        <div class="p-col">
+                           <button pButton pRipple type="button" (click)="op.toggle($event)" icon="pi pi-comment" class="p-button-rounded" style="float: right;"></button>
                         </div>
                      </div>
                  </div>
@@ -437,3 +440,7 @@
      </p-accordion>
    </div>
  </p-dialog>
+
+ <p-overlayPanel #op>
+   <app-chat></app-chat>
+</p-overlayPanel>

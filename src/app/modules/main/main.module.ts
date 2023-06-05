@@ -13,10 +13,20 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { OrderDialogComponent } from "./dialog/orderDialog.component";
 import { AccordionModule } from "primeng/accordion";
 import { TreeTableModule } from "primeng/treetable";
+import { OverlayPanelModule } from "primeng/overlaypanel";
+import { ChatComponent } from "src/app/chat/chat.component";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatInput, MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
 @NgModule({
-    declarations: [MainComponent,CircleProgress,OrderDialogComponent],
+    declarations: [MainComponent,CircleProgress,OrderDialogComponent, ChatComponent],
     imports: [
       CommonModule,
+      FormsModule,
+      ReactiveFormsModule,
       MainRoutingModule,
       DialogModule,
       ButtonModule,
@@ -28,7 +38,13 @@ import { TreeTableModule } from "primeng/treetable";
         libraries: ['drawing']
       }),
       CardModule,
-      DynamicDialogModule
+      DynamicDialogModule,
+      OverlayPanelModule,
+      MatDividerModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatButtonModule,
+      MatIconModule
     ],
     providers:[OrderService]
   })

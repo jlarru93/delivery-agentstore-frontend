@@ -1,0 +1,58 @@
+<div class="container">
+    <div class="messages p-shadow-4">
+        <div class="messages-header">
+            <div class="icon-chat">
+                <h2 style="display: flex;
+                justify-content: center;
+                align-items: center; color: white; font-weight: 900;">O</h2>
+            </div>
+            <h2>Id: 78041-0077-5514</h2>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="chat-area">
+            <ng-container *ngIf="userId">
+                <div *ngFor="let message of messages$" class="chat-bubble-container"
+                [ngClass]="{'sender': message.user.id === userId}">
+                    <div class="chat-bubble">
+                        {{message.body}}
+                        <span class="chat-date">
+                            {{message.createdAt}}
+                        </span>
+                    </div>
+                </div>
+                <div #endOfChat></div>
+            </ng-container>
+        </div>
+        <div class="input-area">
+            <mat-form-field appearance="outline">
+                <input [formControl]="messageControl" matInput placeholder="Ingrese su mensaje..." (keydown.enter)="sendMessage()">
+                <mat-icon matSuffix (click)="sendMessage()" >
+                    send
+                </mat-icon>
+              </mat-form-field>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="card text-center cardContainer" *ngIf="mostrarChat">
+    <div class="card-header">
+      CHAT
+    </div>
+    <div class="card-body" id="contenedorMensajes" >
+        <div class="message-container h-100">
+            <p *ngFor="let mensaje of mensajes" class="msj p-2" 
+            [ngClass]="userId == mensaje.emisor ? 'enviado' : 'recibido'">
+                {{mensaje.texto}}
+            </p>
+        </div>
+    </div>
+    <form class="card-footer text-muted input-group" (ngSubmit)="sendMessage()">
+        <input type="text" class="form-control" placeholder="Escriba su mensaje" [(ngModel)]="newMessage">
+        <span class="input-group-text" id="basic-addon2" (click)="sendMessage()">
+            <i class="btn-send pi pi-send" style="color:royalblue"></i>
+        </span>
+        <div class="input-group-append">
+        </div>
+    </form>
+</div>
+<pre>{{newMessage | json}}</pre> -->
