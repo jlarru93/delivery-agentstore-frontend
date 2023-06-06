@@ -48,20 +48,28 @@
 .messages{
     width: 380px;
     margin: 16px;
-    border-radius: 16px;
+    border-radius: 16px 0px 16px 16px;
     padding: 25px;
-    background: rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+    //background: rgba(0, 0, 0, 0.05);
+    position: relative;
 }
+
+.messages::after{
+    content: '';
+    position: absolute;
+    border: 0.5em solid transparent;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    top: 0%;
+    left: 100%;
+    //transform: skewY(25deg);
+    transform-origin: 100% 100%;
+}
+
 .messages-header{
     display: flex;
     margin-bottom: 8px;
-}
-.messages-header > .icon-chat{
-    background-color: steelblue;
-    border-radius: 50%;
-    margin-right: 16px;
-    height: 35px;
-    width: 35px;
 }
 .messages-header > h2 {
     margin: 0;
@@ -91,12 +99,28 @@
 .chat-bubble-container.sender{
     justify-content: flex-end;
 }
+
 .chat-bubble-container.sender > .chat-bubble{
     background: #c5cae9;
 }
 
+.chat-avatar-container{
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.chat-avatar-container.sender{
+    justify-content: flex-end;
+}
+
+.sender-name{
+    padding-left: 8px;
+    color: #65676B;
+}
+
 .chat-bubble{
-    background: white;
+    background: #E4E6EB;
     padding-top: 8px;
     padding-bottom: 18px;
     padding-left: 8px;
@@ -113,4 +137,10 @@
     right: 8px;
     font-size: 0.7rem;
     color: rgba(0,0,0,0.6);
+}
+
+:host ::ng-deep .p-avatar{
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 1rem;
 }

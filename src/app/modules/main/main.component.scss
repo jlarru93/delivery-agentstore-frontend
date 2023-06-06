@@ -320,3 +320,17 @@ section{
       }
     }
   }
+
+.overlay-container{
+    position: relative;
+}
+.overlay-chat{
+    top: 20px;
+    right: 0%;
+    position: absolute;
+    z-index: 1001;
+    transform-origin: center top;
+    --overlayArrowLeft: 0px;
+    opacity: 1;
+}
+

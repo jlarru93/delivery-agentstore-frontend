@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, SimpleChange, SimpleChanges, ViewChild, } from '@angular/core';
 import { AuthService } from '../utils/auth.service';
 import { FormControl } from '@angular/forms';
 
@@ -9,9 +9,13 @@ import { FormControl } from '@angular/forms';
 })
 export class ChatComponent implements OnInit {
 
+  @Input() isOpen: boolean = false;
+
   @ViewChild('endOfChat') endOfChat!: ElementRef
 
   messageControl: FormControl = new FormControl('');
+
+  colorback: string = 'blue'
 
   mostrarChat:boolean = true
   usuarioLogueado: any
@@ -37,12 +41,14 @@ export class ChatComponent implements OnInit {
               id : 11, 
               name : "Fulano de tal", 
               type : "delivery-man", 
+              background: 'red',
               readedAt: 1685927914 
           }, 
           { 
               id : 14, 
               name : "Pepito de los palotes", 
               type : "user", 
+              background: 'blue',
               readedAt : 1685927914 
           } 
       ], 
@@ -220,7 +226,7 @@ export class ChatComponent implements OnInit {
               readedAt : 1685927914 
           } 
       ], 
-      createdAt : 1685927914 
+      createdAt : 1685927914
     },
   ]
 
@@ -234,13 +240,16 @@ export class ChatComponent implements OnInit {
         this.usuarioLogueado = usuario
         let userId = this.usuarioLogueado.find(user => user.Name == 'custom:_id')
         this.userId = userId.Value
-        console.log(this.userId)
+        this.scrollToBottom()
       }
     )
-    setTimeout(()=> {
-      this.scrollToBottom()
+  }
 
-    },30)
+  ngOnChanges(changes: SimpleChanges){
+    debugger
+    if(changes.isOpen.currentValue == true){
+      this.scrollToBottom()
+    }
   }
 
   sendMessage(){
@@ -260,18 +269,7 @@ export class ChatComponent implements OnInit {
         }, 
         body : message, 
         readUser : [ 
-            { 
-                id : 60, 
-                name : "Fulano de tal", 
-                type : "delivery-man", 
-                readedAt: 1685927914 
-            }, 
-            { 
-                id : 60, 
-                name : "Pepito de los palotes", 
-                type : "user", 
-                readedAt : 1685927914 
-            } 
+
         ], 
         createdAt : 1685927914
       }
@@ -288,6 +286,25 @@ export class ChatComponent implements OnInit {
         this.endOfChat.nativeElement.scrollIntoView({behavior: "smooth"})
       }
     }, 10)
+  }
+
+  getFormatDate(timestamp : number){
+    const date = new Date(timestamp * 1000);
+
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const day = ("0" + date.getDate()).slice(-2);
+
+    let hours = date.getHours();
+    const minutes = ("0" + date.getMinutes()).slice(-2);
+    const ampm = hours >= 12 ? "PM" : "AM";
+
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Si hours es 0, asigna 12 en su lugar
+
+    const formattedDate = `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
+
+    return formattedDate
   }
 
 }

@@ -21,9 +21,13 @@ import { MatInput, MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
+import { AvatarModule } from "primeng/avatar";
+import { AvatarGroupModule } from "primeng/avatargroup";
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent, ChatComponent],
     imports: [
+      AvatarModule,
+      AvatarGroupModule,
       CommonModule,
       FormsModule,
       ReactiveFormsModule,

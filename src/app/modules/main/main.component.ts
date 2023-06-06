@@ -12,11 +12,26 @@ import { OrderDialogComponent } from "./dialog/orderDialog.component";
 import { PREPARING_ORDER_STATUS, OPEN_ORDER_STATUS, READY_ORDER_STATUS, DEFAULT_TIME_WAIT_DM_IN_MINUTES } from "src/app/utils/constant";
 import { MqttService } from "../service/mqtt.service";
 import { StoreHandler } from "../service/handlers/store.handler";
+import { animate, style, transition, trigger } from "@angular/animations";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.scss'],
-    providers: [ConfirmationService, MessageService,DialogService]
+    providers: [ConfirmationService, MessageService,DialogService],
+    animations: [
+      trigger(
+        'enterAnimation', [
+          transition(':enter', [
+            style({transform: 0.9, opacity: 0}),
+            animate('100ms ease-out', style({transform: 0.9, opacity: 1}))
+          ]),
+          transition(':leave', [
+            style({transform: 0.9, opacity: 1}),
+            animate('100ms ease-in', style({transform: 0.9, opacity: 0}))
+          ])
+        ]
+      )
+    ],
   })
   export class MainComponent implements OnInit {
     minutes: number = 2;
@@ -223,5 +238,11 @@ import { StoreHandler } from "../service/handlers/store.handler";
     closeModalOrder(){
       this.displayOrderReject = false
       this.selectedTab = false
+    }
+
+    isChatOpen: boolean = false
+    idOverlay: string
+    openChat(){
+      this.isChatOpen =! this.isChatOpen
     }
 }

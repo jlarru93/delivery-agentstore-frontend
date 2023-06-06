@@ -19,7 +19,12 @@
                            <p>{{order?.store?.addressStreet}}</p>
                         </div>
                         <div class="p-col">
-                           <button pButton pRipple type="button" (click)="op.toggle($event)" icon="pi pi-comment" class="p-button-rounded" style="float: right;"></button>
+                           <div class="overlay-container">
+                              <button pButton pRipple type="button" (click)="isChatOpen = !isChatOpen" icon="pi pi-comment" class="p-button-rounded" style="float: right;"></button>
+                              <div class="overlay-chat" *ngIf="isChatOpen" [@enterAnimation]>
+                                 <app-chat [isOpen]="isChatOpen" ></app-chat>
+                              </div>
+                           </div>
                         </div>
                      </div>
                  </div>
@@ -441,6 +446,6 @@
    </div>
  </p-dialog>
 
- <p-overlayPanel #op>
+ <!-- <p-overlayPanel #op>
    <app-chat></app-chat>
-</p-overlayPanel>
+</p-overlayPanel> -->

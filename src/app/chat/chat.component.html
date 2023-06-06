@@ -1,24 +1,38 @@
 <div class="container">
     <div class="messages p-shadow-4">
         <div class="messages-header">
-            <div class="icon-chat">
-                <h2 style="display: flex;
-                justify-content: center;
-                align-items: center; color: white; font-weight: 900;">O</h2>
-            </div>
+            <p-avatar label="O" styleClass="p-mr-2" [style]="{'background-color': '#3f51b5', 'color': '#ffffff'}" shape="circle"></p-avatar>
             <h2>Id: 78041-0077-5514</h2>
         </div>
         <mat-divider></mat-divider>
         <div class="chat-area">
             <ng-container *ngIf="userId">
-                <div *ngFor="let message of messages$" class="chat-bubble-container"
-                [ngClass]="{'sender': message.user.id === userId}">
-                    <div class="chat-bubble">
-                        {{message.body}}
-                        <span class="chat-date">
-                            {{message.createdAt}}
-                        </span>
+                <div *ngFor="let message of messages$" >
+                    <div class="sender-name" *ngIf="message.user.id != userId">
+                        <span>{{message.user.type}}</span>
                     </div>
+                    <div class="chat-bubble-container"
+                    [ngClass]="{'sender': message.user.id === userId}">
+                        <div class="chat-bubble">
+                            {{message.body}}
+                            <span class="chat-date">
+                                {{getFormatDate(message.createdAt)}}
+                            </span>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="message.readUser">
+                        <div class="chat-avatar-container" style="margin-top: -10px;"
+                        [ngClass]="{'sender': message.user.id === userId}">
+                            <div class="chat-avatar">
+                                <p-avatarGroup styleClass="p-mb-3">
+                                    <div *ngFor="let reader of message.readUser">
+                                        <p-avatar label="{{(reader.type.charAt(0)).toUpperCase()}}" class="avatar" 
+                                        [style]="{'background-color': (reader.type === 'user') ? '#688128' : '#d3a9be', 'color' : '#ffffff'}" shape="circle"></p-avatar>
+                                    </div>
+                                </p-avatarGroup>
+                            </div>
+                        </div>
+                    </ng-container>   
                 </div>
                 <div #endOfChat></div>
             </ng-container>
@@ -33,26 +47,3 @@
         </div>
     </div>
 </div>
-
-<!-- <div class="card text-center cardContainer" *ngIf="mostrarChat">
-    <div class="card-header">
-      CHAT
-    </div>
-    <div class="card-body" id="contenedorMensajes" >
-        <div class="message-container h-100">
-            <p *ngFor="let mensaje of mensajes" class="msj p-2" 
-            [ngClass]="userId == mensaje.emisor ? 'enviado' : 'recibido'">
-                {{mensaje.texto}}
-            </p>
-        </div>
-    </div>
-    <form class="card-footer text-muted input-group" (ngSubmit)="sendMessage()">
-        <input type="text" class="form-control" placeholder="Escriba su mensaje" [(ngModel)]="newMessage">
-        <span class="input-group-text" id="basic-addon2" (click)="sendMessage()">
-            <i class="btn-send pi pi-send" style="color:royalblue"></i>
-        </span>
-        <div class="input-group-append">
-        </div>
-    </form>
-</div>
-<pre>{{newMessage | json}}</pre> -->
