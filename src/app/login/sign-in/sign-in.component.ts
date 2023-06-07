@@ -37,7 +37,7 @@ export class SignInComponent {
     try {
       await this.auth.signIn(this.userName,this.password);
       this.flagButtonnumberphone=false;
-      this.router.navigate(['/']);
+      this.router.navigate(['/main']);
     } catch (err) {
       this.flagButtonnumberphone=false;
       this.phoneSubmitted=true;

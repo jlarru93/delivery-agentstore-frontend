@@ -7,7 +7,8 @@ import { MqttService } from './modules/service/mqtt.service';
 
 @Component({
     selector: 'app-topbar',
-    templateUrl:'app.topbar.component.html'
+    templateUrl:'app.topbar.component.html',
+    styleUrls: ['./app.topbar.component.scss']
 })
 export class AppTopBarComponent implements OnInit{
     displayOpenStore:boolean=false
@@ -15,7 +16,8 @@ export class AppTopBarComponent implements OnInit{
     isOpenStore:boolean=false
     isLoadingOpenStatusStore:boolean=false
 
-
+    userDetails: any
+    userName: string
 
     isConnectMqtt:boolean=false
     isDoneGetStatusOpenStore:boolean=false
@@ -27,6 +29,13 @@ export class AppTopBarComponent implements OnInit{
             this.isConnectMqtt=isConnect
             this.validateConnectMqttAndGetStatus()
         })
+        this.auth.getUserDetails().then(
+            (data) => {
+                this.userDetails = data
+                let username = this.userDetails.find(user => user.Name == 'name')
+                this.userName = username.Value
+            }
+        )
     }
 
     validateConnectMqttAndGetStatus(){

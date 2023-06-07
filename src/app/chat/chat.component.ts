@@ -245,12 +245,11 @@ export class ChatComponent implements OnInit {
     )
   }
 
-  ngOnChanges(changes: SimpleChanges){
-    debugger
-    if(changes.isOpen.currentValue == true){
-      this.scrollToBottom()
-    }
-  }
+  // ngOnChanges(changes: SimpleChanges){
+  //   if(changes.isOpen.currentValue == true){
+  //     this.scrollToBottom()
+  //   }
+  // }
 
   sendMessage(){
     const message = this.messageControl.value;
