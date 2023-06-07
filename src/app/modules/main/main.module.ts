@@ -14,17 +14,18 @@ import { OrderDialogComponent } from "./dialog/orderDialog.component";
 import { AccordionModule } from "primeng/accordion";
 import { TreeTableModule } from "primeng/treetable";
 import { OverlayPanelModule } from "primeng/overlaypanel";
-import { ChatComponent } from "src/app/chat/chat.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatDividerModule } from "@angular/material/divider";
-import { MatInput, MatInputModule } from "@angular/material/input";
+import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { AvatarModule } from "primeng/avatar";
 import { AvatarGroupModule } from "primeng/avatargroup";
+import { ChatComponent } from "src/app/chat/chat.component";
+import { InputTextModule } from "primeng/inputtext";
 @NgModule({
-    declarations: [MainComponent,CircleProgress,OrderDialogComponent, ChatComponent],
+    declarations: [MainComponent,CircleProgress,OrderDialogComponent,ChatComponent],
     imports: [
       AvatarModule,
       AvatarGroupModule,
@@ -48,7 +49,8 @@ import { AvatarGroupModule } from "primeng/avatargroup";
       MatFormFieldModule,
       MatInputModule,
       MatButtonModule,
-      MatIconModule
+      MatIconModule,
+      InputTextModule,
     ],
     providers:[OrderService]
   })

@@ -13,6 +13,9 @@ import { PREPARING_ORDER_STATUS, OPEN_ORDER_STATUS, READY_ORDER_STATUS, DEFAULT_
 import { MqttService } from "../service/mqtt.service";
 import { StoreHandler } from "../service/handlers/store.handler";
 import { animate, style, transition, trigger } from "@angular/animations";
+import { ChatHandler } from "../service/handlers/chat.handler";
+import { ChatResponse } from "./service/data/chat.response";
+import { ChatService } from "./service/chat.service";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -54,7 +57,7 @@ import { animate, style, transition, trigger } from "@angular/animations";
     isMqttConnect:boolean=false
     isDoneGetOrders:boolean=false
 
-    constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private mqtt:MqttService,private orderHandler:OrderHandler,private storeHandler:StoreHandler,private messageService: MessageService){}
+    constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private mqtt:MqttService,private orderHandler:OrderHandler,private storeHandler:StoreHandler,private chatHandler:ChatHandler,private chatService:ChatService ,private messageService: MessageService){}
     ngOnInit(): void {
       this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
       console.log("MAIN")
@@ -119,6 +122,14 @@ import { animate, style, transition, trigger } from "@angular/animations";
           this.orders.push(orderMqtt)
           this.sortOrders()
           this.subscribeOrder(orderMqtt.uuid)
+          this.subscribeChat(orderMqtt.uuid)
+        }
+      })
+      this.chatHandler._data.subscribe((asyncData)=>{
+        if(asyncData){
+          let chatResponse=ChatResponse.toBean(asyncData.data)
+          let orderIndex=this.orders.findIndex((order)=>order.uuid==chatResponse.uuidOrder)
+          this.orders[orderIndex].messagesNoReadTotal++
         }
       })
     }
@@ -201,6 +212,9 @@ import { animate, style, transition, trigger } from "@angular/animations";
   
     subscribeOrder(orderUuid:string){
       this.mqtt.subscribe("order/"+orderUuid)
+    }
+    subscribeChat(orderUuid:string){
+      this.mqtt.subscribe("chat/"+orderUuid)
     }
 
     onIncrement(){

@@ -143,6 +143,8 @@ export class OrderBean {
     status?: string
     createdAt: number
     readyToDmAt:number
+
+    messagesNoReadTotal:number
     getCurrency(): String {
         return this.products[0].price.currency
     }
