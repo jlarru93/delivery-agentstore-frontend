@@ -29,7 +29,7 @@ export class IsNotAuthenticated implements CanActivate {
     if (!await this.auth.isAuthenticated()) {
       return true;
     }
-    this.router.navigate(['/admin-store']);
+    this.router.navigate(['/']);
     return false;
   }
 }

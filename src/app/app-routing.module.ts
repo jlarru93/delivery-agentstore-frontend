@@ -39,11 +39,13 @@ import { AppCalendarComponent } from './pages/app.calendar.component';
 import { AppTimelineDemoComponent } from './pages/app.timelinedemo.component';
 import { IsAuthenticated } from './utils/auth-guard';
 import { SignInComponent } from './login/sign-in/sign-in.component';
+
 const routes: Routes = [
     {
         path: '', component: AppMainComponent,
         canActivate: [IsAuthenticated],
         children: [
+            //APP
             {
                 path: "main",
                 loadChildren: () => import('./modules/main/main.module').then(m => m.MainModule), canActivate: [IsAuthenticated]
@@ -52,6 +54,8 @@ const routes: Routes = [
                 path: "product",
                 loadChildren: () => import('./modules/product/product.module').then(m => m.ProductModule), canActivate: [IsAuthenticated]
             },
+            
+
 
             //THEME
             { path: '', component: DashboardDemoComponent },

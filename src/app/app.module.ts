@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -156,17 +156,12 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { JWTInterceptor } from './utils/jwt-interceptor';
 import { ErrorInterceptor } from './utils/error-interceptor';
 import { SignInComponent } from './login/sign-in/sign-in.component';
-import { MqttService } from './modules/service/mqtt.service';
-import { MqttRoutingService } from './modules/service/mqtt.routing.service';
-import { OrderHandler } from './modules/service/handlers/order.handler';
+import { MainModule } from './modules/main/main.module';
+import { ProductModule } from './modules/product/product.module';
 import { StoreHandler } from './modules/service/handlers/store.handler';
-//import { ChatComponent } from './chat/chat.component';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-
+import { OrderHandler } from './modules/service/handlers/order.handler';
+import { MqttRoutingService } from './modules/service/mqtt.routing.service';
+import { MqttService } from './modules/service/mqtt.service';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -178,7 +173,6 @@ FullCalendarModule.registerPlugins([
     imports: [
         BrowserModule,
         FormsModule,
-        ReactiveFormsModule,
         AppRoutingModule,
         AppCodeModule,
         HttpClientModule,
@@ -263,11 +257,10 @@ FullCalendarModule.registerPlugins([
         TreeModule,
         TreeTableModule,
         VirtualScrollerModule,
-        MatDividerModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatIconModule
+
+
+        MainModule,
+        ProductModule
     ],
     declarations: [
         AppComponent,
@@ -316,8 +309,7 @@ FullCalendarModule.registerPlugins([
         TextComponent,
         WidgetsComponent,
 
-        SignInComponent,
-        //ChatComponent,
+        SignInComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
