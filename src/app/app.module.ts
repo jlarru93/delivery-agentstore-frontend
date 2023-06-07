@@ -151,8 +151,8 @@ import {MenuService} from './app.menu.service';
 import {AppCodeModule} from './app.code.component';
 
 import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+//import timeGridPlugin from '@fullcalendar/timegrid';
+//import interactionPlugin from '@fullcalendar/interaction';
 import { JWTInterceptor } from './utils/jwt-interceptor';
 import { ErrorInterceptor } from './utils/error-interceptor';
 import { SignInComponent } from './login/sign-in/sign-in.component';
@@ -165,8 +165,8 @@ import { MqttService } from './modules/service/mqtt.service';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
-    timeGridPlugin,
-    interactionPlugin
+    //timeGridPlugin,
+    //interactionPlugin
 ]);
 
 @NgModule({
