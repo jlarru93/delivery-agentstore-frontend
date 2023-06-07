@@ -20,9 +20,9 @@
                         </div>
                         <div class="p-col">
                            <div class="overlay-container">
-                              <button pButton pRipple type="button" (click)="isChatOpen = !isChatOpen" icon="pi pi-comment" class="p-button-rounded" style="float: right;"></button>
-                              <div class="overlay-chat" *ngIf="isChatOpen" [@enterAnimation]>
-                                 <app-chat [isOpen]="isChatOpen" ></app-chat>
+                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" style="float: right;"></button>
+                              <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                                 <app-chat></app-chat>
                               </div>
                            </div>
                         </div>

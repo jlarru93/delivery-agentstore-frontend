@@ -253,10 +253,8 @@ import { ChatService } from "./service/chat.service";
       this.displayOrderReject = false
       this.selectedTab = false
     }
-
-    isChatOpen: boolean = false
-    idOverlay: string
-    openChat(){
-      this.isChatOpen =! this.isChatOpen
-    }
+    
+    toggleDisplayDiv(order) {  
+      order.showButton =  !order.showButton;
+    }  
 }
