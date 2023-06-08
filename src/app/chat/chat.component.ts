@@ -1,7 +1,9 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, SimpleChange, SimpleChanges, ViewChild, } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AuthService } from '../utils/auth.service';
 import { FormControl } from '@angular/forms';
-
+import { ChatBean } from './data.chat';
+import { USER_TYPE_AGENT_STORE } from '../utils/constant';
+import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -9,20 +11,26 @@ import { FormControl } from '@angular/forms';
 })
 export class ChatComponent implements OnInit {
 
-  @Input() isOpen: boolean = false;
-
+  //@Input() isOpen: boolean = false;
+  @Input() isLoading: boolean = false;
+  @Input() messages: ChatBean[]=[]
+  @Input() orderId: string=""
+  @Input() usuarioLogueado: string=""
+  @Input() orderUuid: string=""
+  @Input() userId: string=""
   @ViewChild('endOfChat') endOfChat!: ElementRef
+  @Output() emitMessage = new EventEmitter<ChatBean>();
 
   messageControl: FormControl = new FormControl('');
 
   colorback: string = 'blue'
 
   mostrarChat:boolean = true
-  usuarioLogueado: any
-  userId: string
+  
+  
   newMessage: string
 
-  messages$: any = [
+  /*messages$: ChatBean[] = [
     { 
       uuid : "0d0d3958-28c1-4057-8b8f-6dd2296a7dfa", 
       uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
@@ -58,7 +66,7 @@ export class ChatComponent implements OnInit {
       uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
       uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
       user : { 
-          id : "14", 
+          id : 14, 
           name : "Cristhian Angel Ticclla Espinoza", 
           type : "agent-store" 
       }, 
@@ -72,13 +80,15 @@ export class ChatComponent implements OnInit {
               id : 60, 
               name : "Fulano de tal", 
               type : "delivery-man", 
-              readedAt: 1685927914 
+              readedAt: 1685927914,
+              background:'red'
           }, 
           { 
               id : 60, 
               name : "Pepito de los palotes", 
               type : "user", 
-              readedAt : 1685927914 
+              readedAt : 1685927914,
+              background:'blue' 
           } 
       ], 
       createdAt : 1685927914 
@@ -101,13 +111,15 @@ export class ChatComponent implements OnInit {
               id : 11, 
               name : "Fulano de tal", 
               type : "delivery-man", 
-              readedAt: 1685927914 
+              readedAt: 1685927914,
+              background:'blue' 
           }, 
           { 
               id : 14, 
               name : "Pepito de los palotes", 
               type : "user", 
-              readedAt : 1685927914 
+              readedAt : 1685927914,
+              background:'blue' 
           } 
       ], 
       createdAt : 1685927914 
@@ -130,13 +142,15 @@ export class ChatComponent implements OnInit {
               id : 11, 
               name : "Fulano de tal", 
               type : "delivery-man", 
-              readedAt: 1685927914 
+              readedAt: 1685927914,
+              background:'blue' 
           }, 
           { 
               id : 14, 
               name : "Pepito de los palotes", 
               type : "user", 
-              readedAt : 1685927914 
+              readedAt : 1685927914,
+              background:'blue' 
           } 
       ], 
       createdAt : 1685927914 
@@ -145,7 +159,7 @@ export class ChatComponent implements OnInit {
       uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
       uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
       user : { 
-          id : "14", 
+          id : 14, 
           name : "Cristhian Angel Ticclla Espinoza", 
           type : "agent-store" 
       }, 
@@ -159,13 +173,15 @@ export class ChatComponent implements OnInit {
               id : 60, 
               name : "Fulano de tal", 
               type : "delivery-man", 
-              readedAt: 1685927914 
+              readedAt: 1685927914,
+              background:'blue' 
           }, 
           { 
               id : 60, 
               name : "Pepito de los palotes", 
               type : "user", 
-              readedAt : 1685927914 
+              readedAt : 1685927914,
+              background:'blue' 
           } 
       ], 
       createdAt : 1685927914 
@@ -174,7 +190,7 @@ export class ChatComponent implements OnInit {
       uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
       uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
       user : { 
-          id : "60", 
+          id : 60, 
           name : "Cristhian Angel Ticclla Espinoza", 
           type : "agent-store" 
       }, 
@@ -184,18 +200,6 @@ export class ChatComponent implements OnInit {
       }, 
       body : "Great...", 
       readUser : [ 
-          { 
-              id : 60, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              readedAt: 1685927914 
-          }, 
-          { 
-              id : 60, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              readedAt : 1685927914 
-          } 
       ], 
       createdAt : 1685927914 
     },
@@ -203,7 +207,7 @@ export class ChatComponent implements OnInit {
       uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
       uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
       user : { 
-          id : "14", 
+          id : 14, 
           name : "Cristhian Angel Ticclla Espinoza", 
           type : "agent-store" 
       }, 
@@ -212,37 +216,19 @@ export class ChatComponent implements OnInit {
           name : "tambo Salguero" 
       }, 
       body : "Ok!", 
-      readUser : [ 
-          { 
-              id : 60, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              readedAt: 1685927914 
-          }, 
-          { 
-              id : 60, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              readedAt : 1685927914 
-          } 
-      ], 
+      readUser : [], 
       createdAt : 1685927914
     },
-  ]
+  ]*/
 
-  constructor(
-    private auth: AuthService
-  ) { }
+  constructor() { }
 
   ngOnInit() {
-    this.auth.getUserDetails().then(
-      usuario => {
-        this.usuarioLogueado = usuario
-        let userId = this.usuarioLogueado.find(user => user.Name == 'custom:_id')
-        this.userId = userId.Value
-        this.scrollToBottom()
-      }
-    )
+    //let userName=this.auth.getParameterToken('name')
+    //let id=this.auth.getParameterToken('id')
+    //this.usuarioLogueado=userName
+    //this.userId=id
+    this.scrollToBottom()
   }
 
   // ngOnChanges(changes: SimpleChanges){
@@ -252,29 +238,29 @@ export class ChatComponent implements OnInit {
   // }
 
   sendMessage(){
-    const message = this.messageControl.value;
+    const message:string = this.messageControl.value.toString();
     if(message){
-      let messageBody = {
-        uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63",  
-        uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
+      let messageBody:ChatBean =
+      { 
+        uuid : uuidv4(), 
+        uuidOrder : this.orderUuid, 
         user : { 
-            id : this.userId, 
-            name : "Cristhian Angel Ticclla Espinoza", 
-            type : "agent-store" 
+            id :  Number(this.userId), 
+            name : this.usuarioLogueado, 
+            type : USER_TYPE_AGENT_STORE 
         }, 
         store : { 
-            id : 16, 
-            name : "tambo Salguero" 
+            id : 0, 
+            name : '' 
         }, 
         body : message, 
-        readUser : [ 
-
-        ], 
-        createdAt : 1685927914
+        readUser : [], 
+        createdAt : Date.now()
       }
-      this.messages$.push(messageBody)
+      this.messages.push(messageBody)
       this.messageControl.setValue('')
       this.scrollToBottom()
+      this.emitMessage.emit(messageBody)
     }
 
   }

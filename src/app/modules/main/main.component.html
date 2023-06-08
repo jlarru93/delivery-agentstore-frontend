@@ -22,7 +22,15 @@
                            <div class="overlay-container">
                               <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" style="float: right;"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
-                                 <app-chat></app-chat>
+                                 <app-chat 
+                                    [isLoading]="isLoadingChat" 
+                                    [messages]="messagesChat" 
+                                    [orderId]="order.id"
+                                    [orderUuid]="order.uuid"
+                                    [usuarioLogueado]="userName"
+                                    [userId]="userId"
+                                    (emitMessage)="sendMessage($event)"
+                                    ></app-chat>
                               </div>
                            </div>
                         </div>
@@ -62,6 +70,14 @@
                         <div class="p-col-10">
                            <h5>ID: {{order.id}}</h5>
                            <p>{{order?.store?.addressStreet}}</p>
+                        </div>
+                        <div class="p-col">
+                           <div class="overlay-container">
+                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" style="float: right;"></button>
+                              <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                                 <app-chat></app-chat>
+                              </div>
+                           </div>
                         </div>
                         <div class="p-col-2">
                            <circle-progress [minutes]="5"  style="float: right;"></circle-progress>

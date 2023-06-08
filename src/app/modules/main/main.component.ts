@@ -16,6 +16,8 @@ import { animate, style, transition, trigger } from "@angular/animations";
 import { ChatHandler } from "../service/handlers/chat.handler";
 import { ChatResponse } from "./service/data/chat.response";
 import { ChatService } from "./service/chat.service";
+import { ChatBean } from "src/app/chat/data.chat";
+import { AuthService } from "src/app/utils/auth.service";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -57,7 +59,11 @@ import { ChatService } from "./service/chat.service";
     isMqttConnect:boolean=false
     isDoneGetOrders:boolean=false
 
-    constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private mqtt:MqttService,private orderHandler:OrderHandler,private storeHandler:StoreHandler,private chatHandler:ChatHandler,private chatService:ChatService ,private messageService: MessageService){}
+    messagesChat:ChatBean[]=[]
+    isLoadingChat:boolean=false
+    userName
+    userId
+    constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private mqtt:MqttService,private orderHandler:OrderHandler,private storeHandler:StoreHandler,private chatHandler:ChatHandler,private chatService:ChatService ,private messageService: MessageService,private auth: AuthService){}
     ngOnInit(): void {
       this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
       console.log("MAIN")
@@ -70,6 +76,10 @@ import { ChatService } from "./service/chat.service";
           this.validOrdersSubscribe()
         }
       })
+    }
+    getUserData(){
+      this.userName=this.auth.getParameterToken('name')
+      this.userId=this.auth.getParameterToken('id')
     }
 
     ngAfterViewInit(){
@@ -256,5 +266,25 @@ import { ChatService } from "./service/chat.service";
     
     toggleDisplayDiv(order) {  
       order.showButton =  !order.showButton;
-    }  
+      if(order.showButton){
+        this.getMessages(order)
+      }
+    }
+    getMessages(order:OrderBean){
+      this.isLoadingChat=true
+      this.chatService.getMessage(order.uuid).subscribe(
+        (resp)=>{
+          this.isLoadingChat=false
+          this.messagesChat= resp.data.map((message)=>ChatResponse.toBean(message))
+        },
+        (error)=>{
+          this.isLoadingChat=false
+        })
+    }
+    sendMessage(message:ChatBean){
+      this.chatService.sendMessage(ChatBean.toRequest(message)).subscribe((resp)=>{
+
+      },
+      (error)=>{})
+    }
 }

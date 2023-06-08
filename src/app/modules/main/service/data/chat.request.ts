@@ -4,7 +4,7 @@ export class StoreRequest {
     name?: string
 }
 
-export interface ChatRequest {
+export class ChatRequest {
     uuid:string
     uuidOrder: string
     body: string
@@ -12,7 +12,7 @@ export interface ChatRequest {
 }
 
 
-export interface ChatReadRequest {
+export class ChatReadRequest {
     uuidMessage: string
     uuidOrder: string
 }
