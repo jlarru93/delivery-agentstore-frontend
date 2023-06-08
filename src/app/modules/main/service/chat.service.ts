@@ -15,12 +15,12 @@ export class ChatService {
     getMessage(orderUuidId:string):Observable<ObjetResponse<ChatResponse[]>>{
         let path="/chat/order/:orderUuid/agentstore"
         path=path.replace(":orderUuid",orderUuidId)
-        return this.http.get<ObjetResponse<ChatResponse[]>>(env.url.backEnd+path)
+        return this.http.get<ObjetResponse<ChatResponse[]>>(env.url.util_banckEnd+path)
     }
     sendMessage(request:ChatRequest):Observable<ObjetResponse<ChatResponse[]>>{
-        return this.http.post<ObjetResponse<ChatResponse[]>>(env.url.backEnd+"/chat/message/agentStore",request)
+        return this.http.post<ObjetResponse<ChatResponse[]>>(env.url.util_banckEnd+"/chat/message/agentStore",request)
     }
     readMessages(request:ChatReadRequest):Observable<ObjetResponse<ChatResponse[]>>{
-        return this.http.post<ObjetResponse<ChatResponse[]>>(env.url.backEnd+"/chat/message/read/agentStore",request)
+        return this.http.post<ObjetResponse<ChatResponse[]>>(env.url.util_banckEnd+"/chat/message/read/agentStore",request)
     }
 }

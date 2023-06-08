@@ -112,6 +112,7 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
     getParameterToken(parameter){
       const tokenId=this.getAutorizationToken()
       const decode = jwt_decode(tokenId) as any
+      console.log(decode[parameter])
       return decode[parameter]
     }
   

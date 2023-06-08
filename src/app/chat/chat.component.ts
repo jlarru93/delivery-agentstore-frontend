@@ -12,12 +12,12 @@ import { v4 as uuidv4 } from 'uuid';
 export class ChatComponent implements OnInit {
 
   //@Input() isOpen: boolean = false;
-  @Input() isLoading: boolean = false;
-  @Input() messages: ChatBean[]=[]
-  @Input() orderId: string=""
-  @Input() usuarioLogueado: string=""
-  @Input() orderUuid: string=""
-  @Input() userId: string=""
+  @Input() isLoading: boolean
+  @Input() messages: ChatBean[]
+  @Input() orderId: string
+  @Input() usuarioLogueado: string
+  @Input() orderUuid: string
+  @Input() userId: string
   @ViewChild('endOfChat') endOfChat!: ElementRef
   @Output() emitMessage = new EventEmitter<ChatBean>();
 
@@ -258,6 +258,7 @@ export class ChatComponent implements OnInit {
         createdAt : Date.now()
       }
       this.messages.push(messageBody)
+      console.log("this.messages",this.messages)
       this.messageControl.setValue('')
       this.scrollToBottom()
       this.emitMessage.emit(messageBody)

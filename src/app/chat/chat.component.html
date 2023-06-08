@@ -6,8 +6,7 @@
         </div>
         <mat-divider></mat-divider>
         <div class="chat-area">
-            <ng-container *ngIf="userId">
-                <div *ngFor="let message of messages$" >
+                <div *ngFor="let message of messages" >
                     <div class="sender-name" *ngIf="message.user.id != userId">
                         <span>{{message.user.type}}</span>
                     </div>
@@ -35,7 +34,6 @@
                     </ng-container>   
                 </div>
                 <div #endOfChat></div>
-            </ng-container>
         </div>
         <div class="input-area">
             <mat-form-field appearance="outline">

@@ -61,8 +61,8 @@ import { AuthService } from "src/app/utils/auth.service";
 
     messagesChat:ChatBean[]=[]
     isLoadingChat:boolean=false
-    userName
-    userId
+    userName="usuario"
+    userId="123"
     constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private mqtt:MqttService,private orderHandler:OrderHandler,private storeHandler:StoreHandler,private chatHandler:ChatHandler,private chatService:ChatService ,private messageService: MessageService,private auth: AuthService){}
     ngOnInit(): void {
       this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
@@ -76,6 +76,7 @@ import { AuthService } from "src/app/utils/auth.service";
           this.validOrdersSubscribe()
         }
       })
+      this.getUserData()
     }
     getUserData(){
       this.userName=this.auth.getParameterToken('name')
@@ -137,9 +138,18 @@ import { AuthService } from "src/app/utils/auth.service";
       })
       this.chatHandler._data.subscribe((asyncData)=>{
         if(asyncData){
-          let chatResponse=ChatResponse.toBean(asyncData.data)
-          let orderIndex=this.orders.findIndex((order)=>order.uuid==chatResponse.uuidOrder)
+          let messageBean=ChatResponse.toBean(asyncData.data)
+          
+          let orderIndex=this.orders.findIndex((order)=>order.uuid==messageBean.uuidOrder)
           this.orders[orderIndex].messagesNoReadTotal++
+
+          let indexMessage=this.messagesChat.findIndex((message)=>message.uuid==messageBean.uuid)
+          if(indexMessage){
+            this.messagesChat[indexMessage]=messageBean
+          }else{
+            this.messagesChat.push(messageBean)
+
+          }
         }
       })
     }
@@ -271,6 +281,8 @@ import { AuthService } from "src/app/utils/auth.service";
       }
     }
     getMessages(order:OrderBean){
+      console.log("mensajess",this.messagesChat)
+      this.messagesChat=[]
       this.isLoadingChat=true
       this.chatService.getMessage(order.uuid).subscribe(
         (resp)=>{
@@ -282,8 +294,9 @@ import { AuthService } from "src/app/utils/auth.service";
         })
     }
     sendMessage(message:ChatBean){
+      console.log("message",message)
       this.chatService.sendMessage(ChatBean.toRequest(message)).subscribe((resp)=>{
-
+        
       },
       (error)=>{})
     }
