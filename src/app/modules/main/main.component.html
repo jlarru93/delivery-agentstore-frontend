@@ -20,11 +20,11 @@
                         </div>
                         <div class="p-col">
                            <div class="overlay-container">
-                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" style="float: right;"></button>
+                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
                                  <app-chat 
-                                    [isLoading]="isLoadingChat"
-                                    [messages]="messagesChat" 
+                                    [isLoading]="order.isLoadingChat"
+                                    [messages]="order.messagesChat" 
                                     [orderId]="order.id"
                                     [orderUuid]="order.uuid"
                                     [usuarioLogueado]="userName"
@@ -73,11 +73,11 @@
                         </div>
                         <div class="p-col">
                            <div class="overlay-container">
-                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" style="float: right;"></button>
+                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
                                  <app-chat 
-                                    [isLoading]="isLoadingChat"
-                                    [messages]="messagesChat" 
+                                    [isLoading]="order.isLoadingChat"
+                                    [messages]="order.messagesChat" 
                                     [orderId]="order.id"
                                     [orderUuid]="order.uuid"
                                     [usuarioLogueado]="userName"
@@ -161,11 +161,11 @@
                         </div>
                         <div class="p-col">
                            <div class="overlay-container">
-                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" style="float: right;"></button>
+                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
                                  <app-chat 
-                                    [isLoading]="isLoadingChat"
-                                    [messages]="messagesChat" 
+                                    [isLoading]="order.isLoadingChat"
+                                    [messages]="order.messagesChat" 
                                     [orderId]="order.id"
                                     [orderUuid]="order.uuid"
                                     [usuarioLogueado]="userName"

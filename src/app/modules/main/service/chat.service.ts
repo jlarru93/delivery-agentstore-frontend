@@ -13,7 +13,7 @@ export class ChatService {
     constructor(private http: HttpClient) { }
 
     getMessage(orderUuidId:string):Observable<ObjetResponse<ChatResponse[]>>{
-        let path="/chat/order/:orderUuid/agentstore"
+        let path="/chat/order/:orderUuid/agentStore"
         path=path.replace(":orderUuid",orderUuidId)
         return this.http.get<ObjetResponse<ChatResponse[]>>(env.url.util_banckEnd+path)
     }

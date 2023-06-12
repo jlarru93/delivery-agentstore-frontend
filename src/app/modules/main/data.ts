@@ -1,3 +1,5 @@
+import { ChatBean } from "src/app/chat/data.chat"
+
 export class StatusOpenStoreBean {
     status: boolean
 }
@@ -145,6 +147,15 @@ export class OrderBean {
     readyToDmAt:number
 
     messagesNoReadTotal:number
+    messagesChat:ChatBean[]
+    isLoadingChat:boolean
+    showButton:boolean
+    constructor(){
+        this.messagesNoReadTotal=0
+        this.messagesChat=[]
+        this.isLoadingChat=false
+        this.showButton=false
+    }
     getCurrency(): String {
         return this.products[0].price.currency
     }

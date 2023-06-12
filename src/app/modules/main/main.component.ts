@@ -104,7 +104,10 @@ import { AuthService } from "src/app/utils/auth.service";
 
     validOrdersSubscribe(){
       if(this.isMqttConnect && this.isDoneGetOrders){
-        this.orders.forEach((order)=>this.subscribeOrder(order.uuid))
+        this.orders.forEach((order)=>{
+          this.subscribeOrder(order.uuid)
+          this.subscribeChat(order.uuid)
+        })
       }
     }
 
@@ -141,14 +144,18 @@ import { AuthService } from "src/app/utils/auth.service";
           let messageBean=ChatResponse.toBean(asyncData.data)
           
           let orderIndex=this.orders.findIndex((order)=>order.uuid==messageBean.uuidOrder)
+          console.log("orderIndex",orderIndex)
+          console.log("this.orders[orderIndex]",this.orders[orderIndex])
           this.orders[orderIndex].messagesNoReadTotal++
 
-          let indexMessage=this.messagesChat.findIndex((message)=>message.uuid==messageBean.uuid)
-          if(indexMessage){
-            this.messagesChat[indexMessage]=messageBean
+          let indexMessage=this.orders[orderIndex].messagesChat.findIndex((message)=>message.uuid==messageBean.uuid)
+          console.log("indexMessage",indexMessage)
+          if(indexMessage>0){
+            console.log("this.orders[orderIndex].messagesChat[indexMessage]",this.orders[orderIndex].messagesChat[indexMessage])
+            this.orders[orderIndex].messagesChat[indexMessage]=messageBean
           }else{
-            this.messagesChat.push(messageBean)
-
+            console.log("this.orders[orderIndex].messagesChat",this.orders[orderIndex])
+            this.orders[orderIndex].messagesChat.push(messageBean)
           }
         }
       })
@@ -274,23 +281,24 @@ import { AuthService } from "src/app/utils/auth.service";
       this.selectedTab = false
     }
     
-    toggleDisplayDiv(order) {  
+    toggleDisplayDiv(order:OrderBean) {  
       order.showButton =  !order.showButton;
       if(order.showButton){
+        order.messagesNoReadTotal=0
         this.getMessages(order)
       }
     }
     getMessages(order:OrderBean){
       console.log("mensajess",this.messagesChat)
       this.messagesChat=[]
-      this.isLoadingChat=true
+      order.isLoadingChat=true
       this.chatService.getMessage(order.uuid).subscribe(
         (resp)=>{
-          this.isLoadingChat=false
-          this.messagesChat= resp.data.map((message)=>ChatResponse.toBean(message))
+          order.isLoadingChat=false
+          order.messagesChat= resp.data.map((message)=>ChatResponse.toBean(message))
         },
         (error)=>{
-          this.isLoadingChat=false
+          order.isLoadingChat=false
         })
     }
     sendMessage(message:ChatBean){
