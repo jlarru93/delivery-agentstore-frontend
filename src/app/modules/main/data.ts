@@ -163,28 +163,41 @@ export class OrderBean {
         this.isLoadingChat=false
         this.showButton=false
     }
-    getCurrency(): String {
-        return this.products[0].price.currency
+    getCurrency(): string {
+        return ""+this.products[0].price.currency
     }
     getProductPrice(): number {
         return this.products.reduce((accumulation, current) => { return accumulation + current.getTotalPrice() }, 0)//sumOf { it.getTotalPrice() }
     }
-    getProductPriceAndCurrency(): String {
+    getProductPriceAndCurrency(): string {
         return this.getCurrency() + this.getProductPrice().toString()
     }
-    getServicePriceAndCurrency(): String {
+    getServicePriceAndCurrency(): string {
         return this.getCurrency() + this.servicePrice.toString()
     }
-    getDeliveryPriceAndCurrency(): String {
+    getDeliveryPriceAndCurrency(): string {
         return this.getCurrency() + this.deliveryPrice.toString()
     }
     getSubTotalPrice(): number {
         return (this.getProductPrice() + this.servicePrice + this.deliveryPrice)
     }
-    getSubTotalPriceAndCurrency(): String {
+    getSubTotalPriceAndCurrency(): string {
         return this.getCurrency() + this.getSubTotalPrice().toString()
     }
-    getCountProducts(): String {
+
+    getdeliveryPriceAndCurrency():string{
+        return ""+this.getCurrency() +this.deliveryPrice
+    }
+    getTipAndCurrency():string{
+        return ""+this.getCurrency() +this.tip
+    }
+    getTotal():number{
+        return this.getSubTotalPrice()+this.tip;
+    }
+    getTotalAndCurrency(){
+        return ""+this.getCurrency()+this.getTotal()
+    }
+    getCountProducts(): string {
         return this.products.reduce((accumulation, current) => { return accumulation+current.quantity }, 0).toString() +" productos"//.sumOf { it.quantity }.toString() + " productos"
     }
 }

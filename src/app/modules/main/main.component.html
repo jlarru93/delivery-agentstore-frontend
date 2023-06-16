@@ -297,7 +297,7 @@
                            <p>Sub Total</p>
                         </div>
                         <div class="p-col-9">
-                           <b style="float: right;">{{priceValueFormat[i]}}</b>
+                           <b style="float: right;">{{product.getTotalPriceAndCurrency()}}</b>
                         </div>
                      </div>
                   </section>
@@ -419,10 +419,10 @@
          
          <div class="footer-grid">
             <div class="p-col-3">
-               <h4>Valor Total</h4>
+               <h4>Valor Total</h4><p>domicilio + propina + productos = total</p>
             </div>
             <div class="p-col-9">
-               <h4 style="float: right;">{{totalPriceValueFormat}}</h4>
+               <h4 style="float: right;"> {{orderSelected.getdeliveryPriceAndCurrency()}} + {{orderSelected.getTipAndCurrency()}} +{{orderSelected.getProductPriceAndCurrency()}} ={{orderSelected.getTotalAndCurrency()}}</h4>
             </div>
          </div>
       </footer>
