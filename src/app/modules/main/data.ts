@@ -118,10 +118,17 @@ export class UserBean {
 export class CardBean {
     id?: string
 }
+
+export class MethodBean{
+    name?: string 
+    type?: string 
+    url?: string
+}
+
 export class PaymentBean {
     id?: number
     amount?: number
-    method?: string
+    method?: MethodBean
     card?: CardBean
 }
 

@@ -6,7 +6,7 @@ import { OrderHandler } from "../service/handlers/order.handler";
 //import { MqttService } from "../service/mqtt.service";
 import { OrderService } from "./service/order.service";
 import { OrderResponse } from "./service/data/response";
-import { OrderBean } from "./data";
+import { OrderBean, PaymentBean } from "./data";
 import { DialogService } from "primeng/dynamicdialog";
 import { OrderDialogComponent } from "./dialog/orderDialog.component";
 import { PREPARING_ORDER_STATUS, OPEN_ORDER_STATUS, READY_ORDER_STATUS, DEFAULT_TIME_WAIT_DM_IN_MINUTES } from "src/app/utils/constant";
@@ -135,6 +135,9 @@ import { ChatService } from "./service/chat.service";
     }
     priceValueFormat: string[] = []
     totalPriceValueFormat : string
+    payment: PaymentBean
+    paymentName: string
+
     openOrderDialog(order:OrderBean){
       this.displayOrder=true
       this.orderSelected=order
@@ -145,18 +148,21 @@ import { ChatService } from "./service/chat.service";
 
       let totalPrice = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(this.orderSelected.total)
       this.totalPriceValueFormat = totalPrice
-      /*this.dialogService.open(
-        OrderDialogComponent
-        ,{
-        header: 'Choose a Product',
-        width: '70%',
-        contentStyle: { 'max-height': '500px', overflow: 'auto' },
-        baseZIndex: 10000,
-      })*/
+
+      this.payment = this.orderSelected.payment
+
+      if(this.payment.method.name == 'yape'){
+        this.paymentName = 'Yape'
+      }
+
       setTimeout(() => {
         var button2 = document.getElementById('btnOnClicked')
         button2.click()
       }, 500)
+    }
+    isOpenDialogMethodImg: boolean = false
+    DialogMethodImg(){
+      this.isOpenDialogMethodImg = true
     }
 
     showconsole(){
@@ -233,11 +239,16 @@ import { ChatService } from "./service/chat.service";
           item.classList.toggle("open");
 
           let description = item.querySelector(".accordion-description") as HTMLElement | null;
+          let gridheader = item.querySelector(".grid-quantity") as HTMLElement | null;
           if(item.classList.contains('open')){
             description.style.height = `${description.scrollHeight}px`
+            description.style.paddingTop = '10px'
+            gridheader.style.borderBottom = '1px solid #EEF2F6'
           } else {
             description.style.height = "0px"
             header.style.borderBottom = '0px'
+            description.style.paddingTop = '0px'
+            gridheader.style.borderBottom = '0px'
           }
         })
       })

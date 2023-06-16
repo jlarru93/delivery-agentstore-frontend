@@ -1,4 +1,4 @@
-import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, OptionBean, OrderBean, PaymentBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UserBean } from "../../data"
+import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, MethodBean, OptionBean, OrderBean, PaymentBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UserBean } from "../../data"
 
 export class StatusOpenStoreResponse {
     status: boolean
@@ -189,16 +189,31 @@ export class CardResponse {
         return bean
     }
 }
+
+export class MethodResponse{
+    name?: string 
+    type?: string 
+    url?: string
+    static toBean(self?: MethodResponse): MethodBean | null {
+        if (!self) return null
+        const bean = new MethodBean
+        bean.name = self?.name
+        bean.type = self?.type
+        bean.url = self?.url
+        return bean
+    }
+}
+
 export class PaymentResponse {
     id?: number
     amount?: number
-    method?: string
+    method?: MethodResponse
     card?: CardResponse
     static toBean(self?: PaymentResponse): PaymentBean {
         const bean = new PaymentBean()
         bean.id = self?.id
         bean.amount = self?.amount
-        bean.method = self?.method
+        bean.method = MethodResponse.toBean(self?.method)
         bean.card = CardResponse.toBean(self?.card)
         return bean
     }

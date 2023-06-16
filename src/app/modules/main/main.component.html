@@ -204,9 +204,13 @@
             <div *ngFor="let product of orderSelected.products; index as i">
                <div class="accordion-content">
                   <div class="accordion-item"> 
-                     <div>
-                        <div class="header">
-                           <span class="accordion-title"><i class="pi pi-angle-right"></i>{{product.name.toUpperCase()}}</span>
+                     <div class="p-grid grid-quantity" style="border-bottom: 0px">
+                        <div class="p-col-1 accodion-quantity">
+                           <p>{{product.quantity}}x</p>
+                        </div>
+                        <div class="p-col-11 header">
+                           <span class="accordion-title">
+                              <i class="pi pi-angle-right" style="margin-top: 3px;"></i>{{product.name.toUpperCase()}}</span>
                            <span>{{priceValueFormat[i]}}</span>
                         </div>
    
@@ -246,16 +250,19 @@
                      </div>
                   </div>
                </div>
-               <section>
-                  <div class="p-grid">
-                     <div class="p-col-3">
-                        <p>Sub Total</p>
+               <div class="p-pb-2">
+                  <section>
+                     <div class="p-grid">
+                        <div class="p-col-3">
+                           <p>Sub Total</p>
+                        </div>
+                        <div class="p-col-9">
+                           <b style="float: right;">{{priceValueFormat[i]}}</b>
+                        </div>
                      </div>
-                     <div class="p-col-9">
-                        <b style="float: right;">{{priceValueFormat[i]}}</b>
-                     </div>
-                  </div>
-               </section>
+                  </section>
+
+               </div>
 
             </div>
             
@@ -263,10 +270,17 @@
       </main>
       <div id="sidebar">
          <div class="sidebar-grid sidebar-container">
+            <div class="p-col-12" *ngIf="payment.method.type == 'E-WALLET'">
+               <div class="sidebar-method-payment">
+                  <b>Metodo de pago: {{paymentName}}</b>
+                  <button pButton pRipple type="button" icon="pi pi-eye"
+                    class="p-button p-button-rounded p-button-text" (click)="DialogMethodImg()"></button>
+               </div>
+            </div>
             <div class="p-col-12">
                <div class="sidebar-container-title"><h5>Cliente</h5></div>
                <div class="card-client">
-                  <h5>{{orderSelected?.user?.fullName}}</h5>
+                  <b>{{orderSelected?.user?.fullName}}</b>
                   <p>+51 999 888 777</p>
                </div>
             </div>
@@ -444,6 +458,19 @@
          </p-accordionTab>
      </p-accordion>
    </div>
+ </p-dialog>
+
+ <p-dialog [(visible)]="isOpenDialogMethodImg">
+   <ng-template pTemplate="content">
+      <div class="payment-img">
+         <img [src]="payment?.method?.url" alt="" width="350">
+      </div>
+   </ng-template>
+   <ng-template pTemplate="footer">
+      <p-button (click)="isOpenDialogMethodImg=false" label="No" styleClass="p-button-text"></p-button>
+      <p-button (click)="isOpenDialogMethodImg=false" label="Si" styleClass="p-button-text"></p-button>
+   </ng-template>
+   <!-- <pre>{{payment?.method?.url | json}}</pre> -->
  </p-dialog>
 
  <!-- <p-overlayPanel #op>

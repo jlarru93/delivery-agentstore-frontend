@@ -1,6 +1,6 @@
 .container-dialog{
     display: grid;
-    // height: 45vh;
+    height: 45vh;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1.5fr .5fr;
     grid-template-areas: 
@@ -33,22 +33,29 @@ footer{
 //     }
 // }
 
-@media only screen and (max-width: 1600px){
+@media only screen and (max-width: 1200px){
     .container-dialog{
         grid-template-columns: 1fr;
-        grid-template-rows: 2fr .5fr 2fr;
+        grid-template-rows: 1.5fr 1fr 1fr .5fr;
         grid-template-areas: 
+            "main"
             "main"
             "footer"
             "sidebar";
     }
-    #footer-main{
-        margin-top: -50px;
+    main{
+        height: 10vh;
     }
-    .card-recommend span {
-        font-size: 12px;
-    }
+    // #footer-main{
+    //     margin-top: -50px;
+    // }
+    // .card-recommend span {
+    //     font-size: 12px;
+    // }
    
+}
+:host ::ng-deep .p-button-label{
+    font-size: 17px;
 }
 
 @media (max-width: 1670px) and (min-width: 1601px){
@@ -87,8 +94,12 @@ footer{
 }
 .card-client{
     background-color: #FFFFFF;
-    padding: 2rem;
     border: 1px solid #EEF2F6;
+    padding-left: 1rem;
+    padding-top: 0.7rem;
+}
+.card-client b {
+    font-size: 16px;
 }
 
 .deliveryMan{
@@ -202,15 +213,15 @@ footer{
 
 main{
     display: flex;
-    
     justify-content: center;
+    //flex-direction: column;
+    overflow: auto;
 }
 .accordion{
     max-width: 700px;
     width: 100%;
     margin: 0 15px;
     padding: 15px;
-    overflow: auto;
 }
 
 #btnOnClicked{
@@ -266,6 +277,18 @@ main{
     font-weight: 500;
     color: #333;
 }
+.accordion-title{
+    display: flex;
+    justify-content: space-between;
+}
+.accodion-quantity{
+    border-right: 1px solid #EFF1F5;
+}
+.accodion-quantity p {
+    font-size: 16px;
+    text-align: center;
+    margin-top: revert;
+}
 
 .accordion-options{
     border-left: 1px solid #EEF2F6;
@@ -288,7 +311,12 @@ main{
     align-items: center;
     justify-content: space-between;
 }
-
+.sidebar-method-payment{
+    padding-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 // .accordion-description{
 //     overflow: auto;
 // }
@@ -340,4 +368,8 @@ h5{
     font-weight: 600;
     line-height: 1.2;
     color: inherit;
+}
+
+.payment-img{
+    padding: 15px;
 }

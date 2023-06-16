@@ -22,7 +22,7 @@
 
                     <div class="login-input-wrapper">
                         <label for="username">password</label>
-                        <input id="username" pPassword type="password" [(ngModel)]="password" required/>
+                        <input id="username" pPassword type="password" [(ngModel)]="password" required autocomplete="off"/>
                         <i class="pi pi-user"></i>
                         <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorPassword}}</small> 
                     </div>
