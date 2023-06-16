@@ -45,7 +45,7 @@ export class AppTopBarComponent implements OnInit{
     }
 
     processSubsCribeStore(){
-        const chanelStore="store/"+this.auth.getIdStore()
+        const chanelStore="store/"+this.auth.getParameterToken("idStore")
         if(this.isOpenStore){
             this.mqtt.subscribe(chanelStore)
         }else{

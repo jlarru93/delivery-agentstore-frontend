@@ -12,4 +12,7 @@ export const PREPARING_ORDER_STATUS = "preparingOrder";
 export const OPEN_ORDER_STATUS = "open";
 export const READY_ORDER_STATUS = "orderReady";
 export const DEFAULT_TIME_WAIT_DM_IN_MINUTES = 10;
-
+export const DELIVERYMAN_RED_BACKGROUND:string='red'
+export const USER_RED_BACKGROUND:string='blue'
+export const COLOR_READ_USER={'delivery-man':DELIVERYMAN_RED_BACKGROUND,'user':USER_RED_BACKGROUND}
+export const USER_TYPE_AGENT_STORE:string='agent-store'

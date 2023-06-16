@@ -109,10 +109,11 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
       this.signOut();
     }
 
-    getIdStore(){
+    getParameterToken(parameter){
       const tokenId=this.getAutorizationToken()
       const decode = jwt_decode(tokenId) as any
-      return decode.idStore
+      console.log(decode[parameter])
+      return decode[parameter]
     }
   
   }

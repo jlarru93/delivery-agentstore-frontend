@@ -1,4 +1,5 @@
-import { ChatBean, ReadUserBean, StoreBean, UserBean } from "../../data.chat"
+import { COLOR_READ_USER } from "src/app/utils/constant"
+import { ChatBean, ReadUserBean, StoreBean, UserBean } from "../../../../chat/data.chat"
 
 export class ReadUserResponse {
     id: number
@@ -11,6 +12,7 @@ export class ReadUserResponse {
         bean.name=response.name
         bean.type=response.type
         bean.readedAt=response.readedAt
+        bean.background=COLOR_READ_USER[response.type]
         return bean
     }
 }
@@ -59,7 +61,7 @@ export class ChatResponse {
         bean.body=response.body
         bean.readUser=response.readUser?.map((ru)=>ReadUserResponse.toBean(ru))
         bean.createdAt= response.createdAt
-        bean.hour= convertirTimestampAHora(response.createdAt)
+        //bean.hour= convertirTimestampAHora(response.createdAt)
         return bean
     }
 }

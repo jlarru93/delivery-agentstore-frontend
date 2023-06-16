@@ -20,18 +20,26 @@
                         </div>
                         <div class="p-col">
                            <div class="overlay-container">
-                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" style="float: right;"></button>
+                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
-                                 <app-chat></app-chat>
+                                 <app-chat 
+                                    [isLoading]="order.isLoadingChat"
+                                    [messages]="order.messagesChat" 
+                                    [orderId]="order.id"
+                                    [orderUuid]="order.uuid"
+                                    [usuarioLogueado]="userName"
+                                    [userId]="userId"
+                                    (emitMessage)="sendMessage($event)"
+                                    ></app-chat>
                               </div>
                            </div>
                         </div>
                      </div>
                  </div>
-                   <div class="p-col-12">
+                   <div class="p-col-12" (click)=" openOrderDialog(order)">
                      <hr>  
                     </div>
-                    <div class="p-col-12">
+                    <div class="p-col-12" (click)=" openOrderDialog(order)">
                      <div class="p-grid">
                         <div class="p-col-12">
                            <button class="btn-preparation-2" pButton pRipple type="button" style="float: right;">Aceptar Orden</button>
@@ -55,23 +63,39 @@
              </div>
           </div>
           <div *ngFor="let order of ordersPreparing; let i = index">
-            <div class="p-col-12" id="btn-order" (click)=" openOrderDialog(order)">
+            <div class="p-col-12" id="btn-order">
                <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
                  <div class="p-col-12">
                      <div class="p-grid">
-                        <div class="p-col-10">
+                        <div class="p-col-10"  (click)=" openOrderDialog(order)">
                            <h5>ID: {{order.id}}</h5>
                            <p>{{order?.store?.addressStreet}}</p>
+                        </div>
+                        <div class="p-col">
+                           <div class="overlay-container">
+                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
+                              <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                                 <app-chat 
+                                    [isLoading]="order.isLoadingChat"
+                                    [messages]="order.messagesChat" 
+                                    [orderId]="order.id"
+                                    [orderUuid]="order.uuid"
+                                    [usuarioLogueado]="userName"
+                                    [userId]="userId"
+                                    (emitMessage)="sendMessage($event)"
+                                    ></app-chat>
+                              </div>
+                           </div>
                         </div>
                         <div class="p-col-2">
                            <circle-progress [minutes]="5"  style="float: right;"></circle-progress>
                         </div>
                      </div>
                  </div>
-                 <div class="p-col-12">
+                 <div class="p-col-12"  (click)=" openOrderDialog(order)">
                   <hr>  
                  </div>
-                 <div class="p-col-12">
+                 <div class="p-col-12"  (click)=" openOrderDialog(order)">
                   <div class="p-grid">
                      <div class="p-col-6">
                         <div *ngIf="order?.deliveryMan?.status == 'toStore'">
@@ -127,20 +151,36 @@
              </div>
           </div>
           <div *ngFor="let order of ordersReady; let i = index">
-            <div class="p-col-12" (click)=" openOrderDialog(order)">
+            <div class="p-col-12">
                <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
                   <div class="p-col-12">
                      <div class="p-grid">
-                        <div class="p-col-10">
+                        <div class="p-col-10" (click)=" openOrderDialog(order)">
                            <h5>ID: {{order.id}}</h5>
                            <p>{{order?.store?.addressStreet}}</p>
                         </div>
+                        <div class="p-col">
+                           <div class="overlay-container">
+                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
+                              <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                                 <app-chat 
+                                    [isLoading]="order.isLoadingChat"
+                                    [messages]="order.messagesChat" 
+                                    [orderId]="order.id"
+                                    [orderUuid]="order.uuid"
+                                    [usuarioLogueado]="userName"
+                                    [userId]="userId"
+                                    (emitMessage)="sendMessage($event)"
+                                    ></app-chat>
+                              </div>
+                           </div>
+                        </div>
                      </div>
                  </div>
-                 <div class="p-col-12">
+                 <div class="p-col-12" (click)=" openOrderDialog(order)">
                   <hr>  
                  </div>
-                 <div class="p-col-12">
+                 <div class="p-col-12" (click)=" openOrderDialog(order)">
                   <div class="p-grid">
                      <div class="p-col-6">
                         <div *ngIf="order?.deliveryMan?.status == 'toStore'">
