@@ -11,6 +11,9 @@ export class StoreHandler{
     data$ = this._data.asObservable();
 
     handle(payload: string) {
+
+        let audio = new Audio('assets/audio/audio.mp3');
+        audio.play()
         console.log("StoreHandler",payload)
         let response=JSON.parse(payload) as AsyncData<OrderResponse>
         this._data.next(response)
