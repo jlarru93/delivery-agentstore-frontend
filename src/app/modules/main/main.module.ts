@@ -24,12 +24,16 @@ import { AvatarModule } from "primeng/avatar";
 import { AvatarGroupModule } from "primeng/avatargroup";
 import { ChatComponent } from "src/app/chat/chat.component";
 import { InputTextModule } from "primeng/inputtext";
+import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { ModalModule } from "src/app/modal/modal.module";
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent,ChatComponent],
     imports: [
       AvatarModule,
       AvatarGroupModule,
+      ModalModule,
       CommonModule,
+      ConfirmDialogModule,
       FormsModule,
       ReactiveFormsModule,
       MainRoutingModule,

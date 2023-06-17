@@ -66,7 +66,7 @@ export class ProductBean {
     }
     getUnitPrice(): number {
         let priceSubOption = this.options?.reduce((accumulation, current) => { return accumulation + current.totalPrice() }, 0)  //sumOf { it.totalPrice() }?:0.0
-        return this.price.value + priceSubOption
+        return this.price.currency, this.price.value + priceSubOption
     }
     getPriceMinimalCurrency(): string {
         return this.price.currency + this.price.value.toString()

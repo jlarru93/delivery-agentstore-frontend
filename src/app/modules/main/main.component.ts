@@ -18,6 +18,8 @@ import { ChatResponse } from "./service/data/chat.response";
 import { ChatService } from "./service/chat.service";
 import { ChatBean } from "src/app/chat/data.chat";
 import { AuthService } from "src/app/utils/auth.service";
+import { MatDialog } from "@angular/material/dialog";
+import { ModalComponent } from "src/app/modal/modal.component";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -54,6 +56,9 @@ import { AuthService } from "src/app/utils/auth.service";
 
     title:string="Aceptar"
 
+    modal : HTMLDialogElement
+    popup : any 
+
     loadingButtonAcept:boolean=false
     //valid that mqtt and ordes is ready to subscribe
     isMqttConnect:boolean=false
@@ -63,8 +68,21 @@ import { AuthService } from "src/app/utils/auth.service";
     isLoadingChat:boolean=false
     userName="usuario"
     userId="123"
-    constructor(public dialogService: DialogService,private productService: ProductService,private orderService:OrderService,private mqtt:MqttService,private orderHandler:OrderHandler,private storeHandler:StoreHandler,private chatHandler:ChatHandler,private chatService:ChatService ,private messageService: MessageService,private auth: AuthService){}
+    constructor(
+      public dialogService: DialogService,
+      private productService: ProductService,
+      private orderService:OrderService,
+      private mqtt:MqttService,
+      private orderHandler:OrderHandler,
+      private storeHandler:StoreHandler,
+      private chatHandler:ChatHandler,
+      private chatService:ChatService ,
+      private messageService: MessageService,
+      private confirmationService: ConfirmationService,
+      private dialog: MatDialog,
+      private auth: AuthService){}
     ngOnInit(): void {
+      
       this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
       console.log("MAIN")
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
@@ -81,6 +99,17 @@ import { AuthService } from "src/app/utils/auth.service";
     getUserData(){
       this.userName=this.auth.getParameterToken('name')
       this.userId=this.auth.getParameterToken('id')
+    }
+
+    imagenURL: string = ''
+    openDialog(): void {
+      const dialogRef = this.dialog.open(ModalComponent, {
+        data: {imagenURL: this.imagenURL}
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('Diálogo cerrado');
+      });
     }
 
     ngAfterViewInit(){
@@ -178,15 +207,16 @@ import { AuthService } from "src/app/utils/auth.service";
 
       this.payment = this.orderSelected.payment
 
-      if(this.payment.method.name == 'yape'){
-        this.paymentName = 'Yape'
-      }
+      this.imagenURL = this.payment?.method?.url
+
+      this.paymentName = this.payment.method.name.toUpperCase()
 
       setTimeout(() => {
         var button2 = document.getElementById('btnOnClicked')
         button2.click()
       }, 500)
     }
+
     isOpenDialogMethodImg: boolean = false
     DialogMethodImg(){
       this.isOpenDialogMethodImg = true

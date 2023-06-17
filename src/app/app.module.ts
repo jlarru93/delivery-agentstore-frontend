@@ -162,6 +162,7 @@ import { StoreHandler } from './modules/service/handlers/store.handler';
 import { OrderHandler } from './modules/service/handlers/order.handler';
 import { MqttRoutingService } from './modules/service/mqtt.routing.service';
 import { MqttService } from './modules/service/mqtt.service';
+import { ModalComponent } from './modal/modal.component';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -319,6 +320,7 @@ FullCalendarModule.registerPlugins([
         PhotoService, ProductService, MenuService, BreadcrumbService,
         MqttService,MqttRoutingService,OrderHandler,StoreHandler
     ],
+    entryComponents: [ModalComponent],
     bootstrap: [AppComponent]
 })
 export class AppModule {

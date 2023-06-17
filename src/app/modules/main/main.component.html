@@ -225,7 +225,7 @@
        </div>
     </div>
  </div>
- <p-dialog [(visible)]="displayOrder" [modal]="true" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '70vw'}">
+ <p-dialog [(visible)]="displayOrder" [modal]="true" [style]="{width: '50vw'}">
  <ng-template pTemplate="header">
    <div class="p-toolbar-group-left">
       <b><h3>Orden: {{orderSelected.id}}</h3></b>
@@ -250,8 +250,8 @@
                         </div>
                         <div class="p-col-11 header">
                            <span class="accordion-title">
-                              <i class="pi pi-angle-right" style="margin-top: 3px;"></i>{{product.name.toUpperCase()}}</span>
-                           <span>{{priceValueFormat[i]}}</span>
+                              <i class="pi pi-angle-right" style="margin-top: 3px;"></i>{{(product.name.charAt(0)).toUpperCase() + product.name.slice(1)}}</span>
+                           <span>{{product.getPriceMinimalCurrency()}}</span>
                         </div>
    
                      </div>
@@ -309,12 +309,13 @@
          </div>
       </main>
       <div id="sidebar">
+         
          <div class="sidebar-grid sidebar-container">
-            <div class="p-col-12" *ngIf="payment.method.type == 'E-WALLET'">
+            <div class="p-col-12">
                <div class="sidebar-method-payment">
                   <b>Metodo de pago: {{paymentName}}</b>
-                  <button pButton pRipple type="button" icon="pi pi-eye"
-                    class="p-button p-button-rounded p-button-text" (click)="DialogMethodImg()"></button>
+                  <button *ngIf="payment.method.type == 'E-WALLET' || payment.method.type == 'BANK'" pButton pRipple type="button" icon="pi pi-eye"
+                    class="p-button p-button-rounded p-button-text" (click)="openDialog()"></button>
                </div>
             </div>
             <div class="p-col-12">
@@ -417,14 +418,46 @@
       </div>
       <footer id="footer-main">
          
-         <div class="footer-grid">
-            <div class="p-col-3">
-               <h4>Valor Total</h4><p>domicilio + propina + productos = total</p>
+         <div class="grid-resume p-pt-2">
+            <div id="residency">
+               <p>Domicilio</p>
+               <p>{{orderSelected.getdeliveryPriceAndCurrency()}}</p>
             </div>
-            <div class="p-col-9">
-               <h4 style="float: right;"> {{orderSelected.getdeliveryPriceAndCurrency()}} + {{orderSelected.getTipAndCurrency()}} +{{orderSelected.getProductPriceAndCurrency()}} ={{orderSelected.getTotalAndCurrency()}}</h4>
+            <div id="tip">
+               <p>Propina</p>
+               <p>{{orderSelected.getdeliveryPriceAndCurrency()}}</p>
+            </div>
+            <div id="products-amount">
+               <p>Productos</p>
+               <p>{{orderSelected.getProductPriceAndCurrency()}}</p>
+            </div>
+            <div id="total-amount">
+               <p>Monto Total</p>
+               <p>{{orderSelected.getTotalAndCurrency()}}</p>
             </div>
          </div>
+         <!-- <div class="p-grid p-justify-center">
+            <div class="p-col-6">
+               <div class="box">
+                  <h5 class="p-pt-2">Resumen de la orden:</h5>
+                  <hr>
+                  <div class="p-grid">
+                     <div class="p-col-6" style="text-align: left;">
+                        <p>Domicilio</p>
+                        <p>Propina</p>
+                        <p>Productos</p>
+                        <p>Monto Total</p>
+                     </div>
+                     <div class="p-col-6" style="text-align: right;">
+                        <p>{{orderSelected.getdeliveryPriceAndCurrency()}}</p>
+                        <p>{{orderSelected.getTipAndCurrency()}}</p>
+                        <p>{{orderSelected.getProductPriceAndCurrency()}}</p>
+                        <p>{{orderSelected.getTotalAndCurrency()}}</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div> -->
       </footer>
     </div>
  </ng-template>
@@ -500,19 +533,5 @@
    </div>
  </p-dialog>
 
- <p-dialog [(visible)]="isOpenDialogMethodImg">
-   <ng-template pTemplate="content">
-      <div class="payment-img">
-         <img [src]="payment?.method?.url" alt="" width="350">
-      </div>
-   </ng-template>
-   <ng-template pTemplate="footer">
-      <p-button (click)="isOpenDialogMethodImg=false" label="No" styleClass="p-button-text"></p-button>
-      <p-button (click)="isOpenDialogMethodImg=false" label="Si" styleClass="p-button-text"></p-button>
-   </ng-template>
-   <!-- <pre>{{payment?.method?.url | json}}</pre> -->
- </p-dialog>
 
- <!-- <p-overlayPanel #op>
-   <app-chat></app-chat>
-</p-overlayPanel> -->
+ 
