@@ -6,11 +6,11 @@ export const environment = {
   production: false,
   url:{
     backEndInit : [
-      'https://kag6mai45b.execute-api.us-east-2.amazonaws.com/dev',
-      "https://8x6pzhz4j8.execute-api.us-east-2.amazonaws.com/dev"
+      'https://kag6mai45b.execute-api.us-east-2.amazonaws.com/qa',
+      "https://8x6pzhz4j8.execute-api.us-east-2.amazonaws.com/qa"
     ],
-    backEnd: 'https://kag6mai45b.execute-api.us-east-2.amazonaws.com/dev',
-    util_banckEnd:"https://8x6pzhz4j8.execute-api.us-east-2.amazonaws.com/dev",
+    backEnd: 'https://kag6mai45b.execute-api.us-east-2.amazonaws.com/qa',
+    util_banckEnd:"https://8x6pzhz4j8.execute-api.us-east-2.amazonaws.com/qa",
     //util_dev : "https://nkdqe8xd51.execute-api.us-east-1.amazonaws.com/dev"
    
   },
