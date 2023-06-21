@@ -19,6 +19,10 @@ export const environment = {
   userPoolWebClientId: '2l4qjgigviuct4drm88ev16r3o',
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/dev',
+  mqttServer:{
+    url: "3.19.241.134",
+    port: 15675
+  }
 };
 
 /*
