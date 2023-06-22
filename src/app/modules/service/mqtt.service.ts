@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { MqttRoutingService } from "./mqtt.routing.service";
 import { threadId } from "worker_threads";
 import { BehaviorSubject } from "rxjs";
+import { environment } from "src/environments/environment";
 @Injectable({
     providedIn: 'root'
 })
@@ -14,8 +15,8 @@ export class MqttService {
     client: Client
     message: string = ""
     constructor(private routing: MqttRoutingService) {
-        let host = "34.201.73.116"
-        let wsport = 15675
+        let host = environment.mqttServer.url
+        let wsport = environment.mqttServer.port
         let idTransaccion = uuidv4();
         const clientId = "AgentStore-" + idTransaccion;
 
