@@ -44,12 +44,12 @@ import { ModalComponent } from "src/app/modal/modal.component";
     minutes: number = 2;
     displayOrder:boolean=false
     products: Product[];
-    orders:OrderBean[]
-    ordersOpen:OrderBean[]
-    ordersPreparing:OrderBean[]
-    ordersReady:OrderBean[]
+    orders:OrderBean[]=[]
+    ordersOpen:OrderBean[]=[]
+    ordersPreparing:OrderBean[]=[]
+    ordersReady:OrderBean[]=[]
     orderSelected:OrderBean
-
+    readyToDmAt:number=10
     count: number = 10
 
     displayOrderReject: boolean = false
@@ -195,8 +195,15 @@ import { ModalComponent } from "src/app/modal/modal.component";
     paymentName: string
 
     openOrderDialog(order:OrderBean){
-      this.displayOrder=true
       this.orderSelected=order
+      if(this.orderSelected.readyToDmAt){
+        this.readyToDmAt=this.orderSelected.readyToDmAt
+      }else{
+        this.readyToDmAt=10
+      }
+      
+      this.displayOrder=true
+
       this.orderSelected.products.forEach(element => {
         let priceformat = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(element.price.value)
         this.priceValueFormat.push(priceformat)
@@ -208,8 +215,9 @@ import { ModalComponent } from "src/app/modal/modal.component";
       this.payment = this.orderSelected.payment
 
       this.imagenURL = this.payment?.method?.url
-
-      this.paymentName = this.payment.method.name.toUpperCase()
+      let methodName=this.payment.method.name?.toUpperCase()
+      methodName=methodName?methodName:""
+      this.paymentName = this.payment.method.type.toUpperCase() + methodName
 
       setTimeout(() => {
         var button2 = document.getElementById('btnOnClicked')
@@ -239,15 +247,14 @@ import { ModalComponent } from "src/app/modal/modal.component";
     sortOrders(){
       this.ordersOpen=this.orders.filter((order)=>order.status==OPEN_ORDER_STATUS)
       this.ordersPreparing=this.orders.filter((order)=>order.status==PREPARING_ORDER_STATUS)
-      this.ordersReady=this.orders.filter((order)=>order.status==READY_ORDER_STATUS)
-
-      this.ordersOpen.forEach((order)=>order.readyToDmAt=DEFAULT_TIME_WAIT_DM_IN_MINUTES)
+      this.ordersReady=this.orders.filter((order)=>order.status==READY_ORDER_STATUS && order.deliveryMan==null)
     }
 
     aceptOrder(){
-      const order=this.orderSelected
+      let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
+      orderRequest.readyToDmAt=this.readyToDmAt
       this.loadingButtonAcept=true
-      this.orderService.aceptOder(order.id.toString(),order.readyToDmAt).subscribe((resp)=>{
+      this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
         this.displayOrder=false
         this.loadingButtonAcept=false
       },()=>{
@@ -281,10 +288,10 @@ import { ModalComponent } from "src/app/modal/modal.component";
     }
 
     onIncrement(){
-      this.orderSelected.readyToDmAt += 5;
+      this.readyToDmAt += 5;
     }
     onDecrement() {
-      this.orderSelected.readyToDmAt -= 5;
+      this.readyToDmAt -= 5;
     }
     accordionContent: any
     accordionFunction(){
