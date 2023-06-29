@@ -245,9 +245,20 @@ import { ModalComponent } from "src/app/modal/modal.component";
     }
 
     sortOrders(){
-      this.ordersOpen=this.orders.filter((order)=>order.status==OPEN_ORDER_STATUS)
-      this.ordersPreparing=this.orders.filter((order)=>order.status==PREPARING_ORDER_STATUS)
-      this.ordersReady=this.orders.filter((order)=>order.status==READY_ORDER_STATUS && order.deliveryMan==null)
+      
+      this.ordersOpen=this.orders.filter((order)=>order.status==OPEN_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersPreparing=this.orders.filter((order)=>order.status==PREPARING_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersReady=this.orders.filter((order)=>order.status==READY_ORDER_STATUS &&  this.dmStatusOkay(order))
+    }
+
+    dmStatusOkay(order:OrderBean){
+      let dmStatusOkay=false
+      if(order.deliveryMan){
+        dmStatusOkay=order.deliveryMan.status=='toStore' || order.deliveryMan.status=='inStore' 
+      }else{
+        dmStatusOkay=true
+      }
+      return dmStatusOkay
     }
 
     aceptOrder(){
