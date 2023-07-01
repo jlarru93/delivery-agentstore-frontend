@@ -39,6 +39,7 @@ import { AppCalendarComponent } from './pages/app.calendar.component';
 import { AppTimelineDemoComponent } from './pages/app.timelinedemo.component';
 import { IsAuthenticated } from './utils/auth-guard';
 import { SignInComponent } from './login/sign-in/sign-in.component';
+import { RequestTripComponent } from './modules/request-trip/request-trip.component';
 
 const routes: Routes = [
     {
@@ -55,7 +56,10 @@ const routes: Routes = [
                 loadChildren: () => import('./modules/product/product.module').then(m => m.ProductModule), canActivate: [IsAuthenticated]
             },
             
-
+            {
+                path: "request-trip",
+                loadChildren: () => import('./modules/request-trip/request-trip.module').then(m => m.RequestTripModule)
+            },
 
             //THEME
             { path: '', component: DashboardDemoComponent },
