@@ -230,20 +230,6 @@ import { ModalComponent } from "src/app/modal/modal.component";
       this.isOpenDialogMethodImg = true
     }
 
-    showconsole(){
-      debugger
-      var button = document.getElementById('btn-order')
-      button.click()
-      console.log("primer click", button)
-      this.excuteAddEvent(button)
-    }
-
-    excuteAddEvent(btn){
-      btn?.addEventListener('click', () => {
-        console.log('button clicked');
-      });
-    }
-
     sortOrders(){
       
       this.ordersOpen=this.orders.filter((order)=>order.status==OPEN_ORDER_STATUS &&  this.dmStatusOkay(order))
