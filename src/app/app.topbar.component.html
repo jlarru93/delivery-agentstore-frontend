@@ -3,7 +3,7 @@
         <div class="layout-topbar-left">
 
             <div class="layout-megamenu-wrapper" (click)="displayOpenStore=true">
-                <button pButton type="button"  [label]="isOpenStore?'tienda abierta':'abrir tienda'" icon="pi pi-home" [loading]="isLoadingOpenStatusStore" [ngClass]="isOpenStore?'p-button-success':'p-button-warning'" ></button>
+                <button pButton type="button"  [label]="isOpenStore?'Tienda abierta':'Abrir tienda'" icon="pi pi-home" [loading]="isLoadingOpenStatusStore" [ngClass]="isOpenStore?'p-button-success':'p-button-warning'" ></button>
             </div>
         </div>
         <div class="layout-topbar-right fadeInDown">
@@ -97,7 +97,9 @@
     </div>
 </div>
 <p-dialog [(visible)]="displayOpenStore" [modal]="true" header="Abrir Tienda">
-    la tienda esta {{isOpenStore?'Abierta':'Cerrada'}}
+    <ng-template pTemplate="content">
+        <h5 class="p-p-5 p-m-auto">La tienda esta {{isOpenStore?'Abierta':'Cerrada'}}</h5  >
+    </ng-template>
     <ng-template pTemplate="footer">
         <p-button icon="pi pi-check" (click)="changeStatusOpenStore()" [label]="isOpenStore?'Cerrar la tienda':'Abrir la tienda'" class="p-button-text"></p-button>
         <p-button icon="pi pi-times" (click)="displayOpenStore=false" label="Cancelar"></p-button>
