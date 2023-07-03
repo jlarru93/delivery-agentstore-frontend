@@ -9,7 +9,7 @@ import { OrderResponse } from "./service/data/response";
 import { OrderBean, PaymentBean } from "./data";
 import { DialogService } from "primeng/dynamicdialog";
 import { OrderDialogComponent } from "./dialog/orderDialog.component";
-import { PREPARING_ORDER_STATUS, OPEN_ORDER_STATUS, READY_ORDER_STATUS, DEFAULT_TIME_WAIT_DM_IN_MINUTES } from "src/app/utils/constant";
+import * as CONSTANTES from "src/app/utils/constant";
 import { MqttService } from "../service/mqtt.service";
 import { StoreHandler } from "../service/handlers/store.handler";
 import { animate, style, transition, trigger } from "@angular/animations";
@@ -151,12 +151,20 @@ import { ModalComponent } from "src/app/modal/modal.component";
     mqttListener(){
       this.orderHandler._data.subscribe((asyncData)=>{
         if(asyncData){
-          let orderMqtt=OrderResponse.toBean(asyncData.data)
-          let orderIndex=this.orders.findIndex((order)=>order.id === orderMqtt.id)
-          this.orders[orderIndex]=orderMqtt
-          console.log(orderMqtt)
+          if(asyncData.data.status === CONSTANTES.CANCEL_ORDER_STATUS){
+            let find_order :any = this.orders.findIndex(item => item.uuid === asyncData.data.uuid)
+            let find_order_open :any = this.ordersOpen.findIndex(item => item.uuid === asyncData.data.uuid)
+            this.orders.splice(find_order,1)
+            // this.ordersOpen.splice(find_order_open,1)
+          }else {
+            let orderMqtt=OrderResponse.toBean(asyncData.data)
+            let orderIndex=this.orders.findIndex((order)=>order.id === orderMqtt.id)
+            this.orders[orderIndex]=orderMqtt
+            console.log(orderMqtt)
+          }
           this.sortOrders()
         }
+
       })
       this.storeHandler._data.subscribe((asyncData)=>{
         if(asyncData){
@@ -245,10 +253,9 @@ import { ModalComponent } from "src/app/modal/modal.component";
     }
 
     sortOrders(){
-      
-      this.ordersOpen=this.orders.filter((order)=>order.status==OPEN_ORDER_STATUS &&  this.dmStatusOkay(order))
-      this.ordersPreparing=this.orders.filter((order)=>order.status==PREPARING_ORDER_STATUS &&  this.dmStatusOkay(order))
-      this.ordersReady=this.orders.filter((order)=>order.status==READY_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersOpen=this.orders.filter((order)=>order.status==CONSTANTES.OPEN_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersPreparing=this.orders.filter((order)=>order.status==CONSTANTES.PREPARING_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersReady=this.orders.filter((order)=>order.status==CONSTANTES.READY_ORDER_STATUS &&  this.dmStatusOkay(order))
     }
 
     dmStatusOkay(order:OrderBean){
