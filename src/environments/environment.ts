@@ -4,6 +4,16 @@
 
 export const environment = {
   production: false,
+  // url:{
+  //   backEndInit : [
+  //     'http://127.0.0.1:3000/dev',
+  //     "https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev"
+  //   ],
+  //   backEnd: 'http://127.0.0.1:3000/dev',
+  //   util_banckEnd:"https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev",
+  //   //util_dev : "https://nkdqe8xd51.execute-api.us-east-1.amazonaws.com/dev"
+   
+  // },
   url:{
     backEndInit : [
       'https://yei6npe8j1.execute-api.us-east-1.amazonaws.com/dev',

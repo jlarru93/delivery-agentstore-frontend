@@ -11,10 +11,9 @@ export class MqttRoutingService{
     constructor(private orderHandler:OrderHandler,private storeHandler:StoreHandler,private chatHandler:ChatHandler){}
 
     route(topic:string,payload: string) {
+        // debugger
         console.log("topic",topic)
-        if(topic=='store-general'){
-            
-            
+        if(topic=='store-general'){       
         }else if(topic.startsWith("order")){
             this.orderHandler.handle(payload)
         }
