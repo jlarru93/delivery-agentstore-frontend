@@ -87,6 +87,9 @@ import { ModalComponent } from "src/app/modal/modal.component";
       console.log("MAIN")
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
       this.getOrders()
+      setInterval(()=>{
+        this.getOrders()
+      },30000)
       this.mqtt._onConnect.subscribe((isConnect)=>{
         if(isConnect){
           this.isMqttConnect=isConnect
