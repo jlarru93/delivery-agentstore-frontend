@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Product } from "src/app/demo/domain/product";
 import { ProductService } from "src/app/demo/service/productservice";
@@ -40,7 +40,7 @@ import { ModalComponent } from "src/app/modal/modal.component";
       )
     ],
   })
-  export class MainComponent implements OnInit {
+  export class MainComponent implements OnInit,OnDestroy {
     minutes: number = 2;
     displayOrder:boolean=false
     products: Product[];
@@ -68,6 +68,7 @@ import { ModalComponent } from "src/app/modal/modal.component";
     isLoadingChat:boolean=false
     userName="usuario"
     userId="123"
+    set_interval ?: any
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
@@ -81,13 +82,12 @@ import { ModalComponent } from "src/app/modal/modal.component";
       private confirmationService: ConfirmationService,
       private dialog: MatDialog,
       private auth: AuthService){}
-    ngOnInit(): void {
-      
+    ngOnInit(): void { 
       this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
       console.log("MAIN")
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
       this.getOrders()
-      setInterval(()=>{
+      this.set_interval = setInterval(()=>{
         this.getOrders()
       },30000)
       this.mqtt._onConnect.subscribe((isConnect)=>{
@@ -98,6 +98,9 @@ import { ModalComponent } from "src/app/modal/modal.component";
         }
       })
       this.getUserData()
+    }
+    ngOnDestroy(): void {
+        clearInterval(this.set_interval)
     }
     getUserData(){
       this.userName=this.auth.getParameterToken('name')
