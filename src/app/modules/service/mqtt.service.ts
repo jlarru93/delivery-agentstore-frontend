@@ -15,7 +15,6 @@ export class MqttService {
     client: Client
     message: string = ""
     constructor(private routing: MqttRoutingService) {
-        debugger
         let host = environment.mqttServer.url
         let wsport = environment.mqttServer.port
         let idTransaccion = uuidv4();
