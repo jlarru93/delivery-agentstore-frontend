@@ -145,7 +145,14 @@ import { ModalComponent } from "src/app/modal/modal.component";
 
     getOrders(){
       this.orderService.getOrders().subscribe((resp)=>{
-        this.orders=resp.data.map((it)=>OrderResponse.toBean(it))
+        this.orders=resp.data.map((it)=>{
+          let order=OrderResponse.toBean(it)
+          let currentOrden=this.orders.find((or)=>or.id==it.id)
+          if(currentOrden){
+            order.messagesChat=currentOrden.messagesChat
+          }
+          return order
+        })
         this.sortOrders()
         this.isDoneGetOrders=true
         this.validOrdersSubscribe()
