@@ -71,12 +71,17 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
     }
 
 
-    public isAllAuthenticated(){
+    public isAllAuthenticated():boolean{
       this.dataToken="";
       const nameToken = this.initNameToken + this.getNameTokenId() + '.idToken';
-        this.dataToken = localStorage.getItem(nameToken);
+      this.dataToken = localStorage.getItem(nameToken);
+
+
       if(this.dataToken != null){
-        return true;
+        const decode = jwt_decode(this.dataToken) as any
+        const tokenExpire=Number(decode.exp as string)
+        const now=Number(new Date().getTime().toString().substring(0,10))
+        return tokenExpire>now
       }else{
         return false;
       }
@@ -116,5 +121,30 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
       return decode[parameter]
     }
   
+    async getCurrentToken(): Promise<string | null> {
+      try {
+        const session = await Auth.currentSession();
+        const accessToken = session.getAccessToken();
+        const token = accessToken.getJwtToken();
+        return token;
+      } catch (error) {
+        console.log('Error al obtener el token:', error);
+        return null;
+      }
+    }
+    async refreshToken(){
+      const currentToken = await this.getCurrentToken();
+      if (currentToken) {
+        try {
+          const user = await Auth.currentAuthenticatedUser();
+          const cognitoUser = await Auth.currentAuthenticatedUser();
+          const refreshedUser = cognitoUser.refreshSession(user.signInUserSession.refreshToken);
+          const refreshedToken = refreshedUser.signInUserSession.accessToken.jwtToken;
+          console.log('Token actualizado:', refreshedToken);
+        } catch (error) {
+          console.log('Error al actualizar el token:', error);
+        }
+      }
+    }
   }
   
