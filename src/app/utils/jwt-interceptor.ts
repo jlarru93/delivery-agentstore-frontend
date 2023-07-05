@@ -1,9 +1,9 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, from, throwError } from "rxjs";
 import { environment } from "src/environments/environment";
 import { AuthService } from "./auth.service";
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 //import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 
@@ -14,24 +14,42 @@ export class JWTInterceptor implements HttpInterceptor {
   constructor(private authenticationService: AuthService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const isLoggedIn = this.authenticationService.isAllAuthenticated();
     let isApiUrl = false
     environment.url.backEndInit.forEach((urlInit)=>{
       if(request.url.startsWith(urlInit)){
         isApiUrl=true;
       }
     })
-    if (isLoggedIn && isApiUrl) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${this.authenticationService.getAutorizationToken()}`
-          //, 'X-Frame-Options': 'sameorigin'
-        }
-      }); 
+    if(!isApiUrl){
+      return next.handle(request);
     }
-    return next.handle(request);
-  }
+    const isLoggedIn = this.authenticationService.isAllAuthenticated();
 
+    if (isLoggedIn) {
+      const clonedRequest = this.attachTokenToRequest(request, this.authenticationService.getAutorizationToken());
+      return next.handle(clonedRequest);
+    }else{
+      return from(this.authenticationService.refreshToken()).pipe(
+        mergeMap(() => {
+          const newToken = this.authenticationService.getAutorizationToken();
+          const clonedRequest = this.attachTokenToRequest(request, newToken);
+          return next.handle(clonedRequest);
+        }),
+        catchError((error: any) => {
+          // Error al refrescar el token, manejarlo según tus necesidades
+          return throwError(error);
+        })
+      );
+    }
+    
+  }
+  private attachTokenToRequest(request: HttpRequest<any>, token: string): HttpRequest<any> {
+    return request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 
 
 
