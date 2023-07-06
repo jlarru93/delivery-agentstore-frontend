@@ -9,16 +9,13 @@ import { OrderResponse } from "../../main/service/data/response";
 export class StoreHandler{
     public _data: BehaviorSubject<AsyncData<OrderResponse>> = new BehaviorSubject<AsyncData<OrderResponse>>(null);
     data$ = this._data.asObservable();
-
+    audio=new Audio('assets/audio/audio.mp3');
     handle(payload: string) {
-        setTimeout(()=>{
-            let audio = new Audio('assets/audio/audio.mp3');
-            audio.play()
-        },500)
+        setTimeout(async ()=>{
+            await this.audio.play()
+        },200)
         console.log("StoreHandler",payload)
         let response=JSON.parse(payload) as AsyncData<OrderResponse>
         this._data.next(response)
-        
-        
     }
 }
