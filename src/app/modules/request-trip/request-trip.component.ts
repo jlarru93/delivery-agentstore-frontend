@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MouseEvent } from 'src/agm/core';
 import { AuthService } from 'src/app/utils/auth.service';
+import { StoreService } from '../main/service/store.service';
 
 @Component({
   selector: 'app-request-trip',
@@ -17,9 +18,11 @@ export class RequestTripComponent implements OnInit {
   userPhone: string
   userAttributes: any
 
-  inputVisible: any
+  input_visible_pickup: any
   inputVisibleDestino: any
-
+  input_reference_pickup ?: string
+  input_reference_destination ?: string
+  is_disabled_pickup : boolean = true
   center: any = {
     lat: 10.96854,
     lng: -74.78132
@@ -27,18 +30,22 @@ export class RequestTripComponent implements OnInit {
 
   marker =
   {
+    maintext :'Barranquilla',
+    secondText : 'Hotel atrium',
     lat: 10.96854,
     lng: -74.78132
   }
 
 
   constructor(
-    private auth: AuthService
+    private auth: AuthService,
+    private storeService : StoreService
   ) { }
 
   stateOptions: any[];
   value1: string = "efectivo";
   ngOnInit(): void {
+    this.onGetLocationStore();
     // this.auth.getUserDetails().then(
     //   (data) => {
     //       this.userAttributes = data
@@ -47,6 +54,14 @@ export class RequestTripComponent implements OnInit {
     //   }
     // )
     this.stateOptions = [{label: 'Efectivo', value: 'efectivo'}, {label: 'Pago Digital', value: 'e-wallet'}];
+  }
+
+  private onGetLocationStore() {
+    this.storeService.onGetLocationStoreService().subscribe((data) => {
+      this.input_visible_pickup = data.data.fullName;
+      this.marker.lng = data.data.location.coordinates[0];
+      this.marker.lat = data.data.location.coordinates[1];
+    });
   }
 
   mapClicked($event: MouseEvent) {
