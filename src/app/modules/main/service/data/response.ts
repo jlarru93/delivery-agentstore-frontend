@@ -110,6 +110,7 @@ export class EstimationTimeResponse {
 export class StoreResponse {
     id: number
     name: string
+    fullName : string
     //address: AddressResponse
     addressStreet: string
     location?: Point
