@@ -922,10 +922,10 @@ a {
   }
 }
 .layout-menu-light .layout-sidebar {
-  background-color: #ffffff;
+  background-color: #2D2D2D;
 }
 .layout-menu-light .layout-sidebar .sidebar-logo .sidebar-pin {
-  background-color: #2e3440;
+  background-color: #d94545;
 }
 .layout-menu-light .layout-sidebar .sidebar-logo .sidebar-pin i {
   color: #ffffff;
@@ -949,16 +949,16 @@ a {
   color: #F28686;
 }
 .layout-menu-light .layout-sidebar .layout-menu > li > a .menuitem-text {
-  color: #2e3440;
+  color: #FFFFFF;
 }
 .layout-menu-light .layout-sidebar .layout-menu > li > a i {
-  color: #4c566a;
+  color: #FFFFFF;
 }
 .layout-menu-light .layout-sidebar .layout-menu > li > a:hover {
-  background-color: #f4f4f4;
+  background-color: #5b5b5b;
 }
 .layout-menu-light .layout-sidebar .layout-menu > li.active-menuitem > a {
-  background-color: #F28686;
+  background-color: #d94545;
 }
 .layout-menu-light .layout-sidebar .layout-menu > li.active-menuitem > a .menuitem-text {
   color: #ffffff;
@@ -967,7 +967,7 @@ a {
   color: #ffffff;
 }
 .layout-menu-light .layout-sidebar .layout-menu > li.active-menuitem > a.active-menuitem-routerlink {
-  background-color: #F28686;
+  background-color: #d94545;
 }
 .layout-menu-light .layout-sidebar .layout-menu > li.active-menuitem > a.active-menuitem-routerlink .menuitem-text {
   color: #ffffff;

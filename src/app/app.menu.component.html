@@ -7,12 +7,13 @@
         </a>
         <a routerLink="/">
             <img alt="logo" src="assets/images/656.png" />
-            <span class="app-name">Admin</span>
+            <span class="app-name" style="color: #ffffff;">Admin</span>
         </a>
     </div>
     <div class="layout-menu-container" (click)="onMenuClick()">
         <ul class="layout-menu">
             <li app-menuitem *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true"></li>
         </ul>
+        <img src="assets/images/Logotipo_TRES22-02.png" alt="" style="position: absolute; width: 280px; margin-bottom: 50px; bottom: 0; margin-left: -31px;">
     </div>
 </div>

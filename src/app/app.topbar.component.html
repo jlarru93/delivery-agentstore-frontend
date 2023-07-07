@@ -5,14 +5,17 @@
             <div class="layout-megamenu-wrapper" (click)="displayOpenStore=true">
                 <button pButton type="button"  [label]="isOpenStore?'Tienda abierta':'Abrir tienda'" icon="pi pi-home" [loading]="isLoadingOpenStatusStore" [ngClass]="isOpenStore?'p-button-success':'p-button-warning'" ></button>
             </div>
+            <div style="margin: 0 auto;">
+                <img src="assets/images/Logotipo_TRES22-delivery-02.png" alt="LogoTRES22" class="image-container">
+            </div>
         </div>
         <div class="layout-topbar-right fadeInDown">
             <ul class="layout-topbar-actions">
                 <li #profile class="topbar-item profile-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === profile}">
                     <a href="#" (click)="appMain.onTopbarItemClick($event,profile)">
-                    <span class="profile-image-wrapper">
-                        <img src="assets/images/user.png" alt="mirage-layout" />
-                    </span>
+                        <span class="profile-image-wrapper">
+                            <p-avatar icon="pi pi-user" styleClass="mr-2" size="large" shape="circle" [style]="{'background-color':'#FFFFFF', 'color': '#212222'}"></p-avatar>
+                        </span>
                         <span class="profile-info-wrapper">
                         <h3>{{userName}}</h3>
                         <span>Agente</span>

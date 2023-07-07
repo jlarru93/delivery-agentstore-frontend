@@ -1,8 +1,25 @@
 .layout-topbar .layout-topbar-wrapper .layout-topbar-right .profile-item > ul > li.profile-submenu-header {
 
-    background-image: url("../assets/layout/images/dashboard/news-1.png");
+  background-image: url("../assets/layout/images/dashboard/news-1.png");
 
-  }
+}
+
+.image-container {
+  height: 135px;
+  width: auto;
+}
+
+.layout-topbar-wrapper{
+  background-color: #2D2D2D;
+}
+
+.layout-topbar .layout-topbar-wrapper .layout-topbar-right .profile-item > a .profile-info-wrapper h3 {
+  color: #ffffff;
+}
+
+:host ::ng-deep .layout-menu-light .layout-sidebar .layout-menu > li > a .menuitem-text {
+  color: #ffffff;
+}
 
   h5{
     font-size: 1.25rem;
