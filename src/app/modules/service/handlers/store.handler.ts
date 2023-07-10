@@ -11,11 +11,20 @@ export class StoreHandler{
     data$ = this._data.asObservable();
     audio=new Audio('assets/audio/audio.mp3');
     handle(payload: string) {
-        setTimeout(async ()=>{
-            await this.audio.play()
-        },200)
+        this.onPlayAudio();
         console.log("StoreHandler",payload)
         let response=JSON.parse(payload) as AsyncData<OrderResponse>
         this._data.next(response)
+    }
+
+    private onPlayAudio() {
+        const promise = this.audio.play();
+        if (promise !== undefined) {
+            promise.then(() => {
+            }).catch(error => {
+                console.log('error controlado audio');
+                this.audio.play();
+            });
+        }
     }
 }
