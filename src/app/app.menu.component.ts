@@ -3,6 +3,7 @@ import { AppMainComponent } from './app.main.component';
 
 @Component({
     selector: 'app-menu',
+    styleUrls: ['./app.menu.component.scss'],
     templateUrl: './app.menu.component.html'
 })
 export class AppMenuComponent implements OnInit {
