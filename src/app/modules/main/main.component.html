@@ -5,9 +5,9 @@
              <div class="title">
                 <h5>{{title}}</h5>
              </div>
-             <div class=" task-info">
+             <!-- <div class=" task-info">
                 <span>You have</span><span class="highlighted"> 2 tasks</span><span> today</span>
-             </div>
+             </div> -->
           </div>
           <div *ngFor="let order of ordersOpen; let i = index">
              <div class="p-col-12">
@@ -57,10 +57,10 @@
              <div class="p-col-6 title">
                 <h5>En preparación</h5>
              </div>
-             <div class="p-col-6 support-info">
+             <!-- <div class="p-col-6 support-info">
                 <p>⏰ Estimated wait time</p>
                 <span class="highlighted">21 minutes</span>
-             </div>
+             </div> -->
           </div>
           <div *ngFor="let order of ordersPreparing; let i = index">
             <div class="p-col-12" id="btn-order">
@@ -145,10 +145,10 @@
              <div class="p-col-6 title">
                 <h5>Por Entregar</h5>
              </div>
-             <div class="p-col-6 support-info">
+             <!-- <div class="p-col-6 support-info">
                 <p>⏰ Estimated wait time</p>
                 <span class="highlighted">21 minutes</span>
-             </div>
+             </div> -->
           </div>
           <div *ngFor="let order of ordersReady; let i = index">
             <div class="p-col-12">
