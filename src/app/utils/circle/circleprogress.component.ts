@@ -25,7 +25,7 @@ export class CircleProgress implements OnInit {
             progressStartValue=(this.secondsElapsed/this.secondsDone)*progressEndValue
             this.minutesElapsed=Math.floor(this.secondsElapsed/60)
             this.progressValue.nativeElement.textContent = `${this.minutesElapsed} min`
-            this.circularProgress.nativeElement.style.background = `conic-gradient(#00B3A7 ${progressStartValue * 3.6}deg, #ededed 0deg)`
+            this.circularProgress.nativeElement.style.background = `conic-gradient(#d94545 ${progressStartValue * 3.6}deg, #ededed 0deg)`
 
             if (progressStartValue >=progressEndValue) {
                 clearInterval(progress);

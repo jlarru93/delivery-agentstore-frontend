@@ -237,6 +237,7 @@ export class OrderResponse {
     deliveryMan?: DeliveryManResponse
     status?: string
     createdAt: number
+    readyToDmAt: number
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
         bean.id = self?.id
@@ -255,6 +256,7 @@ export class OrderResponse {
         bean.deliveryMan = DeliveryManResponse.toBean(self?.deliveryMan)
         bean.status = self.status
         bean.createdAt = self.createdAt
+        bean.readyToDmAt = self.readyToDmAt
         return bean
     }
 }
