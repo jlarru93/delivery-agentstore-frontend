@@ -238,6 +238,7 @@ export class OrderResponse {
     status?: string
     createdAt: number
     readyToDmAt: number
+    acceptAgentStoreAt: number
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
         bean.id = self?.id
@@ -257,6 +258,7 @@ export class OrderResponse {
         bean.status = self.status
         bean.createdAt = self.createdAt
         bean.readyToDmAt = self.readyToDmAt
+        bean.acceptAgentStoreAt = self.acceptAgentStoreAt
         return bean
     }
 }
