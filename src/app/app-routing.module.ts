@@ -60,6 +60,10 @@ const routes: Routes = [
                 path: "request-trip",
                 loadChildren: () => import('./modules/request-trip/request-trip.module').then(m => m.RequestTripModule)
             },
+            {
+                path: "order-history",
+                loadChildren: () => import('./modules/order-history/order-history.module').then(m => m.OrderHistoryModule)
+            },
 
             //THEME
             { path: '', component: DashboardDemoComponent },

@@ -414,7 +414,7 @@
             <div id="reject">
                <button class="btn-order" *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" [loading]="loadingButtonAcept" (click)="readyOrder()"></button>
-               <button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()"></button>
+               <button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()" [disabled]="!isButtonEnabled"></button>
                <button pButton type="button" label="Rechazar orden" class="p-button-danger btn-reject p-mt-2" (click)="openDialogDenyOrder()"></button>
             </div>
             <!-- <div id="reject">
@@ -453,61 +453,49 @@
       <p-accordion>
          <p-accordionTab header="Producto agotado temporalmente" [selected]="selectedTab">
             <div class="p-grid">
-               <div class="p-col-9">
-                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
-               </div>
-               <div class="p-col-3">
-                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               <div class="p-col-12">
+                  <button valign="bottom" pButton type="button" (click)="cancelOrder('Producto agotado temporalmente')"
+                  [loading]="loadingButtonCancel" style="float: right;" label="Seleccionar" class="p-button-info"></button>
                </div>
             </div>
          </p-accordionTab>
          <p-accordionTab header="Producto mal configurado (precio, horario)" [selected]="false">
             <div class="p-grid">
-               <div class="p-col-9">
-                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
-               </div>
-               <div class="p-col-3">
-                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               <div class="p-col-12">
+                  <button valign="bottom" pButton type="button" (click)="cancelOrder('Producto mal configurado (precio, horario)')"
+                  [loading]="loadingButtonCancel" style="float: right;" label="Seleccionar" class="p-button-info"></button>
                </div>
             </div>
          </p-accordionTab>
          <p-accordionTab header="Ya no manejo este producto" [selected]="false">
             <div class="p-grid">
-               <div class="p-col-9">
-                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
-               </div>
-               <div class="p-col-3">
-                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               <div class="p-col-12">
+                  <button valign="bottom" pButton type="button" (click)="cancelOrder('Ya no manejo este producto')"
+                  [loading]="loadingButtonCancel" style="float: right;" label="Seleccionar" class="p-button-info"></button>
                </div>
             </div>   
          </p-accordionTab>
          <p-accordionTab header="Problemas operativos" [selected]="false">
             <div class="p-grid">
-               <div class="p-col-9">
-                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
-               </div>
-               <div class="p-col-3">
-                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               <div class="p-col-12">
+                  <button valign="bottom" pButton type="button" (click)="cancelOrder('Problemas operativos')"
+                  [loading]="loadingButtonCancel" style="float: right;" label="Seleccionar" class="p-button-info"></button>
                </div>
             </div>   
          </p-accordionTab>
          <p-accordionTab header="Tienda saturada" [selected]="false">
             <div class="p-grid">
-               <div class="p-col-9">
-                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
-               </div>
-               <div class="p-col-3">
-                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               <div class="p-col-12">
+                  <button valign="bottom" pButton type="button" (click)="cancelOrder('Tienda saturada')"
+                  [loading]="loadingButtonCancel" style="float: right;" label="Seleccionar" class="p-button-info"></button>
                </div>
             </div>  
          </p-accordionTab>
          <p-accordionTab header="Cerramos temprano" [selected]="false">
             <div class="p-grid">
-               <div class="p-col-9">
-                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur amet tempore voluptate sequi voluptates omnis facilis assumenda libero velit? Deleniti, eligendi iste nihil modi autem repellendus quis ipsam quae deserunt!</p>
-               </div>
-               <div class="p-col-3">
-                  <button valign="bottom" pButton type="button" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               <div class="p-col-12">
+                  <button valign="bottom" pButton type="button" (click)="cancelOrder('Cerramos temprano')"
+                  [loading]="loadingButtonCancel" style="float: right;" label="Seleccionar" class="p-button-info"></button>
                </div>
             </div>
          </p-accordionTab>
