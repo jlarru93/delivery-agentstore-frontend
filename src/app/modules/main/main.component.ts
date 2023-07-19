@@ -373,4 +373,26 @@ import { ModalComponent } from "src/app/modal/modal.component";
       },
       (error)=>{})
     }
+
+    formatearTiempo(timestamp: number): string {
+      const fecha = new Date(timestamp * 1000);
+      const horas = fecha.getHours();
+      const minutos = fecha.getMinutes();
+      const segundos = fecha.getSeconds();
+    
+      let tiempoFormateado = `${this.agregarCeros(horas)}:${this.agregarCeros(minutos)}:${this.agregarCeros(segundos)}`;
+    
+      // Agregar designación AM/PM
+      if (horas >= 12) {
+        tiempoFormateado += ' PM';
+      } else {
+        tiempoFormateado += ' AM';
+      }
+    
+      return tiempoFormateado;
+    }
+    
+    agregarCeros(valor: number): string {
+      return valor < 10 ? `0${valor}` : valor.toString();
+    }
 }

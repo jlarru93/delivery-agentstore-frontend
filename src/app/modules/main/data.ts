@@ -152,7 +152,7 @@ export class OrderBean {
     status?: string
     createdAt: number
     readyToDmAt:number
-
+    acceptAgentStoreAt: number
     messagesNoReadTotal:number
     messagesChat:ChatBean[]
     isLoadingChat:boolean

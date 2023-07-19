@@ -45,9 +45,8 @@ main{
     border: 1px solid #EBEFF4;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1.5fr 1.5fr 1.5fr 1.5fr 1fr 2fr;
+    grid-template-rows: 1fr 1.5fr 1.5fr 1.5fr 1fr;
     grid-template-areas: 
-    "payment"
     "info"
     "info"
     "info"
@@ -55,14 +54,14 @@ main{
     "buttons"
   }
 
-  #payment {
-    grid-area: payment;
-    padding: 10px;
+//   #payment {
+//     grid-area: payment;
+//     padding: 10px;
 
-    @media (max-width: 1280px) {
-        padding: 5px;
-    }
-  }
+//     @media (max-width: 1280px) {
+//         padding: 5px;
+//     }
+//   }
   
   #info {
     grid-area: info;
@@ -73,14 +72,9 @@ main{
   }
   
   #buttons {
-    grid-area: buttons;
-    display: grid;
+    
     padding: 10px;
-    grid-template-columns: 1fr;
-    grid-template-rows: 0.75fr 0.75fr;
-    grid-template-areas:
-    "acept"
-    "reject"
+    
   }
   
 footer{
@@ -136,10 +130,15 @@ footer{
     color: #a6aeb8;
     font-size: 17px;
 
-    @media (max-width: 1280px) {
+    @media (min-width: 1280px) {
         font-size: 13px;
         margin-top: 0;
       }
+
+    @media (max-width: 1024px) {
+        padding: 5px 0;
+        font-size: 13px;
+    }
 
     @media (max-width: 960px) {
         font-size: 11px;
@@ -164,6 +163,12 @@ footer{
 }
 .card-client b {
     font-size: 16px;
+    @media (min-width: 1280px) {
+        font-size: 12px;
+    }
+    @media (min-width: 1024px) {
+        font-size: 12px;
+    }
 }
 
 .deliveryMan{
@@ -178,6 +183,10 @@ footer{
     background-color: #FFFFFF;
     padding: 1rem;
     border: 1px solid #EEF2F6;
+
+    @media (min-width: 1024px) {
+        padding: 0.5rem;
+    }
 }
 
 #counter-value{
@@ -421,87 +430,3 @@ h5{
     line-height: 1.2;
     color: inherit;
 }
-
-// @media screen and (min-width: 1601px) {
-//     .card-recommend span{
-//         font-size: 12px;
-//     }
-// }
-
-// :host ::ng-deep .p-button-label{
-//     font-size: 17px;
-// }
-
-// @media (max-width: 1670px) and (min-width: 1601px){
-//     #sidebar{
-//         height: 47vh;
-//     }
-// }
-
-// @media only screen and (max-width: 1024px){
-//     .grid-resume{
-//         top: 0;
-//     }
-//     .container-dialog{
-//         grid-template-columns: 1fr 1fr 1fr 1fr .3fr;
-//         grid-template-areas:
-//             "main main main sidebar sidebar"
-//             "footer footer footer sidebar sidebar";
-//     }
-//     main{
-//         height: 61.2vh;
-//     }
-//     .sidebar-method-payment b {
-//         font-size: 12px;
-//     }
-//     .sidebar-container-title h5 {
-//         font-size: 13px;
-//     }
-
-//     :host ::ng-deep .p-dialog{
-//         width: 85vw !important;
-//         height: 80.7vh !important;
-//     }
-// }
-
-// @media (width: 1360px) and (height: 768px){
-//     .grid-resume{
-//         top: 0;
-//     }
-//     .container-dialog{
-//         display: grid;
-//         grid-template-columns: 1fr 1fr 1fr 1fr;
-//         grid-template-areas: 
-//          "main main main sidebar"
-//          "main main main sidebar"
-//          "main main main sidebar"
-//          "main main main sidebar"
-//          "footer footer footer sidebar";
-//     }
-//     main{
-//         height: 64.3vh;
-//     }
-//     :host ::ng-deep .p-dialog{
-//         width: 70vw !important;
-//         height: 83.8vh !important;
-//     }
-//     .sidebar-method-payment b {
-//         font-size: 12px;
-//     }
-//     .sidebar-container-title h5 {
-//         font-size: 15px;
-//     }
-// }
-
-// @media (width: 1366px) and (height: 1024px){
-//     .grid-resume{
-//         top: 0;
-//     }
-//     main{
-//         height: 48.01vh;
-//     }
-//     :host ::ng-deep .p-dialog{
-//         width: 100vh !important;
-//         height: 62.7vh;
-//     }
-// }

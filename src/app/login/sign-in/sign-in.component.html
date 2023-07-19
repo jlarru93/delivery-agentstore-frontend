@@ -1,34 +1,34 @@
-<div class="login-body" [ngClass]="{'layout-dark': dark, 'layout-light': !dark}">
+<div class="login-body" [ngClass]="{'layout-dark': true}">
 
     <div class="login-content">
-        <div class="night-switch">
+        <!-- <div class="night-switch">
             <p-button styleClass="dark-switch" icon="pi pi-circle-on" (click)="dark = true"></p-button>
             <p-button styleClass="light-switch" icon="pi pi-circle-off" (click)="dark = false"></p-button>
-        </div>
+        </div> -->
         <div class="login-panel">
             <div class="login-panel-content">
                 <div class="logo">
-                    <img src="assets/layout/images/logo-mirage@2x.png" alt="mirage-layout" />
+                    <img src="assets/images/656.png" alt="mirage-layout" />
                 </div>
                 <h1>Ingresar</h1>
                 <p>Bienvenido administrador</p>
                 <div class="forms">
                     <div class="login-input-wrapper">
-                        <label for="username">usuario</label>
+                        <label for="username">Usuario</label>
                         <input id="username" pInputText [(ngModel)]="userName" required/>
                         <i class="pi pi-user"></i>
                         <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorUserName}}</small> 
                     </div>
 
                     <div class="login-input-wrapper">
-                        <label for="username">password</label>
+                        <label for="username">Contraseña</label>
                         <input id="username" pPassword type="password" [(ngModel)]="password" required autocomplete="off"/>
-                        <i class="pi pi-user"></i>
+                        <i class="pi pi-lock"></i>
                         <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorPassword}}</small> 
                     </div>
                     <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorSignIn}}</small> 
-                    <div class="buttons">
-                        <button pButton type="button" label="Login" (click)="signIn()" *ngIf="!flagButtonnumberphone" ></button>
+                    <div>
+                        <button pButton type="button" label="Iniciar Sesión" (click)="signIn()" *ngIf="!flagButtonnumberphone" style="width: 100%;"></button>
                         <i class="pi pi-spin pi-spinner" style="font-size: 2rem" *ngIf="flagButtonnumberphone"></i>
                     </div>
                     
