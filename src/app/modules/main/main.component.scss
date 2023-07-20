@@ -15,7 +15,7 @@
 .container-dialog{
     display: grid;
     height: calc(100vh - 50vh);
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr .7fr 1.3fr;
     grid-template-rows: repeat(6, 1.5fr);
     grid-template-areas: 
      "main main main sidebar"
@@ -291,6 +291,13 @@ footer{
     margin-left: 0rem;
     
 }
+.delivery-content{
+    display: flex;
+    min-height: 50px;
+    padding: 0 15px;
+    align-items: center;
+    justify-content: space-between;
+}
 
 main{
     display: flex;
@@ -322,13 +329,6 @@ main{
     padding-bottom: 10px;
 }
 
-.delivery-content{
-    display: flex;
-    min-height: 50px;
-    padding: 0 15px;
-    align-items: center;
-    justify-content: space-between;
-}
 
 .accordion-content .header {
     display: flex;
@@ -338,19 +338,6 @@ main{
     justify-content: space-between;
     cursor: pointer;
     transition: all 0.2s linear;
-}
-.delivery-status{
-    display: flex;
-    min-height: 50px;
-    padding: 0 12px;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid #EEF2F6;
-    border-radius: 8px;
-}
-.delivery-status p{
-    font-weight: 600;
-    padding-left: 5px;
 }
 
 .accordion-content .header .accordion-title{
@@ -374,6 +361,21 @@ main{
 .accordion-options{
     border-left: 1px solid #EEF2F6;
 }
+
+.delivery-status{
+    display: flex;
+    min-height: 50px;
+    padding: 0 12px;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #EEF2F6;
+    border-radius: 8px;
+}
+.delivery-status p{
+    font-weight: 600;
+    padding-left: 5px;
+}
+
 #subname{
     color: #000;
     font-size: 14px;

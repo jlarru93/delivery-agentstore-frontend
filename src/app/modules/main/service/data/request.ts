@@ -4,3 +4,7 @@ export class OpenStoreRequest{
 export class AceptOrderRequest{
     status:string
 }
+export class CancelOrderRequest{
+    status:string
+    comment:string
+}

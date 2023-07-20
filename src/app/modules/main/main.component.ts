@@ -146,6 +146,7 @@ import { ModalComponent } from "src/app/modal/modal.component";
       }
     }
 
+    isButtonEnabled: boolean = false
     getOrders(){
       this.orderService.getOrders().subscribe((resp)=>{
         this.orders=resp.data.map((it)=>{
@@ -154,6 +155,13 @@ import { ModalComponent } from "src/app/modal/modal.component";
           if(currentOrden){
             order.messagesChat=currentOrden.messagesChat
           }
+
+          if(currentOrden.status == 'inStore'){
+            this.isButtonEnabled = true;
+          } else {
+            this.isButtonEnabled = false;
+          }
+
           return order
         })
         this.sortOrders()
@@ -292,6 +300,22 @@ import { ModalComponent } from "src/app/modal/modal.component";
       },()=>{
       })
     }
+
+    loadingButtonCancel: boolean = false
+    cancelOrder(comment: string){
+      let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
+      this.loadingButtonCancel=true
+      this.orderService.cancelOrder(orderRequest.id.toString(),comment).subscribe((resp) => {
+        this.displayOrderReject = false
+        this.loadingButtonCancel = false
+        this.messageService.add({severity:'success', summary: 'Exito', detail: 'Orden cancelado', life: 3000 });
+      }, (error) => {
+        this.displayOrderReject = false
+        this.loadingButtonCancel = false
+        this.messageService.add({severity:'error', summary: 'Error', detail: error, life: 3000});
+      })
+    }
+
     giveOrderToDriver(){
 
     }
@@ -316,11 +340,19 @@ import { ModalComponent } from "src/app/modal/modal.component";
       const accordionContent = document.querySelectorAll(".accordion-item");
       accordionContent.forEach((item, index) => {
         let header = item.querySelector(".header") as HTMLElement | null;
+        let description = item.querySelector(".accordion-description") as HTMLElement | null;
+        let gridheader = item.querySelector(".grid-quantity") as HTMLElement | null;
+
+        item.classList.add("open");
+
+        description.style.height = `${description.scrollHeight}px`;
+        description.style.paddingTop = '10px';
+        gridheader.style.borderBottom = '1px solid #EEF2F6';
+
         header.addEventListener("click", ()=> {
           item.classList.toggle("open");
 
-          let description = item.querySelector(".accordion-description") as HTMLElement | null;
-          let gridheader = item.querySelector(".grid-quantity") as HTMLElement | null;
+
           if(item.classList.contains('open')){
             description.style.height = `${description.scrollHeight}px`
             description.style.paddingTop = '10px'
