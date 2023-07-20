@@ -67,7 +67,7 @@ import { ModalComponent } from "src/app/modal/modal.component";
     messagesChat:ChatBean[]=[]
     isLoadingChat:boolean=false
     userName="usuario"
-    userId="123"
+    userId: number = 123
     set_interval ?: any
     constructor(
       public dialogService: DialogService,
@@ -104,7 +104,7 @@ import { ModalComponent } from "src/app/modal/modal.component";
     }
     getUserData(){
       this.userName=this.auth.getParameterToken('name')
-      this.userId=this.auth.getParameterToken('id')
+      this.userId=Number(this.auth.getParameterToken('id'))
     }
 
     imagenURL: string = ''
@@ -156,12 +156,12 @@ import { ModalComponent } from "src/app/modal/modal.component";
             order.messagesChat=currentOrden.messagesChat
           }
 
-          if(currentOrden.status == 'inStore'){
-            this.isButtonEnabled = true;
-          } else {
-            this.isButtonEnabled = false;
-          }
-
+          // if(currentOrden.status == 'inStore'){
+          //   this.isButtonEnabled = true;
+          // } else {
+          //   this.isButtonEnabled = false;
+          // }
+          
           return order
         })
         this.sortOrders()

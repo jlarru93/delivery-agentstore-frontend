@@ -45,8 +45,91 @@
             <td>{{order.date}}</td>
             <td>{{order.price}}</td>
             <td>{{order.dm}}</td>
-            <td><i class="pi pi-eye" (click)="isDialogDetailOpen = true"
-                style="color: #17a2b8; font-size: 2rem; cursor: pointer;"></i></td>
+            <td><i class="pi pi-eye" (click)="OpenDialogDetail()"
+                style="color: #17a2b8; font-size: 2rem; cursor: pointer;" (click)="isDialogDetailOpen = true"></i></td>
         </tr>
     </ng-template>
 </p-table>
+
+<p-dialog [(visible)]="isDialogDetailOpen" [modal]="true" [style]="{width: '50vw'}"
+    >
+    <div class="p-grid">
+        <div class="p-col-7">
+            <div class="container-detail">
+                <div class="details">
+                    <div class="p-grid">
+                        <div class="p-col-6">
+                            <h5 style="color: #f2f2f2;">Novedad: <span>Titulo de la novedad</span></h5>
+                        </div>
+                        <div class="p-col-6">
+                            <p-splitButton label="Estado" [model]="items" style="float: right;"></p-splitButton>
+                        </div>
+                    </div>
+                    <h5 style="color: #f2f2f2;">Detalles</h5>
+                    <span style="color: #f2f2f2;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, sequi? Ipsam modi officiis inventore accusantium non laudantium molestiae enim iusto veritatis velit, quaerat unde. Atque cum tenetur odio corrupti nulla.</span>
+                    <div class="p-mt-4"></div>
+                    <div class="p-grid">
+                        <div class="p-col-4">
+                            <p-image src="https://images.pexels.com/photos/4009621/pexels-photo-4009621.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Image" width="200" [preview]="true"></p-image>
+                        </div>
+                        <div class="p-col-4">
+                            <p-image src="https://images.pexels.com/photos/416160/pexels-photo-416160.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Image" width="200" [preview]="true"></p-image>
+                        </div>
+                        <div class="p-col-4">
+                            <p-image src="https://images.pexels.com/photos/13627457/pexels-photo-13627457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Image" width="200" [preview]="true"></p-image>
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+        <div class="p-col-5">
+            <div class="container">
+                <div class="messages p-shadow-4">
+                    <div class="messages-header">
+                        <h2>Mensajes</h2>
+                    </div>
+                    <mat-divider></mat-divider>
+                    <div class="chat-area">
+                            <div *ngFor="let message of messages" >
+                                <div class="sender-name" *ngIf="message.user.id != userId">
+                                    <span>{{message.user.type}}</span>
+                                </div>
+                                <div class="chat-bubble-container"
+                                [ngClass]="{'sender': message.user.id === userId}">
+                                    <div class="chat-bubble">
+                                        {{message.body}}
+                                        <span class="chat-date" [ngClass]="{'sender': message.user.id === userId}">
+                                            {{getFormatDate(message.createdAt)}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <ng-container *ngIf="message.readUser">
+                                    <div class="chat-avatar-container" style="margin-top: -10px;"
+                                    [ngClass]="{'sender': message.user.id === userId}">
+                                        <div class="chat-avatar">
+                                            <p-avatarGroup styleClass="p-mb-3">
+                                                <div *ngFor="let reader of message.readUser">
+                                                    <p-avatar label="{{(reader.type.charAt(0)).toUpperCase()}}" class="avatar" 
+                                                    [style]="{'background-color': (reader.type === 'user') ? '#688128' : '#d3a9be', 'color' : '#ffffff'}" shape="circle"></p-avatar>
+                                                </div>
+                                            </p-avatarGroup>
+                                        </div>
+                                    </div>
+                                </ng-container>   
+                            </div>
+                            <div #endOfChat></div>
+                    </div>
+                    <div class="input-area">
+                        <mat-form-field appearance="outline">
+                            <input [formControl]="messageControl" matInput placeholder="Ingrese su mensaje..." (keydown.enter)="sendMessage()">
+                            <mat-icon matSuffix (click)="sendMessage()" >
+                                send
+                            </mat-icon>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>
