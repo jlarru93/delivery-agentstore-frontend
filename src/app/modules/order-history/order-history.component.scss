@@ -13,127 +13,112 @@ h5{
 }
 
 
-.container{
-    display: flex;
-    //height: calc(50vh - 70px);
-    height: 650px;
-}
-.messages{
-    //width: 380px;
-    margin-top: 10px;
-    border-radius: 16px;
-    padding: 25px;
-    background-color: #ffffff;
-    //background: rgba(0, 0, 0, 0.05);
-    position: relative;
-}
+// .container{
+//     display: flex;
+//     height: 650px;
+// }
+// .messages{
+//     //width: 380px;
+//     margin-top: 10px;
+//     border-radius: 16px;
+//     padding: 25px;
+//     background-color: #ffffff;
+//     position: relative;
+// }
 
-.container-detail{
-    display: flex;
-    height: 650px;
-}
+// .container-detail{
+//     display: flex;
+//     height: 650px;
+// }
 
 .details{
     margin-top: 10px;
     width: 100%;
     border-radius: 16px;
     padding: 25px;
-    background-color: rgba(0,0,0,0.6);
-    //background: rgba(0, 0, 0, 0.05);
+    background-color: #c5cae9;
     position: relative;
 }
 
-// .messages::after{
-//     position: absolute;
-//     border: 0.5em solid transparent;
-//     border-top-color: #ffffff;
-//     border-left-color: #ffffff;
-//     top: 0%;
-//     left: 100%;
-//     //transform: skewY(25deg);
-//     transform-origin: 100% 100%;
+// .messages-header{
+//     display: flex;
+//     margin-bottom: 8px;
+// }
+// .messages-header > h2 {
+//     margin: 0;
+// }
+// .chat-area{
+//     height: calc(650px - 168px);
+//     display: flex;
+//     flex-direction: column;
+//     overflow: auto;
+// }
+// .chat-area > :first-child {
+//     margin-top: auto;
+// }
+// .input-area > mat-form-field{
+//     width: 100%;
+// }
+// .input-area {
+//     padding-top: 16px;
+//     padding-bottom: 8px;
+// }
+// .chat-bubble-container{
+//     display: flex;
+//     width: 100%;
+//     justify-content: flex-start;
 // }
 
-.messages-header{
-    display: flex;
-    margin-bottom: 8px;
-}
-.messages-header > h2 {
-    margin: 0;
-}
-.chat-area{
-    height: calc(650px - 168px);
-    //height: 270px;
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-}
-.chat-area > :first-child {
-    margin-top: auto;
-}
-.input-area > mat-form-field{
-    width: 100%;
-}
-.input-area {
-    padding-top: 16px;
-    padding-bottom: 8px;
-}
-.chat-bubble-container{
-    display: flex;
-    width: 100%;
-    justify-content: flex-start;
-}
+// .chat-bubble-container.sender{
+//     justify-content: flex-end;
+// }
 
-.chat-bubble-container.sender{
-    justify-content: flex-end;
-}
+// .chat-bubble-container.sender > .chat-bubble{
+//     background: #d94545;
+//     color: #ffffff;
+// }
 
-.chat-bubble-container.sender > .chat-bubble{
-    background: #d94545;
-    color: #ffffff;
-}
+// .chat-bubble-container.sender > .chat-bubble > .chat-date{
+//     color: #ffffff;
+// }
 
-.chat-bubble-container.sender > .chat-bubble > .chat-date{
-    color: #ffffff;
-}
+// .chat-avatar-container{
+//     display: flex;
+//     width: 100%;
+//     justify-content: flex-end;
+// }
 
-.chat-avatar-container{
-    display: flex;
-    width: 100%;
-    justify-content: flex-end;
-}
+// .chat-avatar-container.sender{
+//     justify-content: flex-end;
+// }
 
-.chat-avatar-container.sender{
-    justify-content: flex-end;
-}
+// .sender-name{
+//     padding-left: 8px;
+//     color: #65676B;
+// }
 
-.sender-name{
-    padding-left: 8px;
-    color: #65676B;
-}
+// .chat-bubble{
+//     background: #E4E6EB;
+//     padding-top: 8px;
+//     padding-bottom: 18px;
+//     padding-left: 8px;
+//     padding-right: 100px;
+//     margin-bottom: 16px;
+//     border-radius: 8px;
+//     width: fit-content;
+//     position: relative
+// }
 
-.chat-bubble{
-    background: #E4E6EB;
-    padding-top: 8px;
-    padding-bottom: 18px;
-    padding-left: 8px;
-    padding-right: 100px;
-    margin-bottom: 16px;
-    border-radius: 8px;
-    width: fit-content;
-    position: relative
-}
+// .chat-bubble > .chat-date{
+//     position: absolute;
+//     bottom: 2px;
+//     right: 8px;
+//     font-size: 0.7rem;
+//     color: rgba(0,0,0,0.6);
+// }
 
-.chat-bubble > .chat-date{
-    position: absolute;
-    bottom: 2px;
-    right: 8px;
-    font-size: 0.7rem;
-    color: rgba(0,0,0,0.6);
-}
-
-:host ::ng-deep .p-avatar{
-    width: 1.5rem;
-    height: 1.5rem;
-    font-size: 1rem;
-}
+// :host ::ng-deep .p-avatar{
+//     width: 1.5rem;
+//     height: 1.5rem;
+//     font-size: 1rem;
+// }

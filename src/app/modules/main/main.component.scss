@@ -179,6 +179,16 @@ footer{
     padding: 2rem;
 }
 
+.deliveryman b {
+    font-size: 16px;
+    @media (min-width: 1280px) {
+        font-size: 12px;
+    }
+    @media (min-width: 1024px) {
+        font-size: 12px;
+    }
+}
+
 .card-time{
     background-color: #FFFFFF;
     padding: 1rem;
@@ -294,7 +304,7 @@ footer{
 .delivery-content{
     display: flex;
     min-height: 50px;
-    padding: 0 15px;
+    padding: 0 10px;
     align-items: center;
     justify-content: space-between;
 }

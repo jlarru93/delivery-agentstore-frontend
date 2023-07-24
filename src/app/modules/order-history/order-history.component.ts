@@ -1,6 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AuthService } from 'src/app/utils/auth.service';
+import { OrderHistoryService } from './service/order-history.service';
+import { OrderHistoryRequest } from './service/data/request';
+import { OrderHistorBean } from './data';
+import { Pagination } from 'src/app/models';
 
 @Component({
   selector: 'app-order-history',
@@ -16,32 +20,28 @@ export class OrderHistoryComponent implements OnInit {
 
   messageControl: FormControl = new FormControl('');
 
-  orders = [
+  images: any[] = []
+
+  responsiveOptions:any[] = [
     {
-      status: 'Cancelado',
-      id: 'ID 9658246',
-      date: 'Jul 01, 2020 11:41:07 AM',
-      price: '$17,000',
-      dm: 'Sin Deliveryman',
-      rate: 'No disponible'
+        breakpoint: '1024px',
+        numVisible: 5
     },
     {
-      status: 'Cancelado',
-      id: 'ID 9658246',
-      date: 'Jul 01, 2020 11:41:07 AM',
-      price: '$17,000',
-      dm: 'Sin Deliveryman',
-      rate: 'No disponible'
+        breakpoint: '960px',
+        numVisible: 4
     },
     {
-      status: 'Cancelado',
-      id: 'ID 9658246',
-      date: 'Jul 01, 2020 11:41:07 AM',
-      price: '$17,000',
-      dm: 'Sin Deliveryman',
-      rate: 'No disponible'
+        breakpoint: '768px',
+        numVisible: 3
+    },
+    {
+        breakpoint: '560px',
+        numVisible: 1
     }
-  ]
+];
+
+
 
   messages: any[] = [
     { 
@@ -237,9 +237,16 @@ export class OrderHistoryComponent implements OnInit {
   @ViewChild('endOfChat') endOfChat!: ElementRef
 
   items: any[]
+  orderHistoryRequest: OrderHistoryRequest
+  orderHistories: OrderHistorBean[]
+  statusOrder: string
+  orderHistoryId: number
+
+  pagination: Pagination = { page: 1, size: 10, totalRecords: 0, totalNumberPages: 0 }
 
   constructor(
-    private auth : AuthService
+    private auth : AuthService,
+    private service: OrderHistoryService
   ) { }
 
   userId: any
@@ -253,8 +260,48 @@ export class OrderHistoryComponent implements OnInit {
       {label: 'En proceso', icon: 'pi pi-forward'},
       {label: 'Terminado', icon: 'pi pi-thumbs-up-fill'},
       {label: 'Cancelado', icon: 'pi pi-times'},
-  ];
+    ];
 
+    this.images = [
+      {
+        previewImageSrc: "https://images.pexels.com/photos/4009621/pexels-photo-4009621.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        thumbnailImageSrc: "https://images.pexels.com/photos/4009621/pexels-photo-4009621.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        alt: "Description for Image 1",
+        title: "Title 1"
+      },
+      {
+        previewImageSrc: "https://images.pexels.com/photos/416160/pexels-photo-416160.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        thumbnailImageSrc: "https://images.pexels.com/photos/416160/pexels-photo-416160.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        alt: "Description for Image 2",
+        title: "Title 2"
+      },
+      {
+        previewImageSrc: "https://images.pexels.com/photos/13627457/pexels-photo-13627457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        thumbnailImageSrc: "https://images.pexels.com/photos/13627457/pexels-photo-13627457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        alt: "Description for Image 3",
+        title: "Title 3"
+      }
+    ]
+    this.GetOrderHistories()
+  }
+
+  page: number = 1
+  size: number = 10
+
+
+  GetOrderHistories(orderId: number = null, status: string = null){
+    this.loadingResults = true
+    let body = {
+      orderId: orderId,
+      status: status
+    }
+    this.service.getOrderHistories(body,this.pagination).subscribe(
+      (resp: any) => {
+        this.orderHistories = resp.data
+        this.totalRecords = resp.meta.totalRecords
+        this.loadingResults = false
+      }
+    )
   }
 
   OpenDialogDetail(){
@@ -315,4 +362,23 @@ export class OrderHistoryComponent implements OnInit {
     return formattedDate
   }
 
+  totalRecords: number = 0;
+  loadingResults: boolean = false
+  async Page(event : any){
+    this.loadingResults = true
+    let req: any = {
+      status: this.statusOrder ? this.statusOrder : null,
+      orderId : this.orderHistoryId ? this.orderHistoryId : null
+      
+    };
+
+    this.pagination.page = event.page + 1
+
+    await this.service.getOrderHistories(req, this.pagination).subscribe
+    ((resp: any) => {
+      this.orderHistories = resp.data
+      this.totalRecords = resp.meta.totalRecords
+      this.loadingResults = false
+    })
+  }
 }

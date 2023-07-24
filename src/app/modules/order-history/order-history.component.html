@@ -5,11 +5,11 @@
             
             <div class="p-col-12 p-md-6 p-lg-6">
                 <label for="">Número de orden</label>
-                 <input type="text" pInputText>
+                 <input type="number" pInputText [(ngModel)]="orderHistoryId">
             </div>
             <div class="p-col-12 p-md-6 p-lg-6">
                 <label for="">Estado</label>
-                <p-dropdown [options]="status" placeholder="Seleccione estado" 
+                <p-dropdown [options]="status" placeholder="Seleccione estado" [(ngModel)]="statusOrder"
                 optionLabel="name" [showClear]="true"></p-dropdown>
             </div>
             <!-- <div class="col-12 md:col-6 lg:col-2">
@@ -22,12 +22,12 @@
     
     <div class="p-toolbar-group-right">
         <p-button icon="pi pi-search" type="button" 
-        label="Buscar" styleClass="p-button-danger"></p-button>
+        label="Buscar" styleClass="p-button-danger" (click)="GetOrderHistories(orderHistoryId, statusOrder)"></p-button>
     </div>
 </p-toolbar>
 <div class="p-mt-4"></div>
 
-<p-table [value]="orders" [resizableColumns]="true" styleClass="p-datatable-gridlines" >
+<p-table [value]="orderHistories" [resizableColumns]="true" styleClass="p-datatable-gridlines" [loading]="loadingResults">
     <ng-template pTemplate="header">
         <tr>
             <th pResizableColumn>Estado</th>
@@ -41,95 +41,70 @@
     <ng-template pTemplate="body" let-order>
         <tr>
             <td>{{order.status}}</td>
-            <td>{{order.id}}</td>
-            <td>{{order.date}}</td>
-            <td>{{order.price}}</td>
-            <td>{{order.dm}}</td>
-            <td><i class="pi pi-eye" (click)="OpenDialogDetail()"
-                style="color: #17a2b8; font-size: 2rem; cursor: pointer;" (click)="isDialogDetailOpen = true"></i></td>
+            <td>ID: {{order.orderId}}</td>
+            <td>{{getFormatDate(order.createdAt)}}</td>
+            <td>{{order.total}}</td>
+            <td>{{order.deliveryManName}}</td>
+            <td>
+                <i *ngIf="order.complaint == null" class="pi pi-eye" 
+                style="color: #e1e1e1; font-size: 2rem;"></i>
+                <i *ngIf="order.complaint != null" class="pi pi-eye" (click)="OpenDialogDetail()" 
+                style="color: #17a2b8; font-size: 2rem; cursor: pointer;"></i>
+            </td>
         </tr>
     </ng-template>
 </p-table>
+<p-paginator [rows]="10" (onPageChange)="Page($event)" [totalRecords]="totalRecords"></p-paginator>
 
-<p-dialog [(visible)]="isDialogDetailOpen" [modal]="true" [style]="{width: '50vw'}"
-    >
+<p-dialog [(visible)]="isDialogDetailOpen" [modal]="true" [style]="{'width' : '55vw'}">
     <div class="p-grid">
-        <div class="p-col-7">
+        <div class="p-col-8">
             <div class="container-detail">
                 <div class="details">
                     <div class="p-grid">
                         <div class="p-col-6">
-                            <h5 style="color: #f2f2f2;">Novedad: <span>Titulo de la novedad</span></h5>
+                            <h5 >Novedad: <span>Titulo de la novedad</span></h5>
                         </div>
-                        <div class="p-col-6">
-                            <p-splitButton label="Estado" [model]="items" style="float: right;"></p-splitButton>
+                        <div class="p-col-6"  style="float: right;">
+                            <p-splitButton label="Estado" styleClass="p-button-secondary mb-2" [model]="items"></p-splitButton>
                         </div>
                     </div>
-                    <h5 style="color: #f2f2f2;">Detalles</h5>
-                    <span style="color: #f2f2f2;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, sequi? Ipsam modi officiis inventore accusantium non laudantium molestiae enim iusto veritatis velit, quaerat unde. Atque cum tenetur odio corrupti nulla.</span>
+                    <h5 >Detalles</h5>
+                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, sequi? Ipsam modi officiis inventore accusantium non laudantium molestiae enim iusto veritatis velit, quaerat unde. Atque cum tenetur odio corrupti nulla.</span>
                     <div class="p-mt-4"></div>
-                    <div class="p-grid">
-                        <div class="p-col-4">
-                            <p-image src="https://images.pexels.com/photos/4009621/pexels-photo-4009621.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Image" width="200" [preview]="true"></p-image>
-                        </div>
-                        <div class="p-col-4">
-                            <p-image src="https://images.pexels.com/photos/416160/pexels-photo-416160.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Image" width="200" [preview]="true"></p-image>
-                        </div>
-                        <div class="p-col-4">
-                            <p-image src="https://images.pexels.com/photos/13627457/pexels-photo-13627457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Image" width="200" [preview]="true"></p-image>
-                        </div>
-                    </div>
+
+                    <p-galleria [(value)]="images" [responsiveOptions]="responsiveOptions" [numVisible]="5"
+                        [showThumbnails]="false" [showIndicators]="true"> 
+                        <ng-template pTemplate="item" let-item>
+                            <img [src]="item.previewImageSrc" style="width: 100%; display: block;" />
+                        </ng-template>
+                        <ng-template pTemplate="thumbnail" let-item>
+                            <div class="p-grid p-nogutter p-justify-center">
+                                <img [src]="item.thumbnailImageSrc" style="display: block;" />
+                            </div>
+                        </ng-template>
+                    </p-galleria>
+                    
+
+                    <!-- <p-galleria [(value)]="images" [responsiveOptions]="responsiveOptions" [numVisible]="5"
+                        [showThumbnails]="true" [showIndicators]="false"> 
+                        <ng-template pTemplate="item" let-item>
+                            <img [src]="item.previewImageSrc" style="width: 100%; display: block;" />
+                        </ng-template>
+                        <ng-template pTemplate="thumbnail" let-item>
+                            <div class="p-grid p-nogutter p-justify-center">
+                                <img [src]="item.thumbnailImageSrc" style="display: block; width: 100px;" />
+                            </div>
+                        </ng-template>
+                    </p-galleria> -->
+                    
+
                 
                 </div>
             </div>
         </div>
-        <div class="p-col-5">
-            <div class="container">
-                <div class="messages p-shadow-4">
-                    <div class="messages-header">
-                        <h2>Mensajes</h2>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <div class="chat-area">
-                            <div *ngFor="let message of messages" >
-                                <div class="sender-name" *ngIf="message.user.id != userId">
-                                    <span>{{message.user.type}}</span>
-                                </div>
-                                <div class="chat-bubble-container"
-                                [ngClass]="{'sender': message.user.id === userId}">
-                                    <div class="chat-bubble">
-                                        {{message.body}}
-                                        <span class="chat-date" [ngClass]="{'sender': message.user.id === userId}">
-                                            {{getFormatDate(message.createdAt)}}
-                                        </span>
-                                    </div>
-                                </div>
-                                <ng-container *ngIf="message.readUser">
-                                    <div class="chat-avatar-container" style="margin-top: -10px;"
-                                    [ngClass]="{'sender': message.user.id === userId}">
-                                        <div class="chat-avatar">
-                                            <p-avatarGroup styleClass="p-mb-3">
-                                                <div *ngFor="let reader of message.readUser">
-                                                    <p-avatar label="{{(reader.type.charAt(0)).toUpperCase()}}" class="avatar" 
-                                                    [style]="{'background-color': (reader.type === 'user') ? '#688128' : '#d3a9be', 'color' : '#ffffff'}" shape="circle"></p-avatar>
-                                                </div>
-                                            </p-avatarGroup>
-                                        </div>
-                                    </div>
-                                </ng-container>   
-                            </div>
-                            <div #endOfChat></div>
-                    </div>
-                    <div class="input-area">
-                        <mat-form-field appearance="outline">
-                            <input [formControl]="messageControl" matInput placeholder="Ingrese su mensaje..." (keydown.enter)="sendMessage()">
-                            <mat-icon matSuffix (click)="sendMessage()" >
-                                send
-                            </mat-icon>
-                        </mat-form-field>
-                    </div>
-                </div>
-            </div>
+        <div class="p-col-4">
+            <app-chat></app-chat>
         </div>
     </div>
 </p-dialog>

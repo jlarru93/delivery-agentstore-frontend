@@ -167,6 +167,12 @@ import { ModalComponent } from "src/app/modal/modal.component";
         this.sortOrders()
         this.isDoneGetOrders=true
         this.validOrdersSubscribe()
+
+        if(this.orderSelected.status == 'inStore'){
+          this.isButtonEnabled = true;
+        } else {
+          this.isButtonEnabled = false;
+        }
       })
     }
     mqttListener(){
@@ -232,6 +238,14 @@ import { ModalComponent } from "src/app/modal/modal.component";
       }
       
       this.displayOrder=true
+
+      // this.orderService.getOrders().subscribe((resp)=>{
+      //   if(this.orderSelected.status == 'inStore'){
+      //     this.isButtonEnabled = true;
+      //   } else {
+      //     this.isButtonEnabled = false;
+      //   }
+      // })
 
       this.orderSelected.products.forEach(element => {
         let priceformat = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(element.price.value)

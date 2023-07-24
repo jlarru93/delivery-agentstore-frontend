@@ -10,8 +10,6 @@ import { ToastModule } from 'primeng/toast';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { ChatComponent } from 'src/app/chat/chat.component';
-import { ChatModule } from 'src/app/chat/chat.module';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,6 +20,9 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {ImageModule} from 'primeng/image';
 import {SplitButtonModule} from 'primeng/splitbutton';
+import { ChatModule } from 'src/app/chat/chat.module';
+import {GalleriaModule} from 'primeng/galleria';
+import { PaginatorModule } from 'primeng/paginator';
 
 
 @NgModule({
@@ -32,12 +33,13 @@ import {SplitButtonModule} from 'primeng/splitbutton';
     ButtonModule,
     CommonModule,
     DialogModule,
-    ChatModule,
     DropdownModule,
     FormsModule,
     ReactiveFormsModule,
+    GalleriaModule,
     InputTextModule,
     ImageModule,
+    ChatModule,
     ToolbarModule,
     ToastModule,
     TableModule,
@@ -47,6 +49,7 @@ import {SplitButtonModule} from 'primeng/splitbutton';
     MatButtonModule,
     MatIconModule,
     OrderHistoryRoutingModule,
+    PaginatorModule,
     SplitButtonModule
   ]
 })

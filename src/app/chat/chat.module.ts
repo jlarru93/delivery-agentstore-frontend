@@ -14,7 +14,7 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [ChatComponent],
   imports: [
     AvatarModule,
     AvatarGroupModule,
@@ -27,6 +27,7 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
     MatButtonModule,
     MatIconModule,
     ReactiveFormsModule
-  ]
+  ],
+  exports: [ChatComponent]
 })
 export class ChatModule { }
