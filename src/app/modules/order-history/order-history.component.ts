@@ -14,7 +14,9 @@ import { Pagination } from 'src/app/models';
 export class OrderHistoryComponent implements OnInit {
 
   status: any[] = [
-    { name: 'Cancelado', value: 'done'},
+    { name: 'Cancelado', value: 'cancel '},
+    { name: 'Terminado', value: 'done'},
+    { name: 'Preparando orden', value: 'preparingOrder'}
   ]
   isDialogDetailOpen: boolean = false
 
@@ -380,5 +382,16 @@ export class OrderHistoryComponent implements OnInit {
       this.totalRecords = resp.meta.totalRecords
       this.loadingResults = false
     })
+  }
+
+  getStatus(statusCode: string){
+    let status : string
+    switch (statusCode) {
+      case 'done' : status = 'Terminado'; break;
+      case 'cancel' : status = 'Cancelado'; break;
+      case 'preparingOrder' : status = 'Preparando Orden'; break;
+      default: break;
+    }
+    return status
   }
 }

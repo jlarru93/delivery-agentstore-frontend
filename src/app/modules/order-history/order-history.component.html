@@ -10,7 +10,7 @@
             <div class="p-col-12 p-md-6 p-lg-6">
                 <label for="">Estado</label>
                 <p-dropdown [options]="status" placeholder="Seleccione estado" [(ngModel)]="statusOrder"
-                optionLabel="name" [showClear]="true"></p-dropdown>
+                optionLabel="name" optionValue="value" [showClear]="true"></p-dropdown>
             </div>
             <!-- <div class="col-12 md:col-6 lg:col-2">
                 <label for="">Facturado</label>
@@ -40,7 +40,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-order>
         <tr>
-            <td>{{order.status}}</td>
+            <td>{{getStatus(order.status)}}</td>
             <td>ID: {{order.orderId}}</td>
             <td>{{getFormatDate(order.createdAt)}}</td>
             <td>{{order.total}}</td>
