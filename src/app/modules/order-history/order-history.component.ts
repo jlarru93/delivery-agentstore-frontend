@@ -3,8 +3,9 @@ import { FormControl } from '@angular/forms';
 import { AuthService } from 'src/app/utils/auth.service';
 import { OrderHistoryService } from './service/order-history.service';
 import { OrderHistoryRequest } from './service/data/request';
-import { OrderHistorBean } from './data';
+import { ComplaintBean, OrderHistorBean } from './data';
 import { Pagination } from 'src/app/models';
+import { Image } from 'src/app/demo/domain/image';
 
 @Component({
   selector: 'app-order-history',
@@ -22,7 +23,7 @@ export class OrderHistoryComponent implements OnInit {
 
   messageControl: FormControl = new FormControl('');
 
-  images: any[] = []
+  images: Image[] = []
 
   responsiveOptions:any[] = [
     {
@@ -264,26 +265,26 @@ export class OrderHistoryComponent implements OnInit {
       {label: 'Cancelado', icon: 'pi pi-times'},
     ];
 
-    this.images = [
-      {
-        previewImageSrc: "https://images.pexels.com/photos/4009621/pexels-photo-4009621.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        thumbnailImageSrc: "https://images.pexels.com/photos/4009621/pexels-photo-4009621.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        alt: "Description for Image 1",
-        title: "Title 1"
-      },
-      {
-        previewImageSrc: "https://images.pexels.com/photos/416160/pexels-photo-416160.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        thumbnailImageSrc: "https://images.pexels.com/photos/416160/pexels-photo-416160.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        alt: "Description for Image 2",
-        title: "Title 2"
-      },
-      {
-        previewImageSrc: "https://images.pexels.com/photos/13627457/pexels-photo-13627457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        thumbnailImageSrc: "https://images.pexels.com/photos/13627457/pexels-photo-13627457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        alt: "Description for Image 3",
-        title: "Title 3"
-      }
-    ]
+    // this.images = [
+    //   {
+    //     previewImageSrc: "https://delivery-app-imagenes.s3.amazonaws.com/user/complaints/2a4ce450-de22-11ed-a7f2-0b01f4204c06.jpg",
+    //     thumbnailImageSrc: "https://delivery-app-imagenes.s3.amazonaws.com/user/complaints/2a4ce450-de22-11ed-a7f2-0b01f4204c06.jpg",
+    //     alt: "Evidencia 1",
+    //     title: "Evidencia 1"
+    //   },
+    //   {
+    //     previewImageSrc: "https://www.rincondelgordo.pe/276-large_default/inca-kola-500ml.jpg",
+    //     thumbnailImageSrc: https://www.rincondelgordo.pe/276-large_default/inca-kola-500ml.jpg",
+    //     alt: "Evidencia 2,
+    //     title: "Evidencia 2"
+    //   },
+    //   {
+    //     previewImageSrc: "https://images.pexels.com/photos/13627457/pexels-photo-13627457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    //     thumbnailImageSrc: "https://images.pexels.com/photos/13627457/pexels-photo-13627457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    //     alt: "Description for Image 3",
+    //     title: "Title 3"
+    //   }
+    // ]
     this.GetOrderHistories()
   }
 
@@ -306,9 +307,23 @@ export class OrderHistoryComponent implements OnInit {
     )
   }
 
-  OpenDialogDetail(){
+  complaintOrder: ComplaintBean
+  OpenDialogDetail(complaint: ComplaintBean){
     this.isDialogDetailOpen = true;
+    this.complaintOrder = complaint;
+
+    complaint.evidence.forEach((url, index) => {
+      const imageObj: Image = {
+        previewImageSrc: url,
+        thumbnailImageSrc: url,
+        alt: `Evidencia ${index + 1}`,
+        title: `Evidencia ${index + 1}`
+      }
+      this.images.push(imageObj)
+    })
     this.scrollToBottom()
+
+    return this.images
   }
 
   sendMessage(){

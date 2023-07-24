@@ -48,7 +48,7 @@
             <td>
                 <i *ngIf="order.complaint == null" class="pi pi-eye" 
                 style="color: #e1e1e1; font-size: 2rem;"></i>
-                <i *ngIf="order.complaint != null" class="pi pi-eye" (click)="OpenDialogDetail()" 
+                <i *ngIf="order.complaint != null" class="pi pi-eye" (click)="OpenDialogDetail(order.complaint)" 
                 style="color: #17a2b8; font-size: 2rem; cursor: pointer;"></i>
             </td>
         </tr>
@@ -57,54 +57,61 @@
 <p-paginator [rows]="10" (onPageChange)="Page($event)" [totalRecords]="totalRecords"></p-paginator>
 
 <p-dialog [(visible)]="isDialogDetailOpen" [modal]="true" [style]="{'width' : '55vw'}">
-    <div class="p-grid">
-        <div class="p-col-8">
-            <div class="container-detail">
-                <div class="details">
-                    <div class="p-grid">
-                        <div class="p-col-6">
-                            <h5 >Novedad: <span>Titulo de la novedad</span></h5>
+    <ng-container *ngIf="complaintOrder">
+        <div class="p-grid">
+            <div class="p-col-8">
+                <div class="container-detail">
+                    <div class="details">
+                        <div class="p-grid">
+                            <div class="p-col-9">
+                                <h5>Novedad: <span>{{complaintOrder.reason}}</span></h5>
+                                
+                            </div>
+                            <div class="p-col-3">
+                                <div style="float: right;">
+                                    <p-splitButton label="Estado" styleClass="p-button-secondary mb-2" [model]="items"></p-splitButton>
+
+                                </div>
+                            </div>
                         </div>
-                        <div class="p-col-6"  style="float: right;">
-                            <p-splitButton label="Estado" styleClass="p-button-secondary mb-2" [model]="items"></p-splitButton>
-                        </div>
+                        <h5 >Detalles</h5>
+                        <span>{{complaintOrder.detail}}</span>
+                        <div class="p-mt-4"></div>
+    
+                        <p-galleria [(value)]="images" [responsiveOptions]="responsiveOptions" [numVisible]="5"
+                            [showThumbnails]="false" [showIndicators]="true"> 
+                            <ng-template pTemplate="item" let-item >
+                                <img [src]="item.previewImageSrc" style="width: 80%; display: block;" />
+                            </ng-template>
+                            <ng-template pTemplate="thumbnail" let-item>
+                                <div class="p-grid p-nogutter p-justify-center">
+                                    <img [src]="item.thumbnailImageSrc" style="display: block;" />
+                                </div>
+                            </ng-template>
+                        </p-galleria>
+                        
+    
+                        <!-- <p-galleria [(value)]="images" [responsiveOptions]="responsiveOptions" [numVisible]="5"
+                            [showThumbnails]="true" [showIndicators]="false"> 
+                            <ng-template pTemplate="item" let-item>
+                                <img [src]="item.previewImageSrc" style="width: 100%; display: block;" />
+                            </ng-template>
+                            <ng-template pTemplate="thumbnail" let-item>
+                                <div class="p-grid p-nogutter p-justify-center">
+                                    <img [src]="item.thumbnailImageSrc" style="display: block; width: 100px;" />
+                                </div>
+                            </ng-template>
+                        </p-galleria> -->
+                        
+    
+                    
                     </div>
-                    <h5 >Detalles</h5>
-                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, sequi? Ipsam modi officiis inventore accusantium non laudantium molestiae enim iusto veritatis velit, quaerat unde. Atque cum tenetur odio corrupti nulla.</span>
-                    <div class="p-mt-4"></div>
-
-                    <p-galleria [(value)]="images" [responsiveOptions]="responsiveOptions" [numVisible]="5"
-                        [showThumbnails]="false" [showIndicators]="true"> 
-                        <ng-template pTemplate="item" let-item>
-                            <img [src]="item.previewImageSrc" style="width: 100%; display: block;" />
-                        </ng-template>
-                        <ng-template pTemplate="thumbnail" let-item>
-                            <div class="p-grid p-nogutter p-justify-center">
-                                <img [src]="item.thumbnailImageSrc" style="display: block;" />
-                            </div>
-                        </ng-template>
-                    </p-galleria>
-                    
-
-                    <!-- <p-galleria [(value)]="images" [responsiveOptions]="responsiveOptions" [numVisible]="5"
-                        [showThumbnails]="true" [showIndicators]="false"> 
-                        <ng-template pTemplate="item" let-item>
-                            <img [src]="item.previewImageSrc" style="width: 100%; display: block;" />
-                        </ng-template>
-                        <ng-template pTemplate="thumbnail" let-item>
-                            <div class="p-grid p-nogutter p-justify-center">
-                                <img [src]="item.thumbnailImageSrc" style="display: block; width: 100px;" />
-                            </div>
-                        </ng-template>
-                    </p-galleria> -->
-                    
-
-                
                 </div>
             </div>
+            <div class="p-col-4">
+                <app-chat></app-chat>
+            </div>
         </div>
-        <div class="p-col-4">
-            <app-chat></app-chat>
-        </div>
-    </div>
+
+    </ng-container>
 </p-dialog>
