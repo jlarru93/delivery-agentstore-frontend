@@ -32,7 +32,10 @@ export const environment = {
   mqttServer:{
     url: "34.201.73.116",
     port: 15675,
-    path:"/ws"
+    path:"/ws",
+    user:undefined,
+    pwd:undefined,
+    useSSL:false
   }
 };
 

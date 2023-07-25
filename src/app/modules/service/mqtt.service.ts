@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Client } from "paho-mqtt";
+import { Client, ConnectionOptions } from "paho-mqtt";
 import { v4 as uuidv4 } from 'uuid';
 import { MqttRoutingService } from "./mqtt.routing.service";
 import { threadId } from "worker_threads";
@@ -18,6 +18,9 @@ export class MqttService {
         let host = environment.mqttServer.url
         let wsport = environment.mqttServer.port
         let path = environment.mqttServer.path
+        let useSSL = environment.mqttServer.useSSL
+        let mqttUser = environment.mqttServer.user
+        let mqttPwd = environment.mqttServer.pwd
         let idTransaccion = uuidv4();
         const clientId = "AgentStore-" + idTransaccion;
 
@@ -37,11 +40,10 @@ export class MqttService {
             this.routing.route(topic,payload)
         };
         // connect the client
-        this.client.connect({
-            useSSL:true,
+        let connectionOptions={
+            useSSL:useSSL,
             timeout: 3,
-            userName:"socket",
-            password:"socket",
+            
             keepAliveInterval: 30,
             onSuccess: () => {
                 // Once a connection has been made, make a subscription and send a message.
@@ -52,7 +54,12 @@ export class MqttService {
                 console.log("CONNECTION FAILURE - ", message);
                 this._onConnect.next(false)
             }
-        });
+        } as ConnectionOptions
+        if(mqttUser){
+            connectionOptions.userName=mqttUser
+            connectionOptions.password=mqttPwd
+        }
+        this.client.connect(connectionOptions);
     }
 
 
