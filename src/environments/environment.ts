@@ -31,7 +31,8 @@ export const environment = {
   basePathS3ImagesDeliveryMan:'/dev',
   mqttServer:{
     url: "34.201.73.116",
-    port: 15675
+    port: 15675,
+    path:"/ws"
   }
 };
 

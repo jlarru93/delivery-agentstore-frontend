@@ -17,10 +17,11 @@ export class MqttService {
     constructor(private routing: MqttRoutingService) {
         let host = environment.mqttServer.url
         let wsport = environment.mqttServer.port
+        let path = environment.mqttServer.path
         let idTransaccion = uuidv4();
         const clientId = "AgentStore-" + idTransaccion;
 
-        this.client = new Client(host, wsport, "/ws", clientId);
+        this.client = new Client(host, wsport, path, clientId);
         // set callback handlers
         // called when the client loses its connection
         this.client.onConnectionLost = (responseObject: Paho.MQTT.MQTTError) => {
@@ -37,7 +38,10 @@ export class MqttService {
         };
         // connect the client
         this.client.connect({
+            useSSL:true,
             timeout: 3,
+            userName:"socket",
+            password:"socket",
             keepAliveInterval: 30,
             onSuccess: () => {
                 // Once a connection has been made, make a subscription and send a message.
