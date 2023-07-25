@@ -15,7 +15,7 @@ import { Image } from 'src/app/demo/domain/image';
 export class OrderHistoryComponent implements OnInit {
 
   status: any[] = [
-    { name: 'Cancelado', value: 'cancel '},
+    { name: 'Cancelado', value: 'cancel'},
     { name: 'Terminado', value: 'done'},
     { name: 'Preparando orden', value: 'preparingOrder'}
   ]
@@ -45,200 +45,6 @@ export class OrderHistoryComponent implements OnInit {
 ];
 
 
-
-  messages: any[] = [
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-6dd2296a7dfa", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 60, 
-          name : "Delivery Man", 
-          type : "delivery-man" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Hey User!", 
-      readUser : [ 
-          { 
-              id : 11, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              background: 'red',
-              readedAt: 1685927914 
-          }, 
-          { 
-              id : 14, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              background: 'blue',
-              readedAt : 1685927914 
-          } 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 14, 
-          name : "Cristhian Angel Ticclla Espinoza", 
-          type : "agent-store" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Hi Delivery Man", 
-      readUser : [ 
-          { 
-              id : 60, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              readedAt: 1685927914,
-              background:'red'
-          }, 
-          { 
-              id : 60, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              readedAt : 1685927914,
-              background:'blue' 
-          } 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-6dd2296a7dfa", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 60, 
-          name : "Delivery Man", 
-          type : "delivery-man" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Your order is ready", 
-      readUser : [ 
-          { 
-              id : 11, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              readedAt: 1685927914,
-              background:'blue' 
-          }, 
-          { 
-              id : 14, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              readedAt : 1685927914,
-              background:'blue' 
-          } 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-6dd2296a7dfa", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 60, 
-          name : "Delivery Man", 
-          type : "delivery-man" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "The estimated time is 1 hours. I'll call you when I arrive.", 
-      readUser : [ 
-          { 
-              id : 11, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              readedAt: 1685927914,
-              background:'blue' 
-          }, 
-          { 
-              id : 14, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              readedAt : 1685927914,
-              background:'blue' 
-          } 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 14, 
-          name : "Cristhian Angel Ticclla Espinoza", 
-          type : "agent-store" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Great!. I'll be waiting", 
-      readUser : [ 
-          { 
-              id : 60, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              readedAt: 1685927914,
-              background:'blue' 
-          }, 
-          { 
-              id : 60, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              readedAt : 1685927914,
-              background:'blue' 
-          } 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 60, 
-          name : "Cristhian Angel Ticclla Espinoza", 
-          type : "agent-store" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Great...", 
-      readUser : [ 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 14, 
-          name : "Cristhian Angel Ticclla Espinoza", 
-          type : "agent-store" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Ok!", 
-      readUser : [], 
-      createdAt : 1685927914
-    },
-  ]
-
-  @ViewChild('endOfChat') endOfChat!: ElementRef
-
   items: any[]
   orderHistoryRequest: OrderHistoryRequest
   orderHistories: OrderHistorBean[]
@@ -252,11 +58,7 @@ export class OrderHistoryComponent implements OnInit {
     private service: OrderHistoryService
   ) { }
 
-  userId: any
   ngOnInit(): void {
-    let userName=this.auth.getParameterToken('name')
-    let id=this.auth.getParameterToken('id')
-    this.userId=Number(id)
 
     this.items = [
       {label: 'Abierto', icon: 'pi pi-check-circle'},
@@ -265,26 +67,6 @@ export class OrderHistoryComponent implements OnInit {
       {label: 'Cancelado', icon: 'pi pi-times'},
     ];
 
-    // this.images = [
-    //   {
-    //     previewImageSrc: "https://delivery-app-imagenes.s3.amazonaws.com/user/complaints/2a4ce450-de22-11ed-a7f2-0b01f4204c06.jpg",
-    //     thumbnailImageSrc: "https://delivery-app-imagenes.s3.amazonaws.com/user/complaints/2a4ce450-de22-11ed-a7f2-0b01f4204c06.jpg",
-    //     alt: "Evidencia 1",
-    //     title: "Evidencia 1"
-    //   },
-    //   {
-    //     previewImageSrc: "https://www.rincondelgordo.pe/276-large_default/inca-kola-500ml.jpg",
-    //     thumbnailImageSrc: https://www.rincondelgordo.pe/276-large_default/inca-kola-500ml.jpg",
-    //     alt: "Evidencia 2,
-    //     title: "Evidencia 2"
-    //   },
-    //   {
-    //     previewImageSrc: "https://images.pexels.com/photos/13627457/pexels-photo-13627457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    //     thumbnailImageSrc: "https://images.pexels.com/photos/13627457/pexels-photo-13627457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    //     alt: "Description for Image 3",
-    //     title: "Title 3"
-    //   }
-    // ]
     this.GetOrderHistories()
   }
 
@@ -321,43 +103,8 @@ export class OrderHistoryComponent implements OnInit {
       }
       this.images.push(imageObj)
     })
-    this.scrollToBottom()
 
     return this.images
-  }
-
-  sendMessage(){
-    const message:string = this.messageControl.value.toString();
-    if(message){
-      let messageBody:any =
-      { 
-        uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
-        uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-        user : { 
-            id :  Number(this.userId), 
-            name : 'Jhon', 
-            type : "agent-store"
-        }, 
-        store : { 
-            id : 0, 
-            name : '' 
-        }, 
-        body : message, 
-        readUser : [], 
-        createdAt : Date.now()
-      }
-      this.messages.push(messageBody)
-      this.messageControl.setValue('')
-      this.scrollToBottom()
-    }
-  }
-
-  scrollToBottom(){
-    setTimeout(() => {
-      if(this.endOfChat){
-        this.endOfChat.nativeElement.scrollIntoView({behavior: "smooth"})
-      }
-    }, 10)
   }
 
   getFormatDate(timestamp : number){

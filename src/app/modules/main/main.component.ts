@@ -322,6 +322,7 @@ import { ModalComponent } from "src/app/modal/modal.component";
       this.orderService.cancelOrder(orderRequest.id.toString(),comment).subscribe((resp) => {
         this.displayOrderReject = false
         this.loadingButtonCancel = false
+        this.displayOrder = false
         this.messageService.add({severity:'success', summary: 'Exito', detail: 'Orden cancelado', life: 3000 });
       }, (error) => {
         this.displayOrderReject = false

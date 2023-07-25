@@ -56,10 +56,10 @@
 </p-table>
 <p-paginator [rows]="10" (onPageChange)="Page($event)" [totalRecords]="totalRecords"></p-paginator>
 
-<p-dialog [(visible)]="isDialogDetailOpen" [modal]="true" [style]="{'width' : '55vw'}">
+<p-dialog [(visible)]="isDialogDetailOpen" [modal]="true">
     <ng-container *ngIf="complaintOrder">
         <div class="p-grid">
-            <div class="p-col-8">
+            <div class="p-col-7">
                 <div class="container-detail">
                     <div class="details">
                         <div class="p-grid">
@@ -81,7 +81,7 @@
                         <p-galleria [(value)]="images" [responsiveOptions]="responsiveOptions" [numVisible]="5"
                             [showThumbnails]="false" [showIndicators]="true"> 
                             <ng-template pTemplate="item" let-item >
-                                <img [src]="item.previewImageSrc" style="width: 80%; display: block;" />
+                                <img [src]="item.previewImageSrc" style="width: 50%; display: block;" />
                             </ng-template>
                             <ng-template pTemplate="thumbnail" let-item>
                                 <div class="p-grid p-nogutter p-justify-center">
@@ -108,7 +108,7 @@
                     </div>
                 </div>
             </div>
-            <div class="p-col-4">
+            <div class="p-col-5">
                 <app-chat></app-chat>
             </div>
         </div>
