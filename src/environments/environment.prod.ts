@@ -14,7 +14,11 @@ export const environment = {
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/prod',
   mqttServer:{
-    url: "54.161.199.201",
-    port: 15675
+    url: "prodwss.tres22.net",
+    port: 443,
+    path:"/ws",
+    user:"socket",
+    pwd:"socket",
+    useSSL:true
   }
 };
