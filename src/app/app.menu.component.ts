@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AppMainComponent } from './app.main.component';
+import { ProductService } from './modules/product/service/product.service';
+import { StoreResponse } from './modules/product/service/data/response';
 
 @Component({
     selector: 'app-menu',
@@ -9,7 +11,10 @@ import { AppMainComponent } from './app.main.component';
 export class AppMenuComponent implements OnInit {
 
     model: any[];
-    constructor(public appMain: AppMainComponent) { }
+    constructor(
+        public appMain: AppMainComponent,
+        private productService: ProductService
+    ) { }
 
     ngOnInit() {
         this.model = [
@@ -18,10 +23,20 @@ export class AppMenuComponent implements OnInit {
             { label: 'Solicitar Viaje', icon: 'pi pi-fw pi-car', routerLink: ['/request-trip']},
             { label: 'Historial de Órdenes', icon: 'pi pi-fw pi-history', routerLink: ['/order-history']}
         ];
+        this.getProducts()
     }
 
     onMenuClick() {
         this.appMain.menuClick = true;
+    }
+
+    storeFullName: string
+    getProducts(){
+        
+        this.productService.getProducts().subscribe((resp) => { 
+            let storeBean=StoreResponse.toBean(resp.data)
+            this.storeFullName = storeBean.fullName
+        })
     }
 
 }

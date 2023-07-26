@@ -168,7 +168,7 @@ import { ModalComponent } from "src/app/modal/modal.component";
         this.isDoneGetOrders=true
         this.validOrdersSubscribe()
 
-        if(this.orderSelected.status == 'inStore'){
+        if(this.orderSelected?.status == 'inStore'){
           this.isButtonEnabled = true;
         } else {
           this.isButtonEnabled = false;
