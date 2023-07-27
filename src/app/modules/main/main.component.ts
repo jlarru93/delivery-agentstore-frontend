@@ -320,6 +320,8 @@ import { ModalComponent } from "src/app/modal/modal.component";
       let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
       this.loadingButtonCancel=true
       this.orderService.cancelOrder(orderRequest.id.toString(),comment).subscribe((resp) => {
+        this.orders=this.orders.filter((order)=>order.id!=orderRequest.id)
+        this.sortOrders()
         this.displayOrderReject = false
         this.loadingButtonCancel = false
         this.displayOrder = false
