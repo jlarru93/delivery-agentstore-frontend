@@ -25,8 +25,7 @@ export const environment = {
     path:"/ws",
     user:null,
     pwd:null,
-    useSSL:true
-
+    useSSL:false
   }
 };
 
