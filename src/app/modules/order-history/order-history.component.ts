@@ -6,17 +6,20 @@ import { OrderHistoryRequest } from './service/data/request';
 import { ComplaintBean, OrderHistorBean } from './data';
 import { Pagination } from 'src/app/models';
 import { Image } from 'src/app/demo/domain/image';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-order-history',
   templateUrl: './order-history.component.html',
-  styleUrls: ['./order-history.component.scss']
+  styleUrls: ['./order-history.component.scss'],
+  providers: [MessageService]
 })
 export class OrderHistoryComponent implements OnInit {
 
   status: any[] = [
     { name: 'Cancelado', value: 'cancel'},
     { name: 'Terminado', value: 'done'},
+    { name: 'Orden Lista', value: 'orderReady'},
     { name: 'Preparando orden', value: 'preparingOrder'}
   ]
   isDialogDetailOpen: boolean = false
@@ -55,16 +58,17 @@ export class OrderHistoryComponent implements OnInit {
 
   constructor(
     private auth : AuthService,
-    private service: OrderHistoryService
+    private service: OrderHistoryService,
+    private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
 
     this.items = [
-      {label: 'Abierto', icon: 'pi pi-check-circle'},
-      {label: 'En proceso', icon: 'pi pi-forward'},
-      {label: 'Terminado', icon: 'pi pi-thumbs-up-fill'},
-      {label: 'Cancelado', icon: 'pi pi-times'},
+      {label: 'Abierto', icon: 'pi pi-check-circle', command: () => { this.onUpdateStatus('open') } },
+      {label: 'En proceso', icon: 'pi pi-forward' , command: () => { this.onUpdateStatus('inProcess') }},
+      {label: 'Terminado', icon: 'pi pi-thumbs-up-fill', command: () => { this.onUpdateStatus('done') }},
+      {label: 'Rechazar', icon: 'pi pi-times', command: () => { this.onUpdateStatus('reject') }},
     ];
 
     this.GetOrderHistories()
@@ -90,10 +94,11 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   complaintOrder: ComplaintBean
+  complaintStatus: string
   OpenDialogDetail(complaint: ComplaintBean){
     this.isDialogDetailOpen = true;
     this.complaintOrder = complaint;
-
+    this.complaintStatus = this.getStatus(complaint.status)
     complaint.evidence.forEach((url, index) => {
       const imageObj: Image = {
         previewImageSrc: url,
@@ -149,11 +154,31 @@ export class OrderHistoryComponent implements OnInit {
   getStatus(statusCode: string){
     let status : string
     switch (statusCode) {
+      case 'open' : status = 'Abierto'; break;
       case 'done' : status = 'Terminado'; break;
+      case 'reject' : status = 'Rechazado'; break;
+      case 'inProcess' : status = 'En proceso'; break;
       case 'cancel' : status = 'Cancelado'; break;
       case 'preparingOrder' : status = 'Preparando Orden'; break;
+      case 'orderReady' : status = 'Orden Lista'; break;
       default: break;
     }
     return status
+  }
+
+  onItemClick(event: any) {
+    console.log(event.item); // Aquí puedes acceder a la opción seleccionada
+  }
+
+  onUpdateStatus(statusOrder: string){
+    let body = {
+      status: statusOrder
+    }
+    this.service.updateComplaintStatus(this.complaintOrder.uuid, body).subscribe(
+      (resp) => {
+        this.messageService.add({severity:'success', summary: 'Satisfactorio', detail: 'El estado ha sido actualizado'});
+        this.complaintStatus = this.getStatus(resp.data.status)
+      }
+    )
   }
 }

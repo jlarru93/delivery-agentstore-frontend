@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ObjetResponse, Pagination } from 'src/app/models';
-import { OrderHistoryResponse } from './data/response';
+import { ComplaintResponse, OrderHistoryResponse } from './data/response';
 import {environment as env} from '../../../../environments/environment'
 import { Observable } from 'rxjs';
 
@@ -25,5 +25,13 @@ export class OrderHistoryService {
     return this.http.post<OrderHistoryResponse>(
       env.url.backEnd + "/order/complaints/filter",bodyRequest,{headers:headers}
     );
+  }
+
+  // {{BaseUrl}}/complaints/:complaintUuid/status
+  updateComplaintStatus(complaintUuid: string, bodyStatus: any){
+
+    let path = "/complaints/:complaintUuid/status"
+    path = path.replace(":complaintUuid", complaintUuid)
+    return this.http.put<ObjetResponse<ComplaintResponse>>(env.url.backEnd + path, bodyStatus)
   }
 }

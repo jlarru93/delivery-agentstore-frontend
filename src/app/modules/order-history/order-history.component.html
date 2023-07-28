@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <p-toolbar>
     <div class="p-toolbar-group-left">
         <h5 class="p-mr-4 p-p-0">Filtro de búsquedas</h5>
@@ -63,13 +64,14 @@
                 <div class="container-detail">
                     <div class="details">
                         <div class="p-grid">
-                            <div class="p-col-9">
+                            <div class="p-col-7">
                                 <h5>Novedad: <span>{{complaintOrder.reason}}</span></h5>
                                 
                             </div>
-                            <div class="p-col-3">
+                            <div class="p-col-5">
                                 <div style="float: right;">
-                                    <p-splitButton label="Estado" styleClass="p-button-secondary mb-2" [model]="items"></p-splitButton>
+                                    <p-splitButton label="Estado: {{complaintStatus}}" styleClass="p-button-secondary mb-2" 
+                                    [model]="items"></p-splitButton>
 
                                 </div>
                             </div>
