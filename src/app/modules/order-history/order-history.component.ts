@@ -12,6 +12,7 @@ import { ChatService } from '../main/service/chat.service';
 import { ChatResponse } from '../main/service/data/chat.response';
 import { MqttService } from '../service/mqtt.service';
 import { ChatHandler } from '../service/handlers/chat.handler';
+import { ChatComponent } from 'src/app/chat/chat.component';
 
 @Component({
   selector: 'app-order-history',
@@ -118,6 +119,7 @@ export class OrderHistoryComponent implements OnInit {
         }else{
           console.log("this.orders[orderIndex].messagesChat",orderHistory.complaint)
           orderHistory.complaint.messagesChat.push(messageBean)
+          this.chatComponent.scrollToBottom()
         }
       }
     })
@@ -246,6 +248,7 @@ export class OrderHistoryComponent implements OnInit {
       }
     )
   }
+  @ViewChild(ChatComponent) chatComponent!: ChatComponent;
 
   getMessages(complaint:ComplaintBean, uuidOrder: string){
     console.log("mensajess",this.messagesChat)
@@ -255,6 +258,7 @@ export class OrderHistoryComponent implements OnInit {
       (resp)=>{
         complaint.isLoadingChat=false
         complaint.messagesChat= resp.data.map((message)=>ChatResponse.toBean(message))
+        this.chatComponent.scrollToBottom()
       },
       (error)=>{
         complaint.isLoadingChat=false

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Product } from "src/app/demo/domain/product";
 import { ProductService } from "src/app/demo/service/productservice";
@@ -20,6 +20,7 @@ import { ChatBean } from "src/app/chat/data.chat";
 import { AuthService } from "src/app/utils/auth.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
+import { ChatComponent } from "src/app/chat/chat.component";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -402,6 +403,9 @@ import { ModalComponent } from "src/app/modal/modal.component";
         this.getMessages(order)
       }
     }
+
+    @ViewChild(ChatComponent) chatComponent!: ChatComponent;
+
     getMessages(order:OrderBean){
       console.log("mensajess",this.messagesChat)
       this.messagesChat=[]
@@ -410,6 +414,7 @@ import { ModalComponent } from "src/app/modal/modal.component";
         (resp)=>{
           order.isLoadingChat=false
           order.messagesChat= resp.data.map((message)=>ChatResponse.toBean(message))
+          this.chatComponent.scrollToBottom()
         },
         (error)=>{
           order.isLoadingChat=false
