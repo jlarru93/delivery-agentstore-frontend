@@ -7,6 +7,11 @@ import { ComplaintBean, OrderHistorBean } from './data';
 import { Pagination } from 'src/app/models';
 import { Image } from 'src/app/demo/domain/image';
 import { MessageService } from 'primeng/api';
+import { ChatBean } from 'src/app/chat/data.chat';
+import { ChatService } from '../main/service/chat.service';
+import { ChatResponse } from '../main/service/data/chat.response';
+import { MqttService } from '../service/mqtt.service';
+import { ChatHandler } from '../service/handlers/chat.handler';
 
 @Component({
   selector: 'app-order-history',
@@ -56,27 +61,75 @@ export class OrderHistoryComponent implements OnInit {
 
   pagination: Pagination = { page: 1, size: 10, totalRecords: 0, totalNumberPages: 0 }
 
+  userName="usuario"
+  userId: number = 123
+
+  messagesChat:ChatBean[]=[]
+  isMqttConnect:boolean=false
+  
   constructor(
     private auth : AuthService,
     private service: OrderHistoryService,
-    private messageService: MessageService
-  ) { }
+    private messageService: MessageService,
+    private chatService:ChatService,
+    private mqtt:MqttService,
+    private chatHandler:ChatHandler,
 
+  ) { }
+ 
   ngOnInit(): void {
 
     this.items = [
-      {label: 'Abierto', icon: 'pi pi-check-circle', command: () => { this.onUpdateStatus('open') } },
+      // {label: 'Abierto', icon: 'pi pi-check-circle', command: () => { this.onUpdateStatus('open') } },
       {label: 'En proceso', icon: 'pi pi-forward' , command: () => { this.onUpdateStatus('inProcess') }},
       {label: 'Terminado', icon: 'pi pi-thumbs-up-fill', command: () => { this.onUpdateStatus('done') }},
       {label: 'Rechazar', icon: 'pi pi-times', command: () => { this.onUpdateStatus('reject') }},
     ];
 
+    if(this.mqtt.client.isConnected()){
+      this.mqttListener()
+    }else{
+      this.mqtt._onConnect.subscribe((isConnect)=>{
+        if(isConnect){
+          this.isMqttConnect=isConnect
+          this.mqttListener()
+        }
+      })
+    }
+    
     this.GetOrderHistories()
+    this.getUserData()
+  }
+  mqttListener() {
+    this.chatHandler._data.subscribe((asyncData)=>{
+      if(asyncData){
+        let messageBean=ChatResponse.toBean(asyncData.data)
+        
+        let orderHistoryIndex=this.orderHistories.filter((orderHistory)=>orderHistory.complaint).findIndex((orderHistory)=>orderHistory.complaint.uuid==messageBean.uuidOrder)
+        console.log("orderIndex",orderHistoryIndex)
+        console.log("this.orders[orderIndex]",this.orderHistories[orderHistoryIndex])
+        this.orderHistories[orderHistoryIndex].complaint.messagesNoReadTotal++
+
+        let indexMessage=this.orderHistories[orderHistoryIndex].complaint.messagesChat.findIndex((message)=>message.uuid==messageBean.uuid)
+        console.log("indexMessage",indexMessage)
+        if(indexMessage>0){
+          console.log("this.orders[orderIndex].messagesChat[indexMessage]",this.orderHistories[orderHistoryIndex].complaint.messagesChat[indexMessage])
+          this.orderHistories[orderHistoryIndex].complaint.messagesChat[indexMessage]=messageBean
+        }else{
+          console.log("this.orders[orderIndex].messagesChat",this.orderHistories[orderHistoryIndex].complaint)
+          this.orderHistories[orderHistoryIndex].complaint.messagesChat.push(messageBean)
+        }
+      }
+    })
   }
 
   page: number = 1
   size: number = 10
 
+  getUserData(){
+    this.userName=this.auth.getParameterToken('name')
+    this.userId=Number(this.auth.getParameterToken('id'))
+  }
 
   GetOrderHistories(orderId: number = null, status: string = null){
     this.loadingResults = true
@@ -89,14 +142,22 @@ export class OrderHistoryComponent implements OnInit {
         this.orderHistories = resp.data
         this.totalRecords = resp.meta.totalRecords
         this.loadingResults = false
+        this.suscribeChat(this.orderHistories)
       }
     )
   }
 
+  suscribeChat(orderHistories:OrderHistorBean[]){
+    console.log("orderHistories.filter((orderHistory)=>orderHistory.complaint)",orderHistories.filter((orderHistory)=>orderHistory.complaint))
+    orderHistories.filter((orderHistory)=>orderHistory.complaint).forEach((orderHistory)=>{
+      this.mqtt.subscribe("chat/"+orderHistory.complaint.uuid)
+    })
+  }
   complaintOrder: ComplaintBean
   complaintStatus: string
   OpenDialogDetail(complaint: ComplaintBean){
     this.isDialogDetailOpen = true;
+    this.getMessages(complaint)
     this.complaintOrder = complaint;
     this.complaintStatus = this.getStatus(complaint.status)
     complaint.evidence.forEach((url, index) => {
@@ -148,6 +209,7 @@ export class OrderHistoryComponent implements OnInit {
       this.orderHistories = resp.data
       this.totalRecords = resp.meta.totalRecords
       this.loadingResults = false
+      this.suscribeChat(this.orderHistories)
     })
   }
 
@@ -180,5 +242,26 @@ export class OrderHistoryComponent implements OnInit {
         this.complaintStatus = this.getStatus(resp.data.status)
       }
     )
+  }
+
+  getMessages(complaint:ComplaintBean){
+    console.log("mensajess",this.messagesChat)
+    this.messagesChat=[]
+    complaint.isLoadingChat=true
+    this.chatService.getMessage(complaint.uuid).subscribe(
+      (resp)=>{
+        complaint.isLoadingChat=false
+        complaint.messagesChat= resp.data.map((message)=>ChatResponse.toBean(message))
+      },
+      (error)=>{
+        complaint.isLoadingChat=false
+      })
+  }
+
+  sendMessage(message:ChatBean){
+    console.log("message",message)
+    this.chatService.sendMessage(ChatBean.toRequest(message)).subscribe((resp)=>{    
+    },
+    (error)=>{})
   }
 }

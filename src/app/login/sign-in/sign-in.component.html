@@ -1,4 +1,4 @@
-<div class="login-body" [ngClass]="{'layout-dark': true}">
+<div class="login-body" [ngClass]="{'layout-dark': dark, 'layout-light': !dark}">
 
     <div class="login-content">
         <!-- <div class="night-switch">
@@ -7,31 +7,38 @@
         </div> -->
         <div class="login-panel">
             <div class="login-panel-content">
-                <div class="logo">
-                    <img src="assets/images/656.png" alt="mirage-layout" />
+                <div class="login-panel-gif">
+                    <img src="../../../assets/images/Marca.gif" alt="" width="50%">
                 </div>
-                <h1>Ingresar</h1>
-                <p>Bienvenido administrador</p>
-                <div class="forms">
-                    <div class="login-input-wrapper">
-                        <label for="username">Usuario</label>
-                        <input id="username" pInputText [(ngModel)]="userName" required/>
-                        <i class="pi pi-user"></i>
-                        <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorUserName}}</small> 
+                <div class="login-card">
+                    <h1 style="font-weight: 700;">Ingresar</h1>
+                    <div class="forms">
+                        <div class="p-grid">
+                            <div class="p-col-12 p-md-6 p-lg-12">
+                                <div class="login-input-wrapper">
+                                    <label for="username">Usuario</label>
+                                    <input id="username" pInputText [(ngModel)]="userName" required/>
+                                    <i class="pi pi-user"></i>
+                                    <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorUserName}}</small> 
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-md-6 p-lg-12">
+                                <div class="login-input-wrapper">
+                                    <label for="username">Contraseña</label>
+                                    <input id="username" pPassword type="password" [(ngModel)]="password" required autocomplete="off"/>
+                                    <i class="pi pi-lock"></i>
+                                    <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorPassword}}</small> 
+                                </div>
+                            </div>
+                            <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorSignIn}}</small> 
+                            <div class="p-col-12 p-md-6 p-lg-12">
+                                <div style="text-align: center; padding: 30px 0;">
+                                    <button pButton type="button" label="Iniciar Sesión" (click)="signIn()" *ngIf="!flagButtonnumberphone"></button>
+                                    <i class="pi pi-spin pi-spinner" style="font-size: 2rem" *ngIf="flagButtonnumberphone"></i>
+                                </div>
+                            </div>
+                        </div>               
                     </div>
-
-                    <div class="login-input-wrapper">
-                        <label for="username">Contraseña</label>
-                        <input id="username" pPassword type="password" [(ngModel)]="password" required autocomplete="off"/>
-                        <i class="pi pi-lock"></i>
-                        <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorPassword}}</small> 
-                    </div>
-                    <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorSignIn}}</small> 
-                    <div>
-                        <button pButton type="button" label="Iniciar Sesión" (click)="signIn()" *ngIf="!flagButtonnumberphone" style="width: 100%;"></button>
-                        <i class="pi pi-spin pi-spinner" style="font-size: 2rem" *ngIf="flagButtonnumberphone"></i>
-                    </div>
-                    
                 </div>
             </div>
         </div>

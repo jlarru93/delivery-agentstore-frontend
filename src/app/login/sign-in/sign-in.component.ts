@@ -7,6 +7,7 @@ import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 @Component({
   selector: 'app-login',
   templateUrl: './sign-in.component.html',
+  styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent {
 

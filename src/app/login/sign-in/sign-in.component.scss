@@ -1,0 +1,29 @@
+:host ::ng-deep {
+    .p-dropdown{
+        display: flex;
+        border: solid 1px #c3ccdd;
+    }
+    .p-button {
+        padding: 1rem 7rem;
+        border-radius: 40px;
+    }
+    .login-body.layout-light .login-content .login-panel{
+        background-color: transparent;
+    }
+    .login-body.layout-light{
+        background-color: transparent;
+    }
+    .login-body .login-content .login-panel{
+        height: 80vh;
+    }
+    .login-body .login-content .login-panel .login-panel-content{
+        padding: 0;
+        width: 550px;
+    }
+}
+.login-card {
+    background-color: #FFFFFF;
+    padding: 20px 30px;
+    border-radius: 29px;
+    margin-top: -35px;
+}

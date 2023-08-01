@@ -1,3 +1,5 @@
+import { ChatBean } from "src/app/chat/data.chat"
+
 export class UserBean{
   id ?: number
 }
@@ -11,10 +13,19 @@ export class ComplaintBean{
   detail ?: string
   evidence ?: string[]
   status ?: string
+  messagesNoReadTotal:number
+  messagesChat: ChatBean[]
+  isLoadingChat : boolean
+  constructor(){
+    this.messagesNoReadTotal=0
+    this.messagesChat=[]
+    this.isLoadingChat=false
+}
 }
 
 export class OrderHistorBean{
   orderId ?: number
+  orderUuid ?: string
   status ?: string
   createdAt ?: number
   total ?: number

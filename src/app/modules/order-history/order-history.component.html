@@ -111,7 +111,15 @@
                 </div>
             </div>
             <div class="p-col-5">
-                <app-chat></app-chat>
+                <app-chat
+                [isLoading]="complaintOrder.isLoadingChat"
+                [messages]="complaintOrder.messagesChat" 
+                [orderId]="complaintOrder.id"
+                [orderUuid]="complaintOrder.uuid"
+                [usuarioLogueado]="userName"
+                [userId]="userId"
+                (emitMessage)="sendMessage($event)"
+                ></app-chat>
             </div>
         </div>
 
