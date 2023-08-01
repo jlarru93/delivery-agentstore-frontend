@@ -237,6 +237,8 @@ export class ChatComponent implements OnInit {
   //   }
   // }
 
+  
+
   sendMessage(){
     const message:string = this.messageControl.value.toString();
     if(message){

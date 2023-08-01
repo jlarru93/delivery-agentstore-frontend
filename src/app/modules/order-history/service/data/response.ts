@@ -33,6 +33,7 @@ export class ComplaintResponse{
 
 export class OrderHistoryResponse {
     orderId ?: number
+    orderUuid ?: string
     status ?: string
     createdAt ?: number
     total ?: number
@@ -41,6 +42,7 @@ export class OrderHistoryResponse {
     static toBean(self: OrderHistoryResponse): OrderHistorBean {
         const bean = new OrderHistorBean()
         bean.orderId = self.orderId
+        bean.orderUuid = self.orderUuid
         bean.status = self.status
         bean.createdAt = self.createdAt
         bean.total = self.total

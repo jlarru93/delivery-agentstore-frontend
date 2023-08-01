@@ -105,19 +105,19 @@ export class OrderHistoryComponent implements OnInit {
       if(asyncData){
         let messageBean=ChatResponse.toBean(asyncData.data)
         
-        let orderHistoryIndex=this.orderHistories.filter((orderHistory)=>orderHistory.complaint).findIndex((orderHistory)=>orderHistory.complaint.uuid==messageBean.uuidOrder)
-        console.log("orderIndex",orderHistoryIndex)
-        console.log("this.orders[orderIndex]",this.orderHistories[orderHistoryIndex])
-        this.orderHistories[orderHistoryIndex].complaint.messagesNoReadTotal++
+        let orderHistory=this.orderHistories.filter((orderHistory)=>orderHistory.complaint).find((orderHistory)=>orderHistory.orderUuid==messageBean.uuidOrder)
+        console.log("orderIndex",orderHistory)
+        console.log("this.orders[orderIndex]",orderHistory)
+        orderHistory.complaint.messagesNoReadTotal++
 
-        let indexMessage=this.orderHistories[orderHistoryIndex].complaint.messagesChat.findIndex((message)=>message.uuid==messageBean.uuid)
+        let indexMessage=orderHistory.complaint.messagesChat.findIndex((message)=>message.uuid==messageBean.uuid)
         console.log("indexMessage",indexMessage)
         if(indexMessage>0){
-          console.log("this.orders[orderIndex].messagesChat[indexMessage]",this.orderHistories[orderHistoryIndex].complaint.messagesChat[indexMessage])
-          this.orderHistories[orderHistoryIndex].complaint.messagesChat[indexMessage]=messageBean
+          console.log("this.orders[orderIndex].messagesChat[indexMessage]",orderHistory.complaint.messagesChat[indexMessage])
+          orderHistory.complaint.messagesChat[indexMessage]=messageBean
         }else{
-          console.log("this.orders[orderIndex].messagesChat",this.orderHistories[orderHistoryIndex].complaint)
-          this.orderHistories[orderHistoryIndex].complaint.messagesChat.push(messageBean)
+          console.log("this.orders[orderIndex].messagesChat",orderHistory.complaint)
+          orderHistory.complaint.messagesChat.push(messageBean)
         }
       }
     })
@@ -150,14 +150,17 @@ export class OrderHistoryComponent implements OnInit {
   suscribeChat(orderHistories:OrderHistorBean[]){
     console.log("orderHistories.filter((orderHistory)=>orderHistory.complaint)",orderHistories.filter((orderHistory)=>orderHistory.complaint))
     orderHistories.filter((orderHistory)=>orderHistory.complaint).forEach((orderHistory)=>{
-      this.mqtt.subscribe("chat/"+orderHistory.complaint.uuid)
+      this.mqtt.subscribe("chat/"+orderHistory.orderUuid)
     })
   }
   complaintOrder: ComplaintBean
   complaintStatus: string
-  OpenDialogDetail(complaint: ComplaintBean){
+  orderUuidtoSend: string
+
+  OpenDialogDetail(complaint: ComplaintBean, orderUuid: string){
     this.isDialogDetailOpen = true;
-    this.getMessages(complaint)
+    this.orderUuidtoSend = orderUuid
+    this.getMessages(complaint, orderUuid)
     this.complaintOrder = complaint;
     this.complaintStatus = this.getStatus(complaint.status)
     complaint.evidence.forEach((url, index) => {
@@ -244,11 +247,11 @@ export class OrderHistoryComponent implements OnInit {
     )
   }
 
-  getMessages(complaint:ComplaintBean){
+  getMessages(complaint:ComplaintBean, uuidOrder: string){
     console.log("mensajess",this.messagesChat)
     this.messagesChat=[]
     complaint.isLoadingChat=true
-    this.chatService.getMessage(complaint.uuid).subscribe(
+    this.chatService.getMessage(uuidOrder).subscribe(
       (resp)=>{
         complaint.isLoadingChat=false
         complaint.messagesChat= resp.data.map((message)=>ChatResponse.toBean(message))
