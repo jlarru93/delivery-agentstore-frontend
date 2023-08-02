@@ -21,7 +21,8 @@ export class AppMenuComponent implements OnInit {
             { label: 'Ordenes', icon: 'pi pi-fw pi-user-plus', routerLink: ['/main'] },
             { label: 'Productos', icon: 'pi pi-fw pi-flag', routerLink: ['/product'] },
             { label: 'Solicitar Viaje', icon: 'pi pi-fw pi-car', routerLink: ['/request-trip']},
-            { label: 'Historial de Órdenes', icon: 'pi pi-fw pi-history', routerLink: ['/order-history']}
+            { label: 'Historial de Órdenes', icon: 'pi pi-fw pi-history', routerLink: ['/order-history']},
+            { label: 'Quejas', icon: 'pi pi-fw pi-box', routerLink: ['/complaint-report']}
         ];
         this.getProducts()
     }

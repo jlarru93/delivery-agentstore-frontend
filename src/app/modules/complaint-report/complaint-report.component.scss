@@ -1,3 +1,9 @@
+:host ::ng-deep {
+    .p-toolbar {
+        border: 1px solid #e4e4e4;
+    }
+}
+
 :host ::ng-deep .p-dialog {
     width: calc(100vw - 50vw);
 
@@ -11,6 +17,24 @@
 
   }
   
+
+h5{
+    font-size: 1.25rem;
+    font-family: inherit;
+    font-weight: 600;
+    line-height: 1.2;
+    color: inherit;
+}
+
+.details{
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 16px;
+    padding: 25px;
+    background-color: #c5cae9;
+    position: relative;
+}
+
 
 .container-dialog{
     display: grid;
@@ -397,25 +421,4 @@ section{
     border-left: 1px solid #EEF2F6;
     border-right: 1px solid #EEF2F6;
     border-bottom: 1px solid #EEF2F6;
-}
-
-.overlay-container{
-    position: relative;
-}
-.overlay-chat{
-    top: 20px;
-    right: 0%;
-    position: absolute;
-    z-index: 1001;
-    transform-origin: center top;
-    --overlayArrowLeft: 0px;
-    opacity: 1;
-}
-
-h5{
-    font-size: 1.25rem;
-    font-family: inherit;
-    font-weight: 600;
-    line-height: 1.2;
-    color: inherit;
 }

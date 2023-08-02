@@ -20,7 +20,7 @@ export class ComplaintBean{
     this.messagesNoReadTotal=0
     this.messagesChat=[]
     this.isLoadingChat=false
-}
+  }
 }
 
 export class OrderHistorBean{
