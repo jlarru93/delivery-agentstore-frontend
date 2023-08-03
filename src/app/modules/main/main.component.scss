@@ -410,6 +410,13 @@ section{
     transform-origin: center top;
     --overlayArrowLeft: 0px;
     opacity: 1;
+    height: 550px;
+    width: 380px;
+    
+    @media (max-width: 1024px) {
+        height: 487px;
+        width: 336px;
+    }
 }
 
 h5{

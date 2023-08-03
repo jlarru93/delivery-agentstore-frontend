@@ -424,8 +424,24 @@ section{
 }
 
 .galleria-img{
-    width: 50%;
-    // @media (max-width: 1280px) {
-    //     width: 49%
+    
+    @media (min-width: 1280px) {
+        width: 33%;
+      }
+
+    @media (max-width: 1024px) {
+        width: 45%;
+    }
+
+    // @media (max-width: 960px) {
+  
     // }
+
+    // @media (max-width: 768px) {
+   
+    //   }
+    
+    //   @media (max-width: 480px) {
+     
+    //   }
 }
