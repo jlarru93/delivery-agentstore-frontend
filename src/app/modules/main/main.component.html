@@ -21,7 +21,7 @@
                         <div class="p-col">
                            <div class="overlay-container">
                               <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
-                              <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                              <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation] style="height: 550px; width: 380px;">
                                  <app-chat 
                                     [isLoading]="order.isLoadingChat"
                                     [messages]="order.messagesChat" 

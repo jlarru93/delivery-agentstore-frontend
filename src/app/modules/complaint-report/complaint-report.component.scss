@@ -5,7 +5,7 @@
 }
 
 :host ::ng-deep .p-dialog {
-    width: calc(100vw - 50vw);
+    //width: calc(100vw - 50vw);
 
     @media (max-width: 1920px) {
         width: calc(100vw - 20vw);
@@ -421,4 +421,11 @@ section{
     border-left: 1px solid #EEF2F6;
     border-right: 1px solid #EEF2F6;
     border-bottom: 1px solid #EEF2F6;
+}
+
+.galleria-img{
+    width: 50%;
+    // @media (max-width: 1280px) {
+    //     width: 49%
+    // }
 }

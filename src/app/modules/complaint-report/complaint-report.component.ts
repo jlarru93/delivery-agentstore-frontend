@@ -116,16 +116,29 @@ export class ComplaintReportComponent implements OnInit {
     ];
   }
 
+  validateComplaintStatus(status: string){
+    
+  }
+
   onUpdateStatus(statusOrder: string){
-    let body = {
-      status: statusOrder
-    }
-    this.service.updateComplaintStatus(this.complaintOrder.uuid, body).subscribe(
-      (resp) => {
-        this.messageService.add({severity:'success', summary: 'Satisfactorio', detail: 'El estado ha sido actualizado'});
-        this.complaintStatus = this.getStatus(resp.data.status)
+
+    if(this.complaintStatus === 'reject' && (statusOrder === 'done' || statusOrder === 'inProcess')){
+      this.messageService.add({severity:'error', summary: 'Error', detail: 'No puede volver al estado anterior'});
+    } else if (this.complaintStatus === 'done' && statusOrder === 'inProcess'){
+      this.messageService.add({severity:'error', summary: 'Error', detail: 'No puede volver al estado anterior'});
+    } else {
+      let body = {
+        status: statusOrder
       }
-    )
+      this.service.updateComplaintStatus(this.complaintOrder.uuid, body).subscribe(
+        (resp) => {
+          this.messageService.add({severity:'success', summary: 'Satisfactorio', detail: 'El estado ha sido actualizado'});
+          this.complaintStatus = this.getStatus(resp.data.status)
+        }
+      )
+    }
+
+
   }
 
   getOrdersComplaints(){
