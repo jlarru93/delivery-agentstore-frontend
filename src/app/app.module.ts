@@ -163,6 +163,7 @@ import { OrderHandler } from './modules/service/handlers/order.handler';
 import { MqttRoutingService } from './modules/service/mqtt.routing.service';
 import { MqttService } from './modules/service/mqtt.service';
 import { ModalComponent } from './modal/modal.component';
+import { OrderCourseComponent } from './modules/order-course/order-course.component';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -309,9 +310,8 @@ FullCalendarModule.registerPlugins([
         TypographyComponent,
         TextComponent,
         WidgetsComponent,
-
         SignInComponent
-    ],
+        ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         { provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true },

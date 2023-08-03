@@ -14,6 +14,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { RequestTripComponent } from './request-trip.component';
 import { ToolbarModule } from 'primeng/toolbar';
+import { InformacionMapaModule } from 'src/app/directives/informacion/informacion-mapa/informacion-mapa.module';
 
 @NgModule({
   declarations: [RequestTripComponent],
@@ -25,15 +26,12 @@ import { ToolbarModule } from 'primeng/toolbar';
     ButtonModule,
     InputTextareaModule,
     SelectButtonModule,
-    AgmCoreModule.forRoot({
-      apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
-      libraries: ['drawing']
-    }),
     ToolbarModule,
     MatButtonModule,
     MatFormFieldModule, 
     MatInputModule, 
-    MatIconModule
+    MatIconModule,
+    InformacionMapaModule
   ]
 })
 export class RequestTripModule { }

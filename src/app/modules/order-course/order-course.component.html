@@ -1,0 +1,220 @@
+
+
+  <div class="p-grid">
+    <div class="p-col-4 container-service">
+      <pre>{{list_marker | json}}</pre>
+        <ng-container *ngIf="list_viaje.length > 0; else CursoTemplate">
+            <p-accordion
+              (onClose)="onTabClose()"
+              (onOpen)="onTapOpen($event, flagAccordion)"
+            >
+              <p-accordionTab
+                transitionOptions="400ms cubic-bezier(0.86, 0, 0.07, 1)"
+                header="Servicio N°: {{ item.shortId + ' - ' }}{{
+                  '(' + item.statusType!.name + ')' | uppercase
+                }}"
+                *ngFor="let item of list_viaje; index as i"
+                [(selected)]="activeState[i]"
+              >
+                <div class="grid m-0">
+                  <div class="col-12">
+                    <div class="grid flex">
+                      <p class="etiqueta-lista col-5">Origen</p>
+                      <p class="contenido-lista col-7">
+                        {{ item.pickup.mainText }}, {{ item.pickup.secondaryText }}
+                      </p>
+                    </div>
+                    <div
+                      class="grid flex"
+                      *ngFor="let destino of item.destinations"
+                    >
+                      <p class="etiqueta-lista col-5">Destino</p>
+                      <p class="contenido-lista col-7">
+                        {{ destino.mainText }}, {{ destino.secondaryText }}
+                      </p>
+                    </div>
+                    <div class="grid flex">
+                      <p class="etiqueta-lista col-5">Tipo de servicio</p>
+                      <p class="contenido-lista col-7">
+                        {{ item.serviceType!.name }}
+                      </p>
+                    </div>
+                    <div class="grid flex">
+                      <p class="etiqueta-lista col-5">Metodo de Pago</p>
+                      <p class="contenido-lista col-7">
+                        {{ item.paymentType!.name }}
+                      </p>
+                    </div>
+                    <div class="grid flex">
+                      <p class="etiqueta-lista col-5">Fecha y hora</p>
+                      <p class="contenido-lista col-7">
+                        {{ item.serviceDateTime | date : "dd/MM/yyyy HH:mm" }}
+                      </p>
+                    </div>
+        
+                    <div class="grid flex">
+                      <p class="etiqueta-lista col-5">Precio Estimado</p>
+                      <p
+                        class="contenido-lista col-7"
+                        style="color: #e52421; font-weight: 500"
+                      >
+                        {{ item.currencyType?.symbol! + item.price }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+        
+                <br />
+
+                <ng-container
+                  *ngIf="
+                    item.driver &&
+                    item.driver != null &&
+                    item.statusType!.id != 33 &&
+                    item.statusType!.id != 35 &&
+                    item.statusType!.id != 9 &&
+                    item.statusType!.id != 10 &&
+                    item.statusType!.id != 11
+                  "
+                >
+                  <div class="datos-conductor-container p-3 mb-3">
+                    <div class="grid m-0">
+                      <h5 class="pb-2">Datos del conductor:</h5>
+                    </div>
+                    <div class="grid col-12 md:col-12 lg:col-12 p-0">
+                      <i class="pi pi-user m-2"></i>
+                      <!-- <label for="firstname3" class="col-fixed">Nombre Completo:</label> -->
+                      <div class="col">
+                        <h6 for="firstname2">
+                          {{ item.driver.firstName! | uppercase }}
+                          {{ item.driver.firstLastName! | uppercase }}
+                          {{ item.driver.secondLastName! | uppercase }}
+                        </h6>
+                      </div>
+                    </div>
+                    <div class="grid col-12 md:col-12 lg:col-12 p-0">
+                      <i class="pi pi-phone m-2"></i>
+                      <!-- <label for="lastname2" class="col-fixed">Teléfono:</label> -->
+                      <div class="col">
+                        <h6 for="firstname2">{{ item.driver.phoneNumber! }}</h6>
+                      </div>
+                    </div>
+                    <div class="grid col-12 md:col-12 lg:col-12 p-0 pb-2">
+                      <i class="pi pi-car m-2"></i>
+                      <!-- <label for="lastname2" class="col-fixed">Móvil:</label> -->
+                      <div class="col">
+                        <label for="firstname2">
+                          {{ item.vehicle.make! }} {{ item.vehicle.model! + " -" }}
+                        </label>
+                        <label for="firstname2">
+                          {{ item.vehicle.licensePlate! }}
+                        </label>
+                      </div>
+                    </div>
+                    <div
+                      class="grid col-12 md:col-12 lg:col-12 text-center"
+                      style="
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                      "
+                    >
+                      <p-avatar
+                        image="{{ item.driver?.pictureUrl }}"
+                        styleClass=" "
+                        shape="circle"
+                        [style]="{
+                          'background-color': '#2196F3',
+                          color: '#ffffff',
+                          width: '100px',
+                          height: '100px',
+                          'font-size': '3em'
+                        }"
+                        [label]="
+                          item.driver?.pictureUrl
+                            ? ''
+                            : item.driver?.firstName!.substring(0, 1)
+                        "
+                        size="xlarge"
+                      >
+                      </p-avatar>
+                    </div>
+                  </div>
+                  <!-- <div class="grid col-12 md:col-12 lg:col-12">
+                                    <i class="pi pi-bookmark m-2"></i>
+                                    <label for="lastname2" class="col-fixed">Placa:</label>
+                                    <div class="col">
+                    
+                                    </div>
+                                </div> -->
+                </ng-container>
+                <div class="grid col-12 md:col-12 lg:col-12 p-0">
+                  <div class="col" *ngIf="item.flagBuscandoConductor">
+                    <p-progressBar
+                      class="fadein animation-duration-1000"
+                      mode="indeterminate"
+                      [style]="{ color: '#e0040a', height: '4px' }"
+                    ></p-progressBar>
+                  </div>
+                </div>
+                <div style="display: grid">
+                  <div class="col">
+                    <a
+                      pTooltip="{{ message_tooltip_shared_service }}"
+                      rel="noopener noreferrer"
+                      (click)="onClickSharedService()"
+                      pButton
+                      style="background: #E9464C !important; border: none"
+                      type="button p-button-success"
+                    >
+                      Compartir viaje
+                    </a>
+        
+                    <div
+                      class=""
+                      style="float: right"
+                      *ngIf=" item.flagActiveButtonCancel"
+                    >
+                      <button
+                        (click)="btnCancelViaje(item)"
+                        pButton
+                        pRipple
+                        type="button"
+                        label="Cancelar"
+                        style="background: #E9464C !important; border: none"
+                        class="mb-2 px-4 py-2"
+                      ></button>
+                    </div>
+                    <div class="mt-2"> 
+                    <p-message *ngIf="is_copied_shared_service" severity="success" class="text-center" style="text-align: center;"
+                    text="Copiado"> </p-message>
+                    </div>
+                  </div>
+                </div>
+              </p-accordionTab>
+            </p-accordion>
+          </ng-container>
+          <ng-template #CursoTemplate>
+            <h5>No hay servicios en disponibles</h5>
+          </ng-template>
+        
+    </div>
+    <div class="p-col-8">
+      <agm-map
+        [style]="{ height: '85vh' }"
+        [latitude]="center.lat"
+        [longitude]="center.lng"
+        (mapClick)="mapClicked($event)"
+        [zoom]="12"
+      >
+      <ng-container *ngFor="let item of list_marker">
+        <agm-marker
+          [latitude]="item.lat"
+          [longitude]="item.lng"
+          [markerDraggable]="true"
+          (dragEnd)="mapClicked($event)"
+        ></agm-marker>
+      </ng-container>
+      </agm-map>
+    </div>
+  </div>

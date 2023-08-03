@@ -1,6 +1,21 @@
 <div class="p-grid">
-  <div class="p-col-9">
-    <agm-map
+  <div class="p-col-9 container-map">
+    <nexus-informacion-mapa
+    [idMap]="'MapModal-'"
+    [coberturePosition]="coberturePosition"
+    [lstPosiciones]="lstPosiciones"
+    [lstPosicionesDriver]="lstPosicionConductor"
+    (onChange)="onChangeMapMarkers($event)"
+    [viewMetros]="true"
+    [metros]="viaje.distance"
+    [viewPriceEstimate]="true"
+    [priceEstimate]="viaje.totalService"
+    [lstCoordinateEncoded]="polilyneRuta"
+    [initMap]="flagInitMap"
+    [initMapViewAfter]="true"
+  >
+  </nexus-informacion-mapa>
+    <!-- <agm-map
       [style]="{ height: '89vh' }"
       [latitude]="center.lat"
       [longitude]="center.lng"
@@ -13,7 +28,7 @@
         [markerDraggable]="true"
         (dragEnd)="mapClicked($event)"
       ></agm-marker>
-    </agm-map>
+    </agm-map> -->
   </div>
   <div class="p-col-3 information-service">
     <div class="search-container">
@@ -29,6 +44,7 @@
               alt=""
             />
             <input
+              #search
               type="text"
               class="p-inputtext-lg"
               pInputText
@@ -70,6 +86,9 @@
               alt=""
             />
             <input
+              #search
+              id="txtUbicacion"
+              autocorrect="off" autocapitalize="off" spellcheck="off" 
               type="text"
               class="p-inputtext-lg"
               pInputText

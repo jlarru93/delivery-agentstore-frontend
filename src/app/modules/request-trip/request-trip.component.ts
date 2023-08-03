@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { MouseEvent } from 'src/agm/core';
 import { AuthService } from 'src/app/utils/auth.service';
 import { StoreService } from '../main/service/store.service';
+import { MapsAPILoader } from 'src/agm/core';
+import { PersonalisationMarker, PersonalisationPolyline } from 'src/app/directives/informacion/data/enumMapa';
+import { Viaje } from '../order-course/data';
+import { RequestGeoAutocomplete } from 'src/app/directives/informacion/data/serviceGeo';
 
 @Component({
   selector: 'app-request-trip',
   templateUrl: './request-trip.component.html',
   styleUrls: ['./request-trip.component.scss']
 })
-export class RequestTripComponent implements OnInit {
-
+export class RequestTripComponent implements OnInit, AfterViewInit {
+  @ViewChild('search') searchElementRef: ElementRef;
   origenIcon: any = 'assets/images/busqueda/origen.png';
   destinoIcon: any = 'assets/images/busqueda/destino.png';
   referenciaIcon: any = 'assets/images/busqueda/referencia.svg'
@@ -32,19 +36,34 @@ export class RequestTripComponent implements OnInit {
   {
     maintext :'Barranquilla',
     secondText : 'Hotel atrium',
-    lat: 10.96854,
+    lat:10.96854,
     lng: -74.78132
   }
-
-
+  lstPosiciones : PersonalisationMarker[] = []; 
+  lstPosicionConductor: PersonalisationMarker[] = [];
+  //Mapa
+  idDragable: boolean = true;
+  polilyneRuta: PersonalisationPolyline[] = [];
+  minutosEstimados?: Date = undefined;
+  metrosEstimados?: number = undefined;
+  initMapViewAfter: boolean = false;
+  flagInitMap ?: boolean 
+  viaje : Viaje = new Viaje()
+  coberturePosition: RequestGeoAutocomplete = {
+    key_word: "",
+    longitude: -74.78132,
+    latitude: 10.96854,
+  };
   constructor(
-    private auth: AuthService,
-    private storeService : StoreService
+    private storeService : StoreService,
   ) { }
 
   stateOptions: any[];
   value1: string = "efectivo";
+  ngAfterViewInit(): void {
+  }
   ngOnInit(): void {
+    this.findAdress()
     this.onGetLocationStore();
     // this.auth.getUserDetails().then(
     //   (data) => {
@@ -68,5 +87,28 @@ export class RequestTripComponent implements OnInit {
     this.marker.lat = $event.coords.lat,
     this.marker.lng = $event.coords.lng
   }
+  onChangeMapMarkers(event :any){
 
-}
+  }
+  nroViaje: number = 0;
+  findAdress(){
+  //  google.maps.
+      const element = <HTMLInputElement>document.getElementById('txtUbicacion');
+      const autocomplete = new google.maps.places.Autocomplete(
+        element,
+        {
+          types: [],
+          fields: ['place_id'],
+          componentRestrictions: {
+            country: 'CO'
+          }
+        });
+  
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace().place_id;
+        // this.geocodePlaceId(place);
+  
+      });
+  
+    }
+   }
