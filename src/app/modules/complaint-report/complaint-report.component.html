@@ -1,4 +1,4 @@
-<p-toast></p-toast>
+<p-toast baseZIndex="10000"></p-toast>
 <p-toolbar>
     <div class="p-toolbar-group-left">
         <h5 class="p-mr-4 p-p-0">Lista de Ordenes</h5>
@@ -50,7 +50,7 @@
                             </div>
                             <div class="p-col-5">
                                 <div style="float: right;">
-                                    <p-splitButton label="Estado: {{complaintStatus}}" styleClass="p-button-secondary mb-2" 
+                                    <p-splitButton label="Estado: {{labelStatus}}" styleClass="p-button-secondary mb-2" 
                                     [model]="items"></p-splitButton>
 
                                 </div>

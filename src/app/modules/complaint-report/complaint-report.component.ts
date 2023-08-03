@@ -12,12 +12,20 @@ import { MqttService } from '../service/mqtt.service';
 import { ChatHandler } from '../service/handlers/chat.handler';
 import { AuthService } from 'src/app/utils/auth.service';
 
+export const STATUS = {
+  REJECT: 'reject',
+  DONE: 'done',
+  INPROCESS: 'inProcess'
+} as const;
+
 @Component({
   selector: 'app-complaint-report',
   templateUrl: './complaint-report.component.html',
   styleUrls: ['./complaint-report.component.scss'],
   providers: [MessageService]
 })
+
+
 export class ComplaintReportComponent implements OnInit {
 
   orders: OrderBean[]
@@ -116,15 +124,14 @@ export class ComplaintReportComponent implements OnInit {
     ];
   }
 
-  validateComplaintStatus(status: string){
-    
-  }
+
+  labelStatus: string
 
   onUpdateStatus(statusOrder: string){
 
-    if(this.complaintStatus === 'reject' && (statusOrder === 'done' || statusOrder === 'inProcess')){
+    if(this.complaintStatus === STATUS.REJECT && (statusOrder === STATUS.DONE || statusOrder === STATUS.INPROCESS)){
       this.messageService.add({severity:'error', summary: 'Error', detail: 'No puede volver al estado anterior'});
-    } else if (this.complaintStatus === 'done' && statusOrder === 'inProcess'){
+    } else if (this.complaintStatus === STATUS.DONE && statusOrder === STATUS.INPROCESS){
       this.messageService.add({severity:'error', summary: 'Error', detail: 'No puede volver al estado anterior'});
     } else {
       let body = {
@@ -133,7 +140,8 @@ export class ComplaintReportComponent implements OnInit {
       this.service.updateComplaintStatus(this.complaintOrder.uuid, body).subscribe(
         (resp) => {
           this.messageService.add({severity:'success', summary: 'Satisfactorio', detail: 'El estado ha sido actualizado'});
-          this.complaintStatus = this.getStatus(resp.data.status)
+          this.complaintStatus = resp.data.status
+          this.labelStatus = this.getStatus(resp.data.status)
         }
       )
     }
@@ -202,7 +210,8 @@ export class ComplaintReportComponent implements OnInit {
     this.orderUuidtoSend = orderUuid
     this.getMessages(complaint, orderUuid)
     this.complaintOrder = complaint;
-    this.complaintStatus = this.getStatus(complaint.status)
+    this.labelStatus = this.getStatus(complaint.status)
+    this.complaintStatus = complaint.status
     complaint.evidence.forEach((url, index) => {
       const imageObj: Image = {
         previewImageSrc: url,
