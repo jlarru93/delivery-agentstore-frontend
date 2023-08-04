@@ -15,9 +15,10 @@ import { MatIconModule } from "@angular/material/icon";
 import { RequestTripComponent } from './request-trip.component';
 import { ToolbarModule } from 'primeng/toolbar';
 import { InformacionMapaModule } from 'src/app/directives/informacion/informacion-mapa/informacion-mapa.module';
+import { LoadingMotorizedComponent } from './dialog/loading-motorized/loading-motorized.component';
 
 @NgModule({
-  declarations: [RequestTripComponent],
+  declarations: [RequestTripComponent, LoadingMotorizedComponent],
   imports: [
     CommonModule,
     RequestTripRoutingModule,

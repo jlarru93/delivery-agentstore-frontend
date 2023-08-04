@@ -33,48 +33,51 @@
   <div class="p-col-3 information-service">
     <div class="search-container">
       <div class="p-grid p-fluid">
-        <div class="p-col-12">
-          <div class="p-ml-5">
-            <label for="">Tienda</label>
+          <div class="p-col-12">
+            <div class="p-ml-5">
+              <label for="">Tienda</label>
+            </div>
+            <div class="input-origin-content">
+              <img
+                src="{{ origenIcon }}"
+                class="search-img-origin marker"
+                alt=""
+              />
+              <input 
+                #search
+                type="text"
+                class="p-inputtext-lg"
+                pInputText
+                id="txtUbicacion_origin"
+                placeholder="¿Dónde lo recogemos?"
+                [(ngModel)]="input_visible_pickup"
+                [disabled]="is_disabled_pickup"
+                required
+                autofocus
+              />
+            </div>
           </div>
-          <div class="input-origin-content">
-            <img
-              src="{{ origenIcon }}"
-              class="search-img-origin marker"
-              alt=""
-            />
-            <input
-              #search
-              type="text"
-              class="p-inputtext-lg"
-              pInputText
-              placeholder="¿Dónde lo recogemos?"
-              [(ngModel)]="input_visible_pickup"
-              [disabled]="is_disabled_pickup"
-              required
-              autofocus
-            />
+          <div class="p-col-12">
+            <div class="input-origin-content">
+              <img
+                src="{{ referenciaIcon }}"
+                class="search-img-origin marker"
+                alt=""
+                width="6"
+              />
+              <input
+                type="text"
+                class="p-inputtext-lg"
+                pInputText
+                placeholder="Referencia"
+                [(ngModel)]="input_reference_pickup"
+                required
+                autofocus
+              />
+            </div>
           </div>
-        </div>
-        <div class="p-col-12">
-          <div class="input-origin-content">
-            <img
-              src="{{ referenciaIcon }}"
-              class="search-img-origin marker"
-              alt=""
-              width="6"
-            />
-            <input
-              type="text"
-              class="p-inputtext-lg"
-              pInputText
-              placeholder="Referencia"
-              [(ngModel)]="input_reference_pickup"
-              required
-              autofocus
-            />
-          </div>
-        </div>
+     
+
         <div class="p-col-12">
           <div class="p-ml-5">
             <label for="">Dirección de entrega</label>
@@ -87,13 +90,13 @@
             />
             <input
               #search
-              id="txtUbicacion"
               autocorrect="off" autocapitalize="off" spellcheck="off" 
               type="text"
               class="p-inputtext-lg"
               pInputText
               placeholder="¿A dónde lo llevamos?"
               [(ngModel)]="inputVisibleDestino"
+              id="txtUbicacion" 
               required
               autofocus
             />
@@ -195,7 +198,7 @@
           <p-selectButton
             class="select-button-custom"
             [options]="stateOptions"
-            [(ngModel)]="value1"
+            [(ngModel)]="method_payment"
             optionLabel="label"
             optionValue="value"
           ></p-selectButton>

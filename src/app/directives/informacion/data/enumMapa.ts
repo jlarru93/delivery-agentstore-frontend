@@ -61,7 +61,7 @@ export class PersonalisationMarker {
   labelSelector?:string
   idEstado?: number; // VALOR DEL Q OBTIENE EL COLOR
   estado?: ValorComparativo; //OBTIENE LA LISTA DE COLORES POR ESTADO
-  typeServicesId:number
+  typeServicesId?:number
 }
 
 export class PersonalisationPolyline {
