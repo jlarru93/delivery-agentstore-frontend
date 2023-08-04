@@ -41,7 +41,7 @@
     <ng-container *ngIf="complaintOrder">
         <div class="p-grid">
             <div class="p-col-7">
-                <div class="container-detail">
+                <div class="container-detail" style="height: 585px;">
                     <div class="details">
                         <div class="p-grid">
                             <div class="p-col-7">
@@ -75,16 +75,19 @@
                 </div>
             </div>
             <div class="p-col-5">
-                <app-chat
-                [isLoading]="complaintOrder.isLoadingChat"
-                [messages]="complaintOrder.messagesChat" 
-                [orderId]="complaintOrder.id"
-                [orderUuid]="orderUuidtoSend"
-                [usuarioLogueado]="userName"
-                [userId]="userId"
-                (pushMessage)="pushMessaje($event)"
-                (emitMessage)="sendMessage($event)"
-                ></app-chat>
+               <div style="height: 585px;">
+                  <app-chat
+                  [isLoading]="complaintOrder.isLoadingChat"
+                  [messages]="complaintOrder.messagesChat" 
+                  [orderId]="complaintOrder.id"
+                  [orderUuid]="orderUuidtoSend"
+                  [usuarioLogueado]="userName"
+                  [userId]="userId"
+                  (pushMessage)="pushMessaje($event)"
+                  (emitMessage)="sendMessage($event)"
+                  ></app-chat>
+
+               </div>
             </div>
         </div>
 
