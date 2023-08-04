@@ -33,6 +33,7 @@
   <div class="p-col-3 information-service">
     <div class="search-container">
       <div class="p-grid p-fluid">
+        <!-- <pre>{{this.request_trip.addresses | json}}</pre> -->
           <div class="p-col-12">
             <div class="p-ml-5">
               <label for="">Tienda</label>
@@ -162,6 +163,7 @@
               autofocus
               disabled
               value="+51 999 888 777"
+              [(ngModel)]="request_trip.mobile"
             />
             <div class="mr-5"></div>
           </div>
@@ -184,6 +186,7 @@
               pInputTextarea
               [autoResize]="true"
               placeholder="Escriba aquí..."
+              [(ngModel)]="request_trip.description"
             ></textarea>
             <div class="mr-5"></div>
           </div>
@@ -191,7 +194,7 @@
       </div>
     </div>
     <hr />
-    <h5>Metodo de pago</h5>
+    <h5>Método de pago</h5>
     <div class="content-company">
       <div class="p-grid p-fluid">
         <div class="p-col-12">
@@ -215,9 +218,20 @@
               value="$20.00"
               [readonly]="true"
               class="mat-input-custom"
+              [(ngModel)]="amount"
             />
           </mat-form-field>
         </div>
+      </div>
+      <h5>Minutos</h5>
+      <div class="p-grid">
+        <p-inputNumber 
+        [(ngModel)]="request_trip.readyToDmAt" 
+        [showButtons]="true" 
+        buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="5"
+    decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" 
+    incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" 
+    currency="EUR"></p-inputNumber>
       </div>
     </div>
     <div class="p-mt-3"></div>

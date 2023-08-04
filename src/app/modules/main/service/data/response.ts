@@ -111,6 +111,7 @@ export class StoreResponse {
     id: number
     name: string
     fullName : string
+    phone : string
     //address: AddressResponse
     addressStreet: string
     location?: Point

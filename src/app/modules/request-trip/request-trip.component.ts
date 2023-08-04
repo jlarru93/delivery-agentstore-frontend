@@ -63,6 +63,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   stateOptions: any[];
   method_payment = "efectivo";
+  amount ?: number = 123323
   request_trip : RequestTrip = new RequestTrip()
   ngAfterViewInit(): void {
   }
@@ -73,23 +74,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         alias : '',
         floor : '',
         phone : '',
-        maker : '',
-        point : {
-          coordinates : [
-            0,
-            0
-          ],
-          type : ''
-        },
-        sort : 0,
-        reference : ''
-      },
-      {
-        addressStreet : '',
-        alias : '',
-        floor : '',
-        phone : '',
-        maker : '',
+        maker : 'store',
         point : {
           coordinates : [
             0,
@@ -98,6 +83,22 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           type : ''
         },
         sort : 1,
+        reference : ''
+      },
+      {
+        addressStreet : '',
+        alias : '',
+        floor : '',
+        phone : '',
+        maker : 'store',
+        point : {
+          coordinates : [
+            0,
+            0
+          ],
+          type : ''
+        },
+        sort : 2,
         reference : ''
       }
     ]
@@ -116,9 +117,18 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   private onGetLocationStore() {
     this.storeService.onGetLocationStoreService().subscribe((data) => {
       // this.input_visible_pickup = data.data.fullName;
+      // this.request_trip.addresses[0].phone =  data.data.phone
+      this.input_visible_pickup = this.marker.maintext
+      this.request_trip.addresses[0].point.type = 'Point';
+      this.request_trip.addresses[0].floor = '';
+      this.request_trip.addresses[0].alias = '';
+      this.request_trip.addresses[0].maker =  'store'
+      this.request_trip.addresses[0].addressStreet =this.input_visible_pickup  
+      this.request_trip.addresses[0].point.coordinates =  [ this.marker.lat ,this.marker.lng ]
+
       // this.marker.lng = data.data.location.coordinates[0];
       // this.marker.lat = data.data.location.coordinates[1];
-      this.updatePositionOrigin()
+      this.updatePosition()
     });
   }
 
@@ -145,7 +155,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     
         autocomplete.addListener('place_changed', () => {
           let place: any = autocomplete.getPlace().place_id;
-          this.geocodePlaceIdMultidestino(place)
+          this.geocodePlaceIdOrigin(place)
         });
     
       }
@@ -169,20 +179,42 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   
     }
     geocoder: google.maps.Geocoder = new google.maps.Geocoder();
+    geocodePlaceIdOrigin(placeId) {
+      this.geocoder.geocode({ 'placeId': placeId }, (results, status) => {
+    if (status === google.maps.GeocoderStatus.OK) {
+      if (results[0]) {
+        this.request_trip.addresses[0].addressStreet = results[0].formatted_address;
+        this.request_trip.addresses[0].point.type = 'Point';
+        this.request_trip.addresses[0].floor = '';
+        this.request_trip.addresses[0].alias = '';
+        this.request_trip.addresses[0].maker =  'store'
+        this.request_trip.addresses[0].point.coordinates = [results[0].geometry.location.lat(),results[0].geometry.location.lng()]
+        // this.geocodePlaceId(place);
+        this.updatePosition()
+      }
+    }
+  });
+
+}
+
     geocodePlaceIdMultidestino(placeId) {
           this.geocoder.geocode({ 'placeId': placeId }, (results, status) => {
         if (status === google.maps.GeocoderStatus.OK) {
           if (results[0]) {
+            this.request_trip.addresses[1].point.type = 'Point';
+            this.request_trip.addresses[1].floor = '';
+            this.request_trip.addresses[1].alias = '';
+            this.request_trip.addresses[1].maker =  'store'
             this.request_trip.addresses[1].addressStreet = results[0].formatted_address;
             this.request_trip.addresses[1].point.coordinates = [results[0].geometry.location.lat(),results[0].geometry.location.lng()]
             // this.geocodePlaceId(place);
-            this.updatePositionOrigin()
+            this.updatePosition()
           }
         }
       });
   
     }
-    updatePositionOrigin(){
+    updatePosition(){
       var lstPosiciones: PersonalisationMarker[] = [];
       lstPosiciones.push(
         UtilModalViaje.fnDetalleViaje(
@@ -215,18 +247,82 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
      
       this.lstPosiciones = lstPosiciones;
     }
-
-    onSaveOrder(){
-      let order : RequestTrip = new RequestTrip()
-      // order.payment = this.method_payment
-      order.addresses.forEach((item,index)=> {
-        item.sort = index++
-        if (index==1) {
-          // item.addressStreet = this.input_visible_pickup
-        } else {
-          
-        }
-      })
+    onGetMotorizedPosiitonOrigin(){
       
     }
+    onGetAmountOrder(){
+
+    }
+    onSaveOrder(){
+      let order : RequestTrip = new RequestTrip()
+      if(!this.request_trip.description){
+        alert('La descripción es obligatoria')
+      }else {
+
+      
+      order.payment = {
+        amount :  {
+          value : this.amount
+        },
+        method : {
+          type : this.method_payment
+        }
+      }
+      order.readyToDmAt = this.request_trip.readyToDmAt
+      order.description = this.request_trip.description
+      order.mobile = this.request_trip.mobile
+      order.addresses = [
+        {
+          addressStreet : '',
+          alias : '',
+          floor : '',
+          phone : '',
+          maker : 'store',
+          point : {
+            coordinates : [
+              0,
+              0
+            ],
+            type : 'Point'
+          },
+          sort : 1,
+          reference : this.input_reference_pickup
+        },
+        {
+          addressStreet : '',
+          alias : '',
+          floor : '',
+          phone : this.request_trip.mobile,
+          maker : 'store',
+          point : {
+            coordinates : [
+              0,
+              0
+            ],
+            type : 'Point'
+          },
+          sort : 2,
+          reference :  this.input_reference_destination
+        }
+      ]
+      this.request_trip.addresses.forEach((item,index)=> {
+        if (item.sort==1) {
+          order.addresses[0].addressStreet = item.addressStreet
+          order.addresses[0].point = item.point
+        } else {
+          order.addresses[1].addressStreet = item.addressStreet
+          order.addresses[1].point = item.point
+        }
+      })
+      console.log(JSON.stringify(order))
+      this.requestTripService.onSaveOrderService(order).subscribe(
+        data=>{
+        alert('Se guardó correctamente')
+      },error=>{
+        alert('Ocurrió un error')
+
+      }
+      )  
+    }
+  }
    }

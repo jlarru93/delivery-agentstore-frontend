@@ -37,8 +37,19 @@ export class Point {
     description: string;
     payment: Payment;
     addresses: Address[];
-  
+    mobile ?: string
+    readyToDmAt ?: number
   
   }
   
-  
+  export class MotorizedOrigin {
+    origin: {
+      lat: number;
+      lng: number;
+    };
+    payment: {
+      method: {
+        type: string;
+      };
+    };
+  }
