@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RequestTripService } from '../../services/request-trip.service';
 
 @Component({
   selector: 'app-loading-motorized',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoadingMotorizedComponent implements OnInit {
 
-  constructor() { }
-
+  constructor(    private requestTripService: RequestTripService,
+    ) { }
+  status_order ?: number = 0
   ngOnInit(): void {
+  }
+  onClose(){
+
+  }
+  onSearchMotorizedOrder(){
+    // this.requestTripService.onLoadingMotorizedService()
   }
 
 }

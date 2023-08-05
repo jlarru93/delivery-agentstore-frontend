@@ -18,7 +18,9 @@ export const environment = {
   url:{
     backEndInit : [
       'https://yei6npe8j1.execute-api.us-east-1.amazonaws.com/dev',
-      "https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev"
+      "https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev",
+      'https://b0807puypc.execute-api.us-east-1.amazonaws.com/dev/delivery-man'
+
     ],
     backEnd: 'https://yei6npe8j1.execute-api.us-east-1.amazonaws.com/dev',
     url_back_delivery_man : 'https://b0807puypc.execute-api.us-east-1.amazonaws.com/dev/delivery-man',
@@ -51,7 +53,7 @@ export const environment = {
       ICON_SIZE: new google.maps.Size(30, 30)
     },
     CONDUCTOR_LABEL: {
-      URL: '/img/markers/autoGeneric.png',
+      URL: '/img/markers/autoGeneric.svg',
       POSICION: 1,
       ICON_SIZE: new google.maps.Size(20, 20)
     },

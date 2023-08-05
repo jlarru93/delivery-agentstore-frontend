@@ -25,4 +25,8 @@ export class RequestTripService {
   onLoadingMotorizedService(){
 
   }
+  onGetPaymentOrderService(request : any){
+    let path = "/order-trip";
+    return this.http.post<ObjetResponse<ResponseTrip>>(env.url.backEnd + path, request);
+  }
 }

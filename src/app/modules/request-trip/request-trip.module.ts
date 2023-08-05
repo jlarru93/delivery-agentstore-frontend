@@ -17,6 +17,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { InformacionMapaModule } from 'src/app/directives/informacion/informacion-mapa/informacion-mapa.module';
 import { LoadingMotorizedComponent } from './dialog/loading-motorized/loading-motorized.component';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
@@ -34,7 +35,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
     MatInputModule, 
     MatIconModule,
     InformacionMapaModule,
-    InputNumberModule
+    InputNumberModule,
+    ProgressBarModule
   ]
 })
 export class RequestTripModule { }

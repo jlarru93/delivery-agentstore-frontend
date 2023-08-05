@@ -1,1 +1,57 @@
-<p>loading-motorized works!</p>
+<div class="grid">
+    <div class="col-12 md:col-12">
+      <div class="grid mt-1 mb-4 ml-1">
+        <div class="" [ngSwitch]="status_order">
+          <h4 class="font-weight: 500;" *ngSwitchCase="0">
+            Buscando motorizado ...
+          </h4>
+          <h4 class="font-weight: 500;" *ngSwitchCase="33">
+            Buscando motorizado ...
+          </h4>
+          <h4 class="font-weight: 500;" *ngSwitchCase="11">
+            La orden fue cancelada
+          </h4>
+          <h4 class="font-weight: 500;" *ngSwitchCase="35">
+            Oops! No se encontró motorizado, intenta nuevamente
+          </h4>
+        </div>
+      </div>
+      <p-progressBar *ngIf="true"
+        class="fadein animation-duration-1000"
+        mode="indeterminate"
+        [style]="{ color: '#e0040a', height: '4px' }"
+      ></p-progressBar>
+      <br />
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <!-- <button
+      class="p-button-outlined"
+      pButton
+      type="button"
+      *ngIf="flagVisualizarBotonCancelarServicio"
+      class="btn btn-danger"
+      (click)="cancelService()"
+    >
+      Cancelar
+    </button>
+    <button
+      class="p-button-outlined"
+      pButton
+      type="button"
+      *ngIf="flagVisualizarBotonAceptar"
+      class="btn btn-primary"
+      (click)="verServicios()"
+    >
+      Ver
+    </button> -->
+    <button
+      class="p-button-outlined"
+      pButton
+      type="button"
+      class="btn btn-secondary"
+      (click)="onClose()"
+    >
+      Cerrar
+    </button>
+  </ng-template>

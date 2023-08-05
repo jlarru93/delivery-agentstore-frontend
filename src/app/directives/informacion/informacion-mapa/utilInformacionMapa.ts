@@ -615,17 +615,10 @@ export function getUrlIcon(detalleMarker: PersonalisationMarker): any {
       urlIcon.scaledSize = environment.MARKERS.CONDUCTOR.ICON_SIZE;
       break;
     case TypeMarkers.CONDUCTOR_LABEL:
-      if (detalleMarker.typeServicesId == 1) {
-        urlIcon.url =
-          "assets/empresas/" +
-          environment.NAME_COMPANY +
-          environment.MARKERS.CONDUCTOR_ELITE.URL;
-      } else {
-        urlIcon.url =
-          "assets/empresas/" +
-          environment.NAME_COMPANY +
-          environment.MARKERS.CONDUCTOR_LABEL.URL;
-      }
+      urlIcon.url =
+      "assets/empresas/" +
+      environment.NAME_COMPANY +
+      environment.MARKERS.CONDUCTOR_LABEL.URL;
       urlIcon.scaledSize = environment.MARKERS.CONDUCTOR_LABEL.ICON_SIZE;
       break;
     case TypeMarkers.PASAJERO:

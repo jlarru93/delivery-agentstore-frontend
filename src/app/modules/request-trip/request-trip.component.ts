@@ -21,10 +21,13 @@ import { Point, RequestMotorizedOrigin, RequestTrip } from "./data/request";
 import * as UtilModalViaje from "./util-modal-viaje-corporate";
 import { RequestTripService } from "./services/request-trip.service";
 import { ResponseMotorizedOrigin } from "./data/response";
+import { LoadingMotorizedComponent } from "./dialog/loading-motorized/loading-motorized.component";
+import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 @Component({
   selector: "app-request-trip",
   templateUrl: "./request-trip.component.html",
   styleUrls: ["./request-trip.component.scss"],
+  providers: [DialogService]
 })
 export class RequestTripComponent implements OnInit, AfterViewInit {
   @ViewChild("search") searchElementRef: ElementRef;
@@ -69,13 +72,15 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   };
   constructor(
     private storeService: StoreService,
-    private requestTripService: RequestTripService
+    private requestTripService: RequestTripService,
+    private dialogService : DialogService
   ) {}
 
   stateOptions: any[];
   method_payment = "efectivo";
   amount?: number = 123323;
   request_trip: RequestTrip = new RequestTrip();
+  ref?: DynamicDialogRef;
   ngAfterViewInit(): void {}
   ngOnInit(): void {
     this.request_trip.addresses = [
@@ -120,7 +125,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   private onGetLocationStore() {
     this.storeService.onGetLocationStoreService().subscribe((data) => {
-      // debugger
       this.input_visible_pickup = data.data.store.fullName;
       this.request_trip.addresses[0].phone = data.data.store.phone;
       this.request_trip.addresses[0].point.type = "Point";
@@ -138,6 +142,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.marker.lat = data.data.store.location.coordinates[1];
       this.stateOptions = data.data.tripSetting.paymentMethod;
       this.method_payment = 'CASH'
+      this.onGetMotorizedPosiitonOrigin();
       this.updatePosition();
     });
   }
@@ -349,8 +354,18 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.request_trip.addresses.forEach((item, index) => {
         if (item.sort == 1) {
           order.addresses[0].addressStreet = item.addressStreet;
+          order.addresses[0].phone = item.phone;
+          order.addresses[0].maker = item.maker;
+          order.addresses[0].alias = item.alias;
+          order.addresses[0].reference = item.reference;
+          order.addresses[0].floor = item.floor;
           order.addresses[0].point = item.point;
         } else {
+          order.addresses[1].phone = this.request_trip.mobile;
+          order.addresses[1].maker = item.maker;
+          order.addresses[1].alias = item.alias;
+          order.addresses[1].reference = item.reference;
+          order.addresses[1].floor = item.floor;
           order.addresses[1].addressStreet = item.addressStreet;
           order.addresses[1].point = item.point;
         }
@@ -358,6 +373,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       console.log(JSON.stringify(order));
       this.requestTripService.onSaveOrderService(order).subscribe(
         (data) => {
+          this.ref = this.dialogService.open(LoadingMotorizedComponent, { header: 'Motorizado'});
           alert("Se guardó correctamente");
         },
         (error) => {
