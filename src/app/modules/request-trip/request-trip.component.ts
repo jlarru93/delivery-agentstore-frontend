@@ -23,16 +23,23 @@ import { RequestTripService } from "./services/request-trip.service";
 import { ResponseMotorizedOrigin } from "./data/response";
 import { LoadingMotorizedComponent } from "./dialog/loading-motorized/loading-motorized.component";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
+import { environment } from "src/environments/environment";
 @Component({
   selector: "app-request-trip",
   templateUrl: "./request-trip.component.html",
   styleUrls: ["./request-trip.component.scss"],
-  providers: [DialogService]
+  providers: [DialogService],
 })
 export class RequestTripComponent implements OnInit, AfterViewInit {
   @ViewChild("search") searchElementRef: ElementRef;
-  origenIcon: any = "assets/images/busqueda/origen.png";
-  destinoIcon: any = "assets/images/busqueda/destino.png";
+  origenIcon: any =
+    "assets/empresas/" +
+    environment.NAME_COMPANY +
+    environment.MARKERS.ORIGEN.URL;
+  destinoIcon: any =
+    "assets/empresas/" +
+    environment.NAME_COMPANY +
+    environment.MARKERS.DESTINO.URL;
   referenciaIcon: any = "assets/images/busqueda/referencia.svg";
   imgLogo: any = "assets/images/656.png";
 
@@ -73,7 +80,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   constructor(
     private storeService: StoreService,
     private requestTripService: RequestTripService,
-    private dialogService : DialogService
+    private dialogService: DialogService
   ) {}
 
   stateOptions: any[];
@@ -141,7 +148,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.marker.lng = data.data.store.location.coordinates[0];
       this.marker.lat = data.data.store.location.coordinates[1];
       this.stateOptions = data.data.tripSetting.paymentMethod;
-      this.method_payment = 'CASH'
+      this.method_payment = "CASH";
       this.onGetMotorizedPosiitonOrigin();
       this.updatePosition();
     });
@@ -268,13 +275,16 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       for (let item of this.data_driver) {
         lstPosicionConductor.push(
           UtilModalViaje.fnDetalleViaje(
-            new google.maps.LatLng(item.position.point.coordinates[0]!, item.position.point.coordinates[1]!),
+            new google.maps.LatLng(
+              item.position.point.coordinates[1]!,
+              item.position.point.coordinates[0]!
+            ),
             true,
             "Conductor",
             TypeMarkers.CONDUCTOR_LABEL,
             false,
             undefined,
-           1
+            1
           )
         );
       }
@@ -283,7 +293,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     }
     this.lstPosicionConductor = lstPosicionConductor;
   }
-  data_driver : ResponseMotorizedOrigin[] = []
+  data_driver: ResponseMotorizedOrigin[] = [];
   onGetMotorizedPosiitonOrigin() {
     let request: RequestMotorizedOrigin = {
       origin: {
@@ -298,7 +308,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     };
     this.requestTripService.onGetMotorizedPositionService(request).subscribe(
       (data) => {
-        this.data_driver =  data.data 
+        this.data_driver = data.data;
         this.onUpdatePositionDriver();
       },
       (error) => {
@@ -373,8 +383,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       console.log(JSON.stringify(order));
       this.requestTripService.onSaveOrderService(order).subscribe(
         (data) => {
-          this.ref = this.dialogService.open(LoadingMotorizedComponent, { header: 'Motorizado'});
-          alert("Se guardó correctamente");
+          this.ref = this.dialogService.open(LoadingMotorizedComponent, {
+            header: "Motorizado",
+          });
+          // alert("Se guardó correctamente");
         },
         (error) => {
           alert("Ocurrió un error");
