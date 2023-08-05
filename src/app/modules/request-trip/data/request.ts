@@ -42,7 +42,7 @@ export class Point {
   
   }
   
-  export class MotorizedOrigin {
+  export class RequestMotorizedOrigin {
     origin: {
       lat: number;
       lng: number;

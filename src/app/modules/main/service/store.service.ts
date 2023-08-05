@@ -17,7 +17,10 @@ import { OpenStoreRequest } from "./data/request";
     changeStatusOpen(request:OpenStoreRequest){
         return this.http.put<ObjetResponse<StatusOpenStoreResponse>>(env.url.backEnd+"/store/open",request)
     }
-    onGetLocationStoreService(){
-      return this.http.get<ObjetResponse<StoreResponse>>(env.url.backEnd+"/store/just-deliveryMan")
-  }
+  //   onGetLocationStoreService(){
+  //     return this.http.get<ObjetResponse<StoreResponse>>(env.url.backEnd+"/store/just-deliveryMan")
+  // }
+  onGetLocationStoreService(){
+    return this.http.get<ObjetResponse<StoreResponse>>(env.url.backEnd+"/store/setting")
+}
   }

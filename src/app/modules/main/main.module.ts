@@ -44,10 +44,10 @@ import { ChatModule } from "src/app/chat/chat.module";
       AccordionModule,
       TableModule,
       TreeTableModule,
-      AgmCoreModule.forRoot({
-        apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
-        libraries: ['drawing']
-      }),
+      // AgmCoreModule.forRoot({
+      //   apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
+      //   libraries: ['drawing']
+      // }),
       CardModule,
       DynamicDialogModule,
       OverlayPanelModule,

@@ -1,3 +1,4 @@
+import { Store } from "src/app/models"
 import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, MethodBean, OptionBean, OrderBean, PaymentBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UserBean } from "../../data"
 
 export class StatusOpenStoreResponse {
@@ -107,24 +108,81 @@ export class EstimationTimeResponse {
     }
 }
 
-export class StoreResponse {
-    id: number
-    name: string
-    fullName : string
-    phone : string
-    //address: AddressResponse
-    addressStreet: string
-    location?: Point
-    static toBean(self: StoreResponse): StoreBean {
-        const bean = new StoreBean()
-        bean.id = self.id,
-            bean.name = self?.name,
-            bean.addressStreet = self.addressStreet,
-            bean.location = self.location
-        return bean
+// export class StoreResponse {
+//     id: number
+//     name: string
+//     fullName : string
+//     phone : string
+//     //address: AddressResponse
+//     addressStreet: string
+//     location?: Point
+//     static toBean(self: StoreResponse): StoreBean {
+//         const bean = new StoreBean()
+//         bean.id = self.id,
+//             bean.name = self?.name,
+//             bean.addressStreet = self.addressStreet,
+//             bean.location = self.location
+//         return bean
+//     }
+// }
+
+export class Location {
+    type: string;
+    coordinates: number[];
+
+    constructor(type: string, coordinates: number[]) {
+        this.type = type;
+        this.coordinates = coordinates;
     }
 }
 
+export class PaymentMethod {
+    name: string;
+    value: string;
+
+    constructor(name: string, value: string) {
+        this.name = name;
+        this.value = value;
+    }
+}
+
+export class RequestStore {
+    id?: number;
+    adminStore_id?: number;
+    name?: string;
+    addressStreet?: string;
+    location?: Location;
+    brand_id?: number;
+    zone_id?: number;
+    phone: string;
+    fullName: string;
+}
+export class StoreResponse {
+    id: number; 
+    store : RequestStore;
+    location: Location;
+    addressStreet: string
+    tripSetting: {
+        paymentMethod: PaymentMethod[];
+    };
+
+    static toBean(json: any): StoreResponse {
+        const trip = new StoreResponse();
+        trip.id = json.store.id;
+        // trip.fullName = json.store.fullName;
+        trip.location = new Location(json.store.location.type, json.store.location.coordinates);
+        // trip.phone = json.store.phone;
+        trip.tripSetting = {
+            paymentMethod: json.tripSetting.paymentMethod.map((method: any) => new PaymentMethod(method.name, method.value))
+        };
+        return trip;
+    }
+}
+
+// Usage example:
+// const jsonData = /* ... JSON data ... */;
+// const trip = StoreResponse.fromJSON(jsonData);
+// console.log(trip);
 
 export class DeliveryManResponse {
     id: number

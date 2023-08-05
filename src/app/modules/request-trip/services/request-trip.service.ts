@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { RequestTrip } from '../data/request';
+import {  RequestMotorizedOrigin, RequestTrip } from '../data/request';
 import { HttpClient } from '@angular/common/http';
 import { ResponseTrip } from '../data/response';
 import { ObjetResponse } from 'src/app/models';
 import {environment as env} from '../../../../environments/environment'
+import { ResponseMotorizedOrigin } from '../data/response';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,10 +14,12 @@ export class RequestTripService {
     ) { }
 
   onSaveOrderService(request : RequestTrip){
-    let path = "/order-trip"
-    return this.http.post<ObjetResponse<ResponseTrip>>(env.url.backEnd + path, request)
+    let path = "/order-trip";
+    return this.http.post<ObjetResponse<ResponseTrip>>(env.url.backEnd + path, request);
   }
-  onGetMotorizedPositionService(){
+  onGetMotorizedPositionService(request : RequestMotorizedOrigin){
+    let path = '/near/location';
+    return this.http.post<ObjetResponse<ResponseMotorizedOrigin[]>>(env.url.url_back_delivery_man + path, request);
 
   }
   onLoadingMotorizedService(){
