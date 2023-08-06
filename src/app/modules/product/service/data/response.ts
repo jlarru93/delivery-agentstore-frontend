@@ -4,10 +4,16 @@ export class PriceResponse{
     currency ?: string;
     value ?: number;
     static toBean(self: PriceResponse) : PriceBean {
-        const bean = new PriceBean
+        try{
+            const bean = new PriceBean
             bean.currency = self.currency;
             bean.value = self.value;
-        return bean
+            return bean
+        }catch(e){
+            console.log("self",self)
+            console.log(e)
+            throw e
+        }
     }
 }
 
@@ -19,8 +25,10 @@ export class ProductsResponse{
     menu ?: []
     picture ?: string;
     isOutStock : boolean;
+    isEnabled:boolean
     static toBean(self: ProductsResponse): ProductBean{
-        const bean = new ProductBean()
+        try{
+            const bean = new ProductBean()
             bean.id = self.id;
             bean.review = self.review;
             bean.name = self.name;
@@ -28,7 +36,11 @@ export class ProductsResponse{
             bean.menu = self.menu;
             bean.picture = self.picture;
             bean.isOutStock = self.isOutStock;
-        return bean
+            return bean
+        }catch(e){
+            console.log("self:product",self)
+            throw e
+        }        
     }
 }
 
@@ -57,7 +69,7 @@ export class StoreResponse {
             bean.starRating = self.starRating;
             bean.isEnable = self.isEnable;
             bean.menu = self.menu;
-            bean.products = self.products.map((it) => ProductsResponse.toBean(it));
+            bean.products = self.products.filter((it)=>it.isEnabled).map((it) => ProductsResponse.toBean(it));
             bean.isOpen = self.isOpen
         return bean
     }

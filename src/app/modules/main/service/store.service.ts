@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ObjetResponse } from "src/app/models";
 import {environment as env} from '../../../../environments/environment'
-import { StatusOpenStoreResponse, StoreResponse } from "./data/response";
+import { StatusOpenStoreResponse, StoreTripResponse } from "./data/response";
 import { OpenStoreRequest } from "./data/request";
 @Injectable({
     providedIn: 'root'
@@ -21,6 +21,6 @@ import { OpenStoreRequest } from "./data/request";
   //     return this.http.get<ObjetResponse<StoreResponse>>(env.url.backEnd+"/store/just-deliveryMan")
   // }
   onGetLocationStoreService(){
-    return this.http.get<ObjetResponse<StoreResponse>>(env.url.backEnd+"/store/setting")
-}
+    return this.http.get<ObjetResponse<StoreTripResponse>>(env.url.backEnd+"/store/setting")
+  }
   }

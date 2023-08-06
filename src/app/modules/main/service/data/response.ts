@@ -158,6 +158,23 @@ export class RequestStore {
     fullName: string;
 }
 export class StoreResponse {
+    id: number
+    name: string
+    fullName : string
+    phone : string
+    //address: AddressResponse
+    addressStreet: string
+    location?: Point
+    static toBean(self: StoreResponse): StoreBean {
+        const bean = new StoreBean()
+        bean.id = self.id,
+        bean.name = self?.name,
+        bean.addressStreet = self.addressStreet,
+        bean.location = self.location
+        return bean
+    } 
+}
+export class StoreTripResponse {
     id: number; 
     store : RequestStore;
     location: Location;
@@ -166,8 +183,20 @@ export class StoreResponse {
         paymentMethod: PaymentMethod[];
     };
 
-    static toBean(json: any): StoreResponse {
-        const trip = new StoreResponse();
+    static toBean(json: any): StoreTripResponse {
+        const trip = new StoreTripResponse();
+        trip.id = json.store.id;
+        // trip.fullName = json.store.fullName;
+        trip.location = new Location(json.store.location.type, json.store.location.coordinates);
+        // trip.phone = json.store.phone;
+        trip.tripSetting = {
+            paymentMethod: json.tripSetting.paymentMethod.map((method: any) => new PaymentMethod(method.name, method.value))
+        };
+        return trip;
+    }
+
+    static toBeanTrip(json: any): StoreTripResponse {
+        const trip = new StoreTripResponse();
         trip.id = json.store.id;
         // trip.fullName = json.store.fullName;
         trip.location = new Location(json.store.location.type, json.store.location.coordinates);
