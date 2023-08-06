@@ -17,14 +17,13 @@ export const environment = {
   // },
   url:{
     backEndInit : [
-      'https://yei6npe8j1.execute-api.us-east-1.amazonaws.com/dev',
-      "https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev",
-      'https://b0807puypc.execute-api.us-east-1.amazonaws.com/dev/delivery-man'
-
+      'https://dev-api.delivery-app.net/agent-store',
+      "https://dev-api.delivery-app.net/utils",
+      'https://dev-api.delivery-app.net/tracking'
     ],
-    backEnd: 'https://yei6npe8j1.execute-api.us-east-1.amazonaws.com/dev',
-    url_back_delivery_man : 'https://b0807puypc.execute-api.us-east-1.amazonaws.com/dev/delivery-man',
-    util_banckEnd:"https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev",
+    backEnd: 'https://dev-api.delivery-app.net/agent-store',
+    url_back_tracking : 'https://dev-api.delivery-app.net/tracking',
+    util_banckEnd:"https://dev-api.delivery-app.net/utils",
     //util_dev : "https://nkdqe8xd51.execute-api.us-east-1.amazonaws.com/dev"
    
   },

@@ -18,8 +18,8 @@ export class RequestTripService {
     return this.http.post<ObjetResponse<ResponseTrip>>(env.url.backEnd + path, request);
   }
   onGetMotorizedPositionService(request : RequestMotorizedOrigin){
-    let path = '/near/location';
-    return this.http.post<ObjetResponse<ResponseMotorizedOrigin[]>>(env.url.url_back_delivery_man + path, request);
+    let path = '/delivery-man/near/location';
+    return this.http.post<ObjetResponse<ResponseMotorizedOrigin[]>>(env.url.url_back_tracking + path, request);
 
   }
   onLoadingMotorizedService(){
