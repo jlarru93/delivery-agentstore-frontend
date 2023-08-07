@@ -17,7 +17,12 @@ import {
 } from "src/app/directives/informacion/data/enumMapa";
 import { Viaje } from "../order-course/data";
 import { RequestGeoAutocomplete } from "src/app/directives/informacion/data/serviceGeo";
-import { Point, RequestMotorizedOrigin, RequestTrip } from "./data/request";
+import {
+  Point,
+  RequestMotorizedOrigin,
+  RequestOrderPayment,
+  RequestTrip,
+} from "./data/request";
 import * as UtilModalViaje from "./util-modal-viaje-corporate";
 import { RequestTripService } from "./services/request-trip.service";
 import { ResponseMotorizedOrigin } from "./data/response";
@@ -70,13 +75,20 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   minutosEstimados?: Date = undefined;
   metrosEstimados?: number = undefined;
   initMapViewAfter: boolean = false;
-  flagInitMap?: boolean;
+  flagInitMap: boolean = false;
   viaje: Viaje = new Viaje();
+  // barrnaquilla
+  // coberturePosition: RequestGeoAutocomplete = {
+  //   key_word: "",
+  //   longitude: -74.78132,
+  //   latitude: 10.96854,
+  // };
   coberturePosition: RequestGeoAutocomplete = {
-    key_word: "",
-    longitude: -74.78132,
-    latitude: 10.96854,
-  };
+      key_word: "",
+      longitude: -76.9928316,
+      latitude: -12.1251109,
+    };
+  polyline_order?: PersonalisationPolyline[] = [];
   constructor(
     private storeService: StoreService,
     private requestTripService: RequestTripService,
@@ -96,7 +108,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         alias: "",
         floor: "",
         phone: "",
-        maker: "store",
+        marker: "store",
         point: {
           coordinates: [0, 0],
           type: "",
@@ -109,7 +121,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         alias: "",
         floor: "",
         phone: "",
-        maker: "store",
+        marker: "store",
         point: {
           coordinates: [0, 0],
           type: "",
@@ -119,7 +131,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       },
     ];
     this.findAdress();
-    this.onGetLocationStore();
+    this.onGetLocationStore(true);
     // this.auth.getUserDetails().then(
     //   (data) => {
     //       this.userAttributes = data
@@ -130,18 +142,18 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     // this.stateOptions = [{label: 'Efectivo', value: 'efectivo'}, {label: 'Pago Digital', value: 'e-wallet'}];
   }
 
-  private onGetLocationStore() {
+  private onGetLocationStore(flagInit : boolean) {
     this.storeService.onGetLocationStoreService().subscribe((data) => {
       this.input_visible_pickup = data.data.store.fullName;
       this.request_trip.addresses[0].phone = data.data.store.phone;
       this.request_trip.addresses[0].point.type = "Point";
       this.request_trip.addresses[0].floor = "";
       this.request_trip.addresses[0].alias = "";
-      this.request_trip.addresses[0].maker = "store";
+      this.request_trip.addresses[0].marker = "store";
       this.request_trip.addresses[0].addressStreet = this.input_visible_pickup;
       this.request_trip.addresses[0].point.coordinates = [
-        this.marker.lat,
-        this.marker.lng,
+        data.data.store.location.coordinates[1],
+        data.data.store.location.coordinates[0]
       ];
 
       // this.input_visible_pickup = this.marker.maintext
@@ -150,6 +162,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.stateOptions = data.data.tripSetting.paymentMethod;
       this.method_payment = "CASH";
       this.onGetMotorizedPosiitonOrigin();
+      this.flagInitMap = flagInit;
       this.updatePosition();
     });
   }
@@ -204,7 +217,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           this.request_trip.addresses[0].point.type = "Point";
           this.request_trip.addresses[0].floor = "";
           this.request_trip.addresses[0].alias = "";
-          this.request_trip.addresses[0].maker = "store";
+          this.request_trip.addresses[0].marker = "store";
           this.request_trip.addresses[0].point.coordinates = [
             results[0].geometry.location.lat(),
             results[0].geometry.location.lng(),
@@ -224,7 +237,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           this.request_trip.addresses[1].point.type = "Point";
           this.request_trip.addresses[1].floor = "";
           this.request_trip.addresses[1].alias = "";
-          this.request_trip.addresses[1].maker = "store";
+          this.request_trip.addresses[1].marker = "store";
           this.request_trip.addresses[1].addressStreet =
             results[0].formatted_address;
           this.request_trip.addresses[1].point.coordinates = [
@@ -232,6 +245,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             results[0].geometry.location.lng(),
           ];
           // this.geocodePlaceId(place);
+          this.onGetAmountOrder();
           this.updatePosition();
         }
       }
@@ -316,7 +330,31 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       }
     );
   }
-  onGetAmountOrder() {}
+uuid_price ?: string
+  onGetAmountOrder() {
+    let request: RequestOrderPayment = {
+      origin: {
+        lat: this.request_trip.addresses[0].point.coordinates[1],
+        lng: this.request_trip.addresses[0].point.coordinates[0],
+      },
+      destination: {
+        lat: this.request_trip.addresses[1].point.coordinates[0],
+        lng: this.request_trip.addresses[1].point.coordinates[1],
+      },
+    };
+    this.requestTripService.onGetPaymentOrderService(request).subscribe(
+      (data) => {
+        this.uuid_price = data.data.uuid
+        this.amount = data.data.amount;
+        this.polyline_order = [
+          { coordinateEncoded: data.data.overviewPolyline },
+        ];
+      },
+      (error) => {
+        alert("Ocurrió un error al obtener la tarifa");
+      }
+    );
+  }
   onSaveOrder() {
     let order: RequestTrip = new RequestTrip();
     if (!this.request_trip.description) {
@@ -339,40 +377,43 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           alias: "",
           floor: "",
           phone: "",
-          maker: "store",
+          marker: "store",
           point: {
             coordinates: [0, 0],
             type: "Point",
           },
           sort: 1,
           reference: this.input_reference_pickup,
+          label : "Recojo"
         },
         {
           addressStreet: "",
           alias: "",
           floor: "",
           phone: this.request_trip.mobile,
-          maker: "store",
+          marker: "Point",
           point: {
             coordinates: [0, 0],
             type: "Point",
           },
           sort: 2,
           reference: this.input_reference_destination,
+          label : "Entrega Final",
+          uuidRoutePrice : this.uuid_price
         },
       ];
       this.request_trip.addresses.forEach((item, index) => {
         if (item.sort == 1) {
           order.addresses[0].addressStreet = item.addressStreet;
           order.addresses[0].phone = item.phone;
-          order.addresses[0].maker = item.maker;
+          order.addresses[0].marker = item.marker;
           order.addresses[0].alias = item.alias;
           order.addresses[0].reference = item.reference;
           order.addresses[0].floor = item.floor;
           order.addresses[0].point = item.point;
         } else {
           order.addresses[1].phone = this.request_trip.mobile;
-          order.addresses[1].maker = item.maker;
+          order.addresses[1].marker = item.marker;
           order.addresses[1].alias = item.alias;
           order.addresses[1].reference = item.reference;
           order.addresses[1].floor = item.floor;

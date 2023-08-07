@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,OnDestroy,AfterViewInit} from '@angular/core';
 import { Viaje } from './data';
 import { MouseEvent } from 'src/agm/core';
+import { RequestTripService } from '../request-trip/services/request-trip.service';
+import { ResponseLoadingOrder, ResponseOrderPayment } from '../request-trip/data/response';
+import { RequestGeoAutocomplete } from 'src/app/directives/informacion/data/serviceGeo';
+import { PersonalisationMarker, PersonalisationPolyline, TypeMarkers } from 'src/app/directives/informacion/data/enumMapa';
+import * as UtilModalViaje from "../request-trip/util-modal-viaje-corporate";
 
 @Component({
   selector: 'app-order-course',
   templateUrl: './order-course.component.html',
   styleUrls: ['./order-course.component.scss']
 })
-export class OrderCourseComponent implements OnInit {
+export class OrderCourseComponent implements OnInit, OnDestroy,AfterViewInit {
 
-  constructor() { }
+  constructor( private requestTripService: RequestTripService) { }
   list_viaje : Viaje[] = [
         {
             "company": {
@@ -702,13 +707,14 @@ export class OrderCourseComponent implements OnInit {
             "courierPackageInfo": null,
         }
     ]
+   list_order : ResponseLoadingOrder[] = [] 
   idClient ?: string
   center: any = {
     lat: 10.96854,
     lng: -74.78132
   };
   activeState: boolean[] = [true, false, false];
-
+  interval_motorized_order ?: any
   marker ?:any
   =
   {
@@ -717,45 +723,116 @@ export class OrderCourseComponent implements OnInit {
     lat: 10.96854,
     lng: -74.78132
   }
-  async ngOnInit() {
-
-    // this.idClient = this.dataMaestra.user?.uuid
-    this.onIntervalServiceCourseTab()
-    this.suscriptionWebSocket();
+  polyline_order?: PersonalisationPolyline[] = [];
+  lstPosiciones: PersonalisationMarker[] = [];
+  lstPosicionConductor: PersonalisationMarker[] = []; 
+  polilyneRuta: PersonalisationPolyline[] = [];
+  minutosEstimados?: Date = undefined;
+  metrosEstimados?: number = undefined;
+  initMapViewAfter ?: boolean
+  flagInitMap : boolean = false
+  viaje: Viaje = new Viaje();
+//   coberturePosition: RequestGeoAutocomplete = {
+//     key_word: "",
+//     longitude: -74.78132,
+//     latitude: 10.96854,
+//   };
+coberturePosition: RequestGeoAutocomplete = {
+    key_word: "",
+    longitude: -76.9928316,
+    latitude: -12.1251109,
+  };
+  ngAfterViewInit(){
   }
+  async ngOnInit() {
+    this.initMapViewAfter = true
+    // this.idClient = this.dataMaestra.user?.uuid
+    // this.onIntervalServiceCourseTab()
+    this.suscriptionWebSocket();
+    this.onOrderCourseInterval(0);
+
+  }
+    private onOrderCourseInterval(index : number) {
+        this.onSearchMotorizedOrder();
+        this.interval_motorized_order = setInterval(() => {
+            this.onSearchMotorizedOrder();
+        }, 30000);
+    }
+
   ngOnDestroy(): void {
-    clearInterval(this.IntervalOnGoing);
+    clearInterval(this.interval_motorized_order);
     // if (this.suscripcionTopic) {
     //   this.webSocketMqtt.ususcribeSuscription(this.suscripcionTopic.id!);
     // }
   }
-  onTabClose() {
-    // clearInterval(this.IntervalOnGoing)
-    // this.onClearMap.emit([])
-    // this.flagAccordion = false
+  onClearMap(){
+    this.polilyneRuta = []
+    this.lstPosiciones = []
   }
+  onTabClose(envios :any ) {
+    this.onClearMap()
+    this.flagAccordion = false
+    this.onOrderCourseInterval(envios.index)
+  }
+  flagAccordion: boolean = false
   async onTapOpen(envios: any, flagAccordion: boolean) {
-    // let select_service = this.viaje[envios.index]
-    // this.enviosServicio = select_service
-    // this.flagAccordion = true
-    // // await this.onGetRouteServiceShared(select_service)
-    // this.onUpdateDriver();
-    // // this.onUpdatePosicion(select_service)
-    // // this.getServiceRouteAssigned(select_service.id)
-    // this.onIntervalServiceCourseTab()
-  }
+  
 
-private onIntervalServiceCourseTab() {
-  this.onListServiceCourse();
-  // this.IntervalOnGoing = setInterval(() => {
-  //   this.onListServiceCourse();
-  // }, 15000);
-}
+    this.flagAccordion = true
+    // await this.onGetRouteServiceShared(select_service)
+    this.onUpdateDriver();
+    // this.onUpdatePosicion(select_service)
+    // this.getServiceRouteAssigned(select_service.id)
+    clearInterval(this.IntervalOnGoing)
+    this.onViewOrder(envios.index)
+  }
+  onViewOrder(index : number ){
+    let select_service = this.list_order[index]
+    this.onChangePolyline(select_service)
+    this.updatePosition(select_service)
+  }
+  onChangePolyline(item : ResponseLoadingOrder){
+
+  }
+  updatePosition(select_service : ResponseLoadingOrder) {
+    var lstPosiciones: PersonalisationMarker[] = [];
+    lstPosiciones.push(
+      UtilModalViaje.fnDetalleViaje(
+        new google.maps.LatLng(select_service.addresses[0].location.coordinates[0] , select_service.addresses[0].location.coordinates[1] ),
+        true,
+        "Origen",
+        TypeMarkers.ORIGEN,
+        true,
+        1
+      )
+    );
+    if (select_service.addresses.length > 1) {
+      lstPosiciones.push(
+        UtilModalViaje.fnDetalleViaje(
+          new google.maps.LatLng(
+            select_service.addresses[1].location.coordinates[0],
+            select_service.addresses[1].location.coordinates[1]
+          ),
+          true,
+          "Destino",
+          TypeMarkers.DESTINO,
+          true,
+          1
+        )
+      );
+    }
+
+    this.lstPosiciones = lstPosiciones;
+  }
+  onSearchMotorizedOrder(){
+    this.requestTripService.onLoadingMotorizedService().subscribe(data=>{
+        this.list_order = data.data
+    })
+  }
   link_href_shared_service ?: string
   IntervalOnGoing? : any
   list_marker ?: any = []
   async onListServiceCourse() {
-    debugger
     for (let index = 0; index < this.list_viaje[0].destinations.length; index++) {
       const element = this.list_viaje[0].destinations[index];
       if(index== 0 ){
@@ -806,6 +883,11 @@ private onIntervalServiceCourseTab() {
   }
 
   btnCancelViaje(item :Viaje){
+    this.requestTripService.onCancelOrderService(item.id).subscribe(data=>{
+        alert('Se canceló la orden')
+    },error=>{
+        alert('Ocurrió un error')
+    })
     // this.cancelViaje.emit(item)
   }
   onUpdateDriver() {

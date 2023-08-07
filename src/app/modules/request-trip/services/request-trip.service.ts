@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {  RequestMotorizedOrigin, RequestTrip } from '../data/request';
+import {  RequestMotorizedOrigin, RequestOrderPayment, RequestTrip } from '../data/request';
 import { HttpClient } from '@angular/common/http';
-import { ResponseTrip } from '../data/response';
+import { ResponseLoadingOrder, ResponseOrderPayment, ResponseTrip } from '../data/response';
 import { ObjetResponse } from 'src/app/models';
 import {environment as env} from '../../../../environments/environment'
 import { ResponseMotorizedOrigin } from '../data/response';
@@ -23,10 +23,15 @@ export class RequestTripService {
 
   }
   onLoadingMotorizedService(){
-
-  }
-  onGetPaymentOrderService(request : any){
     let path = "/order-trip";
-    return this.http.post<ObjetResponse<ResponseTrip>>(env.url.backEnd + path, request);
+    return this.http.get<ObjetResponse<ResponseLoadingOrder[]>>(env.url.backEnd + path);
+  }
+  onGetPaymentOrderService(request : RequestOrderPayment){
+    let path = "/order-trip/delivery/price";
+    return this.http.post<ObjetResponse<ResponseOrderPayment>>(env.url.backEnd + path, request);
+  }
+  onCancelOrderService(id : number ){
+    let path = "/order-trip/:id/cancel";
+    return this.http.delete<ObjetResponse<ResponseOrderPayment>>(env.url.backEnd + path.replace(':id',id.toString()));
   }
 }

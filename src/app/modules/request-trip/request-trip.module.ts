@@ -36,7 +36,8 @@ import { ProgressBarModule } from 'primeng/progressbar';
     MatIconModule,
     InformacionMapaModule,
     InputNumberModule,
-    ProgressBarModule
+    ProgressBarModule,
+    ButtonModule
   ]
 })
 export class RequestTripModule { }

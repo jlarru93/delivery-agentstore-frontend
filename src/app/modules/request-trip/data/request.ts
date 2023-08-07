@@ -10,20 +10,22 @@ export class Point {
   // Define the class for the "addresses" object
   export class Address {
     sort: number;
-    maker: string;
+    marker: string;
     addressStreet: string;
     point: Point;
     alias: string;
     floor: string;
     reference: string;
     phone: string;
-
+    label ?: string;
+    uuidRoutePrice ?: string;
   }
   
   // Define the class for the "payment" object
   export class Payment {
     amount: { value: number };
     method: { type: string };
+    id ?: number
   }
   
   // Define the main class with all the properties
@@ -51,5 +53,16 @@ export class Point {
       method: {
         type: string;
       };
-    };
+    }
   }
+  export class RequestOrderPayment {
+    origin: {
+      lat: number;
+      lng: number;
+  };
+  destination: {
+      lat: number;
+      lng: number;
+  };
+
+}
