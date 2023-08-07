@@ -9,6 +9,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { AgmCoreModule } from 'src/agm/core';
 import { InformacionMapaModule } from 'src/app/directives/informacion/informacion-mapa/informacion-mapa.module';
 import { ButtonModule } from 'primeng/button';
+import { ChatModule } from 'src/app/chat/chat.module';
 
 @NgModule({
   declarations: [OrderCourseComponent],
@@ -21,7 +22,8 @@ import { ButtonModule } from 'primeng/button';
     // }),
     AccordionModule,
     ButtonModule,
-    InformacionMapaModule
+    InformacionMapaModule,
+    ChatModule
   ],
   exports : [OrderCourseComponent]
 })

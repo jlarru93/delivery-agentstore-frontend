@@ -34,15 +34,27 @@ export class ResponseOrderCourse {
       reference: string;
       phone: string;
     }[];
-    deliveryMan: {
-      id: number;
-      name: string;
-      phone: string;
-      status: string;
-    };
+    deliveryMan: DeliveryMan;
     recivedAt: number;
     readyToDmAt: number;
     acceptAgentStoreAt: number;
     evidenceReceptionOrder: string;
   }
-  
+  export class ResponseTrackingMotorized {
+    id: number;
+    uuid: string;
+    status: string;
+    deliveryMan: DeliveryMan;
+    position: {
+        lat: number;
+        lng: number;
+    };
+    vehicle: string;
+}
+
+  export  class   DeliveryMan {
+    id: number;
+    name: string;
+    phone: string;
+    status: string;
+  };

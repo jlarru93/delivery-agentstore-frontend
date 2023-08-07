@@ -50,7 +50,7 @@ export class PersonalisationMarker {
 
   showTittle?: boolean;
   tittle?: string;
-
+  view_screen_map ?: boolean;
   showInfowindow?: boolean;
   infoWindow?: google.maps.InfoWindow;
   

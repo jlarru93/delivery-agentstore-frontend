@@ -305,6 +305,7 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
             // this.markerListener(lstMarkers[i], i, );
           }
         }
+        debugger
         for (let i = lstMarkers.length; i < lstPosiciones.length; i++) {
           let estados: any[] = UtilInformacionMapa.lstEstados(lstPosiciones[i].estado!, '')
           let marker = UtilInformacionMapa.fnCrearMarker(i, lstPosiciones[i], this.map!, estados);
@@ -336,8 +337,11 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
     //     }
     //   this.lstPosicionesMemory = lstPosiciones
     // }
-    if (this.fitBoundsMap) {
-      UtilInformacionMapa.fitBounds(this.map!, this.coberturePosition, lstMarkers, this.lstPolylinsMapa, lstPosiciones)
+    if (lstPosiciones.length > 0) {
+      if (this.fitBoundsMap && !lstPosiciones[0].view_screen_map) {
+        UtilInformacionMapa.fitBounds(this.map!, this.coberturePosition, lstMarkers, this.lstPolylinsMapa, lstPosiciones)
+      }
+   
     }
 
     return lstMarkers;
@@ -395,6 +399,11 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
         }
       }
     }
+    if (lstPosiciones.length > 0 ) {
+      if (this.fitBoundsMap && lstPosiciones[0].view_screen_map) {
+        UtilInformacionMapa.fitBounds(this.map!, this.coberturePosition, lstMarkers, this.lstPolylinsMapa, lstPosiciones)
+      }
+    }
     return lstMarkers;
   }
   fnActualizarPolylineMapa() {
@@ -439,9 +448,9 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
     }
     // debugger
     // UtilInformacionMapa.animatePolyline(polyline); 
-    // if (this.fitBoundsMap) {
-    //   UtilInformacionMapa.fitBounds(this.map!, this.coberturePosition, this.lstMarkers, this.lstPolylinsMapa,this.lstPosiciones)
-    // }
+    if (this.fitBoundsMap) {
+      UtilInformacionMapa.fitBounds(this.map!, this.coberturePosition, this.lstMarkers, this.lstPolylinsMapa,this.lstPosiciones)
+    }
   }
 
   actualizarMarker(lstMarkers: google.maps.Marker[], lstPosiciones: PersonalisationMarker[], i: number) {

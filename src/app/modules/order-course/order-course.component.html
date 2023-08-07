@@ -1,69 +1,66 @@
-
-
-  <div class="p-grid">
-    <div class="p-col-4 container-service">
-      <!-- <pre>{{list_marker | json}}</pre> -->
-        <ng-container *ngIf="list_order.length > 0; else CursoTemplate">
-            <p-accordion
-              (onClose)="onTabClose($event)"
-              (onOpen)="onTapOpen($event, flagAccordion)"
-            >
-              <p-accordionTab
-                transitionOptions="400ms cubic-bezier(0.86, 0, 0.07, 1)"
-                header="Servicio N°: {{ item.id + ' - ' }}{{
-                  '(' + item.status + ')' | uppercase
-                }}"
-                *ngFor="let item of list_order; index as i"
-                [(selected)]="activeState[i]"
-              >
-                <div class="grid m-0">
-                  <div class="col-12">
-                    <div class="grid flex">
-                      <p class="etiqueta-lista col-5">Origen</p>
-                      <p class="contenido-lista col-7">
-                        {{ item.addresses[0].addressStreet}}  
-                      </p>
-                    </div>
-                    <div
-                      class="grid flex"
-                    >
-                      <p class="etiqueta-lista col-5">Destino</p>
-                      <p class="contenido-lista col-7">
-                        {{ item.addresses[1].addressStreet}}  
-                      </p>
-                    </div>
-                    <!-- <div class="grid flex">
+<div class="p-grid">
+  <div class="p-col-4 container-service">
+    <!-- <pre>{{list_marker | json}}</pre> -->
+    <ng-container *ngIf="list_order.length > 0; else CursoTemplate">
+      <p-accordion
+        (onClose)="onTabClose($event)"
+        (onOpen)="onTapOpen($event, flagAccordion)"
+      >
+        <!-- [(selected)]="activeState[i]" -->
+        <p-accordionTab
+          transitionOptions="400ms cubic-bezier(0.86, 0, 0.07, 1)"
+          header="Orden  N°: {{ item.id + ' - ' }}{{
+            '(' + item.status + ')' | uppercase
+          }}"
+          *ngFor="let item of list_order; index as i"
+        >
+          <div class="grid m-0">
+            <div class="col-12">
+              <div class="grid flex">
+                <p class="etiqueta-lista col-5">Origen</p>
+                <p class="contenido-lista col-7">
+                  {{ item.addresses[0].addressStreet }}
+                </p>
+              </div>
+              <div class="grid flex">
+                <p class="etiqueta-lista col-5">Destino</p>
+                <p class="contenido-lista col-7">
+                  {{ item.addresses[1].addressStreet }}
+                </p>
+              </div>
+              <!-- <div class="grid flex">
                       <p class="etiqueta-lista col-5">Tipo de servicio</p>
                       <p class="contenido-lista col-7">
                         {{ item.serviceType!.name }}
                       </p>
                     </div> -->
-                    <div class="grid flex">
-                      <p class="etiqueta-lista col-5">Metodo de Pago</p>
-                      <p class="contenido-lista col-7">
-                        {{ item.payment.method.type }}
-                      </p>
-                    </div>
-                    <div class="grid flex">
-                      <p class="etiqueta-lista col-5">Fecha y hora</p>
-                      <p class="contenido-lista col-7">
-                        {{ item.createdAt | date : "dd/MM/yyyy HH:mm" }}
-                      </p>
-                    </div>
-        
-                    <div class="grid flex">
-                      <p class="etiqueta-lista col-5">Precio Estimado</p>
-                      <p
-                        class="contenido-lista col-7"
-                        style="color: #e52421; font-weight: 500"
-                      >
-                        {{ item.total }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <br />
-                <!-- <ng-container
+              <div class="grid flex">
+                <p class="etiqueta-lista col-5">Método de Pago</p>
+                <p class="contenido-lista col-7">
+                  {{ item.payment.method.type }}
+                </p>
+              </div>
+              <div class="grid flex">
+                <p class="etiqueta-lista col-5">Fecha y hora</p>
+                <p class="contenido-lista col-7">
+                  {{ item.date_string }}
+                </p>
+              </div>
+
+              <div class="grid flex">
+                <p class="etiqueta-lista col-5">Precio Estimado</p>
+                <p
+                  class="contenido-lista col-7"
+                  style="color: #e52421; font-weight: 500"
+                >
+                  {{ item.payment.amount.value }}
+                  {{ item.payment.amount.currency }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <br />
+          <!-- <ng-container
                   *ngIf="
                     item.driver &&
                     item.driver != null &&
@@ -145,39 +142,60 @@
                     ></p-progressBar>
                   </div>
                 </div> -->
-                <div style="display: grid">
-                <div
-                class=""
-                style="float: right"
-              >
+          <div class="p-grid">
+            <div class="p-col">
+              <button
+                (click)="btnCancelViaje(item)"
+                pButton
+                pRipple
+                type="button"
+                label="Cancelar"
+                style="background: #e9464c !important; border: none"
+                class="mb-2"
+              ></button>
+            </div>
+            <div class="p-col">
+              <div class="overlay-container">
                 <button
-                  (click)="btnCancelViaje(item)"
-                  pButton
-                  pRipple
-                  type="button"
-                  label="Cancelar"
-                  style="background: #E9464C !important; border: none"
-                  class="mb-2 px-4 py-2"
-                ></button>
+                (click)="toggleDisplayDiv(item)"
+                pButton
+                pRipple
+                type="button"
+                label="Chat"
+                style="background: #e9464c !important; border: none"
+                class="mb-2"
+              ></button>
+              <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="item.showButton" [@enterAnimation]>
+                <app-chat 
+                   [isLoading]="item.isLoadingChat"
+                   [messages]="item.messagesChat" 
+                   [orderId]="item.id"
+                   [orderUuid]="item.uuid"
+                   [usuarioLogueado]="userName"
+                   [userId]="userId"
+                   (emitMessage)="sendMessage($event)"
+                   ></app-chat>
+             </div>
               </div>
-                </div>
-              </p-accordionTab>
-            </p-accordion>
-          </ng-container>
-          <ng-template #CursoTemplate>
-            <h5>No hay servicios en disponibles</h5>
-          </ng-template>
-        
-    </div>
-    <div class="p-col-8">
-      <nexus-informacion-mapa
-      [idMap]="'Map-'"
-    [coberturePosition]="coberturePosition"
-    [lstPosiciones]="lstPosiciones"
-    [initMap]="flagInitMap"
-    [initMapViewAfter]="initMapViewAfter"
-    [lstCoordinateEncoded]="polyline_order"
-  >
-  </nexus-informacion-mapa>
-    </div>
+            </div>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+    </ng-container>
+    <ng-template #CursoTemplate>
+      <h5>No hay servicios en disponibles</h5>
+    </ng-template>
   </div>
+  <div class="p-col-8">
+    <nexus-informacion-mapa
+      [idMap]="'Map-'"
+      [coberturePosition]="coberturePosition"
+      [lstPosiciones]="lstPosiciones"
+      [lstPosicionesDriver]="lstPosicionConductor"
+      [initMap]="flagInitMap"
+      [initMapViewAfter]="initMapViewAfter"
+      [lstCoordinateEncoded]="polyline_order"
+    >
+    </nexus-informacion-mapa>
+  </div>
+</div>

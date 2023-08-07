@@ -1,4 +1,4 @@
-import { UserBean } from "src/app/chat/data.chat";
+import { ChatBean, UserBean } from "src/app/chat/data.chat";
 import { Address, Payment, Point } from "./request";
 
 export class ResponseMotorizedOrigin {
@@ -73,6 +73,17 @@ export class ResponseLoadingOrder{
     zoneId: number;
     deliveryPrice: number;
     total: number;
+    date_string : string
+    messagesNoReadTotal:number
+    messagesChat:ChatBean[]
+    isLoadingChat:boolean
+    showButton:boolean
+    constructor(){
+        this.messagesNoReadTotal=0
+        this.messagesChat=[]
+        this.isLoadingChat=false
+        this.showButton=false
+    }
 
 }
 export class AddressResponseLoadingOrder {

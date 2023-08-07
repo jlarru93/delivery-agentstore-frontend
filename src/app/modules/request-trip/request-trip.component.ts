@@ -97,11 +97,12 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   stateOptions: any[];
   method_payment = "efectivo";
-  amount?: number = 123323;
+  amount?: number = 0;
   request_trip: RequestTrip = new RequestTrip();
   ref?: DynamicDialogRef;
   ngAfterViewInit(): void {}
   ngOnInit(): void {
+    this.request_trip.readyToDmAt = 0 
     this.request_trip.addresses = [
       {
         addressStreet: "",
@@ -245,8 +246,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             results[0].geometry.location.lng(),
           ];
           // this.geocodePlaceId(place);
-          this.onGetAmountOrder();
           this.updatePosition();
+          this.onGetAmountOrder();
         }
       }
     });
@@ -260,10 +261,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         "Origen",
         TypeMarkers.ORIGEN,
         true,
-        1
+        1,
+        false
       )
     );
-    if (this.request_trip.addresses.length > 1) {
+    if (  this.request_trip.addresses[1].point.coordinates[0] != 0) {
       lstPosiciones.push(
         UtilModalViaje.fnDetalleViaje(
           new google.maps.LatLng(
@@ -274,7 +276,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           "Destino",
           TypeMarkers.DESTINO,
           true,
-          1
+          1,
+          false
         )
       );
     }
@@ -298,7 +301,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             TypeMarkers.CONDUCTOR_LABEL,
             false,
             undefined,
-            1
+            1,
+            false
           )
         );
       }
@@ -334,8 +338,8 @@ uuid_price ?: string
   onGetAmountOrder() {
     let request: RequestOrderPayment = {
       origin: {
-        lat: this.request_trip.addresses[0].point.coordinates[1],
-        lng: this.request_trip.addresses[0].point.coordinates[0],
+        lat: this.request_trip.addresses[0].point.coordinates[0],
+        lng: this.request_trip.addresses[0].point.coordinates[1],
       },
       destination: {
         lat: this.request_trip.addresses[1].point.coordinates[0],
@@ -346,9 +350,12 @@ uuid_price ?: string
       (data) => {
         this.uuid_price = data.data.uuid
         this.amount = data.data.amount;
-        this.polyline_order = [
-          { coordinateEncoded: data.data.overviewPolyline },
-        ];
+        // setTimeout(()=>{
+          this.polyline_order = [
+            { coordinateEncoded: data.data.overviewPolyline },
+          ];
+        // },500)
+
       },
       (error) => {
         alert("Ocurrió un error al obtener la tarifa");

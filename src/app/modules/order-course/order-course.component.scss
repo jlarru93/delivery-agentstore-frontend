@@ -16,7 +16,25 @@
         line-height: 17px;
     }
 }
-
+.overlay-container{
+    position: relative;
+}
+.overlay-chat{
+    bottom: 30px;
+    right: 0%;
+    position: absolute;
+    z-index: 1001;
+    transform-origin: center top;
+    --overlayArrowLeft: 0px;
+    opacity: 1;
+    height: 396px;
+    width: 297px;
+    
+    @media (max-width: 1024px) {
+        height: 487px;
+        width: 336px;
+    }
+}
 .datos-pasajero-container {
     border-radius: 4px;
     border: 1px solid #CED4DA;

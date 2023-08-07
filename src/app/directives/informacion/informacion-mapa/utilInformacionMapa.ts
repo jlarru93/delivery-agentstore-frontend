@@ -127,7 +127,7 @@ export function setMapAll(
   map: google.maps.Map,
   lstMarkers: google.maps.Marker[]
 ) {
-  if (map && lstMarkers && lstMarkers.length > 1) {
+  if (map && lstMarkers && lstMarkers.length >= 1) {
     lstMarkers.forEach((marker) => {
       marker.setMap(map);
     });
@@ -314,7 +314,7 @@ export function fitBounds(
   lstPolylinsMapa?: google.maps.Polyline[],
   lstPosiciones?: PersonalisationMarker[]
 ) {
-  // debugger
+  debugger
   if (map) {
     let bounsConteiner: boolean = false;
     var bounds = new google.maps.LatLngBounds();

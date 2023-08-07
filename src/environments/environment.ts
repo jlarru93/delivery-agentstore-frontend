@@ -44,17 +44,17 @@ export const environment = {
     ORIGEN: {
       URL: '/img/markers/Comercio.png',
       POSICION: 20,
-      ICON_SIZE: new google.maps.Size(30, 30)
+      ICON_SIZE: new google.maps.Size(50, 50)
     },
     DESTINO: {
       URL: '/img/markers/Cliente.png',
       POSICION: 20,
-      ICON_SIZE: new google.maps.Size(30, 30)
+      ICON_SIZE: new google.maps.Size(50, 50)
     },
     CONDUCTOR_LABEL: {
       URL: '/img/markers/Domiciliario_1.png',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(20, 20)
+      ICON_SIZE: new google.maps.Size(50, 50)
     },
     CONDUCTOR_ELITE: {
       URL: '/img/markers/autoElite.png',
@@ -64,7 +64,7 @@ export const environment = {
     CONDUCTOR: {
       URL: '/img/markers/Domiciliario_1.png',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(20, 20)
+      ICON_SIZE: new google.maps.Size(50, 50)
     },
     PASAJERO:{
       URL: '/img/markers/marker_destino.png',
