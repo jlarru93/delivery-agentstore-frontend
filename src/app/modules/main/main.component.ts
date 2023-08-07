@@ -205,7 +205,7 @@ import { ChatComponent } from "src/app/chat/chat.component";
         }
       })
       this.chatHandler._data.subscribe((asyncData)=>{
-        if(asyncData){
+        if(asyncData && asyncData.data.uuid){
           let messageBean=ChatResponse.toBean(asyncData.data)
           
           let orderIndex=this.orders.findIndex((order)=>order.uuid==messageBean.uuidOrder)

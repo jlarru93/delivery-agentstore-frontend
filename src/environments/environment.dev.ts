@@ -6,11 +6,14 @@ export const environment = {
   production: false,
   url:{
     backEndInit : [
-      'https://yei6npe8j1.execute-api.us-east-1.amazonaws.com/dev',
-      "https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev"
+      'https://dev-api.delivery-app.net/agent-store',
+      'https://dev-api.delivery-app.net/tracking',
+      "https://dev-api.delivery-app.net/utils",
+
     ],
-    backEnd: 'https://yei6npe8j1.execute-api.us-east-1.amazonaws.com/dev',
-    util_banckEnd:"https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev",
+    backEnd: 'https://dev-api.delivery-app.net/agent-store',
+    url_back_tracking : 'https://dev-api.delivery-app.net/tracking',
+    util_banckEnd:"https://dev-api.delivery-app.net/utils",
     //util_dev : "https://nkdqe8xd51.execute-api.us-east-1.amazonaws.com/dev"
    
   },
@@ -39,7 +42,7 @@ export const environment = {
       ICON_SIZE: new google.maps.Size(30, 30)
     },
     CONDUCTOR_LABEL: {
-      URL: '/img/markers/autoGeneric.png',
+      URL: '/img/markers/autoGeneric.svg',
       POSICION: 1,
       ICON_SIZE: new google.maps.Size(20, 20)
     },

@@ -1,0 +1,45 @@
+<div class="grid">
+    <div class="col-12 md:col-12">
+      <div class="grid mt-1 mb-4 ml-1">
+        <div class="">
+          <h4 class="font-weight: 500;">
+            Su orden ha sido creada
+          </h4>
+        </div>
+      </div>
+      <!-- <p-progressBar *ngIf="true"
+        class="fadein animation-duration-1000"
+        mode="indeterminate"
+        [style]="{ color: '#e0040a', height: '4px' }"
+      ></p-progressBar> -->
+      <br />
+    </div>
+  </div>
+    <!-- <button
+      class="p-button-outlined"
+      pButton
+      type="button"
+      *ngIf="flagVisualizarBotonCancelarServicio"
+      class="btn btn-danger"
+      (click)="cancelService()"
+    >
+      Cancelar
+    </button> -->
+    <button
+      class="p-button-outlined ml-1"
+      pButton
+      type="button"
+      class="btn btn-primary"
+      (click)="verServicios()"
+    >
+      Ver
+    </button>
+    <button
+      class="p-button-outlined"
+      pButton
+      type="button"
+      class="btn btn-secondary"
+      (click)="onClose()"
+    >
+      Cerrar
+    </button>

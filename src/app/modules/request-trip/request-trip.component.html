@@ -6,13 +6,14 @@
     [lstPosiciones]="lstPosiciones"
     [lstPosicionesDriver]="lstPosicionConductor"
     (onChange)="onChangeMapMarkers($event)"
-    [viewMetros]="true"
+    [viewMetros]="false"
     [metros]="viaje.distance"
-    [viewPriceEstimate]="true"
+    [viewPriceEstimate]="false"
     [priceEstimate]="viaje.totalService"
     [lstCoordinateEncoded]="polilyneRuta"
     [initMap]="flagInitMap"
-    [initMapViewAfter]="true"
+    [initMapViewAfter]="initMapViewAfter"
+    [lstCoordinateEncoded]="polyline_order"
   >
   </nexus-informacion-mapa>
     <!-- <agm-map
@@ -33,48 +34,52 @@
   <div class="p-col-3 information-service">
     <div class="search-container">
       <div class="p-grid p-fluid">
-        <div class="p-col-12">
-          <div class="p-ml-5">
-            <label for="">Tienda</label>
+        <!-- <pre>{{this.request_trip.addresses | json}}</pre> -->
+          <div class="p-col-12">
+            <div class="p-ml-5">
+              <label for="">Tienda</label>
+            </div>
+            <div class="input-origin-content">
+              <img
+                src="{{ origenIcon }}"
+                class="search-img-origin marker"
+                alt=""
+              />
+              <input 
+                #search
+                type="text"
+                class="p-inputtext-lg"
+                pInputText
+                id="txtUbicacion_origin"
+                placeholder="¿Dónde lo recogemos?"
+                [(ngModel)]="input_visible_pickup"
+                [disabled]="is_disabled_pickup"
+                required
+                autofocus
+              />
+            </div>
           </div>
-          <div class="input-origin-content">
-            <img
-              src="{{ origenIcon }}"
-              class="search-img-origin marker"
-              alt=""
-            />
-            <input
-              #search
-              type="text"
-              class="p-inputtext-lg"
-              pInputText
-              placeholder="¿Dónde lo recogemos?"
-              [(ngModel)]="input_visible_pickup"
-              [disabled]="is_disabled_pickup"
-              required
-              autofocus
-            />
+          <!-- <div class="p-col-12">
+            <div class="input-origin-content">
+              <img
+                src="{{ referenciaIcon }}"
+                class="search-img-origin marker"
+                alt=""
+                width="6"
+              />
+              <input
+                type="text"
+                class="p-inputtext-lg"
+                pInputText
+                placeholder="Referencia"
+                [(ngModel)]="input_reference_pickup"
+                required
+                autofocus
+              />
+            </div>
           </div>
-        </div>
-        <div class="p-col-12">
-          <div class="input-origin-content">
-            <img
-              src="{{ referenciaIcon }}"
-              class="search-img-origin marker"
-              alt=""
-              width="6"
-            />
-            <input
-              type="text"
-              class="p-inputtext-lg"
-              pInputText
-              placeholder="Referencia"
-              [(ngModel)]="input_reference_pickup"
-              required
-              autofocus
-            />
-          </div>
-        </div>
+      -->
+
         <div class="p-col-12">
           <div class="p-ml-5">
             <label for="">Dirección de entrega</label>
@@ -87,13 +92,13 @@
             />
             <input
               #search
-              id="txtUbicacion"
               autocorrect="off" autocapitalize="off" spellcheck="off" 
               type="text"
               class="p-inputtext-lg"
               pInputText
               placeholder="¿A dónde lo llevamos?"
               [(ngModel)]="inputVisibleDestino"
+              id="txtUbicacion" 
               required
               autofocus
             />
@@ -157,8 +162,7 @@
               placeholder="{{ userPhone }}"
               required
               autofocus
-              disabled
-              value="+51 999 888 777"
+              [(ngModel)]="request_trip.mobile"
             />
             <div class="mr-5"></div>
           </div>
@@ -181,6 +185,7 @@
               pInputTextarea
               [autoResize]="true"
               placeholder="Escriba aquí..."
+              [(ngModel)]="request_trip.description"
             ></textarea>
             <div class="mr-5"></div>
           </div>
@@ -188,15 +193,15 @@
       </div>
     </div>
     <hr />
-    <h5>Metodo de pago</h5>
+    <h5>Método de pago</h5>
     <div class="content-company">
       <div class="p-grid p-fluid">
         <div class="p-col-12">
           <p-selectButton
             class="select-button-custom"
             [options]="stateOptions"
-            [(ngModel)]="value1"
-            optionLabel="label"
+            [(ngModel)]="method_payment"
+            optionLabel="name"
             optionValue="value"
           ></p-selectButton>
         </div>
@@ -212,9 +217,22 @@
               value="$20.00"
               [readonly]="true"
               class="mat-input-custom"
+              [(ngModel)]="amount"
             />
           </mat-form-field>
         </div>
+      </div>
+      <h5>Minutos</h5>
+      <div class="p-grid">
+        <p-inputNumber 
+        [(ngModel)]="request_trip.readyToDmAt" 
+        [showButtons]="true" 
+        min="0"
+        max="10"
+        buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="5"
+    decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" 
+    incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" 
+    currency="EUR"></p-inputNumber>
       </div>
     </div>
     <div class="p-mt-3"></div>
