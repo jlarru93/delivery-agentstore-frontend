@@ -404,6 +404,10 @@ import { ChatComponent } from "src/app/chat/chat.component";
       }
     }
 
+    hideChatComponent(order:OrderBean){
+      order.showButton =  !order.showButton;
+    }
+
     @ViewChild(ChatComponent) chatComponent!: ChatComponent;
 
     getMessages(order:OrderBean){
