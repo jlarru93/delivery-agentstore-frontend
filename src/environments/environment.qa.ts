@@ -6,11 +6,13 @@ export const environment = {
   production: false,
   url:{
     backEndInit : [
-      'https://kag6mai45b.execute-api.us-east-2.amazonaws.com/qa',
-      "https://8x6pzhz4j8.execute-api.us-east-2.amazonaws.com/qa"
+      'https://qa-api.tres22.net/agent-store',
+      'https://qa-api.tres22.net/tracking',
+      "https://qa-api.tres22.net/utils",
     ],
-    backEnd: 'https://kag6mai45b.execute-api.us-east-2.amazonaws.com/qa',
-    util_banckEnd:"https://8x6pzhz4j8.execute-api.us-east-2.amazonaws.com/qa",
+    backEnd: 'https://qa-api.tres22.net/agent-store',
+    url_back_tracking : 'https://qa-api.tres22.net/tracking',
+    util_banckEnd:"https://qa-api.tres22.net/utils",
     //util_dev : "https://nkdqe8xd51.execute-api.us-east-1.amazonaws.com/dev"
    
   },
