@@ -1,5 +1,6 @@
 import { Store } from "src/app/models"
 import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, MethodBean, OptionBean, OrderBean, PaymentBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UserBean } from "../../data"
+import { AddressResponseLoadingOrder } from "src/app/modules/request-trip/data/response"
 
 export class StatusOpenStoreResponse {
     status: boolean
@@ -327,6 +328,7 @@ export class OrderResponse {
     createdAt: number
     readyToDmAt: number
     acceptAgentStoreAt: number
+    addresses ?: AddressResponseLoadingOrder[]
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
         bean.id = self?.id

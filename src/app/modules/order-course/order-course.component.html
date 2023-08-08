@@ -40,12 +40,12 @@
                   {{ item.order_name}}
                 </p>
               </div>
-              <div class="grid flex">
+              <!-- <div class="grid flex">
                 <p class="etiqueta-lista col-5">Fecha y hora</p>
                 <p class="contenido-lista col-7">
                   {{ item.date_string }}
                 </p>
-              </div>
+              </div> -->
 
               <div class="grid flex">
                 <p class="etiqueta-lista col-5">Precio Estimado</p>
@@ -60,9 +60,7 @@
             </div>
           </div>
           <br />
-          <ng-container
-                 
-                >
+          <ng-container *ngIf="item.deliveryMan">
                   <div class="datos-conductor-container p-3 mb-3">
                     <div class="p-grid m-0">
                       <h4 class="pb-2">Datos del motorizado:</h4>
@@ -71,16 +69,14 @@
                       <i class="pi pi-user m-2"></i>
                       <div class="p-col">
                         <h5 for="firstname2">
-                          {{ 'carlodaniel'| uppercase }}
-                          {{ 'huamani' | uppercase }}
-                          {{ 'pimentel' | uppercase }}
+                          {{ item.deliveryMan?.name! | uppercase }} 
                         </h5>
                       </div>
                     </div>
                     <div class="p-grid col-12 md:col-12 lg:col-12 p-0">
                       <i class="pi pi-phone m-2"></i>
                       <div class="p-col">
-                        <h5 for="firstname2">{{ '9444927896' }}</h5>
+                        <h5 for="firstname2">{{ item.deliveryMan?.phone!  }} </h5>
                       </div>
                     </div>
                     <div
@@ -92,7 +88,6 @@
                       "
                     >
                       <p-avatar
-                        image="{{ item.driver?.pictureUrl }}"
                         styleClass=" "
                         shape="circle"
                         [style]="{
@@ -102,7 +97,7 @@
                           height: '100px',
                           'font-size': '3em'
                         }"
-                        [label]=" 'C' ? 'C' : 'C'
+                        [label]="   item.deliveryMan?.name!.substring(0,1)
                         "
                         size="xlarge"
                       >
@@ -121,7 +116,7 @@
                   </div>
                 </div> -->
           <div class="p-grid">
-            <div class="p-col">
+            <div class="p-col" *ngIf="!item.deliveryMan">
               <button
                 (click)="btnCancelViaje(item)"
                 pButton

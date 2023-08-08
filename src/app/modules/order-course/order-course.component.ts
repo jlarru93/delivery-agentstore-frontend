@@ -9,6 +9,7 @@ import { Viaje } from "./data";
 import { MouseEvent } from "src/agm/core";
 import { RequestTripService } from "../request-trip/services/request-trip.service";
 import {
+  AddressResponseLoadingOrder,
   ResponseLoadingOrder,
   ResponseOrderPayment,
 } from "../request-trip/data/response";
@@ -111,7 +112,6 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   mqttListener() {
     this.orderHandler._data.subscribe((asyncData) => {
-      debugger
       if (asyncData) {
         if (asyncData.data.status === CONSTANTES.CANCEL_ORDER_STATUS) {
           let find_order: any = this.list_order.findIndex(
@@ -121,26 +121,73 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           this.list_order.splice(find_order, 1);
           // this.ordersOpen.splice(find_order_open,1)
         } else {
-          let orderMqtt = OrderResponse.toBean(asyncData.data);
-          let orderIndex = this.orders.findIndex(
+          let orderMqtt = (asyncData.data);
+          let orderIndex = this.list_order.findIndex(
             (order) => order.id === orderMqtt.id
           );
           let order_response : ResponseLoadingOrder = new ResponseLoadingOrder()
-          order_response.deliveryMan = orderMqtt.deliveryMan
-          order_response.createdAt = orderMqtt.createdAt
-          order_response.deliveryPrice = orderMqtt.deliveryPrice
-          order_response.id = orderMqtt.id
-          order_response.uuid = orderMqtt.uuid
-          // order_response.addresses = orderMqtt. 
-          order_response.order_name = this.onPaymentGroup(orderMqtt.payment.method.type )
-          let status = orderMqtt.deliveryMan
+          let status_validation = orderMqtt.deliveryMan
           ? orderMqtt.deliveryMan.status
           : orderMqtt.status;
-          order_response.order_name = this.onPaymentGroup(orderMqtt.payment.method.type )
-          this.list_order[orderIndex] = order_response;
-          console.log(orderMqtt);
+          let find_order: any = this.list_order.findIndex(
+            (item) => item.uuid === asyncData.data.uuid
+          );
+          if (status_validation == enumStatusOrder.done) {
+            this.list_order.splice(find_order, 1);
+          } else {
+            order_response.deliveryMan = orderMqtt.deliveryMan
+            order_response.createdAt = orderMqtt.createdAt
+            order_response.deliveryPrice = orderMqtt.deliveryPrice
+            order_response.id = orderMqtt.id
+            order_response.uuid = orderMqtt.uuid
+            // order_response.addresses = orderMqtt. 
+            let status = orderMqtt.deliveryMan
+            ? orderMqtt.deliveryMan.status
+            : orderMqtt.status;
+            order_response.status_order = this.onStatusGroup(status);
+            order_response.addresses = orderMqtt.addresses
+            // orderMqtt.addresses.forEach(element => {
+            //   let adress : AddressResponseLoadingOrder = new AddressResponseLoadingOrder()
+            //   adress.addressStreet =  element.addressStreet
+            //   adress.alias = element.alias
+            //   adress.floor = element.floor
+            //   adress.label = element.label 
+            //   adress.location = element.location
+            //   adress.marker = element.marker
+            //   adress.phone 
+            //     order_response.addresses .push(element)
+            // });
+            order_response.payment = {
+              amount :  {
+                value : orderMqtt.payment.amount,
+              },
+              method :{
+                type :  orderMqtt.payment.method.type,
+              },
+              id : orderMqtt.payment.id
+            }
+            order_response.order_name = this.onPaymentGroup(orderMqtt.payment.method.type )
+
+            this.list_order[orderIndex].addresses =  this.list_order[orderIndex].addresses  ? order_response.addresses : [];
+            this.list_order[orderIndex].createdAt = order_response.createdAt;
+            this.list_order[orderIndex].deliveryMan = order_response.deliveryMan;
+            this.list_order[orderIndex].deliveryPrice = order_response.deliveryPrice;
+            this.list_order[orderIndex].id = order_response.id;
+            this.list_order[orderIndex].order_name = order_response.order_name;
+            this.list_order[orderIndex].payment = order_response.payment;
+            this.list_order[orderIndex].readyToDmAt = order_response.readyToDmAt;
+            this.list_order[orderIndex].status = order_response.status;
+            this.list_order[orderIndex].status_order = order_response.status_order;
+            this.list_order[orderIndex].total = order_response.total;
+            this.list_order[orderIndex].type = order_response.type;
+            this.list_order[orderIndex].user = order_response.user;
+            this.list_order[orderIndex].uuid = order_response.uuid;
+            this.flagAccordion = true
+            console.log(orderMqtt);
+          }
+        
         }
-        this.sortOrders();
+        // this.sortOrders();
       }
     });
 
@@ -260,13 +307,13 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     lstPosiciones.push(
       UtilModalViaje.fnDetalleViaje(
         new google.maps.LatLng(
-          select_service.addresses[0].location.coordinates[0],
-          select_service.addresses[0].location.coordinates[1]
+          select_service.addresses[0].location.coordinates[1],
+          select_service.addresses[0].location.coordinates[0]
         ),
         true,
         "Origen",
         TypeMarkers.ORIGEN,
-        true,
+        false,
         1,
         false
       )
@@ -275,13 +322,13 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
       lstPosiciones.push(
         UtilModalViaje.fnDetalleViaje(
           new google.maps.LatLng(
-            select_service.addresses[1].location.coordinates[0],
-            select_service.addresses[1].location.coordinates[1]
+            select_service.addresses[1].location.coordinates[1],
+            select_service.addresses[1].location.coordinates[0]
           ),
           true,
           "Destino",
           TypeMarkers.DESTINO,
-          true,
+          false,
           1,
           false
         )
@@ -315,6 +362,12 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           : element.status;
           order.order_name = this.onPaymentGroup(element.payment.method.type )
           order.status_order = this.onStatusGroup(status);
+          order.deliveryMan = element.deliveryMan;
+          order.addresses = element.addresses;
+          order.total = element.total;
+          order.payment = element.payment;
+          order.id = element.id 
+          order.uuid = element.uuid
           this.list_order.push(order);
         });
         this.isDoneGetOrders = true;
@@ -338,13 +391,18 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           const formattedDate = `${year}-${month < 10 ? "0" : ""}${month}-${
             day < 10 ? "0" : ""
           }${day} ${hours}:${minutes}:${seconds}`;
-          order = element;
           order.date_string = formattedDate;
           let status = element.deliveryMan
             ? element.deliveryMan.status
             : element.status;
           order.order_name = this.onPaymentGroup(element.payment.method.type )
           order.status_order = this.onStatusGroup(status);
+          order.deliveryMan = element.deliveryMan;
+          order.addresses = element.addresses;
+          order.total = element.total;
+          order.payment = element.payment;
+          order.id = element.id 
+          order.uuid = element.uuid
           this.list_order.push(order);
         });
         this.isDoneGetOrders = true;
@@ -397,6 +455,9 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
       case enumStatusOrder.orderReady:
         order = "El pedido esta listo para recoger";
         break;
+        case enumStatusOrder.reciveOrderDeliveryMan:
+          order = "En camino al destino";
+          break;
       default:
         break;
     }

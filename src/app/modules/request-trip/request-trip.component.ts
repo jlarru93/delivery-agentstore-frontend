@@ -153,8 +153,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.request_trip.addresses[0].marker = "store";
       this.request_trip.addresses[0].addressStreet = this.input_visible_pickup;
       this.request_trip.addresses[0].point.coordinates = [
-        data.data.store.location.coordinates[1],
-        data.data.store.location.coordinates[0]
+        data.data.store.location.coordinates[0],
+        data.data.store.location.coordinates[1]
       ];
 
       // this.input_visible_pickup = this.marker.maintext
@@ -220,8 +220,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           this.request_trip.addresses[0].alias = "";
           this.request_trip.addresses[0].marker = "store";
           this.request_trip.addresses[0].point.coordinates = [
-            results[0].geometry.location.lat(),
             results[0].geometry.location.lng(),
+            results[0].geometry.location.lat(),
           ];
           // this.geocodePlaceId(place);
           this.onGetMotorizedPosiitonOrigin();
@@ -242,8 +242,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           this.request_trip.addresses[1].addressStreet =
             results[0].formatted_address;
           this.request_trip.addresses[1].point.coordinates = [
-            results[0].geometry.location.lat(),
             results[0].geometry.location.lng(),
+            results[0].geometry.location.lat()
           ];
           // this.geocodePlaceId(place);
           this.updatePosition();
@@ -260,7 +260,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         true,
         "Origen",
         TypeMarkers.ORIGEN,
-        true,
+        false,
         1,
         false
       )
@@ -269,13 +269,13 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       lstPosiciones.push(
         UtilModalViaje.fnDetalleViaje(
           new google.maps.LatLng(
-            this.request_trip.addresses[1].point.coordinates[0],
-            this.request_trip.addresses[1].point.coordinates[1]
+            this.request_trip.addresses[1].point.coordinates[1],
+            this.request_trip.addresses[1].point.coordinates[0]
           ),
           true,
           "Destino",
           TypeMarkers.DESTINO,
-          true,
+          false,
           1,
           false
         )
@@ -338,12 +338,12 @@ uuid_price ?: string
   onGetAmountOrder() {
     let request: RequestOrderPayment = {
       origin: {
-        lat: this.request_trip.addresses[0].point.coordinates[0],
-        lng: this.request_trip.addresses[0].point.coordinates[1],
+        lat: this.request_trip.addresses[0].point.coordinates[1],
+        lng: this.request_trip.addresses[0].point.coordinates[0],
       },
       destination: {
-        lat: this.request_trip.addresses[1].point.coordinates[0],
-        lng: this.request_trip.addresses[1].point.coordinates[1],
+        lat: this.request_trip.addresses[1].point.coordinates[1],
+        lng: this.request_trip.addresses[1].point.coordinates[0],
       },
     };
     this.requestTripService.onGetPaymentOrderService(request).subscribe(
@@ -426,6 +426,7 @@ uuid_price ?: string
           order.addresses[1].floor = item.floor;
           order.addresses[1].addressStreet = item.addressStreet;
           order.addresses[1].point = item.point;
+          // order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
         }
       });
       console.log(JSON.stringify(order));

@@ -7,6 +7,8 @@ export enum enumStatusOrder {
     toHome = 'toHome',
     nearHome = 'nearHome',
     inHome = 'inHome',
+    reciveOrderDeliveryMan = 'reciveOrderDeliveryMan',
+    done = 'done'
 } 
 export enum enumTypePayment{
     CASH = 'CASH',
