@@ -159,7 +159,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
             // });
             order_response.payment = {
               amount :  {
-                value : orderMqtt.payment.amount,
+                value : orderMqtt.payment.amount.value,
               },
               method :{
                 type :  orderMqtt.payment.method.type,

@@ -296,13 +296,13 @@ export class MethodResponse{
 
 export class PaymentResponse {
     id?: number
-    amount?: number
+    amount?: PriceResponse
     method?: MethodResponse
     card?: CardResponse
     static toBean(self?: PaymentResponse): PaymentBean {
         const bean = new PaymentBean()
         bean.id = self?.id
-        bean.amount = self?.amount
+        bean.amount = PriceResponse.toBean(self?.amount)
         bean.method = MethodResponse.toBean(self?.method)
         bean.card = CardResponse.toBean(self?.card)
         return bean
