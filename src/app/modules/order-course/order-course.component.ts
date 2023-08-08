@@ -90,9 +90,6 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async ngOnInit() {
     this.initMapViewAfter = true;
-    // this.idClient = this.dataMaestra.user?.uuid
-    // this.onIntervalServiceCourseTab()
-    this.suscriptionWebSocket();
     await this.onOrderCourseIntervalSubscription(0);
     this.mqtt._onConnect.subscribe((isConnect) => {
       if (isConnect) {
@@ -140,23 +137,12 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
             order_response.deliveryPrice = orderMqtt.deliveryPrice
             order_response.id = orderMqtt.id
             order_response.uuid = orderMqtt.uuid
-            // order_response.addresses = orderMqtt. 
             let status = orderMqtt.deliveryMan
             ? orderMqtt.deliveryMan.status
             : orderMqtt.status;
             order_response.status_order = this.onStatusGroup(status);
             order_response.addresses = orderMqtt.addresses
-            // orderMqtt.addresses.forEach(element => {
-            //   let adress : AddressResponseLoadingOrder = new AddressResponseLoadingOrder()
-            //   adress.addressStreet =  element.addressStreet
-            //   adress.alias = element.alias
-            //   adress.floor = element.floor
-            //   adress.label = element.label 
-            //   adress.location = element.location
-            //   adress.marker = element.marker
-            //   adress.phone 
-            //     order_response.addresses .push(element)
-            // });
+
             order_response.payment = {
               amount :  {
                 value : orderMqtt.payment.amount.value,
@@ -586,26 +572,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     // this.update_position.emit(item)
   }
   viajeOpen: any;
-
   searchAutomatic: boolean = true;
-  updateLstViajesV2(position_element: number, element: any) {
-    // let viaje : Viaje = fnInitObjViajeOpe(element);
-    // console.log("antes de entrar a updateElementViaje")
-    // console.log(viaje)
-    // this.updateElementViaje(position_element, viaje);
-    // // this.orderArray()
-  }
-  validateFiltrosElement(element: Viaje) {}
   flagBuscandoConductor: boolean = true;
-
-  //#region  push
-  suscriptionWebSocket() {
-    // this.webSocketMqtt.suscribeSuscription(this).then((data) => {
-    //   this.suscripcionTopic = data;
-    // }).catch((error) => {
-    //   console.log(error);
-    // })
-  }
   mapClicked($event: MouseEvent) {
     (this.marker.lat = $event.coords.lat),
       (this.marker.lng = $event.coords.lng);
