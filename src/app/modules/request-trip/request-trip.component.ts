@@ -419,7 +419,7 @@ uuid_price ?: string
           order.addresses[0].floor = item.floor;
           order.addresses[0].point = item.point;
         } else {
-          order.addresses[1].phone = this.request_trip.mobile;
+          order.addresses[1].phone = this.request_trip.mobile.toString();
           order.addresses[1].marker = item.marker;
           order.addresses[1].alias = item.alias;
           order.addresses[1].reference = item.reference;

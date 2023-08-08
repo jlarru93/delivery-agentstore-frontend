@@ -10,14 +10,14 @@
         <p-accordionTab
           transitionOptions="400ms cubic-bezier(0.86, 0, 0.07, 1)"
           header="Orden  N°: {{ item.id + ' - ' }}{{
-            '(' + item.status + ')' | uppercase
+            '(' + item.status_order + ')' 
           }}"
           *ngFor="let item of list_order; index as i"
         >
           <div class="grid m-0">
             <div class="col-12">
               <div class="grid flex">
-                <p class="etiqueta-lista col-5">Origen</p>
+                <p class="etiqueta-lista col-5">Tienda</p>
                 <p class="contenido-lista col-7">
                   {{ item.addresses[0].addressStreet }}
                 </p>
@@ -37,7 +37,7 @@
               <div class="grid flex">
                 <p class="etiqueta-lista col-5">Método de Pago</p>
                 <p class="contenido-lista col-7">
-                  {{ item.payment.method.type }}
+                  {{ item.order_name}}
                 </p>
               </div>
               <div class="grid flex">
@@ -60,50 +60,31 @@
             </div>
           </div>
           <br />
-          <!-- <ng-container
-                  *ngIf="
-                    item.driver &&
-                    item.driver != null &&
-                    item.statusType!.id != 33 &&
-                    item.statusType!.id != 35 &&
-                    item.statusType!.id != 9 &&
-                    item.statusType!.id != 10 &&
-                    item.statusType!.id != 11
-                  "
+          <ng-container
+                 
                 >
                   <div class="datos-conductor-container p-3 mb-3">
-                    <div class="grid m-0">
-                      <h5 class="pb-2">Datos del conductor:</h5>
+                    <div class="p-grid m-0">
+                      <h4 class="pb-2">Datos del motorizado:</h4>
                     </div>
-                    <div class="grid col-12 md:col-12 lg:col-12 p-0">
+                    <div class="p-grid col-12 md:col-12 lg:col-12 p-0">
                       <i class="pi pi-user m-2"></i>
-                      <div class="col">
-                        <h6 for="firstname2">
-                          {{ item.driver.firstName! | uppercase }}
-                          {{ item.driver.firstLastName! | uppercase }}
-                          {{ item.driver.secondLastName! | uppercase }}
-                        </h6>
+                      <div class="p-col">
+                        <h5 for="firstname2">
+                          {{ 'carlodaniel'| uppercase }}
+                          {{ 'huamani' | uppercase }}
+                          {{ 'pimentel' | uppercase }}
+                        </h5>
                       </div>
                     </div>
-                    <div class="grid col-12 md:col-12 lg:col-12 p-0">
+                    <div class="p-grid col-12 md:col-12 lg:col-12 p-0">
                       <i class="pi pi-phone m-2"></i>
-                      <div class="col">
-                        <h6 for="firstname2">{{ item.driver.phoneNumber! }}</h6>
-                      </div>
-                    </div>
-                    <div class="grid col-12 md:col-12 lg:col-12 p-0 pb-2">
-                      <i class="pi pi-car m-2"></i>
-                      <div class="col">
-                        <label for="firstname2">
-                          {{ item.vehicle.make! }} {{ item.vehicle.model! + " -" }}
-                        </label>
-                        <label for="firstname2">
-                          {{ item.vehicle.licensePlate! }}
-                        </label>
+                      <div class="p-col">
+                        <h5 for="firstname2">{{ '9444927896' }}</h5>
                       </div>
                     </div>
                     <div
-                      class="grid col-12 md:col-12 lg:col-12 text-center"
+                      class="p-grid col-12 md:col-12 lg:col-12 text-center"
                       style="
                         display: flex;
                         justify-content: center;
@@ -121,10 +102,7 @@
                           height: '100px',
                           'font-size': '3em'
                         }"
-                        [label]="
-                          item.driver?.pictureUrl
-                            ? ''
-                            : item.driver?.firstName!.substring(0, 1)
+                        [label]=" 'C' ? 'C' : 'C'
                         "
                         size="xlarge"
                       >
@@ -133,7 +111,7 @@
                   </div>
 
                 </ng-container>
-                <div class="grid col-12 md:col-12 lg:col-12 p-0">
+                <!-- <div class="grid col-12 md:col-12 lg:col-12 p-0">
                   <div class="col" *ngIf="item.flagBuscandoConductor">
                     <p-progressBar
                       class="fadein animation-duration-1000"
@@ -150,8 +128,7 @@
                 pRipple
                 type="button"
                 label="Cancelar"
-                style="background: #e9464c !important; border: none"
-                class="mb-2"
+                class="btn btn-danger"
               ></button>
             </div>
             <div class="p-col">
@@ -162,8 +139,8 @@
                 pRipple
                 type="button"
                 label="Chat"
-                style="background: #e9464c !important; border: none"
-                class="mb-2"
+                class="btn btn-danger"
+                style="float: right;"
               ></button>
               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="item.showButton" [@enterAnimation]>
                 <app-chat 
@@ -183,7 +160,7 @@
       </p-accordion>
     </ng-container>
     <ng-template #CursoTemplate>
-      <h5>No hay servicios en disponibles</h5>
+      <h5>No hay órdenes en disponibles</h5>
     </ng-template>
   </div>
   <div class="p-col-8">

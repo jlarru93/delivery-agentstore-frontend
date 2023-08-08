@@ -1,5 +1,7 @@
 import { ChatBean, UserBean } from "src/app/chat/data.chat";
 import { Address, Payment, Point } from "./request";
+import { DeliveryMan } from "../../order-course/data/response";
+import { DeliveryManBean } from "../../main/data";
 
 export class ResponseMotorizedOrigin {
     id: number;
@@ -78,6 +80,9 @@ export class ResponseLoadingOrder{
     messagesChat:ChatBean[]
     isLoadingChat:boolean
     showButton:boolean
+    deliveryMan : DeliveryManBean
+    status_order ?: string
+    order_name ?: string
     constructor(){
         this.messagesNoReadTotal=0
         this.messagesChat=[]

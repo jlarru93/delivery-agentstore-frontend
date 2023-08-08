@@ -305,7 +305,6 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
             // this.markerListener(lstMarkers[i], i, );
           }
         }
-        debugger
         for (let i = lstMarkers.length; i < lstPosiciones.length; i++) {
           let estados: any[] = UtilInformacionMapa.lstEstados(lstPosiciones[i].estado!, '')
           let marker = UtilInformacionMapa.fnCrearMarker(i, lstPosiciones[i], this.map!, estados);

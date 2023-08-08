@@ -1,9 +1,14 @@
 export enum enumStatusOrder {
-    ORDERREADY = 'Pendiente',
-    EnProgreso = 'En Progreso',
-    Completado = 'Completado',
-    Cancelado = 'Cancelado',
+    preparingOrder = 'preparingOrder ',
+    orderReady = 'orderReady',
+    toStore = 'toStore',
+    inStore = 'inStore',
+    reciveDelivery = 'reciveDelivery',
+    toHome = 'toHome',
+    nearHome = 'nearHome',
+    inHome = 'inHome',
 } 
 export enum enumTypePayment{
-    CASH = 'Efectivo'
+    CASH = 'CASH',
+    CREDIT = 'CREDIT'
 }
