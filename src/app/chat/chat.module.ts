@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
+import { ButtonModule } from 'primeng/button';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
   imports: [
     AvatarModule,
     AvatarGroupModule,
+    ButtonModule,
     CommonModule,
     ChatRoutingModule,
     FormsModule,

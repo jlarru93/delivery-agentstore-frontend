@@ -18,8 +18,10 @@ export class ChatComponent implements OnInit {
   @Input() usuarioLogueado: string
   @Input() orderUuid: string
   @Input() userId: string
+  @Input() flagMainComponent: boolean = false
   @ViewChild('endOfChat') endOfChat!: ElementRef
   @Output() emitMessage = new EventEmitter<ChatBean>();
+  @Output() hideChat = new EventEmitter<void>();
 
   messageControl: FormControl = new FormControl('');
 
@@ -291,6 +293,10 @@ export class ChatComponent implements OnInit {
     const formattedDate = `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
 
     return formattedDate
+  }
+
+  toggleDisplayDiv() {
+    this.hideChat.emit();
   }
 
 }
