@@ -142,7 +142,9 @@ export class ComplaintReportComponent implements OnInit {
             this.isDialogComplaintDetailOpen = false
           }
           this.enabledSplitbutton(resp.data.status)
-          this.complaintOrder=ComplaintResponse.toBean(resp.data)
+          this.complaintOrder.status=resp.data.status
+          this.isEnabledInputText = !(resp.data.status == CONSTANTS.STATUS_COMPLAINT_IN_PROCESS)
+
         }
       )
     }
@@ -217,11 +219,8 @@ export class ComplaintReportComponent implements OnInit {
     this.labelStatus = this.getStatus(complaint.status)
     this.complaintStatus = complaint.status
     this.imagesArray = complaint.evidence
-    if(complaint.status == CONSTANTS.STATUS_COMPLAINT_IN_PROCESS ) {
-      this.isEnabledInputText = false
-    } else {
-      this.isEnabledInputText = true
-    }
+    this.isEnabledInputText = !(complaint.status == CONSTANTS.STATUS_COMPLAINT_IN_PROCESS)
+    
   }
 
   enabledSplitbutton(statusCurrent: string) {
