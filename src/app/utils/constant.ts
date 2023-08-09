@@ -17,3 +17,12 @@ export const DELIVERYMAN_RED_BACKGROUND:string='red'
 export const USER_RED_BACKGROUND:string='blue'
 export const COLOR_READ_USER={'delivery-man':DELIVERYMAN_RED_BACKGROUND,'user':USER_RED_BACKGROUND}
 export const USER_TYPE_AGENT_STORE:string='agent-store'
+
+
+export const STATUS_COMPLAINT_OPEN = 'open' 
+export const STATUS_COMPLAINT_IN_PROCESS = 'inProcess' 
+export const STATUS_COMPLAINT_DONE = 'done' 
+export const STATUS_COMPLAINT_REJECT = 'reject' 
+export const STATUS_COMPLAINT_RE_OPEN = 'reOpen' 
+export const STATUS_COMPLAINT_RE_PROCESS = 'reProcess' 
+export const STATUS_COMPLAINT_RE_REJECT = 'reReject'
