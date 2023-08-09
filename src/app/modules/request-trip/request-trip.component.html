@@ -155,15 +155,9 @@
                 style="font-size: 1.5rem; color: #212222"
               ></i>
             </div>
-            <input
-              class="p-inputtext-lg"
-              type="text"
-              pInputText
-              placeholder="{{ userPhone }}"
-              required
-              autofocus
-              [(ngModel)]="request_trip.mobile"
-            />
+            <p-inputNumber mode="decimal" inputId="withoutgrouping" [useGrouping]="false" [(ngModel)]="request_trip.mobile"> </p-inputNumber>
+
+
             <div class="mr-5"></div>
           </div>
         </div>

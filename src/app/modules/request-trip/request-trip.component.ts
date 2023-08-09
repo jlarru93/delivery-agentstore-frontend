@@ -97,11 +97,12 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   stateOptions: any[];
   method_payment = "efectivo";
-  amount?: number = 123323;
+  amount?: number = 0;
   request_trip: RequestTrip = new RequestTrip();
   ref?: DynamicDialogRef;
   ngAfterViewInit(): void {}
   ngOnInit(): void {
+    this.request_trip.readyToDmAt = 0 
     this.request_trip.addresses = [
       {
         addressStreet: "",
@@ -152,8 +153,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.request_trip.addresses[0].marker = "store";
       this.request_trip.addresses[0].addressStreet = this.input_visible_pickup;
       this.request_trip.addresses[0].point.coordinates = [
-        data.data.store.location.coordinates[1],
-        data.data.store.location.coordinates[0]
+        data.data.store.location.coordinates[0],
+        data.data.store.location.coordinates[1]
       ];
 
       // this.input_visible_pickup = this.marker.maintext
@@ -171,7 +172,40 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     (this.marker.lat = $event.coords.lat),
       (this.marker.lng = $event.coords.lng);
   }
-  onChangeMapMarkers(event: any) {}
+  onChangeMapMarkers($event: any) {
+    // debugger
+    const element = <HTMLInputElement>document.getElementById("txtUbicacion");
+     var geocoder = new google.maps.Geocoder;
+     var latlng = {
+      lat: $event.marker?.getPosition()?.lat(),
+      lng: $event.marker?.getPosition()?.lng()
+    };
+     geocoder.geocode({
+       'location': latlng
+     }, (results, status)=> {
+       if (status === 'OK') {
+         if (results[0]) {
+          element.value = results[0].formatted_address;
+          this.request_trip.addresses[1].point.type = "Point";
+          this.request_trip.addresses[1].floor = "";
+          this.request_trip.addresses[1].alias = "";
+          this.request_trip.addresses[1].marker = "store";
+          this.request_trip.addresses[1].addressStreet =
+            results[0].formatted_address;
+          this.request_trip.addresses[1].point.coordinates = [
+            $event.marker?.getPosition()?.lng(),
+            $event.marker?.getPosition()?.lat(),
+          ]
+          this.updatePosition();
+          this.onGetAmountOrder();
+         } else {
+           window.alert('No results found');
+         }
+       } else {
+         window.alert('Geocoder failed due to: ' + status);
+       }
+     });
+  }
   nroViaje: number = 0;
   findAdressOrigin() {
     //  google.maps.
@@ -219,8 +253,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           this.request_trip.addresses[0].alias = "";
           this.request_trip.addresses[0].marker = "store";
           this.request_trip.addresses[0].point.coordinates = [
-            results[0].geometry.location.lat(),
             results[0].geometry.location.lng(),
+            results[0].geometry.location.lat(),
           ];
           // this.geocodePlaceId(place);
           this.onGetMotorizedPosiitonOrigin();
@@ -241,12 +275,12 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           this.request_trip.addresses[1].addressStreet =
             results[0].formatted_address;
           this.request_trip.addresses[1].point.coordinates = [
-            results[0].geometry.location.lat(),
             results[0].geometry.location.lng(),
+            results[0].geometry.location.lat()
           ];
           // this.geocodePlaceId(place);
-          this.onGetAmountOrder();
           this.updatePosition();
+          this.onGetAmountOrder();
         }
       }
     });
@@ -259,22 +293,24 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         true,
         "Origen",
         TypeMarkers.ORIGEN,
-        true,
-        1
+        false,
+        1,
+        false
       )
     );
-    if (this.request_trip.addresses.length > 1) {
+    if (  this.request_trip.addresses[1].point.coordinates[0] != 0) {
       lstPosiciones.push(
         UtilModalViaje.fnDetalleViaje(
           new google.maps.LatLng(
-            this.request_trip.addresses[1].point.coordinates[0],
-            this.request_trip.addresses[1].point.coordinates[1]
+            this.request_trip.addresses[1].point.coordinates[1],
+            this.request_trip.addresses[1].point.coordinates[0]
           ),
           true,
           "Destino",
           TypeMarkers.DESTINO,
           true,
-          1
+          1,
+          false
         )
       );
     }
@@ -298,7 +334,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             TypeMarkers.CONDUCTOR_LABEL,
             false,
             undefined,
-            1
+            1,
+            false
           )
         );
       }
@@ -338,17 +375,20 @@ uuid_price ?: string
         lng: this.request_trip.addresses[0].point.coordinates[0],
       },
       destination: {
-        lat: this.request_trip.addresses[1].point.coordinates[0],
-        lng: this.request_trip.addresses[1].point.coordinates[1],
+        lat: this.request_trip.addresses[1].point.coordinates[1],
+        lng: this.request_trip.addresses[1].point.coordinates[0],
       },
     };
     this.requestTripService.onGetPaymentOrderService(request).subscribe(
       (data) => {
         this.uuid_price = data.data.uuid
         this.amount = data.data.amount;
-        this.polyline_order = [
-          { coordinateEncoded: data.data.overviewPolyline },
-        ];
+        // setTimeout(()=>{
+          this.polyline_order = [
+            { coordinateEncoded: data.data.overviewPolyline },
+          ];
+        // },500)
+
       },
       (error) => {
         alert("Ocurrió un error al obtener la tarifa");
@@ -412,13 +452,14 @@ uuid_price ?: string
           order.addresses[0].floor = item.floor;
           order.addresses[0].point = item.point;
         } else {
-          order.addresses[1].phone = this.request_trip.mobile;
+          order.addresses[1].phone = this.request_trip.mobile.toString();
           order.addresses[1].marker = item.marker;
           order.addresses[1].alias = item.alias;
           order.addresses[1].reference = item.reference;
           order.addresses[1].floor = item.floor;
           order.addresses[1].addressStreet = item.addressStreet;
           order.addresses[1].point = item.point;
+          // order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
         }
       });
       console.log(JSON.stringify(order));

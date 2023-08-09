@@ -2,7 +2,7 @@ import { PersonalisationMarker, TypeMarkers } from "src/app/directives/informaci
 
 export function fnDetalleViaje(latLng: google.maps.LatLng, showTittle: boolean, tittle: string,
     tipoMarker: TypeMarkers, isDragable: boolean, index?: number,
-    typeServicesId?: any): PersonalisationMarker {
+    typeServicesId?: any, view_screen_map ?: boolean ): PersonalisationMarker {
     let detalle: PersonalisationMarker = new PersonalisationMarker();
 
     detalle.posicion = latLng;
@@ -16,6 +16,7 @@ export function fnDetalleViaje(latLng: google.maps.LatLng, showTittle: boolean, 
     detalle.infoWindow = new google.maps.InfoWindow({
         content: '<b> ' + tittle + ' </b> '
     });
+    detalle.view_screen_map = view_screen_map ? view_screen_map : false
     // detalle.typeServicesId = typeServicesId
 
     return detalle

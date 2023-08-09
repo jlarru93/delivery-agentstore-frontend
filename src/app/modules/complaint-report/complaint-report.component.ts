@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ComplaintReportService } from './service/complaint-report.service';
 import { ComplaintBean, OrderBean, PaymentBean } from './data';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { OrderResponse } from './service/data/response';
 import { Image } from 'src/app/demo/domain/image';
 import { ChatBean } from 'src/app/chat/data.chat';
@@ -11,6 +11,7 @@ import { ChatResponse } from '../main/service/data/chat.response';
 import { MqttService } from '../service/mqtt.service';
 import { ChatHandler } from '../service/handlers/chat.handler';
 import { AuthService } from 'src/app/utils/auth.service';
+import { STATUS_COMPLAINT_DONE, STATUS_COMPLAINT_IN_PROCESS, STATUS_COMPLAINT_OPEN, STATUS_COMPLAINT_REJECT } from 'src/app/utils/constant';
 
 export const STATUS = {
   REJECT: 'reject',
@@ -44,7 +45,7 @@ export class ComplaintReportComponent implements OnInit {
   payment: PaymentBean
   paymentName: string
 
-  items: any[]
+  items: MenuItem[]
 
   constructor(
     private auth : AuthService,
@@ -118,9 +119,9 @@ export class ComplaintReportComponent implements OnInit {
 
   getStatusSplitButton(){
     return this.items = [
-      {label: 'En proceso', icon: 'pi pi-forward' , command: () => { this.onUpdateStatus('inProcess') }},
-      {label: 'Terminado', icon: 'pi pi-thumbs-up-fill', command: () => { this.onUpdateStatus('done') }},
-      {label: 'Rechazar', icon: 'pi pi-times', command: () => { this.onUpdateStatus('reject') }},
+      {label: 'En proceso', disabled:true , icon: 'pi pi-forward' , command: () => { this.onUpdateStatus(STATUS_COMPLAINT_IN_PROCESS) }},
+      {label: 'Terminado', disabled:true , icon: 'pi pi-thumbs-up-fill', command: () => { this.onUpdateStatus(STATUS_COMPLAINT_DONE) }},
+      {label: 'Rechazar', disabled:true , icon: 'pi pi-times', command: () => { this.onUpdateStatus(STATUS_COMPLAINT_REJECT) }},
     ];
   }
 
@@ -146,6 +147,7 @@ export class ComplaintReportComponent implements OnInit {
           if(this.complaintStatus == STATUS.DONE || this.complaintStatus == STATUS.REJECT){
             this.orders = this.orders.filter(order => order.complaint.uuid !== resp.data.uuid)
           }
+          this.enabledSplitbutton(resp.data.status)
         }
       )
     }
@@ -212,12 +214,31 @@ export class ComplaintReportComponent implements OnInit {
 
   OpenDialogComplaintDetail(complaint: ComplaintBean, orderUuid: string){
     this.isDialogComplaintDetailOpen = true;
+    this.enabledSplitbutton(complaint.status)
     this.orderUuidtoSend = orderUuid
     this.getMessages(complaint, orderUuid)
     this.complaintOrder = complaint;
     this.labelStatus = this.getStatus(complaint.status)
     this.complaintStatus = complaint.status
     this.imagesArray = complaint.evidence
+  }
+
+  enabledSplitbutton(statusCurrent: string) {
+    this.items.forEach((item)=>item.disabled=true)
+    if(statusCurrent==STATUS_COMPLAINT_OPEN){
+      this.items.forEach((item)=>{
+        if(item.label=="En proceso"){
+          item.disabled=false
+        }
+      })
+    }
+    if(statusCurrent==STATUS_COMPLAINT_IN_PROCESS){
+      this.items.forEach((item)=>{
+        if(["Terminado","Rechazar"].includes(item.label)){
+          item.disabled=false
+        }
+      })
+    }
   }
 
   @ViewChild(ChatComponent) chatComponent!: ChatComponent;

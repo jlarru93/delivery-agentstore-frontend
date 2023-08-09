@@ -1,5 +1,6 @@
 import { Store } from "src/app/models"
 import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, MethodBean, OptionBean, OrderBean, PaymentBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UserBean } from "../../data"
+import { AddressResponseLoadingOrder } from "src/app/modules/request-trip/data/response"
 
 export class StatusOpenStoreResponse {
     status: boolean
@@ -295,13 +296,13 @@ export class MethodResponse{
 
 export class PaymentResponse {
     id?: number
-    amount?: number
+    amount?: PriceResponse
     method?: MethodResponse
     card?: CardResponse
     static toBean(self?: PaymentResponse): PaymentBean {
         const bean = new PaymentBean()
         bean.id = self?.id
-        bean.amount = self?.amount
+        bean.amount = PriceResponse.toBean(self?.amount)
         bean.method = MethodResponse.toBean(self?.method)
         bean.card = CardResponse.toBean(self?.card)
         return bean
@@ -327,6 +328,7 @@ export class OrderResponse {
     createdAt: number
     readyToDmAt: number
     acceptAgentStoreAt: number
+    addresses ?: AddressResponseLoadingOrder[]
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
         bean.id = self?.id

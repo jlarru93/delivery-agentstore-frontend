@@ -19,7 +19,7 @@ export function fnInitMap(
 ): google.maps.Map {
   return new google.maps.Map(document.getElementById(id)!, {
     center: new google.maps.LatLng(lat, lng),
-    zoom: 10,
+    zoom: 15,
     disableDefaultUI: true,
     // disableDefaultUI: (defaultUI)? defaultUI : false,
     // zoomControl: (!defaultUI) ? true : false,
@@ -127,7 +127,7 @@ export function setMapAll(
   map: google.maps.Map,
   lstMarkers: google.maps.Marker[]
 ) {
-  if (map && lstMarkers && lstMarkers.length > 1) {
+  if (map && lstMarkers && lstMarkers.length >= 1) {
     lstMarkers.forEach((marker) => {
       marker.setMap(map);
     });
@@ -314,7 +314,6 @@ export function fitBounds(
   lstPolylinsMapa?: google.maps.Polyline[],
   lstPosiciones?: PersonalisationMarker[]
 ) {
-  // debugger
   if (map) {
     let bounsConteiner: boolean = false;
     var bounds = new google.maps.LatLngBounds();
@@ -328,7 +327,7 @@ export function fitBounds(
         );
         map.fitBounds(bounds);
         google.maps.event.addListenerOnce(map, "idle", function () {
-          map.setZoom(14);
+          map.setZoom(15);
         });
       } else {
         if (lstPolylinsMapa.length > 0) {
@@ -361,7 +360,7 @@ export function fitBounds(
       );
       map.fitBounds(bounds);
       google.maps.event.addListenerOnce(map, "idle", function () {
-        map.setZoom(14);
+        map.setZoom(15);
       });
     }
   }
