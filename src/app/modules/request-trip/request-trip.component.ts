@@ -216,7 +216,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       types: [],
       fields: ["place_id"],
       componentRestrictions: {
-        country: environment.conuntryCode,
+        country: "CO",
 
       },
     });
