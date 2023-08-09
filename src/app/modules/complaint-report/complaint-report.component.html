@@ -12,7 +12,7 @@
             <th pResizableColumn>Orden ID</th>
             <th pResizableColumn>Fecha/Hora</th>
             <th pResizableColumn>Valor</th>
-            <th pResizableColumn>DM</th>
+            <th pResizableColumn>Usuario</th>
             <th pResizableColumn>Detalle</th>
             <th pResizableColumn>Novedad</th>
         </tr>
@@ -23,7 +23,7 @@
             <td>ID: {{order.id}}</td>
             <td>{{getFormatDate(order.createdAt)}}</td>
             <td>{{order.getTotalAndCurrency()}}</td>
-            <td>{{order.deliveryMan?.name}}</td>
+            <td>{{order.user?.fullName}}</td>
             <td>
                 <i class="pi pi-info-circle" (click)="OpenDialogOrderDetail(order)" 
                 style="color: #F59E0B; font-size: 2rem; cursor: pointer;"></i>
