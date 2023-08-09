@@ -96,7 +96,11 @@ export const environment = {
     }
   },
   NAME_COMPANY: 'tres22',//'<<your name>>',
-  conuntryCode:'CO'
+  conuntryCode:'CO',
+  centermap:{
+    lat: -12.1251109,
+    lng: -76.9928316
+  }
 };
 
 /*

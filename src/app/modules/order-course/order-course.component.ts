@@ -32,6 +32,7 @@ import { OrderHandler } from "../service/handlers/order.handler";
 import * as CONSTANTES from "src/app/utils/constant";
 import { MqttService } from "../service/mqtt.service";
 import { enumStatusOrder, enumTypePayment } from "../request-trip/data/enum";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-order-course",
@@ -81,8 +82,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   //   };
   coberturePosition: RequestGeoAutocomplete = {
     key_word: "",
-    longitude: -76.9928316,
-    latitude: -12.1251109,
+    longitude: environment.centermap.lng,
+    latitude: environment.centermap.lat,
   };
   ngAfterViewInit() {}
   isMqttConnect: boolean = false;
