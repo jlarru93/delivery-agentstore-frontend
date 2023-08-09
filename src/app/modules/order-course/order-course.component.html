@@ -129,6 +129,22 @@
             </div>
             <div class="p-col">
               <div class="overlay-container">
+                <button pButton pRipple type="button" (click)="toggleDisplayDiv(item);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="item.messagesNoReadTotal" style="float: right;"></button>
+                <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="item.showButton" [@enterAnimation]>
+                   <app-chat 
+                      [isLoading]="item.isLoadingChat"
+                      [messages]="item.messagesChat" 
+                      [orderId]="item.id"
+                      [orderUuid]="item.uuid"
+                      [usuarioLogueado]="userName"
+                      [userId]="userId"
+                      [flagMainComponent]="true"
+                      (hideChat)="hideChatComponent(item)"
+                      (emitMessage)="sendMessage($event)"
+                      ></app-chat>
+                </div>
+             </div>
+              <!-- <div class="overlay-container">
                 <button
                 (click)="toggleDisplayDiv(item)"
                 pButton
@@ -138,7 +154,8 @@
                 class="btn btn-danger"
                 style="float: right;"
               ></button>
-              <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="item.showButton" [@enterAnimation]>
+              <pre>undoBtn {{item.messagesNoReadTotal}}</pre>
+              <div [attr.id]="'undoBtn'+item.messagesNoReadTotal" class="overlay-chat" *ngIf="item.showButton" [@enterAnimation]>
                 <app-chat 
                    [isLoading]="item.isLoadingChat"
                    [messages]="item.messagesChat" 
@@ -149,8 +166,9 @@
                    (emitMessage)="sendMessage($event)"
                    ></app-chat>
              </div>
-              </div>
+              </div> -->
             </div>
+            
           </div>
         </p-accordionTab>
       </p-accordion>
