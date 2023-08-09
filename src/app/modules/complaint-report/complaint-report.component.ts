@@ -11,13 +11,7 @@ import { ChatResponse } from '../main/service/data/chat.response';
 import { MqttService } from '../service/mqtt.service';
 import { ChatHandler } from '../service/handlers/chat.handler';
 import { AuthService } from 'src/app/utils/auth.service';
-import { STATUS_COMPLAINT_DONE, STATUS_COMPLAINT_IN_PROCESS, STATUS_COMPLAINT_OPEN, STATUS_COMPLAINT_REJECT } from 'src/app/utils/constant';
-
-export const STATUS = {
-  REJECT: 'reject',
-  DONE: 'done',
-  INPROCESS: 'inProcess'
-} as const;
+import * as CONSTANTS from 'src/app/utils/constant';
 
 @Component({
   selector: 'app-complaint-report',
@@ -119,9 +113,9 @@ export class ComplaintReportComponent implements OnInit {
 
   getStatusSplitButton(){
     return this.items = [
-      {label: 'En proceso', disabled:true , icon: 'pi pi-forward' , command: () => { this.onUpdateStatus(STATUS_COMPLAINT_IN_PROCESS) }},
-      {label: 'Terminado', disabled:true , icon: 'pi pi-thumbs-up-fill', command: () => { this.onUpdateStatus(STATUS_COMPLAINT_DONE) }},
-      {label: 'Rechazar', disabled:true , icon: 'pi pi-times', command: () => { this.onUpdateStatus(STATUS_COMPLAINT_REJECT) }},
+      {label: 'En proceso', disabled:true , icon: 'pi pi-forward' , command: () => { this.onUpdateStatus(CONSTANTS.STATUS_COMPLAINT_IN_PROCESS) }},
+      {label: 'Terminado', disabled:true , icon: 'pi pi-thumbs-up-fill', command: () => { this.onUpdateStatus(CONSTANTS.STATUS_COMPLAINT_DONE) }},
+      {label: 'Rechazar', disabled:true , icon: 'pi pi-times', command: () => { this.onUpdateStatus(CONSTANTS.STATUS_COMPLAINT_REJECT) }},
     ];
   }
 
@@ -130,9 +124,9 @@ export class ComplaintReportComponent implements OnInit {
 
   onUpdateStatus(statusOrder: string){
 
-    if(this.complaintStatus === STATUS.REJECT && (statusOrder === STATUS.DONE || statusOrder === STATUS.INPROCESS)){
+    if(this.complaintStatus === CONSTANTS.STATUS_COMPLAINT_REJECT && (statusOrder === CONSTANTS.STATUS_COMPLAINT_DONE || statusOrder === CONSTANTS.STATUS_COMPLAINT_IN_PROCESS)){
       this.messageService.add({severity:'error', summary: 'Error', detail: 'No puede volver al estado anterior'});
-    } else if (this.complaintStatus === STATUS.DONE && statusOrder === STATUS.INPROCESS){
+    } else if (this.complaintStatus === CONSTANTS.STATUS_COMPLAINT_DONE && statusOrder === CONSTANTS.STATUS_COMPLAINT_IN_PROCESS){
       this.messageService.add({severity:'error', summary: 'Error', detail: 'No puede volver al estado anterior'});
     } else {
       let body = {
@@ -143,9 +137,9 @@ export class ComplaintReportComponent implements OnInit {
           this.messageService.add({severity:'success', summary: 'Satisfactorio', detail: 'El estado ha sido actualizado'});
           this.complaintStatus = resp.data.status
           this.labelStatus = this.getStatus(resp.data.status)
-          this.isDialogComplaintDetailOpen = false
-          if(this.complaintStatus == STATUS.DONE || this.complaintStatus == STATUS.REJECT){
+          if(this.complaintStatus == CONSTANTS.STATUS_COMPLAINT_DONE || this.complaintStatus == CONSTANTS.STATUS_COMPLAINT_REJECT){
             this.orders = this.orders.filter(order => order.complaint.uuid !== resp.data.uuid)
+            this.isDialogComplaintDetailOpen = false
           }
           this.enabledSplitbutton(resp.data.status)
         }
@@ -211,6 +205,7 @@ export class ComplaintReportComponent implements OnInit {
   complaintStatus: string
   images: Image[] = []
   imagesArray: string[]
+  isEnabledInputText: boolean = false
 
   OpenDialogComplaintDetail(complaint: ComplaintBean, orderUuid: string){
     this.isDialogComplaintDetailOpen = true;
@@ -221,18 +216,23 @@ export class ComplaintReportComponent implements OnInit {
     this.labelStatus = this.getStatus(complaint.status)
     this.complaintStatus = complaint.status
     this.imagesArray = complaint.evidence
+    if(complaint.status == CONSTANTS.STATUS_COMPLAINT_IN_PROCESS ) {
+      this.isEnabledInputText = false
+    } else {
+      this.isEnabledInputText = true
+    }
   }
 
   enabledSplitbutton(statusCurrent: string) {
     this.items.forEach((item)=>item.disabled=true)
-    if(statusCurrent==STATUS_COMPLAINT_OPEN){
+    if(statusCurrent==CONSTANTS.STATUS_COMPLAINT_OPEN){
       this.items.forEach((item)=>{
         if(item.label=="En proceso"){
           item.disabled=false
         }
       })
     }
-    if(statusCurrent==STATUS_COMPLAINT_IN_PROCESS){
+    if(statusCurrent==CONSTANTS.STATUS_COMPLAINT_IN_PROCESS){
       this.items.forEach((item)=>{
         if(["Terminado","Rechazar"].includes(item.label)){
           item.disabled=false

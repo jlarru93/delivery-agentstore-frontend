@@ -46,12 +46,18 @@
                 <div #endOfChat></div>
         </div>
         <div class="input-area">
-            <mat-form-field appearance="outline">
-                <input [formControl]="messageControl" matInput placeholder="Ingrese su mensaje..." (keydown.enter)="sendMessage()">
-                <mat-icon matSuffix (click)="sendMessage()" >
+            <mat-form-field appearance="outline" *ngIf="isInputEnabled">
+                <input matInput disabled placeholder="Ingrese su mensaje..." disabled>
+                <mat-icon matSuffix [style.cursor]="isInputEnabled ? 'not-allowed' : 'pointer'">
                     send
                 </mat-icon>
-              </mat-form-field>
+            </mat-form-field>
+            <mat-form-field appearance="outline" *ngIf="!isInputEnabled">
+                <input [formControl]="messageControl" matInput disabled placeholder="Ingrese su mensaje..." (keydown.enter)="sendMessage()">
+                <mat-icon matSuffix (click)="sendMessage()">
+                    send
+                </mat-icon>
+            </mat-form-field>
         </div>
     </div>
 </div>

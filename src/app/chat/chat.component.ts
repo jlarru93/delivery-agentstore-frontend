@@ -19,6 +19,7 @@ export class ChatComponent implements OnInit {
   @Input() orderUuid: string
   @Input() userId: string
   @Input() flagMainComponent: boolean = false
+  @Input() isInputEnabled: boolean = false
   @ViewChild('endOfChat') endOfChat!: ElementRef
   @Output() emitMessage = new EventEmitter<ChatBean>();
   @Output() hideChat = new EventEmitter<void>();

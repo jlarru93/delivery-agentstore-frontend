@@ -13,6 +13,7 @@ import { ChatResponse } from '../main/service/data/chat.response';
 import { MqttService } from '../service/mqtt.service';
 import { ChatHandler } from '../service/handlers/chat.handler';
 import { ChatComponent } from 'src/app/chat/chat.component';
+import * as CONSTANTS from 'src/app/utils/constant';
 
 @Component({
   selector: 'app-order-history',
@@ -159,6 +160,7 @@ export class OrderHistoryComponent implements OnInit {
   labelStatus: string
   orderUuidtoSend: string
   imagesArray: string[]
+  isEnabledInputText: boolean = false
 
   OpenDialogDetail(complaint: ComplaintBean, orderUuid: string){
     this.isDialogDetailOpen = true;
@@ -167,6 +169,11 @@ export class OrderHistoryComponent implements OnInit {
     this.complaintOrder = complaint;
     this.labelStatus = this.getStatus(complaint.status)
     this.imagesArray = complaint.evidence
+    if(complaint.status == CONSTANTS.STATUS_COMPLAINT_IN_PROCESS ) {
+      this.isEnabledInputText = false
+    } else {
+      this.isEnabledInputText = true
+    }
   }
 
   getFormatDate(timestamp : number){
