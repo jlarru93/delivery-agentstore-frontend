@@ -142,6 +142,10 @@ export class ComplaintReportComponent implements OnInit {
           this.messageService.add({severity:'success', summary: 'Satisfactorio', detail: 'El estado ha sido actualizado'});
           this.complaintStatus = resp.data.status
           this.labelStatus = this.getStatus(resp.data.status)
+          this.isDialogComplaintDetailOpen = false
+          if(this.complaintStatus == STATUS.DONE || this.complaintStatus == STATUS.REJECT){
+            this.orders = this.orders.filter(order => order.complaint.uuid !== resp.data.uuid)
+          }
         }
       )
     }
@@ -204,6 +208,7 @@ export class ComplaintReportComponent implements OnInit {
   orderUuidtoSend: string
   complaintStatus: string
   images: Image[] = []
+  imagesArray: string[]
 
   OpenDialogComplaintDetail(complaint: ComplaintBean, orderUuid: string){
     this.isDialogComplaintDetailOpen = true;
@@ -212,17 +217,7 @@ export class ComplaintReportComponent implements OnInit {
     this.complaintOrder = complaint;
     this.labelStatus = this.getStatus(complaint.status)
     this.complaintStatus = complaint.status
-    complaint.evidence.forEach((url, index) => {
-      const imageObj: Image = {
-        previewImageSrc: url,
-        thumbnailImageSrc: url,
-        alt: `Evidencia ${index + 1}`,
-        title: `Evidencia ${index + 1}`
-      }
-      this.images.push(imageObj)
-    })
-
-    return this.images
+    this.imagesArray = complaint.evidence
   }
 
   @ViewChild(ChatComponent) chatComponent!: ChatComponent;

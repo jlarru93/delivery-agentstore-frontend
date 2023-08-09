@@ -156,26 +156,17 @@ export class OrderHistoryComponent implements OnInit {
     })
   }
   complaintOrder: ComplaintBean
-  complaintStatus: string
+  labelStatus: string
   orderUuidtoSend: string
+  imagesArray: string[]
 
   OpenDialogDetail(complaint: ComplaintBean, orderUuid: string){
     this.isDialogDetailOpen = true;
     this.orderUuidtoSend = orderUuid
     this.getMessages(complaint, orderUuid)
     this.complaintOrder = complaint;
-    this.complaintStatus = this.getStatus(complaint.status)
-    complaint.evidence.forEach((url, index) => {
-      const imageObj: Image = {
-        previewImageSrc: url,
-        thumbnailImageSrc: url,
-        alt: `Evidencia ${index + 1}`,
-        title: `Evidencia ${index + 1}`
-      }
-      this.images.push(imageObj)
-    })
-
-    return this.images
+    this.labelStatus = this.getStatus(complaint.status)
+    this.imagesArray = complaint.evidence
   }
 
   getFormatDate(timestamp : number){
@@ -244,7 +235,7 @@ export class OrderHistoryComponent implements OnInit {
     this.service.updateComplaintStatus(this.complaintOrder.uuid, body).subscribe(
       (resp) => {
         this.messageService.add({severity:'success', summary: 'Satisfactorio', detail: 'El estado ha sido actualizado'});
-        this.complaintStatus = this.getStatus(resp.data.status)
+        this.labelStatus = this.getStatus(resp.data.status)
       }
     )
   }

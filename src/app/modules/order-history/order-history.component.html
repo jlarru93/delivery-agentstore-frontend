@@ -58,71 +58,50 @@
 <p-paginator [rows]="10" (onPageChange)="Page($event)" [totalRecords]="totalRecords"></p-paginator>
 
 <p-dialog [(visible)]="isDialogDetailOpen" [modal]="true">
+    <ng-template pTemplate="header">
+        <h5>Usuario ID: {{complaintOrder.user.id}}</h5>    
+     </ng-template>
     <ng-container *ngIf="complaintOrder">
-        <div class="p-grid">
-            <div class="p-col-7">
-                <div class="container-detail">
-                    <div class="details">
-                        <div class="p-grid">
-                            <div class="p-col-7">
-                                <h5>Novedad: <span>{{complaintOrder.reason}}</span></h5>
-                                
-                            </div>
-                            <div class="p-col-5">
-                                <div style="float: right;">
-                                    <p-splitButton label="Estado: {{complaintStatus}}" styleClass="p-button-secondary mb-2" 
-                                    [model]="items"></p-splitButton>
-
-                                </div>
-                            </div>
-                        </div>
-                        <h5 >Detalles</h5>
-                        <span>{{complaintOrder.detail}}</span>
-                        <div class="p-mt-4"></div>
-    
-                        <p-galleria [(value)]="images" [responsiveOptions]="responsiveOptions" [numVisible]="5"
-                            [showThumbnails]="false" [showIndicators]="true"> 
-                            <ng-template pTemplate="item" let-item >
-                                <img [src]="item.previewImageSrc" style="width: 50%; display: block;" />
-                            </ng-template>
-                            <ng-template pTemplate="thumbnail" let-item>
-                                <div class="p-grid p-nogutter p-justify-center">
-                                    <img [src]="item.thumbnailImageSrc" style="display: block;" />
-                                </div>
-                            </ng-template>
-                        </p-galleria>
-                        
-    
-                        <!-- <p-galleria [(value)]="images" [responsiveOptions]="responsiveOptions" [numVisible]="5"
-                            [showThumbnails]="true" [showIndicators]="false"> 
-                            <ng-template pTemplate="item" let-item>
-                                <img [src]="item.previewImageSrc" style="width: 100%; display: block;" />
-                            </ng-template>
-                            <ng-template pTemplate="thumbnail" let-item>
-                                <div class="p-grid p-nogutter p-justify-center">
-                                    <img [src]="item.thumbnailImageSrc" style="display: block; width: 100px;" />
-                                </div>
-                            </ng-template>
-                        </p-galleria> -->
-                        
-    
-                    
-                    </div>
-                </div>
+        <div class="complaint-container">
+            <div class="complaint-detail">
+               <div class="complaint-info">
+                  <div class="complaint-title">
+                     <b>Novedad: </b><spam>{{complaintOrder.reason}}</spam><br>
+                     <b>Detalle: </b><spam>{{complaintOrder.detail}}</spam>
+                  </div>
+                  <div class="complaint-split">
+                     <p-splitButton label="Estado: {{labelStatus}}" styleClass="p-button-outlined mr-2 mb-2" 
+                       [model]="items"></p-splitButton>
+                  </div>
+               </div>
+               
+               <p-carousel [value]="imagesArray" [numVisible]="1" [numScroll]="1" [circular]="false" [responsiveOptions]="responsiveOptions">
+                  <ng-template let-image pTemplate="item" let-i="index">
+                      <div class="product-item">
+                          <div class="product-item-content">
+                              <div class="p-mb-3">
+                                  <img [src]="image" [alt]="" class="product-image" />
+                              </div>
+                              <div>
+                                  <h4 class="p-mb-1">Evidencia {{i}}</h4>
+                              </div>
+                          </div>
+                      </div>
+                  </ng-template>
+              </p-carousel>
             </div>
-            <div class="p-col-5">
-                <app-chat
-                [isLoading]="complaintOrder.isLoadingChat"
-                [messages]="complaintOrder.messagesChat" 
-                [orderId]="complaintOrder.id"
-                [orderUuid]="orderUuidtoSend"
-                [usuarioLogueado]="userName"
-                [userId]="userId"
-                (pushMessage)="pushMessaje($event)"
-                (emitMessage)="sendMessage($event)"
-                ></app-chat>
+            <div class="complaint-chat">
+               <app-chat
+                     [isLoading]="complaintOrder.isLoadingChat"
+                     [messages]="complaintOrder.messagesChat" 
+                     [orderId]="complaintOrder.id"
+                     [orderUuid]="orderUuidtoSend"
+                     [usuarioLogueado]="userName"
+                     [userId]="userId"
+                     (pushMessage)="pushMessaje($event)"
+                     (emitMessage)="sendMessage($event)"
+                     ></app-chat>
             </div>
-        </div>
-
+         </div>
     </ng-container>
 </p-dialog>

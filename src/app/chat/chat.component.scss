@@ -12,7 +12,7 @@
 
 
 .messages{
-    width: 100%;
+    width: 339px;
     margin: 16px;
     border-radius: 16px 0px 16px 16px;
     padding: 25px;
@@ -76,7 +76,12 @@
 }
 
 .chat-bubble-container.sender > .chat-bubble{
-    background: #c5cae9;
+    background: #d94545;
+    color: #f7f7f7;
+}
+
+.chat-bubble-container.sender > .chat-bubble > .chat-date{
+    color: #f7f7f7;
 }
 
 .chat-avatar-container{

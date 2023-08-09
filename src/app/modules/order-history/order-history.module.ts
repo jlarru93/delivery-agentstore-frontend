@@ -23,6 +23,7 @@ import {SplitButtonModule} from 'primeng/splitbutton';
 import { ChatModule } from 'src/app/chat/chat.module';
 import {GalleriaModule} from 'primeng/galleria';
 import { PaginatorModule } from 'primeng/paginator';
+import { CarouselModule } from 'primeng/carousel';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { PaginatorModule } from 'primeng/paginator';
     AvatarModule,
     AvatarGroupModule,
     ButtonModule,
+    CarouselModule,
     CommonModule,
     DialogModule,
     DropdownModule,

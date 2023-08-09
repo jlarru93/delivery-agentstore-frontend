@@ -23,6 +23,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { PaginatorModule } from 'primeng/paginator';
 import { SplitButtonModule } from 'primeng/splitbutton';
+import { CarouselModule } from 'primeng/carousel';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { SplitButtonModule } from 'primeng/splitbutton';
     AvatarModule,
     AvatarGroupModule,
     ButtonModule,
+    CarouselModule,
     CommonModule,
     ComplaintReportRoutingModule,
     DialogModule,

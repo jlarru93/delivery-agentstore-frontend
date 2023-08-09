@@ -21,3 +21,45 @@ h5{
     background-color: #c5cae9;
     position: relative;
 }
+
+
+.complaint-info{
+    padding: 20px;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.complaint-container{
+    //width: 100%;
+    width: 950px;
+    height: 605px;
+    margin: auto;
+    display: flex;
+    // gap: 20px;
+}
+
+.complaint-detail{
+    width: 65%;
+}
+
+.product-item {
+    .product-item-content {
+        border: 1px solid var(--surface-d);
+        border-radius: 3px;
+        margin: .3rem;
+        text-align: center;
+        padding: 2rem 0;
+        overflow: hidden; 
+        transition: transform 0.3s ease;
+    }
+
+    .product-image {
+        width: 50%;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+        transition: transform 0.3s ease;
+    }
+    .product-image:hover{
+        transform: scale(1.2);
+    }
+}
