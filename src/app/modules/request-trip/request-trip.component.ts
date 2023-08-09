@@ -172,7 +172,40 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     (this.marker.lat = $event.coords.lat),
       (this.marker.lng = $event.coords.lng);
   }
-  onChangeMapMarkers(event: any) {}
+  onChangeMapMarkers($event: any) {
+    // debugger
+    const element = <HTMLInputElement>document.getElementById("txtUbicacion");
+     var geocoder = new google.maps.Geocoder;
+     var latlng = {
+      lat: $event.marker?.getPosition()?.lat(),
+      lng: $event.marker?.getPosition()?.lng()
+    };
+     geocoder.geocode({
+       'location': latlng
+     }, (results, status)=> {
+       if (status === 'OK') {
+         if (results[0]) {
+          element.value = results[0].formatted_address;
+          this.request_trip.addresses[1].point.type = "Point";
+          this.request_trip.addresses[1].floor = "";
+          this.request_trip.addresses[1].alias = "";
+          this.request_trip.addresses[1].marker = "store";
+          this.request_trip.addresses[1].addressStreet =
+            results[0].formatted_address;
+          this.request_trip.addresses[1].point.coordinates = [
+            $event.marker?.getPosition()?.lng(),
+            $event.marker?.getPosition()?.lat(),
+          ]
+          this.updatePosition();
+          this.onGetAmountOrder();
+         } else {
+           window.alert('No results found');
+         }
+       } else {
+         window.alert('Geocoder failed due to: ' + status);
+       }
+     });
+  }
   nroViaje: number = 0;
   findAdressOrigin() {
     //  google.maps.
@@ -275,7 +308,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           true,
           "Destino",
           TypeMarkers.DESTINO,
-          false,
+          true,
           1,
           false
         )
