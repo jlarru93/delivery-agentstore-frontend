@@ -107,6 +107,9 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }
   }
+  hideChatComponent(order:ResponseLoadingOrder){
+    order.showButton =  !order.showButton;
+  }
   mqttListener() {
     this.orderHandler._data.subscribe((asyncData) => {
       if (asyncData) {
@@ -178,6 +181,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.chatHandler._data.subscribe((asyncData) => {
+      debugger
       if (asyncData && asyncData.data.uuid) {
         let messageBean = ChatResponse.toBean(asyncData.data);
 
@@ -354,6 +358,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.payment = element.payment;
           order.id = element.id 
           order.uuid = element.uuid
+          // order.showButton = false
           this.list_order.push(order);
         });
         this.isDoneGetOrders = true;
@@ -389,6 +394,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.payment = element.payment;
           order.id = element.id 
           order.uuid = element.uuid
+          // order.showButton = false
           this.list_order.push(order);
         });
         this.isDoneGetOrders = true;

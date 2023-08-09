@@ -88,6 +88,7 @@ export class ResponseLoadingOrder{
         this.messagesChat=[]
         this.isLoadingChat=false
         this.showButton=false
+        this.messagesNoReadTotal = 0
     }
 
 }
