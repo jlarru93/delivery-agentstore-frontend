@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ComplaintReportService } from './service/complaint-report.service';
 import { ComplaintBean, OrderBean, PaymentBean } from './data';
 import { MenuItem, MessageService } from 'primeng/api';
-import { OrderResponse } from './service/data/response';
+import { ComplaintResponse, OrderResponse } from './service/data/response';
 import { Image } from 'src/app/demo/domain/image';
 import { ChatBean } from 'src/app/chat/data.chat';
 import { ChatComponent } from 'src/app/chat/chat.component';
@@ -142,6 +142,7 @@ export class ComplaintReportComponent implements OnInit {
             this.isDialogComplaintDetailOpen = false
           }
           this.enabledSplitbutton(resp.data.status)
+          this.complaintOrder=ComplaintResponse.toBean(resp.data)
         }
       )
     }
