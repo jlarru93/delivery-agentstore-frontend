@@ -29,6 +29,8 @@
                                     [orderUuid]="order.uuid"
                                     [usuarioLogueado]="userName"
                                     [userId]="userId"
+                                    [flagMainComponent]="true"
+                                    (hideChat)="hideChatComponent(order)"
                                     (emitMessage)="sendMessage($event)"
                                     ></app-chat>
                               </div>
@@ -82,6 +84,8 @@
                                     [orderUuid]="order.uuid"
                                     [usuarioLogueado]="userName"
                                     [userId]="userId"
+                                    [flagMainComponent]="true"
+                                    (hideChat)="hideChatComponent(order)"
                                     (emitMessage)="sendMessage($event)"
                                     ></app-chat>
                               </div>

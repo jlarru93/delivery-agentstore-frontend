@@ -1,0 +1,100 @@
+{
+    "SIDEBAR": {
+        "BACKGROUND_LOGO": {
+            "ACTIVE": false,
+            "COLOR": "#fffffF"
+        },
+        "NAME_COMPANY_TEXT": true
+    },
+    "COLOR": {
+        "BACKGROUND": "#EF494D",
+        "BACKGROUND_SOFT": "rgba(222, 86, 89, 0.72)",
+        "BACKGROUND_SUPER_SOFT": "rgba(239, 73, 77, 0.25)",
+        "CONTRASTE_COLOR": "#FFFFFF"
+    },
+    "GROUP_COLOR": {
+        "ALL": "",
+        "PENDING": "#27AE60",
+        "ASSIGNED": "#a57a49",
+        "BOARD": "#7a49a5",
+        "CANCEL": "#3D5AFE",
+        "FINISHED": "#4999a5",
+        "OTHERS": ""
+    },
+    "MAPA": {
+        "DIRECTION": true,
+        "MOSTRAT_KM": true,
+        "MOSTRAR_PRICE_ESTIMATE": true,
+        "MOSTRAT_TIEMPO": true,
+        "FORMATO_DISTANCIA": "KILOMETROS",
+        "TYPE_PAYMENT": "SOLES"
+    },
+    "SCREEN": {
+        "NEW_SCREEM": true
+    },
+    "WEB_SOCKET_RABBIT": {
+        "URL": "wss://apocalipsis.nexusvirtual.net/ws",
+        "USER": "root",
+        "PASSWORD": "hRtAUQXwWJzzvkMB0zosNFMvjj0X5"
+    },
+    "TIMER": {
+        "BUSQUEDA_VIAJE": "60000",
+        "CONTADOR_VEHICULOS": "50000",
+        "MONITOREO_CONDUCTOR": "60000",
+        "CHAT_CONVERSATION": "1500",
+        "TABLA_VEHICULOS": "5000"
+    },
+    "MONITORING": {
+        "COLOR_STATUS_LABEL": "STATUS_TRAVEL",
+        "VALUE_DEFAUL_SEARCH": {
+            "STATUS_DRIVER": [],
+            "STATUS_TRAVEL": []
+        }
+    },
+    "OPERATION": {
+        "VALUE_DEFAUL_SEARCH": {
+            "STATUS_TRIP": [1, 2],
+            "ATTRIBUTES": [],
+            "TYPE_PAYMENT": []
+        }
+    },
+    "TRAVEL_MODAL": {
+        "SERVICE_TYPE": 4,
+        "HIDDEN_COVERAGE": false,
+        "TYPE_RECEIPT": false,
+        "CLIENT_INFORMATION": false,
+        "DYNAMIC_FIELDS": true
+    },
+    "DEFAULT_COUNTRY_CODE": "51",
+    "CONVERSATION": {
+        "VIEW": "0"
+    },
+    "COMPANY": {
+        "FILTER": {
+            "VIEW_FILTER_SEARCH": "0",
+            "VIEW_FILTER_SELECT_COMPANY": "0",
+            "VIEW_FILTER_STATUS": "0",
+            "VIEW_FILTER_TYPE": "0"
+        }
+    },
+    "AREA": {
+        "FILTER": {
+            "VIEW_FILTER_SEARCH": "1",
+            "VIEW_FILTER_SELECT_COMPANY": "0",
+            "VIEW_FILTER_STATUS": "1",
+            "VIEW_FILTER_TYPE": "1"
+        }
+    },
+    "COST_CENTER": {
+        "FILTER": {
+            "VIEW_FILTER_SEARCH": "1",
+            "VIEW_FILTER_SELECT_COMPANY": "0",
+            "VIEW_FILTER_STATUS": "1",
+            "VIEW_FILTER_TYPE": "1"
+        }
+    },
+    "AUTH": {
+        "SCREEN_LOGIN_TRADITIONAL": true
+    }
+
+}

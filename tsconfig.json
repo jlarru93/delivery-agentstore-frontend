@@ -9,17 +9,21 @@
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "sourceMap": true,
+        "types": ["googlemaps"],
         "declaration": false,
         "downlevelIteration": true,
         "experimentalDecorators": true,
         "moduleResolution": "node",
         "importHelpers": true,
         "target": "es2017",
-        "module": "es2020",
+        "module": "esnext",
         "lib": [
             "es2018",
             "dom"
-        ]
+        ],
+        "typeRoots": [
+            "node_modules/@types"
+          ],
     },
     "angularCompilerOptions": {
         "enableI18nLegacyMessageIdFormat": false,

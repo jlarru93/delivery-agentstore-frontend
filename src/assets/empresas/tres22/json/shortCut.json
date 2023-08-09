@@ -1,0 +1,471 @@
+{
+    "keysGlobal": [
+        {
+            "id": 1,
+            "value": "space",
+            "shortCut": "space",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.NEW_TRIP"
+        },
+        {
+            "id": 2,
+            "value": "shift + b",
+            "shortCut": "shift + b",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.FIND_SCREEN"
+        },
+        {
+            "id": 4,
+            "value": "shift + z",
+            "shortCut": "shift + z",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.TYPE_CAR"
+        },
+        {
+            "id": 5,
+            "value": "shift + s",
+            "shortCut": "shift + s",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.SEARCH_ID"
+        },
+        {
+            "id": 6,
+            "value": "shift + a",
+            "shortCut": "shift + a",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.LIST_SERVICE_SERVED"
+        },
+        {
+            "id": 14,
+            "value": "shift + d",
+            "shortCut": "shift + d",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.SMS_INFORMATION_DRIVER"
+        },
+        {
+            "id": 16,
+            "value": "0",
+            "shortCut": "0",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.DRIVER_DETAILS"
+        },
+        {
+            "id": 17,
+            "value": "1",
+            "shortCut": "1",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.DRIVER_DETAILS"
+        },
+        {
+            "id": 18,
+            "value": "2",
+            "shortCut": "2",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.DRIVER_DETAILS"
+        },
+        {
+            "id": 19,
+            "value": "3",
+            "shortCut": "3",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.DRIVER_DETAILS"
+        },
+        {
+            "id": 20,
+            "value": "4",
+            "shortCut": "4",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.DRIVER_DETAILS"
+        },
+        {
+            "id": 21,
+            "value": "5",
+            "shortCut": "5",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.DRIVER_DETAILS"
+        },
+        {
+            "id": 22,
+            "value": "6",
+            "shortCut": "6",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.DRIVER_DETAILS"
+        },
+        {
+            "id": 23,
+            "value": "7",
+            "shortCut": "7",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.DRIVER_DETAILS"
+        },
+        {
+            "id": 24,
+            "value": "8",
+            "shortCut": "8",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.DRIVER_DETAILS"
+        },
+        {
+            "id": 25,
+            "value": "9",
+            "shortCut": "9",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.DRIVER_DETAILS"
+        },
+        {
+            "id": 26,
+            "value": "shift + x",
+            "shortCut": "shift + x",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.USER_DETAIL"
+        },
+        {
+            "id": 27,
+            "value": "shift + l",
+            "shortCut": "shift + l",
+            "description": "MENU.MODAL_SHORTCUT.TABLE.BODY.FIND_MONITOREO"
+        }
+    ],
+    "keysInternal": [
+        {
+            "id": "OPERATION",
+            "description": "operaciones",
+            "keys": [],
+            "components": [
+                {
+                    "id": "TABLE_TRAVEL",
+                    "description": "Tabla Viajes",
+                    "keys": [
+                        {
+                            "id": 7,
+                            "value": "ArrowUp",
+                            "shortCut": "ArrowUp",
+                            "description": "Tecla Arriba"
+                        },
+                        {
+                            "id": 8,
+                            "value": "ArrowDown",
+                            "shortCut": "ArrowDown",
+                            "description": "Tecla abajo"
+                        },
+                        {
+                            "id": 9,
+                            "value": "Enter",
+                            "shortCut": "Enter",
+                            "description": "Seleccionar o enter"
+                        },
+                        {
+                            "id": 10,
+                            "value": "Tab",
+                            "shortCut": "Tab",
+                            "description": "tab"
+                        },
+                        {
+                            "id": 11,
+                            "value": "p",
+                            "shortCut": "p",
+                            "description": "p"
+                        },
+                        {
+                            "id": 12,
+                            "value": "shift + p",
+                            "shortCut": "shift + p",
+                            "description": "Asignar Viaje"
+                        },
+                        {
+                            "id": 13,
+                            "value": "shift + s",
+                            "shortCut": "shift + s",
+                            "description": "Retener Servicio"
+                        },
+                        {
+                            "id": 14,
+                            "value": "shift + f",
+                            "shortCut": "shift + f",
+                            "description": "Duplicar Servicio"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "MONITORING",
+            "description": "Lista de Servicios",
+            "keys": [],
+            "components": [               
+                {
+                    "id": "TABLE_DRIVER",
+                    "description": "Tabla Conductores",
+                    "keys": [
+                        {
+                            "id": 7,
+                            "value": "ArrowUp",
+                            "shortCut": "ArrowUp",
+                            "description": "Tecla Arriba"
+                        },
+                        {
+                            "id": 8,
+                            "value": "ArrowDown",
+                            "shortCut": "ArrowDown",
+                            "description": "Tecla abajo"
+                        },
+                        {
+                            "id": 9,
+                            "value": "Enter",
+                            "shortCut": "Enter",
+                            "description": "Seleccionar o enter"
+                        }
+                    ]
+                },    
+                {
+                    "id": "SEARCH_TABLE_DRIVER",
+                    "description": "Busqueda de tabla Conductores",
+                    "keys": [
+                        {
+                            "id": 8,
+                            "value": "shift + x",
+                            "shortCut": "shift + x",
+                            "description": "Tecla abajo"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "MODAL_TRAVEL",
+            "description": "Modal Viaje",
+            "keys": [                
+                {
+                    "id": 10,
+                    "value": "a",
+                    "shortCut": "b",
+                    "description": "Abre o Cierra DropDown"
+                },
+                {
+                    "id": 11,
+                    "value": "b",
+                    "shortCut": "b",
+                    "description": "Guarda cliente"
+                },
+                {
+                    "id": 12,
+                    "value": "shift + c",
+                    "shortCut": "shift + ",
+                    "description": "Cancelar Viaje"
+                },
+                {
+                    "id": 13,
+                    "value": "shift + r",
+                    "shortCut": "shift + ",
+                    "description": "Retirar Conductor"
+                },
+                {
+                    "id": 14,
+                    "value": "Tab",
+                    "shortCut": "Tab",
+                    "description": "Ver Tracking"
+                },
+                {
+                    "id": 15,
+                    "value": "Escape",
+                    "shortCut": "Escape",
+                    "description": "Close Modal",
+                    "allowIn": ["TEXTAREA", "SELECT", "INPUT"]
+                },
+                {
+                    "id": 9,
+                    "value": "Enter",
+                    "shortCut": "Enter",
+                    "description": "Seleccionar o enter"
+                }
+            ],
+            "components": []
+        },
+        {
+            "id": "MODAL_DRIVER_DETAILS",
+            "description": "MODAL DRIVER DETAILS",
+            "keys": [                       
+                {
+                    "id": 1,
+                    "value": "shift + l",
+                    "shortCut": "shift + l",
+                    "description": "Show DataLog o auditoria"
+                },
+                {
+                    "id": 2,
+                    "value": "shift + b",
+                    "shortCut": "shift + b",
+                    "description": "Locked and Unlocked of driver"
+                },
+                {
+                    "id": 3,
+                    "value": "shift + v",
+                    "shortCut": "shift + v",
+                    "description": "Travels of driver"
+                },
+                {
+                    "id": 4,
+                    "value": "shift + c",
+                    "shortCut": "shift + c",
+                    "description": "Tracking driver"
+                },
+                {
+                    "id": 5,
+                    "value": "shift + t",
+                    "shortCut": "shift + t",
+                    "description": "Menssage of driver"
+                },                    
+                {
+                    "id": 1,
+                    "value": "ArrowLeft",
+                    "shortCut": "<--",
+                    "description": "Return to detail"
+                }
+            ],
+            "components": [
+                {
+                    "id": "DRIVER_DETAILS",
+                    "description": "Tabla Viajes",
+                    "keys": [
+                        {
+                            "id": 7,
+                            "value": "shift + u",
+                            "shortCut": "shift + u",
+                            "description": "last travel"
+                        },
+                        {
+                            "id": 7,
+                            "value": "shift + p",
+                            "shortCut": "shift + p",
+                            "description": "Update position"
+                        },
+                        {
+                            "id": 7,
+                            "value": "shift + a",
+                            "shortCut": "shift + a",
+                            "description": "Prio position zone"
+                        },
+                        {
+                            "id": 15,
+                            "value": "Escape",
+                            "shortCut": "Escape",
+                            "description": "Close Modal",
+                            "allowIn": ["TEXTAREA", "SELECT", "INPUT"]
+                        },
+                        {
+                            "id": 16,
+                            "value": "shift + s",
+                            "shortCut": "shift + s",
+                            "description": "Change driver status"
+                        }
+                    ]
+                },
+                {
+                    "id": "LST_TRAVELS",
+                    "description": "Tabla Viajes del conductor",
+                    "keys": [
+                        {
+                            "id": 7,
+                            "value": "ArrowUp",
+                            "shortCut": "ArrowUp",
+                            "description": "Tecla Arriba"
+                        },
+                        {
+                            "id": 8,
+                            "value": "ArrowDown",
+                            "shortCut": "ArrowDown",
+                            "description": "Tecla abajo"
+                        },
+                        {
+                            "id": 9,
+                            "value": "Enter",
+                            "shortCut": "Enter",
+                            "description": "Seleccionar o enter"
+                        }
+                    ]
+                },
+                {
+                    "id": "DRIVER_STATUS",
+                    "description": "Modal cambiar estado del conductor",
+                    "keys": [
+                        {
+                            "id": 7,
+                            "value": "shift + f",
+                            "shortCut": "shift + f",
+                            "description": "end day"
+                        },
+                        {
+                            "id": 8,
+                            "value": "shift + g",
+                            "shortCut": "shift + g",
+                            "description": "start the day"
+                        },
+                        {
+                            "id": 9,
+                            "value": "shift + h",
+                            "shortCut": "shift + h",
+                            "description": "occupied"
+                        },
+                        {
+                            "id": 10,
+                            "value": "shift + d",
+                            "shortCut": "shift + d",
+                            "description": "close"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "MODAL_MESSAGE",
+            "description": "MODAL MESSAGE",
+            "keys": [                       
+                {
+                    "id": 1,
+                    "value": "shift + r",
+                    "shortCut": "shift + r",
+                    "description": "Mark message to read"
+                }
+            ]
+        },
+        {
+            "id": "MODAL_VALIDATE_BALANCE",
+            "description": "MODAL VALIDATE BALANCE",
+            "keys": [
+                {
+                    "id": 15,
+                    "value": "Escape",
+                    "shortCut": "Escape",
+                    "description": "Close Modal",
+                    "allowIn": ["TEXTAREA", "SELECT", "INPUT"]
+                }
+            ],
+            "components": []
+        },
+        {
+            "id": "MODAL_EXIT_CONFIRMATION",
+            "description": "MODAL EXIT CONFIRMATION",
+            "keys": [
+                {
+                    "id": 15,
+                    "value": "Escape",
+                    "shortCut": "Escape",
+                    "description": "Close Modal",
+                    "allowIn": ["TEXTAREA", "SELECT", "INPUT"]
+                }
+            ],
+            "components": []
+        },
+        {
+            "id": "MODAL_AUDIT_TRIP",
+            "description": "MODAL AUDIT TRIP",
+            "keys": [
+                {
+                    "id": 15,
+                    "value": "Escape",
+                    "shortCut": "Escape",
+                    "description": "Close Modal",
+                    "allowIn": ["TEXTAREA", "SELECT", "INPUT"]
+                }
+            ],
+            "components": []
+        },
+        {
+            "id": "MODAL_DYNAMIC_FIELDS",
+            "description": "MODAL DYNAMIC FIELDS",
+            "keys": [
+                {
+                    "id": 15,
+                    "value": "Escape",
+                    "shortCut": "Escape",
+                    "description": "Close Modal",
+                    "allowIn": ["TEXTAREA", "SELECT", "INPUT"]
+                }
+            ],
+            "components": []
+        }
+    ]
+}

@@ -5,9 +5,12 @@
             <i class="pi pi-lock" *ngIf="appMain.staticMenuActive"></i>
             <i class="pi pi-lock-open" *ngIf="!appMain.staticMenuActive"></i>
         </a>
-        <a routerLink="/">
+        <a>
             <img alt="logo" src="assets/images/656.png" />
-            <span class="app-name" style="color: #ffffff;">Admin</span>
+            <span class="app-name" style="color: #ffffff;">
+                Admin 
+            </span><br>
+            <small class="app-name" style="color: #ffffff; font-size: 11.5px; margin-left: 54px;">{{storeFullName}}</small>
         </a>
     </div>
     <div class="layout-menu-container" (click)="onMenuClick()">

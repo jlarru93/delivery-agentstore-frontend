@@ -13,127 +13,53 @@ h5{
 }
 
 
-.container{
-    display: flex;
-    //height: calc(50vh - 70px);
-    height: 650px;
-}
-.messages{
-    //width: 380px;
-    margin-top: 10px;
-    border-radius: 16px;
-    padding: 25px;
-    background-color: #ffffff;
-    //background: rgba(0, 0, 0, 0.05);
-    position: relative;
-}
-
-.container-detail{
-    display: flex;
-    height: 650px;
-}
-
 .details{
     margin-top: 10px;
     width: 100%;
     border-radius: 16px;
     padding: 25px;
-    background-color: rgba(0,0,0,0.6);
-    //background: rgba(0, 0, 0, 0.05);
+    background-color: #c5cae9;
     position: relative;
 }
 
-// .messages::after{
-//     position: absolute;
-//     border: 0.5em solid transparent;
-//     border-top-color: #ffffff;
-//     border-left-color: #ffffff;
-//     top: 0%;
-//     left: 100%;
-//     //transform: skewY(25deg);
-//     transform-origin: 100% 100%;
-// }
 
-.messages-header{
+.complaint-info{
+    padding: 20px;
+    font-size: 15px;
     display: flex;
-    margin-bottom: 8px;
+    justify-content: space-between;
 }
-.messages-header > h2 {
-    margin: 0;
-}
-.chat-area{
-    height: calc(650px - 168px);
-    //height: 270px;
+
+.complaint-container{
+    //width: 100%;
+    width: 950px;
+    height: 605px;
+    margin: auto;
     display: flex;
-    flex-direction: column;
-    overflow: auto;
-}
-.chat-area > :first-child {
-    margin-top: auto;
-}
-.input-area > mat-form-field{
-    width: 100%;
-}
-.input-area {
-    padding-top: 16px;
-    padding-bottom: 8px;
-}
-.chat-bubble-container{
-    display: flex;
-    width: 100%;
-    justify-content: flex-start;
+    // gap: 20px;
 }
 
-.chat-bubble-container.sender{
-    justify-content: flex-end;
+.complaint-detail{
+    width: 65%;
 }
 
-.chat-bubble-container.sender > .chat-bubble{
-    background: #d94545;
-    color: #ffffff;
-}
+.product-item {
+    .product-item-content {
+        border: 1px solid var(--surface-d);
+        border-radius: 3px;
+        margin: .3rem;
+        text-align: center;
+        padding: 2rem 0;
+        overflow: hidden; 
+        transition: transform 0.3s ease;
+    }
 
-.chat-bubble-container.sender > .chat-bubble > .chat-date{
-    color: #ffffff;
-}
-
-.chat-avatar-container{
-    display: flex;
-    width: 100%;
-    justify-content: flex-end;
-}
-
-.chat-avatar-container.sender{
-    justify-content: flex-end;
-}
-
-.sender-name{
-    padding-left: 8px;
-    color: #65676B;
-}
-
-.chat-bubble{
-    background: #E4E6EB;
-    padding-top: 8px;
-    padding-bottom: 18px;
-    padding-left: 8px;
-    padding-right: 100px;
-    margin-bottom: 16px;
-    border-radius: 8px;
-    width: fit-content;
-    position: relative
-}
-
-.chat-bubble > .chat-date{
-    position: absolute;
-    bottom: 2px;
-    right: 8px;
-    font-size: 0.7rem;
-    color: rgba(0,0,0,0.6);
-}
-
-:host ::ng-deep .p-avatar{
-    width: 1.5rem;
-    height: 1.5rem;
-    font-size: 1rem;
+    .product-image {
+        width: 50%;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+        transition: transform 0.3s ease;
+    }
+    .product-image:hover{
+        transform: scale(1.2);
+    }
 }

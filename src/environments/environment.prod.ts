@@ -2,11 +2,13 @@ export const environment = {
   production: true,
   url:{
     backEndInit : [
-      'https://fn8ekfdpca.execute-api.us-east-1.amazonaws.com/prod',
-      "https://izcx12p6jh.execute-api.us-east-1.amazonaws.com/prod"
+      'https://api.tres22.net/agent-store',
+      'https://api.tres22.net/tracking',
+      "https://api.tres22.net/utils",
     ],
-    backEnd: 'https://fn8ekfdpca.execute-api.us-east-1.amazonaws.com/prod',
-    util_banckEnd:"https://izcx12p6jh.execute-api.us-east-1.amazonaws.com/prod"   
+    backEnd: 'https://api.tres22.net/agent-store',
+    url_back_tracking : 'https://api.tres22.net/tracking',
+    util_banckEnd:"https://api.tres22.net/utils",
   },
   region: 'us-east-1',
   userPoolId: 'us-east-1_GNlrPkzvB',

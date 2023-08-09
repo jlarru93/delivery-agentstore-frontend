@@ -22,7 +22,6 @@ export class CircleProgress implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        debugger
         this.totalTimeInSeconds = (this.readyToDmAt - this.acceptAgentStoreAt) / 1000;
         this.start();
       }
