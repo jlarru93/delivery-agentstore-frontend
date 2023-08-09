@@ -105,7 +105,9 @@ export const environment = {
       ICON_SIZE: new google.maps.Size(30, 35)
     }
   },
-  NAME_COMPANY: 'tres22',//'<<your name>>',
+  NAME_COMPANY: 'tres22',
+  conuntryCode:'PE'
+  //'<<your name>>',
   // CONFIGURATION: CONFIGURACION,
 
 };

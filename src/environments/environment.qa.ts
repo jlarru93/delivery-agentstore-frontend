@@ -97,6 +97,7 @@ export const environment = {
     }
   },
   NAME_COMPANY: 'tres22',
+  conuntryCode:'CO'
 };
 
 /*
