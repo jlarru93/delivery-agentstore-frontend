@@ -106,7 +106,7 @@ export const environment = {
     }
   },
   NAME_COMPANY: 'tres22',
-  conuntryCode:'PE'
+  conuntryCode:'CO'
   //'<<your name>>',
   // CONFIGURATION: CONFIGURACION,
 

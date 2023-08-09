@@ -96,7 +96,7 @@ export const environment = {
     }
   },
   NAME_COMPANY: 'tres22',//'<<your name>>',
-  conuntryCode:'PE'
+  conuntryCode:'CO'
 };
 
 /*
