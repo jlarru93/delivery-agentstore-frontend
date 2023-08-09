@@ -32,7 +32,6 @@
         "@types/google-maps": "^3.2.2",
         "@types/paho-mqtt": "^1.0.6",
         "aws-amplify": "^5.0.11",
-        "aws-sdk": "^2.1304.0",
         "chart.js": "^3.3.2",
         "google-maps": "^4.3.3",
         "jwt-decode": "^3.1.2",
