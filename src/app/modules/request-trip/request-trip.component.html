@@ -57,9 +57,19 @@
                 required
                 autofocus
               />
+              <div style="padding-left: 5px;">
+                <p-checkbox
+                  [(ngModel)]="isCheckedStore"
+                  [binary]="true"
+                  inputId="binary"
+                  (onChange)="enablePickUpInput()"
+                >                
+                </p-checkbox>
+
+              </div>
             </div>
           </div>
-          <!-- <div class="p-col-12">
+          <div class="p-col-12" *ngIf="isHiddenInput">
             <div class="input-origin-content">
               <img
                 src="{{ referenciaIcon }}"
@@ -78,7 +88,18 @@
               />
             </div>
           </div>
-      -->
+          <div class="p-col-12" *ngIf="isHiddenInput">
+            <div class="input-origin-content">
+              <div style="padding: 11px">
+                <i
+                  class="pi pi-phone"
+                  style="font-size: 1.5rem; color: #212222"
+                ></i>
+              </div>
+              <p-inputNumber mode="decimal" inputId="withoutgrouping" placeholder="Número de teléfono" [useGrouping]="false" [(ngModel)]="request_trip.mobile"></p-inputNumber>
+            </div>
+
+          </div>
 
         <div class="p-col-12">
           <div class="p-ml-5">
@@ -144,7 +165,7 @@
     <h5>Detalles</h5>
     <div>
       <div class="p-grid p-fluid">
-        <div class="p-col-12">
+        <!-- <div class="p-col-12">
           <div class="p-ml-6">
             <label for="">Número de cliente</label>
           </div>
@@ -160,7 +181,7 @@
 
             <div class="mr-5"></div>
           </div>
-        </div>
+        </div> -->
         <div class="p-col-12">
           <div class="p-ml-6">
             <label for="">Detalle del pedido</label>

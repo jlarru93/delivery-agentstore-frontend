@@ -242,6 +242,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.geocodePlaceIdMultidestino(place);
     });
   }
+
+  
   geocoder: google.maps.Geocoder = new google.maps.Geocoder();
   geocodePlaceIdOrigin(placeId) {
     this.geocoder.geocode({ placeId: placeId }, (results, status) => {
@@ -287,19 +289,42 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     });
   }
   updatePosition() {
+    
     var lstPosiciones: PersonalisationMarker[] = [];
-    lstPosiciones.push(
-      UtilModalViaje.fnDetalleViaje(
-        new google.maps.LatLng(this.marker.lat, this.marker.lng),
-        true,
-        "Origen",
-        TypeMarkers.ORIGEN,
-        false,
-        1,
-        false
-      )
-    );
-    if (  this.request_trip.addresses[1].point.coordinates[0] != 0) {
+
+    
+    if (this.isCheckedStore == true) {
+      lstPosiciones.push(
+            UtilModalViaje.fnDetalleViaje(
+              new google.maps.LatLng(
+                this.request_trip.addresses[0].point.coordinates[1],
+                this.request_trip.addresses[0].point.coordinates[0]
+                ),
+                true,
+                "Origen",
+                TypeMarkers.ORIGEN,
+                true,
+                1,
+                false
+                )
+                );
+              } else {
+                lstPosiciones.push(
+                  UtilModalViaje.fnDetalleViaje(
+                    new google.maps.LatLng(this.marker.lat, this.marker.lng),
+                    true,
+                    "Origen",
+                    TypeMarkers.ORIGEN,
+                    false,
+                    1,
+                    false
+                    )
+                    );
+                
+        }
+
+
+    if (this.request_trip.addresses[1].point.coordinates[0] != 0) {
       lstPosiciones.push(
         UtilModalViaje.fnDetalleViaje(
           new google.maps.LatLng(
@@ -397,6 +422,7 @@ uuid_price ?: string
     );
   }
   onSaveOrder() {
+    debugger
     let order: RequestTrip = new RequestTrip();
     if (!this.request_trip.description) {
       alert("La descripción es obligatoria");
@@ -444,6 +470,7 @@ uuid_price ?: string
         },
       ];
       this.request_trip.addresses.forEach((item, index) => {
+        debugger
         if (item.sort == 1) {
           order.addresses[0].addressStreet = item.addressStreet;
           order.addresses[0].phone = item.phone;
@@ -477,4 +504,51 @@ uuid_price ?: string
       );
     }
   }
+
+  isCheckedStore: boolean = false
+  isHiddenInput: boolean = false
+  enablePickUpInput(){
+    if(this.isCheckedStore == true){
+      this.findAdressOrigin()
+      //this.onGetLocationStore(false)
+      this.is_disabled_pickup = !this.is_disabled_pickup
+      this.isHiddenInput = !this.isHiddenInput
+    } else {
+      this.is_disabled_pickup = !this.is_disabled_pickup
+      this.isHiddenInput = !this.isHiddenInput
+      this.input_reference_pickup = ''
+      this.request_trip.mobile = null
+      this.request_trip.addresses = [
+        {
+          addressStreet: "",
+          alias: "",
+          floor: "",
+          phone: "",
+          marker: "store",
+          point: {
+            coordinates: [0, 0],
+            type: "",
+          },
+          sort: 1,
+          reference: "",
+        },
+        {
+          addressStreet: "",
+          alias: "",
+          floor: "",
+          phone: "",
+          marker: "store",
+          point: {
+            coordinates: [0, 0],
+            type: "",
+          },
+          sort: 2,
+          reference: "",
+        },
+      ];
+      this.onGetLocationStore(true);
+    }
+  }
+
+  
 }

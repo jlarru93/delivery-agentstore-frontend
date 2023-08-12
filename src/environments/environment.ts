@@ -17,11 +17,11 @@ export const environment = {
   // },
   url:{
     backEndInit : [
-      'http://127.0.0.1:3000/agent-store',
+      'https://dev-api.delivery-app.net/agent-store',
       "https://dev-api.delivery-app.net/utils",
       'https://dev-api.delivery-app.net/tracking'
     ],
-    backEnd: 'http://127.0.0.1:3000/agent-store',
+    backEnd: 'https://dev-api.delivery-app.net/agent-store',
     url_back_tracking : 'https://dev-api.delivery-app.net/tracking',
     util_banckEnd:"https://dev-api.delivery-app.net/utils",   
   },
