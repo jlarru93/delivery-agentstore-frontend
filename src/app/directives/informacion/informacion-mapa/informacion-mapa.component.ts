@@ -128,16 +128,16 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
       this.coreObservableSuscription.unsubscribe();
     }
 
-    if (this.timerMetros) {
-      clearTimeout(this.timerMetros);
-    }
-    if (this.timerPrice) {
-      clearTimeout(this.timerPrice);
-    }
+    // if (this.timerMetros) {
+    //   clearTimeout(this.timerMetros);
+    // }
+    // if (this.timerPrice) {
+    //   clearTimeout(this.timerPrice);
+    // }
 
-    if (this.timerTime) {
-      clearTimeout(this.timerTime);
-    }
+    // if (this.timerTime) {
+    //   clearTimeout(this.timerTime);
+    // }
   }
   ngDoCheck() {
     // if (UtilInformacionMapa.fnDiferentPositionAndLenght(this.lstMarkers, this.lstPosiciones, this.lstPosicionesMarkers)) {
