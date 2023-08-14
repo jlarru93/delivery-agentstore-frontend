@@ -143,10 +143,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     // this.stateOptions = [{label: 'Efectivo', value: 'efectivo'}, {label: 'Pago Digital', value: 'e-wallet'}];
   }
 
+  dataStorePhone: string
   private onGetLocationStore(flagInit : boolean) {
     this.storeService.onGetLocationStoreService().subscribe((data) => {
       this.input_visible_pickup = data.data.store.fullName;
-      this.request_trip.addresses[0].phone = data.data.store.phone;
+      this.dataStorePhone = data.data.store.phone;
       this.request_trip.addresses[0].point.type = "Point";
       this.request_trip.addresses[0].floor = "";
       this.request_trip.addresses[0].alias = "";
@@ -161,7 +162,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.marker.lng = data.data.store.location.coordinates[0];
       this.marker.lat = data.data.store.location.coordinates[1];
       this.stateOptions = data.data.tripSetting.paymentMethod;
-      this.method_payment = "CASH";
+      this.method_payment = "CREDIT";
       this.onGetMotorizedPosiitonOrigin();
       this.flagInitMap = flagInit;
       this.updatePosition();
@@ -421,8 +422,10 @@ uuid_price ?: string
       }
     );
   }
+
+  originMobilePhone: string
+  destinationMobilePhone: string
   onSaveOrder() {
-    debugger
     let order: RequestTrip = new RequestTrip();
     if (!this.request_trip.description) {
       alert("La descripción es obligatoria");
@@ -457,7 +460,7 @@ uuid_price ?: string
           addressStreet: "",
           alias: "",
           floor: "",
-          phone: this.request_trip.mobile,
+          phone: "",
           marker: "Point",
           point: {
             coordinates: [0, 0],
@@ -470,27 +473,25 @@ uuid_price ?: string
         },
       ];
       this.request_trip.addresses.forEach((item, index) => {
-        debugger
         if (item.sort == 1) {
           order.addresses[0].addressStreet = item.addressStreet;
-          order.addresses[0].phone = item.phone;
+          order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
           order.addresses[0].marker = item.marker;
           order.addresses[0].alias = item.alias;
-          order.addresses[0].reference = item.reference;
+          order.addresses[0].reference = this.input_reference_pickup;
           order.addresses[0].floor = item.floor;
           order.addresses[0].point = item.point;
         } else {
-          order.addresses[1].phone = this.request_trip.mobile.toString();
+          order.addresses[1].phone = this.destinationMobilePhone.toString();
           order.addresses[1].marker = item.marker;
           order.addresses[1].alias = item.alias;
-          order.addresses[1].reference = item.reference;
+          order.addresses[1].reference = this.input_reference_destination;
           order.addresses[1].floor = item.floor;
           order.addresses[1].addressStreet = item.addressStreet;
           order.addresses[1].point = item.point;
           // order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
         }
       });
-      console.log(JSON.stringify(order));
       this.requestTripService.onSaveOrderService(order).subscribe(
         (data) => {
           this.ref = this.dialogService.open(LoadingMotorizedComponent, {
