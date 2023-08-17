@@ -41,7 +41,7 @@ export class Point {
     addresses: Address[];
     mobile ?: string
     readyToDmAt ?: number
-  
+    
   }
   
   export class RequestMotorizedOrigin {

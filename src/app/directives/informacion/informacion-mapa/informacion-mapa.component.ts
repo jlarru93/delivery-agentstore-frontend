@@ -128,16 +128,16 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
       this.coreObservableSuscription.unsubscribe();
     }
 
-    if (this.timerMetros) {
-      clearTimeout(this.timerMetros);
-    }
-    if (this.timerPrice) {
-      clearTimeout(this.timerPrice);
-    }
+    // if (this.timerMetros) {
+    //   clearTimeout(this.timerMetros);
+    // }
+    // if (this.timerPrice) {
+    //   clearTimeout(this.timerPrice);
+    // }
 
-    if (this.timerTime) {
-      clearTimeout(this.timerTime);
-    }
+    // if (this.timerTime) {
+    //   clearTimeout(this.timerTime);
+    // }
   }
   ngDoCheck() {
     // if (UtilInformacionMapa.fnDiferentPositionAndLenght(this.lstMarkers, this.lstPosiciones, this.lstPosicionesMarkers)) {
@@ -155,6 +155,7 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
 
   }
   async ngOnChanges(changes: SimpleChanges) {
+    debugger
     if (this.initMap) {
       this.map = UtilInformacionMapa.fnInitMap(this.idMap, this.coberturePosition.latitude!, this.coberturePosition.longitude!, this.defaultUI);
       this.lstMarkers = this.fnActualizarPosicionMapa(this.lstMarkers, this.lstPosiciones);
@@ -191,9 +192,9 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
     if (changes.metros) {
       UtilInformacionMapa.editarControlMap(UtilInformacionMapa.converMetrotoFormat(this.metros!), ClassNameControl.DISTANCIA);
       if (this.metros && !document.getElementsByClassName(ClassNameControl.DISTANCIA)[0]) {
-        this.timerMetros = setTimeout(() => {
-          UtilInformacionMapa.editarControlMap(UtilInformacionMapa.converMetrotoFormat(this.metros!), ClassNameControl.DISTANCIA);
-        }, 2000);
+        // this.timerMetros = setTimeout(() => {
+        //   UtilInformacionMapa.editarControlMap(UtilInformacionMapa.converMetrotoFormat(this.metros!), ClassNameControl.DISTANCIA);
+        // }, 2000);
       }
     }
     if (this.service_number) {
@@ -207,18 +208,18 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
     if (changes.priceEstimate) {
       UtilInformacionMapa.editarControlMap(UtilInformacionMapa.convertFormatPrice(this.priceEstimate!), ClassNameControl.PRICE_ESTIMATE);
       if (this.priceEstimate && !document.getElementsByClassName(ClassNameControl.PRICE_ESTIMATE)[0]) {
-        this.timerPrice = setTimeout(() => {
-          UtilInformacionMapa.editarControlMap(UtilInformacionMapa.convertFormatPrice(this.priceEstimate!), ClassNameControl.PRICE_ESTIMATE);
-        }, 2000);
+        // this.timerPrice = setTimeout(() => {
+        //   UtilInformacionMapa.editarControlMap(UtilInformacionMapa.convertFormatPrice(this.priceEstimate!), ClassNameControl.PRICE_ESTIMATE);
+        // }, 2000);
       }
 
     }
     if (changes.time ) {
       UtilInformacionMapa.editarControlMap(UtilInformacionMapa.convertFormatTime(this.time!), ClassNameControl.TIEMPO);
       if (this.time && !document.getElementsByClassName(ClassNameControl.TIEMPO)[0]) {
-        this.timerTime = setTimeout(() => {
-          UtilInformacionMapa.editarControlMap(UtilInformacionMapa.convertFormatTime(this.time!), ClassNameControl.TIEMPO);
-        }, 2000);
+        // this.timerTime = setTimeout(() => {
+        //   UtilInformacionMapa.editarControlMap(UtilInformacionMapa.convertFormatTime(this.time!), ClassNameControl.TIEMPO);
+        // }, 2000);
       }
     }
     if (changes.polyline) {

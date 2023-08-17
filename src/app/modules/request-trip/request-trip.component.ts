@@ -143,10 +143,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     // this.stateOptions = [{label: 'Efectivo', value: 'efectivo'}, {label: 'Pago Digital', value: 'e-wallet'}];
   }
 
+  dataStorePhone: string
   private onGetLocationStore(flagInit : boolean) {
     this.storeService.onGetLocationStoreService().subscribe((data) => {
       this.input_visible_pickup = data.data.store.fullName;
-      this.request_trip.addresses[0].phone = data.data.store.phone;
+      this.dataStorePhone = data.data.store.phone;
       this.request_trip.addresses[0].point.type = "Point";
       this.request_trip.addresses[0].floor = "";
       this.request_trip.addresses[0].alias = "";
@@ -161,7 +162,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.marker.lng = data.data.store.location.coordinates[0];
       this.marker.lat = data.data.store.location.coordinates[1];
       this.stateOptions = data.data.tripSetting.paymentMethod;
-      this.method_payment = "CASH";
+      this.method_payment = "CREDIT";
       this.onGetMotorizedPosiitonOrigin();
       this.flagInitMap = flagInit;
       this.updatePosition();
@@ -242,6 +243,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.geocodePlaceIdMultidestino(place);
     });
   }
+
+  
   geocoder: google.maps.Geocoder = new google.maps.Geocoder();
   geocodePlaceIdOrigin(placeId) {
     this.geocoder.geocode({ placeId: placeId }, (results, status) => {
@@ -287,19 +290,42 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     });
   }
   updatePosition() {
+    
     var lstPosiciones: PersonalisationMarker[] = [];
-    lstPosiciones.push(
-      UtilModalViaje.fnDetalleViaje(
-        new google.maps.LatLng(this.marker.lat, this.marker.lng),
-        true,
-        "Origen",
-        TypeMarkers.ORIGEN,
-        false,
-        1,
-        false
-      )
-    );
-    if (  this.request_trip.addresses[1].point.coordinates[0] != 0) {
+
+    
+    if (this.isCheckedStore == true) {
+      lstPosiciones.push(
+            UtilModalViaje.fnDetalleViaje(
+              new google.maps.LatLng(
+                this.request_trip.addresses[0].point.coordinates[1],
+                this.request_trip.addresses[0].point.coordinates[0]
+                ),
+                true,
+                "Origen",
+                TypeMarkers.ORIGEN,
+                true,
+                1,
+                false
+                )
+                );
+              } else {
+                lstPosiciones.push(
+                  UtilModalViaje.fnDetalleViaje(
+                    new google.maps.LatLng(this.marker.lat, this.marker.lng),
+                    true,
+                    "Origen",
+                    TypeMarkers.ORIGEN,
+                    false,
+                    1,
+                    false
+                    )
+                    );
+                
+        }
+
+
+    if (this.request_trip.addresses[1].point.coordinates[0] != 0) {
       lstPosiciones.push(
         UtilModalViaje.fnDetalleViaje(
           new google.maps.LatLng(
@@ -396,6 +422,9 @@ uuid_price ?: string
       }
     );
   }
+
+  originMobilePhone: string
+  destinationMobilePhone: string
   onSaveOrder() {
     let order: RequestTrip = new RequestTrip();
     if (!this.request_trip.description) {
@@ -431,7 +460,7 @@ uuid_price ?: string
           addressStreet: "",
           alias: "",
           floor: "",
-          phone: this.request_trip.mobile,
+          phone: "",
           marker: "Point",
           point: {
             coordinates: [0, 0],
@@ -446,24 +475,23 @@ uuid_price ?: string
       this.request_trip.addresses.forEach((item, index) => {
         if (item.sort == 1) {
           order.addresses[0].addressStreet = item.addressStreet;
-          order.addresses[0].phone = item.phone;
+          order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
           order.addresses[0].marker = item.marker;
           order.addresses[0].alias = item.alias;
-          order.addresses[0].reference = item.reference;
+          order.addresses[0].reference = this.input_reference_pickup;
           order.addresses[0].floor = item.floor;
           order.addresses[0].point = item.point;
         } else {
-          order.addresses[1].phone = this.request_trip.mobile.toString();
+          order.addresses[1].phone = this.destinationMobilePhone.toString();
           order.addresses[1].marker = item.marker;
           order.addresses[1].alias = item.alias;
-          order.addresses[1].reference = item.reference;
+          order.addresses[1].reference = this.input_reference_destination;
           order.addresses[1].floor = item.floor;
           order.addresses[1].addressStreet = item.addressStreet;
           order.addresses[1].point = item.point;
           // order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
         }
       });
-      console.log(JSON.stringify(order));
       this.requestTripService.onSaveOrderService(order).subscribe(
         (data) => {
           this.ref = this.dialogService.open(LoadingMotorizedComponent, {
@@ -477,4 +505,51 @@ uuid_price ?: string
       );
     }
   }
+
+  isCheckedStore: boolean = false
+  isHiddenInput: boolean = false
+  enablePickUpInput(){
+    if(this.isCheckedStore == true){
+      this.findAdressOrigin()
+      //this.onGetLocationStore(false)
+      this.is_disabled_pickup = !this.is_disabled_pickup
+      this.isHiddenInput = !this.isHiddenInput
+    } else {
+      this.is_disabled_pickup = !this.is_disabled_pickup
+      this.isHiddenInput = !this.isHiddenInput
+      this.input_reference_pickup = ''
+      this.request_trip.mobile = null
+      this.request_trip.addresses = [
+        {
+          addressStreet: "",
+          alias: "",
+          floor: "",
+          phone: "",
+          marker: "store",
+          point: {
+            coordinates: [0, 0],
+            type: "",
+          },
+          sort: 1,
+          reference: "",
+        },
+        {
+          addressStreet: "",
+          alias: "",
+          floor: "",
+          phone: "",
+          marker: "store",
+          point: {
+            coordinates: [0, 0],
+            type: "",
+          },
+          sort: 2,
+          reference: "",
+        },
+      ];
+      this.onGetLocationStore(true);
+    }
+  }
+
+  
 }

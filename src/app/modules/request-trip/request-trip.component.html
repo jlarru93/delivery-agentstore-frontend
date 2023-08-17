@@ -57,9 +57,19 @@
                 required
                 autofocus
               />
+              <div style="padding-left: 5px;">
+                <p-checkbox
+                  [(ngModel)]="isCheckedStore"
+                  [binary]="true"
+                  inputId="binary"
+                  (onChange)="enablePickUpInput()"
+                >                
+                </p-checkbox>
+
+              </div>
             </div>
           </div>
-          <!-- <div class="p-col-12">
+          <div class="p-col-12" *ngIf="isHiddenInput">
             <div class="input-origin-content">
               <img
                 src="{{ referenciaIcon }}"
@@ -78,7 +88,19 @@
               />
             </div>
           </div>
-      -->
+          <div class="p-col-12" *ngIf="isHiddenInput">
+            <div class="input-origin-content">
+              <div style="padding: 11px">
+                <i
+                  class="pi pi-phone"
+                  style="font-size: 1.5rem; color: #212222"
+                ></i>
+              </div>
+              <p-inputNumber mode="decimal" inputId="withoutgrouping" placeholder="Número de teléfono" 
+              [useGrouping]="false" [(ngModel)]="originMobilePhone"></p-inputNumber>
+            </div>
+
+          </div>
 
         <div class="p-col-12">
           <div class="p-ml-5">
@@ -123,20 +145,18 @@
             />
           </div>
         </div>
-        <div *ngIf="inputVisibleDestino" class="p-col-12 input-origin-content">
-          <img
-            class="search-img-origin marker"
-            src="{{ referenciaIcon }}"
-            alt=""
-            style="margin-right: 20px"
-          />
-          <input
-            class="p-inputtext-lg"
-            type="text"
-            placeholder="Indicaciones de entrega"
-            pInputText
-            name="input-destino"
-          />
+        <div class="p-col-12">
+          <div class="input-origin-content">
+            <div style="padding: 11px">
+              <i
+                class="pi pi-phone"
+                style="font-size: 1.5rem; color: #212222"
+              ></i>
+            </div>
+            <p-inputNumber mode="decimal" inputId="withoutgrouping" placeholder="Número de teléfono" 
+            [useGrouping]="false" [(ngModel)]="destinationMobilePhone"></p-inputNumber>
+          </div>
+
         </div>
       </div>
     </div>
@@ -144,7 +164,7 @@
     <h5>Detalles</h5>
     <div>
       <div class="p-grid p-fluid">
-        <div class="p-col-12">
+        <!-- <div class="p-col-12">
           <div class="p-ml-6">
             <label for="">Número de cliente</label>
           </div>
@@ -160,7 +180,7 @@
 
             <div class="mr-5"></div>
           </div>
-        </div>
+        </div> -->
         <div class="p-col-12">
           <div class="p-ml-6">
             <label for="">Detalle del pedido</label>
@@ -222,7 +242,6 @@
         [(ngModel)]="request_trip.readyToDmAt" 
         [showButtons]="true" 
         min="0"
-        max="10"
         buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="5"
     decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" 
     incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" 

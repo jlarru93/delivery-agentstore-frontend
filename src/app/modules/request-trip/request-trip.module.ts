@@ -18,11 +18,13 @@ import { InformacionMapaModule } from 'src/app/directives/informacion/informacio
 import { LoadingMotorizedComponent } from './dialog/loading-motorized/loading-motorized.component';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
   imports: [
     CommonModule,
+    CheckboxModule,
     RequestTripRoutingModule,
     InputTextModule,
     FormsModule,
