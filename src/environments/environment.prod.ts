@@ -25,19 +25,19 @@ export const environment = {
   },
   MARKERS: {
     ORIGEN: {
-      URL: '/img/markers/Comercio.png',
+      URL: '/img/markers/origen.svg',
       POSICION: 20,
-      ICON_SIZE: new google.maps.Size(50, 50)
+      ICON_SIZE: new google.maps.Size(30, 30)
     },
     DESTINO: {
-      URL: '/img/markers/Cliente.png',
+      URL: '/img/markers/destino.svg',
       POSICION: 20,
-      ICON_SIZE: new google.maps.Size(50, 50)
+      ICON_SIZE: new google.maps.Size(30, 30)
     },
     CONDUCTOR_LABEL: {
-      URL: '/img/markers/Domiciliario_1.png',
+      URL: '/img/markers/autoGeneric.svg',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(50, 50)
+      ICON_SIZE: new google.maps.Size(20, 20)
     },
     CONDUCTOR_ELITE: {
       URL: '/img/markers/autoElite.png',
@@ -45,9 +45,9 @@ export const environment = {
       ICON_SIZE: new google.maps.Size(20, 20)
     },
     CONDUCTOR: {
-      URL: '/img/markers/Domiciliario_1.png',
+      URL: '/img/markers/autoGeneric.png',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(50, 50)
+      ICON_SIZE: new google.maps.Size(20, 20)
     },
     PASAJERO:{
       URL: '/img/markers/marker_destino.png',
