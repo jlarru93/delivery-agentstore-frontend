@@ -241,6 +241,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     autocomplete.addListener("place_changed", () => {
       let place: any = autocomplete.getPlace().place_id;
       this.geocodePlaceIdMultidestino(place);
+      this.onPlaceSelected();
     });
   }
 
@@ -551,5 +552,16 @@ uuid_price ?: string
     }
   }
 
+  isButtonDisabled: boolean = true;
+
+  onInputChange(value: any) {
+    if(value === ''){
+      this.isButtonDisabled = !this.isButtonDisabled
+    }
+  }
+
+  onPlaceSelected() {
+    this.isButtonDisabled = !this.isButtonDisabled;
+  }
   
 }

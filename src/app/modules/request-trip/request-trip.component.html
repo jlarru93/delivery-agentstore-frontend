@@ -121,6 +121,7 @@
               placeholder="¿A dónde lo llevamos?"
               [(ngModel)]="inputVisibleDestino"
               id="txtUbicacion" 
+              (input)="onInputChange($event.target.value)"
               required
               autofocus
             />
@@ -251,7 +252,7 @@
     <div class="p-mt-3"></div>
     <div class="p-grid p-fluid">
       <div class="p-col-12">
-        <button
+        <button [disabled]="isButtonDisabled"
         (click)="onSaveOrder()"
           pButton
           pRipple
