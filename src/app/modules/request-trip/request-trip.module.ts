@@ -14,26 +14,32 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { RequestTripComponent } from './request-trip.component';
 import { ToolbarModule } from 'primeng/toolbar';
+import { InformacionMapaModule } from 'src/app/directives/informacion/informacion-mapa/informacion-mapa.module';
+import { LoadingMotorizedComponent } from './dialog/loading-motorized/loading-motorized.component';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
-  declarations: [RequestTripComponent],
+  declarations: [RequestTripComponent, LoadingMotorizedComponent],
   imports: [
     CommonModule,
+    CheckboxModule,
     RequestTripRoutingModule,
     InputTextModule,
     FormsModule,
     ButtonModule,
     InputTextareaModule,
     SelectButtonModule,
-    AgmCoreModule.forRoot({
-      apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
-      libraries: ['drawing']
-    }),
     ToolbarModule,
     MatButtonModule,
     MatFormFieldModule, 
     MatInputModule, 
-    MatIconModule
+    MatIconModule,
+    InformacionMapaModule,
+    InputNumberModule,
+    ProgressBarModule,
+    ButtonModule
   ]
 })
 export class RequestTripModule { }

@@ -1,0 +1,298 @@
+<p-toast baseZIndex="10000"></p-toast>
+<p-toolbar>
+    <div class="p-toolbar-group-left">
+        <h5 class="p-mr-4 p-p-0">Lista de Ordenes</h5>
+    </div>
+</p-toolbar>
+<div class="p-mt-4"></div>
+<p-table [value]="orders" [resizableColumns]="true" styleClass="p-datatable-gridlines" [loading]="loadingResults">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pResizableColumn>Estado</th>
+            <th pResizableColumn>Orden ID</th>
+            <th pResizableColumn>Fecha/Hora</th>
+            <th pResizableColumn>Valor</th>
+            <th pResizableColumn>Usuario</th>
+            <th pResizableColumn>Detalle</th>
+            <th pResizableColumn>Novedad</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order>
+        <tr>
+            <td>{{getStatus(order.status)}}</td>
+            <td>ID: {{order.id}}</td>
+            <td>{{getFormatDate(order.createdAt)}}</td>
+            <td>{{order.getTotalAndCurrency()}}</td>
+            <td>{{order.user?.fullName}}</td>
+            <td>
+                <i class="pi pi-info-circle" (click)="OpenDialogOrderDetail(order)" 
+                style="color: #F59E0B; font-size: 2rem; cursor: pointer;"></i>
+            </td>
+            <td>
+                <i class="pi pi-eye" (click)="OpenDialogComplaintDetail(order.complaint, order.uuid)" 
+                style="color: #17a2b8; font-size: 2rem; cursor: pointer;"></i>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+
+<p-dialog [(visible)]="isDialogComplaintDetailOpen" [modal]="true">
+   <ng-template pTemplate="header">
+      <h5>Usuario ID: {{complaintOrder.user.id}}</h5>    
+   </ng-template>
+    <ng-container *ngIf="complaintOrder">
+      <div class="complaint-container">
+         <div class="complaint-detail">
+            <div class="complaint-info">
+               <div class="complaint-title">
+                  <b>Novedad: </b><spam>{{complaintOrder.reason}}</spam><br>
+                  <b>Detalle: </b><spam>{{complaintOrder.detail}}</spam>
+               </div>
+               <div class="complaint-split">
+                  <p-splitButton label="Estado: {{labelStatus}}" styleClass="p-button-outlined mr-2 mb-2" 
+                    [model]="items"></p-splitButton>
+               </div>
+            </div>
+            
+            <p-carousel [value]="imagesArray" [numVisible]="1" [numScroll]="1" [circular]="false" [responsiveOptions]="responsiveOptions">
+               <ng-template let-image pTemplate="item" let-i="index">
+                   <div class="product-item">
+                       <div class="product-item-content">
+                           <div class="p-mb-3">
+                               <img [src]="image" [alt]="" class="product-image" />
+                           </div>
+                           <div>
+                               <h4 class="p-mb-1">Evidencia {{i}}</h4>
+                           </div>
+                       </div>
+                   </div>
+               </ng-template>
+           </p-carousel>
+         </div>
+         <div class="complaint-chat">
+            <app-chat
+                  [isLoading]="complaintOrder.isLoadingChat"
+                  [messages]="complaintOrder.messagesChat" 
+                  [orderId]="complaintOrder.id"
+                  [orderUuid]="orderUuidtoSend"
+                  [usuarioLogueado]="userName"
+                  [userId]="userId"
+                  [isInputEnabled]="isEnabledInputText"
+                  (pushMessage)="pushMessaje($event)"
+                  (emitMessage)="sendMessage($event)"
+                  ></app-chat>
+         </div>
+      </div>
+
+    </ng-container>
+</p-dialog>
+
+<p-dialog [(visible)]="isDialogOrderDetailOpen" [modal]="true">
+    <ng-template pTemplate="header">
+      <div class="p-toolbar-group-left">
+         <b><h3>Orden: {{orderSelected.id}}</h3></b>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="body">
+      <div class="container-dialog">
+         <main>
+            <div class="accordion">
+               <button id="btnOnClicked" (click)="accordionFunction()"></button>
+               <div *ngFor="let product of orderSelected.products; index as i">
+                  <div class="accordion-content">
+                     <div class="accordion-item"> 
+                        <div class="p-grid grid-quantity" style="border-bottom: 0px">
+                           <div class="p-col-1 accodion-quantity">
+                              <p>{{product.quantity}}x</p>
+                           </div>
+                           <div class="p-col-11 header">
+                              <span class="accordion-title">
+                                 <i class="pi pi-angle-right" style="margin-top: 3px;"></i>{{(product.name.charAt(0)).toUpperCase() + product.name.slice(1)}}</span>
+                              <span>{{product.getPriceMinimalCurrency()}}</span>
+                           </div>
+      
+                        </div>
+                        <div class="accordion-description">
+                           <div *ngIf="product.options.length > 0">
+                              <div class="accordion-options">
+                                 <div *ngFor="let option of product.options">
+                                    <div style="padding-left: 10px;">
+                                       <div style="padding-top: 10px;">
+                                          <p style="font-size: 15px; color: #c2cad3">{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}</p>
+                                          <div *ngFor="let sub of option.subOptions">
+                                             <div class="p-grid" style="margin-top: -20px;">
+                                                <div class="p-col-6">
+                                                   <p style="font-size: 17px;">{{sub.name}}</p>
+                                                </div>
+                                                <div class="p-col-6">
+                                                   <p style="float: right;">{{sub.quantity > 0 ? sub.quantity : '-' }}</p>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <p style="color: #c2cad3; font-size: 14px; padding-top: 15px;">Comentarios</p>
+                           <div style="padding-left: 10px; padding-bottom: 10px;">
+                              <p>{{product.comment}}</p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="p-pb-2">
+                     <section>
+                        <div class="p-grid">
+                           <div class="p-col-3">
+                              <p>Sub Total</p>
+                           </div>
+                           <div class="p-col-9">
+                              <b style="float: right;">{{product.getTotalPriceAndCurrency()}}</b>
+                           </div>
+                        </div>
+                     </section>
+   
+                  </div>
+   
+               </div>
+               
+            </div>
+         </main>
+         <div id="sidebar">
+             <!-- <div class="sidebar-method-payment" id="payment">
+               
+             </div> -->
+             <div class="sidebar-info" id="info">
+               <div class="sidebar-container-title">Metodo de pago</div>
+               <div class="method-payment-container">
+                  <b>{{paymentName}}</b>
+                  <i *ngIf="payment.method.type == 'E-WALLET' || payment.method.type == 'BANK'" class="pi pi-eye" style="float: right; font-size: 1.5rem;" (click)="openDialog()"></i>
+
+               </div>
+               <div class="sidebar-container-title">Cliente</div>
+               <div class="card-client">
+                  <b>{{orderSelected?.user?.fullName}}</b>
+                  <p>+51 999 888 777</p>
+               </div>
+               <!-- <div *ngIf="orderSelected.status=='open'">
+                  <div class="sidebar-container-title">Tiempo de preparación</div>
+                  <div class="card-time">
+                     <div class="p-grid">
+                        <div class="p-col-4">
+                           <button pButton pRipple type="button" icon="pi pi-minus" 
+                           class="p-button-rounded p-button-text" (click)="onDecrement()"></button>
+                        </div>
+                        <div class="p-col-4" id="counter-value">
+                           {{readyToDmAt}} <br>
+                           <div class="counter-min">min</div>
+                        </div>
+                        <div class="p-col-4">
+                           <button pButton pRipple type="button" icon="pi pi-plus" style="float: right;"
+                           class="p-button-rounded p-button-text" (click)="onIncrement()"></button>
+                        </div>
+                     </div>
+                     <div class="card-recommend">
+                        <div class="">
+                           <div class="" style="text-align: center;">
+                              <span>Tiempo sugerido para esta orden</span>
+                           </div>
+                        </div>           
+                     </div>
+                  </div>
+               </div> -->
+               <div *ngIf="orderSelected.status== 'orderReady'">
+                  <div class="sidebar-container-title">Repartidor</div>
+                  <div class="card-time">
+                     <div style="padding: 15px 0;">
+                        <h5>Buscando Repartidor</h5>
+                     </div>
+                     <div class="card-repartidor">
+                        <div class="p-grid">
+                           <div class="p-col-12" style="text-align: center; padding: 0.75rem;">
+                              <span>Estamos buscando al repartidor más adecuado para recoger esta orden.</span>
+                           </div>                        
+                        </div>           
+                     </div>
+                  </div>
+               </div>
+               <div *ngIf="orderSelected.status=='preparingOrder' || orderSelected.status=='done'">
+                  <div class="sidebar-container-title">Repartidor</div>
+                 <!--  <div class="card-client">
+                     <b>Hora de llegada del DM</b>
+                     <p>{{formatearTiempo(orderSelected?.readyToDmAt)}}</p>
+                  </div> -->
+                  <!-- <div class="card-time">
+                     <div class="card-repartidor">
+                        <div class="p-grid">
+                           <div class="p-col-12" style="text-align: center;">
+                              <span>{{formatearTiempo(orderSelected?.readyToDmAt)}}</span>
+                           </div>                        
+                        </div>           
+                     </div>
+                  </div> -->
+                  <div class="p-mb-2"></div>
+                  <div class="card-time">
+                     <div *ngIf="orderSelected.deliveryMan">
+                        <div class="delivery-content">
+                           <div class="deliveryman">
+                              <b>{{orderSelected?.deliveryMan?.name}}</b><br>
+                              <p>Tel: {{orderSelected?.deliveryMan?.phone}}</p>
+                           </div>
+                           <div class="deliveryman-img">
+                              <img src="" alt=""  onError="this.src='assets/images/user.png'" width="40">
+                           </div>
+                        </div>
+                        <div class="deliveryman-content">
+                           <div *ngIf="orderSelected?.deliveryMan?.status == 'toStore'">
+                              <div class="delivery-status">
+                                 <img src="assets/images/icon-bike.svg" alt="" width="20">
+                                 <p style="color: #FFAC09;">DM está en camino a la Tienda</p>
+                              </div>
+                           </div>
+                           <div *ngIf="orderSelected?.deliveryMan?.status == 'inStore'">
+                              <div class="delivery-status">
+                                 <img src="assets/images/icon-store.svg" alt="" width="20">
+                                 <p style="color: #4BCCBD;">DM está en la tienda</p>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div *ngIf="orderSelected.deliveryMan == null">
+                        <div class="card-repartidor">
+                           <div class="p-grid">
+                              <div class="p-col-12" style="text-align: center; padding: 0.75rem;">
+                                 <span>Estamos buscando al repartidor más adecuado para recoger esta orden.</span>
+                              </div>                        
+                           </div>           
+                        </div>
+                     </div>
+                  </div>
+               </div>
+   
+             </div>
+         </div>
+         <footer id="footer-main">
+            <div class="grid-resume">
+               <div id="residency">
+                  <p>Domicilio</p>
+                  <p>{{orderSelected.getdeliveryPriceAndCurrency()}}</p>
+               </div>
+               <div id="tip">
+                  <p>Propina</p>
+                  <p>{{orderSelected.getTipAndCurrency()}}</p>
+               </div>
+               <div id="products-amount">
+                  <p>Productos</p>
+                  <p>{{orderSelected.getProductPriceAndCurrency()}}</p>
+               </div>
+               <div id="total-amount">
+                  <p>Monto Total</p>
+                  <p>{{orderSelected.getTotalAndCurrency()}}</p>
+               </div>
+            </div>
+         </footer>
+       </div>
+    </ng-template>
+    </p-dialog>

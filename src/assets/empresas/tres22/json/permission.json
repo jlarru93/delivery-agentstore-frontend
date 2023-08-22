@@ -1,0 +1,26 @@
+[
+    {
+    "code": "MONITORING",
+    "description":"operaciones",
+    "sons": [
+            {
+            "code": "EVENT_UPDATE_DATA_CONFIDENTIAL",
+            "description":"Actualizar data confidencial"
+            },
+            
+            {
+            "code": "EVENT_UPDATE_HOURS_SERVICE",
+            "description":"Actualizar Horas de servicio"
+            },
+            
+            {
+            "code": "EVENT_UPDATE_SERVICE",
+            "description":"Actualizar Servicio"
+            },
+            {
+            "code": "EVENT_UPDATE_TARIFF_COMPANY",
+            "description":"Actualizar tarifas de empresas"
+            }
+        ]
+    }
+]

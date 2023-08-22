@@ -1,299 +1,179 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AuthService } from 'src/app/utils/auth.service';
+import { OrderHistoryService } from './service/order-history.service';
+import { OrderHistoryRequest } from './service/data/request';
+import { ComplaintBean, OrderHistorBean } from './data';
+import { Pagination } from 'src/app/models';
+import { Image } from 'src/app/demo/domain/image';
+import { MessageService } from 'primeng/api';
+import { ChatBean } from 'src/app/chat/data.chat';
+import { ChatService } from '../main/service/chat.service';
+import { ChatResponse } from '../main/service/data/chat.response';
+import { MqttService } from '../service/mqtt.service';
+import { ChatHandler } from '../service/handlers/chat.handler';
+import { ChatComponent } from 'src/app/chat/chat.component';
+import * as CONSTANTS from 'src/app/utils/constant';
 
 @Component({
   selector: 'app-order-history',
   templateUrl: './order-history.component.html',
-  styleUrls: ['./order-history.component.scss']
+  styleUrls: ['./order-history.component.scss'],
+  providers: [MessageService]
 })
 export class OrderHistoryComponent implements OnInit {
 
   status: any[] = [
-    { name: 'Cancelado', value: 'done'},
+    { name: 'Cancelado', value: 'cancel'},
+    { name: 'Terminado', value: 'done'},
+    { name: 'Orden Lista', value: 'orderReady'},
+    { name: 'Preparando orden', value: 'preparingOrder'}
   ]
   isDialogDetailOpen: boolean = false
 
   messageControl: FormControl = new FormControl('');
 
-  orders = [
+  images: Image[] = []
+
+  responsiveOptions:any[] = [
     {
-      status: 'Cancelado',
-      id: 'ID 9658246',
-      date: 'Jul 01, 2020 11:41:07 AM',
-      price: '$17,000',
-      dm: 'Sin Deliveryman',
-      rate: 'No disponible'
+        breakpoint: '1024px',
+        numVisible: 5
     },
     {
-      status: 'Cancelado',
-      id: 'ID 9658246',
-      date: 'Jul 01, 2020 11:41:07 AM',
-      price: '$17,000',
-      dm: 'Sin Deliveryman',
-      rate: 'No disponible'
+        breakpoint: '960px',
+        numVisible: 4
     },
     {
-      status: 'Cancelado',
-      id: 'ID 9658246',
-      date: 'Jul 01, 2020 11:41:07 AM',
-      price: '$17,000',
-      dm: 'Sin Deliveryman',
-      rate: 'No disponible'
+        breakpoint: '768px',
+        numVisible: 3
+    },
+    {
+        breakpoint: '560px',
+        numVisible: 1
     }
-  ]
+];
 
-  messages: any[] = [
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-6dd2296a7dfa", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 60, 
-          name : "Delivery Man", 
-          type : "delivery-man" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Hey User!", 
-      readUser : [ 
-          { 
-              id : 11, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              background: 'red',
-              readedAt: 1685927914 
-          }, 
-          { 
-              id : 14, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              background: 'blue',
-              readedAt : 1685927914 
-          } 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 14, 
-          name : "Cristhian Angel Ticclla Espinoza", 
-          type : "agent-store" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Hi Delivery Man", 
-      readUser : [ 
-          { 
-              id : 60, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              readedAt: 1685927914,
-              background:'red'
-          }, 
-          { 
-              id : 60, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              readedAt : 1685927914,
-              background:'blue' 
-          } 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-6dd2296a7dfa", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 60, 
-          name : "Delivery Man", 
-          type : "delivery-man" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Your order is ready", 
-      readUser : [ 
-          { 
-              id : 11, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              readedAt: 1685927914,
-              background:'blue' 
-          }, 
-          { 
-              id : 14, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              readedAt : 1685927914,
-              background:'blue' 
-          } 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-6dd2296a7dfa", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 60, 
-          name : "Delivery Man", 
-          type : "delivery-man" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "The estimated time is 1 hours. I'll call you when I arrive.", 
-      readUser : [ 
-          { 
-              id : 11, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              readedAt: 1685927914,
-              background:'blue' 
-          }, 
-          { 
-              id : 14, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              readedAt : 1685927914,
-              background:'blue' 
-          } 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 14, 
-          name : "Cristhian Angel Ticclla Espinoza", 
-          type : "agent-store" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Great!. I'll be waiting", 
-      readUser : [ 
-          { 
-              id : 60, 
-              name : "Fulano de tal", 
-              type : "delivery-man", 
-              readedAt: 1685927914,
-              background:'blue' 
-          }, 
-          { 
-              id : 60, 
-              name : "Pepito de los palotes", 
-              type : "user", 
-              readedAt : 1685927914,
-              background:'blue' 
-          } 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 60, 
-          name : "Cristhian Angel Ticclla Espinoza", 
-          type : "agent-store" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Great...", 
-      readUser : [ 
-      ], 
-      createdAt : 1685927914 
-    },
-    { 
-      uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
-      uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-      user : { 
-          id : 14, 
-          name : "Cristhian Angel Ticclla Espinoza", 
-          type : "agent-store" 
-      }, 
-      store : { 
-          id : 16, 
-          name : "tambo Salguero" 
-      }, 
-      body : "Ok!", 
-      readUser : [], 
-      createdAt : 1685927914
-    },
-  ]
-
-  @ViewChild('endOfChat') endOfChat!: ElementRef
 
   items: any[]
+  orderHistoryRequest: OrderHistoryRequest
+  orderHistories: OrderHistorBean[]
+  statusOrder: string
+  orderHistoryId: number
 
+  pagination: Pagination = { page: 1, size: 10, totalRecords: 0, totalNumberPages: 0 }
+
+  userName="usuario"
+  userId: number = 123
+
+  messagesChat:ChatBean[]=[]
+  isMqttConnect:boolean=false
+  
   constructor(
-    private auth : AuthService
-  ) { }
+    private auth : AuthService,
+    private service: OrderHistoryService,
+    private messageService: MessageService,
+    private chatService:ChatService,
+    private mqtt:MqttService,
+    private chatHandler:ChatHandler,
 
-  userId: any
+  ) { }
+ 
   ngOnInit(): void {
-    let userName=this.auth.getParameterToken('name')
-    let id=this.auth.getParameterToken('id')
-    this.userId=Number(id)
 
     this.items = [
-      {label: 'Abierto', icon: 'pi pi-check-circle'},
-      {label: 'En proceso', icon: 'pi pi-forward'},
-      {label: 'Terminado', icon: 'pi pi-thumbs-up-fill'},
-      {label: 'Cancelado', icon: 'pi pi-times'},
-  ];
+      // {label: 'Abierto', icon: 'pi pi-check-circle', command: () => { this.onUpdateStatus('open') } },
+      {label: 'En proceso', icon: 'pi pi-forward' , command: () => { this.onUpdateStatus('inProcess') }},
+      {label: 'Terminado', icon: 'pi pi-thumbs-up-fill', command: () => { this.onUpdateStatus('done') }},
+      {label: 'Rechazar', icon: 'pi pi-times', command: () => { this.onUpdateStatus('reject') }},
+    ];
 
-  }
-
-  OpenDialogDetail(){
-    this.isDialogDetailOpen = true;
-    this.scrollToBottom()
-  }
-
-  sendMessage(){
-    const message:string = this.messageControl.value.toString();
-    if(message){
-      let messageBody:any =
-      { 
-        uuid : "0d0d3958-28c1-4057-8b8f-677adad899ad63", 
-        uuidOrder : "53163d28-a3fa-4208-8c16-4b64772db343", 
-        user : { 
-            id :  Number(this.userId), 
-            name : 'Jhon', 
-            type : "agent-store"
-        }, 
-        store : { 
-            id : 0, 
-            name : '' 
-        }, 
-        body : message, 
-        readUser : [], 
-        createdAt : Date.now()
-      }
-      this.messages.push(messageBody)
-      this.messageControl.setValue('')
-      this.scrollToBottom()
+    if(this.mqtt.client.isConnected()){
+      this.mqttListener()
+    }else{
+      this.mqtt._onConnect.subscribe((isConnect)=>{
+        if(isConnect){
+          this.isMqttConnect=isConnect
+          this.mqttListener()
+        }
+      })
     }
+    
+    this.GetOrderHistories()
+    this.getUserData()
+  }
+  mqttListener() {
+    this.chatHandler._data.subscribe((asyncData)=>{
+      if(asyncData){
+        let messageBean=ChatResponse.toBean(asyncData.data)
+        
+        let orderHistory=this.orderHistories.filter((orderHistory)=>orderHistory.complaint).find((orderHistory)=>orderHistory.orderUuid==messageBean.uuidOrder)
+        console.log("orderIndex",orderHistory)
+        console.log("this.orders[orderIndex]",orderHistory)
+        orderHistory.complaint.messagesNoReadTotal++
+
+        let indexMessage=orderHistory.complaint.messagesChat.findIndex((message)=>message.uuid==messageBean.uuid)
+        console.log("indexMessage",indexMessage)
+        if(indexMessage>0){
+          console.log("this.orders[orderIndex].messagesChat[indexMessage]",orderHistory.complaint.messagesChat[indexMessage])
+          orderHistory.complaint.messagesChat[indexMessage]=messageBean
+        }else{
+          console.log("this.orders[orderIndex].messagesChat",orderHistory.complaint)
+          orderHistory.complaint.messagesChat.push(messageBean)
+          this.chatComponent.scrollToBottom()
+        }
+      }
+    })
   }
 
-  scrollToBottom(){
-    setTimeout(() => {
-      if(this.endOfChat){
-        this.endOfChat.nativeElement.scrollIntoView({behavior: "smooth"})
+  page: number = 1
+  size: number = 10
+
+  getUserData(){
+    this.userName=this.auth.getParameterToken('name')
+    this.userId=Number(this.auth.getParameterToken('id'))
+  }
+
+  GetOrderHistories(orderId: number = null, status: string = null){
+    this.loadingResults = true
+    let body = {
+      orderId: orderId,
+      status: status
+    }
+    this.service.getOrderHistories(body,this.pagination).subscribe(
+      (resp: any) => {
+        this.orderHistories = resp.data
+        this.totalRecords = resp.meta.totalRecords
+        this.loadingResults = false
+        this.suscribeChat(this.orderHistories)
       }
-    }, 10)
+    )
+  }
+
+  suscribeChat(orderHistories:OrderHistorBean[]){
+    console.log("orderHistories.filter((orderHistory)=>orderHistory.complaint)",orderHistories.filter((orderHistory)=>orderHistory.complaint))
+    orderHistories.filter((orderHistory)=>orderHistory.complaint).forEach((orderHistory)=>{
+      this.mqtt.subscribe("chat/"+orderHistory.orderUuid)
+    })
+  }
+  complaintOrder: ComplaintBean
+  labelStatus: string
+  orderUuidtoSend: string
+  imagesArray: string[]
+  isEnabledInputText: boolean = false
+
+  OpenDialogDetail(complaint: ComplaintBean, orderUuid: string){
+    this.isDialogDetailOpen = true;
+    this.orderUuidtoSend = orderUuid
+    this.getMessages(complaint, orderUuid)
+    this.complaintOrder = complaint;
+    this.labelStatus = this.getStatus(complaint.status)
+    this.imagesArray = complaint.evidence
+    if(complaint.status == CONSTANTS.STATUS_COMPLAINT_IN_PROCESS ) {
+      this.isEnabledInputText = false
+    } else {
+      this.isEnabledInputText = true
+    }
   }
 
   getFormatDate(timestamp : number){
@@ -315,4 +195,78 @@ export class OrderHistoryComponent implements OnInit {
     return formattedDate
   }
 
+  totalRecords: number = 0;
+  loadingResults: boolean = false
+  async Page(event : any){
+    this.loadingResults = true
+    let req: any = {
+      status: this.statusOrder ? this.statusOrder : null,
+      orderId : this.orderHistoryId ? this.orderHistoryId : null
+      
+    };
+
+    this.pagination.page = event.page + 1
+
+    await this.service.getOrderHistories(req, this.pagination).subscribe
+    ((resp: any) => {
+      this.orderHistories = resp.data
+      this.totalRecords = resp.meta.totalRecords
+      this.loadingResults = false
+      this.suscribeChat(this.orderHistories)
+    })
+  }
+
+  getStatus(statusCode: string){
+    let status : string
+    switch (statusCode) {
+      case 'open' : status = 'Abierto'; break;
+      case 'done' : status = 'Terminado'; break;
+      case 'reject' : status = 'Rechazado'; break;
+      case 'inProcess' : status = 'En proceso'; break;
+      case 'cancel' : status = 'Cancelado'; break;
+      case 'preparingOrder' : status = 'Preparando Orden'; break;
+      case 'orderReady' : status = 'Orden Lista'; break;
+      default: break;
+    }
+    return status
+  }
+
+  onItemClick(event: any) {
+    console.log(event.item); // Aquí puedes acceder a la opción seleccionada
+  }
+
+  onUpdateStatus(statusOrder: string){
+    let body = {
+      status: statusOrder
+    }
+    this.service.updateComplaintStatus(this.complaintOrder.uuid, body).subscribe(
+      (resp) => {
+        this.messageService.add({severity:'success', summary: 'Satisfactorio', detail: 'El estado ha sido actualizado'});
+        this.labelStatus = this.getStatus(resp.data.status)
+      }
+    )
+  }
+  @ViewChild(ChatComponent) chatComponent!: ChatComponent;
+
+  getMessages(complaint:ComplaintBean, uuidOrder: string){
+    console.log("mensajess",this.messagesChat)
+    this.messagesChat=[]
+    complaint.isLoadingChat=true
+    this.chatService.getMessage(uuidOrder).subscribe(
+      (resp)=>{
+        complaint.isLoadingChat=false
+        complaint.messagesChat= resp.data.map((message)=>ChatResponse.toBean(message))
+        this.chatComponent.scrollToBottom()
+      },
+      (error)=>{
+        complaint.isLoadingChat=false
+      })
+  }
+
+  sendMessage(message:ChatBean){
+    console.log("message",message)
+    this.chatService.sendMessage(ChatBean.toRequest(message)).subscribe((resp)=>{    
+    },
+    (error)=>{})
+  }
 }

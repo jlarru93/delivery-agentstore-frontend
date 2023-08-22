@@ -1,6 +1,7 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+// import * as CONFIGURACION from '../assets/empresas/tres22/json/'
 
 export const environment = {
   production: false,
@@ -16,13 +17,13 @@ export const environment = {
   // },
   url:{
     backEndInit : [
-      'https://yei6npe8j1.execute-api.us-east-1.amazonaws.com/dev',
-      "https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev"
+      'https://dev-api.delivery-app.net/agent-store',
+      "https://dev-api.delivery-app.net/utils",
+      'https://dev-api.delivery-app.net/tracking'
     ],
-    backEnd: 'https://yei6npe8j1.execute-api.us-east-1.amazonaws.com/dev',
-    util_banckEnd:"https://3b9rh26s0j.execute-api.us-east-1.amazonaws.com/dev",
-    //util_dev : "https://nkdqe8xd51.execute-api.us-east-1.amazonaws.com/dev"
-   
+    backEnd: 'https://dev-api.delivery-app.net/agent-store',
+    url_back_tracking : 'https://dev-api.delivery-app.net/tracking',
+    util_banckEnd:"https://dev-api.delivery-app.net/utils",   
   },
   region: 'us-east-1',
   userPoolId: 'us-east-1_431zyrUar',
@@ -36,7 +37,83 @@ export const environment = {
     user:undefined,
     pwd:undefined,
     useSSL:false
+  },
+  MARKERS: {
+    ORIGEN: {
+      URL: '/img/markers/Comercio.png',
+      POSICION: 20,
+      ICON_SIZE: new google.maps.Size(50, 50)
+    },
+    DESTINO: {
+      URL: '/img/markers/Cliente.png',
+      POSICION: 20,
+      ICON_SIZE: new google.maps.Size(50, 50)
+    },
+    CONDUCTOR_LABEL: {
+      URL: '/img/markers/Domiciliario_1.png',
+      POSICION: 1,
+      ICON_SIZE: new google.maps.Size(50, 50)
+    },
+    CONDUCTOR_ELITE: {
+      URL: '/img/markers/autoElite.png',
+      POSICION: 1,
+      ICON_SIZE: new google.maps.Size(20, 20)
+    },
+    CONDUCTOR: {
+      URL: '/img/markers/Domiciliario_1.png',
+      POSICION: 1,
+      ICON_SIZE: new google.maps.Size(50, 50)
+    },
+    PASAJERO:{
+      URL: '/img/markers/marker_destino.png',
+      POSICION: 1,
+      ICON_SIZE: new google.maps.Size(30, 35)
+    },
+    CHECKPOINT:{
+      URL: '/img/markers/pinNegro.svg',
+      POSICION: 1,
+      ICON_SIZE: new google.maps.Size(25, 30)
+    },
+    PRECLOSE:{
+      URL: '/img/markers/pinRojo.svg',
+      POSICION: 1,
+      ICON_SIZE: new google.maps.Size(30, 35)
+    },
+    READING:{
+      URL: '/img/markers/pinAmarillo.svg',
+      POSICION: 1,
+      ICON_SIZE: new google.maps.Size(30, 35)
+    },
+    CONTACT:{
+      URL: '/img/markers/pinVerde.svg',
+      POSICION: 1,
+      ICON_SIZE: new google.maps.Size(30, 35)
+    },
+    START_DESTINATION:{
+      URL: '/img/markers/pinCeleste.svg',
+      POSICION: 1,
+      ICON_SIZE: new google.maps.Size(30, 35)
+    },
+    END_DESTINATION:{
+      URL: '/img/markers/pinNaranja.svg',
+      POSICION: 1,
+      ICON_SIZE: new google.maps.Size(30, 35)
+    },
+    RIDE_END:{
+      URL: '/img/markers/pinMorado.svg',
+      POSICION: 1,
+      ICON_SIZE: new google.maps.Size(30, 35)
+    }
+  },
+  NAME_COMPANY: 'tres22',
+  conuntryCode:'PE',
+  centermap:{
+    lat: -12.1251109,
+    lng: -76.9928316
   }
+  //'<<your name>>',
+  // CONFIGURATION: CONFIGURACION,
+
 };
 
 /*

@@ -129,7 +129,7 @@ export class MethodBean{
 
 export class PaymentBean {
     id?: number
-    amount?: number
+    amount?: PriceBean
     method?: MethodBean
     card?: CardBean
 }

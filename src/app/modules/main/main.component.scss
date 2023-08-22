@@ -54,14 +54,6 @@ main{
     "buttons"
   }
 
-//   #payment {
-//     grid-area: payment;
-//     padding: 10px;
-
-//     @media (max-width: 1280px) {
-//         padding: 5px;
-//     }
-//   }
   
   #info {
     grid-area: info;
@@ -117,12 +109,6 @@ footer{
     grid-area: total-amount;
 }
 
-// .sidebar-container{
-//     padding: 10px 20px 10px 20px;
-//     @media (max-width: 960px) {
-//         padding: 5px;
-//     }
-// }
 .sidebar-container-title{
     padding: 10px 0;
     margin-top: 10px;
@@ -177,6 +163,16 @@ footer{
 
 .deliveryman-img{
     padding: 2rem;
+}
+
+.deliveryman b {
+    font-size: 16px;
+    @media (min-width: 1280px) {
+        font-size: 12px;
+    }
+    @media (min-width: 1024px) {
+        font-size: 12px;
+    }
 }
 
 .card-time{
@@ -238,20 +234,11 @@ footer{
     max-height:70%;    
 }
 
-// .sidebar-bottom{
-//     position: absolute;
-//     bottom: 0;
-//     margin-bottom: 20px;
-// }
-
 .btn-order{
     background-color: #2DC4B6;
     border: none;
     padding: 12px 0;  
     width: 100%;
-    // padding-top: 15px;
-    // padding-bottom: 15px;
-    // font-size: 20px;
 }
 .btn-order:hover{
     background-color: #21998d;
@@ -294,7 +281,7 @@ footer{
 .delivery-content{
     display: flex;
     min-height: 50px;
-    padding: 0 15px;
+    padding: 0 10px;
     align-items: center;
     justify-content: space-between;
 }
@@ -423,6 +410,13 @@ section{
     transform-origin: center top;
     --overlayArrowLeft: 0px;
     opacity: 1;
+    height: 550px;
+    width: 380px;
+    
+    @media (max-width: 1024px) {
+        height: 487px;
+        width: 336px;
+    }
 }
 
 h5{

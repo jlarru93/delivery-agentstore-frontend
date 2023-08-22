@@ -1,0 +1,12 @@
+{
+    "NAME_SIDEBAR": "Satelital",
+    "UPON_VERSION": {
+        "TITLE": "UPON_VERSION.TITLE",
+        "LABEL":"UPON_VERSION.LABEL",
+        "TEXT_BUTTON": "UPON_VERSION.TEXT_BUTTON"
+    },
+    "ERRROR": {
+        "OCURRIO_UN_PROBLEMA": "Ocurrio un problema, por favor intente nuevamente.",
+        "SERVICIO_NO_EXISTE": "Agregue el servicio "
+    }
+}

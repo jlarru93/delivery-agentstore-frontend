@@ -1,0 +1,12 @@
+.map {
+    height: 100%;
+    border-radius: 7px;
+}
+:host ::ng-deep {
+    .priceEstimate{
+        color: #ffffff;
+    }
+    .distanciaEstimada {
+        color: #FFFFFF;
+    }
+}

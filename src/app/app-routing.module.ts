@@ -64,7 +64,14 @@ const routes: Routes = [
                 path: "order-history",
                 loadChildren: () => import('./modules/order-history/order-history.module').then(m => m.OrderHistoryModule)
             },
-
+            {
+                path: "order-course",
+                loadChildren: () => import('./modules/order-course/order-course.module').then(m => m.OrderCourseModule)
+            },
+            {
+                path: "complaint-report",
+                loadChildren: () => import('./modules/complaint-report/complaint-report.module').then(m => m.ComplaintReportModule)
+            },
             //THEME
             { path: '', component: DashboardDemoComponent },
             { path: 'uikit/formlayout', component: FormLayoutDemoComponent },

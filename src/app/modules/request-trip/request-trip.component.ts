@@ -1,51 +1,138 @@
-import { Component, OnInit } from '@angular/core';
-import { MouseEvent } from 'src/agm/core';
-import { AuthService } from 'src/app/utils/auth.service';
-import { StoreService } from '../main/service/store.service';
-
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  NgZone,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { MouseEvent } from "src/agm/core";
+import { AuthService } from "src/app/utils/auth.service";
+import { StoreService } from "../main/service/store.service";
+import { MapsAPILoader } from "src/agm/core";
+import {
+  PersonalisationMarker,
+  PersonalisationPolyline,
+  TypeMarkers,
+} from "src/app/directives/informacion/data/enumMapa";
+import { Viaje } from "../order-course/data";
+import { RequestGeoAutocomplete } from "src/app/directives/informacion/data/serviceGeo";
+import {
+  Point,
+  RequestMotorizedOrigin,
+  RequestOrderPayment,
+  RequestTrip,
+} from "./data/request";
+import * as UtilModalViaje from "./util-modal-viaje-corporate";
+import { RequestTripService } from "./services/request-trip.service";
+import { ResponseMotorizedOrigin } from "./data/response";
+import { LoadingMotorizedComponent } from "./dialog/loading-motorized/loading-motorized.component";
+import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
+import { environment } from "src/environments/environment";
 @Component({
-  selector: 'app-request-trip',
-  templateUrl: './request-trip.component.html',
-  styleUrls: ['./request-trip.component.scss']
+  selector: "app-request-trip",
+  templateUrl: "./request-trip.component.html",
+  styleUrls: ["./request-trip.component.scss"],
+  providers: [DialogService],
 })
-export class RequestTripComponent implements OnInit {
+export class RequestTripComponent implements OnInit, AfterViewInit {
+  @ViewChild("search") searchElementRef: ElementRef;
+  origenIcon: any =
+    "assets/empresas/" +
+    environment.NAME_COMPANY +
+    environment.MARKERS.ORIGEN.URL;
+  destinoIcon: any =
+    "assets/empresas/" +
+    environment.NAME_COMPANY +
+    environment.MARKERS.DESTINO.URL;
+  referenciaIcon: any = "assets/images/busqueda/referencia.svg";
+  imgLogo: any = "assets/images/656.png";
 
-  origenIcon: any = 'assets/images/busqueda/origen.png';
-  destinoIcon: any = 'assets/images/busqueda/destino.png';
-  referenciaIcon: any = 'assets/images/busqueda/referencia.svg'
-  imgLogo: any = 'assets/images/656.png'
+  userPhone: string;
+  userAttributes: any;
 
-  userPhone: string
-  userAttributes: any
-
-  input_visible_pickup: any
-  inputVisibleDestino: any
-  input_reference_pickup ?: string
-  input_reference_destination ?: string
-  is_disabled_pickup : boolean = true
+  input_visible_pickup: any;
+  inputVisibleDestino: any;
+  input_reference_pickup?: string;
+  input_reference_destination?: string;
+  is_disabled_pickup: boolean = true;
   center: any = {
     lat: 10.96854,
-    lng: -74.78132
+    lng: -74.78132,
   };
 
-  marker =
-  {
-    maintext :'Barranquilla',
-    secondText : 'Hotel atrium',
+  marker = {
+    maintext: "Barranquilla",
+    secondText: "Hotel atrium",
     lat: 10.96854,
-    lng: -74.78132
-  }
-
-
+    lng: -74.78132,
+  };
+  lstPosiciones: PersonalisationMarker[] = [];
+  lstPosicionConductor: PersonalisationMarker[] = [];
+  //Mapa
+  idDragable: boolean = true;
+  polilyneRuta: PersonalisationPolyline[] = [];
+  minutosEstimados?: Date = undefined;
+  metrosEstimados?: number = undefined;
+  initMapViewAfter: boolean = false;
+  flagInitMap: boolean = false;
+  viaje: Viaje = new Viaje();
+  // barrnaquilla
+  // coberturePosition: RequestGeoAutocomplete = {
+  //   key_word: "",
+  //   longitude: -74.78132,
+  //   latitude: 10.96854,
+  // };
+  coberturePosition: RequestGeoAutocomplete = {
+      key_word: "",
+      longitude: -76.9928316,
+      latitude: -12.1251109,
+    };
+  polyline_order?: PersonalisationPolyline[] = [];
   constructor(
-    private auth: AuthService,
-    private storeService : StoreService
-  ) { }
+    private storeService: StoreService,
+    private requestTripService: RequestTripService,
+    private dialogService: DialogService
+  ) {}
 
   stateOptions: any[];
-  value1: string = "efectivo";
+  method_payment = "efectivo";
+  amount?: number = 0;
+  request_trip: RequestTrip = new RequestTrip();
+  ref?: DynamicDialogRef;
+  ngAfterViewInit(): void {}
   ngOnInit(): void {
-    this.onGetLocationStore();
+    this.request_trip.readyToDmAt = 0 
+    this.request_trip.addresses = [
+      {
+        addressStreet: "",
+        alias: "",
+        floor: "",
+        phone: "",
+        marker: "store",
+        point: {
+          coordinates: [0, 0],
+          type: "",
+        },
+        sort: 1,
+        reference: "",
+      },
+      {
+        addressStreet: "",
+        alias: "",
+        floor: "",
+        phone: "",
+        marker: "store",
+        point: {
+          coordinates: [0, 0],
+          type: "",
+        },
+        sort: 2,
+        reference: "",
+      },
+    ];
+    this.findAdress();
+    this.onGetLocationStore(true);
     // this.auth.getUserDetails().then(
     //   (data) => {
     //       this.userAttributes = data
@@ -53,20 +140,416 @@ export class RequestTripComponent implements OnInit {
     //       this.userPhone = userPhoneObj.Value
     //   }
     // )
-    this.stateOptions = [{label: 'Efectivo', value: 'efectivo'}, {label: 'Pago Digital', value: 'e-wallet'}];
+    // this.stateOptions = [{label: 'Efectivo', value: 'efectivo'}, {label: 'Pago Digital', value: 'e-wallet'}];
   }
 
-  private onGetLocationStore() {
+  dataStorePhone: string
+  private onGetLocationStore(flagInit : boolean) {
     this.storeService.onGetLocationStoreService().subscribe((data) => {
-      this.input_visible_pickup = data.data.fullName;
-      this.marker.lng = data.data.location.coordinates[0];
-      this.marker.lat = data.data.location.coordinates[1];
+      this.input_visible_pickup = data.data.store.fullName;
+      this.dataStorePhone = data.data.store.phone;
+      this.request_trip.addresses[0].point.type = "Point";
+      this.request_trip.addresses[0].floor = "";
+      this.request_trip.addresses[0].alias = "";
+      this.request_trip.addresses[0].marker = "store";
+      this.request_trip.addresses[0].addressStreet = this.input_visible_pickup;
+      this.request_trip.addresses[0].point.coordinates = [
+        data.data.store.location.coordinates[0],
+        data.data.store.location.coordinates[1]
+      ];
+
+      // this.input_visible_pickup = this.marker.maintext
+      this.marker.lng = data.data.store.location.coordinates[0];
+      this.marker.lat = data.data.store.location.coordinates[1];
+      this.stateOptions = data.data.tripSetting.paymentMethod;
+      this.method_payment = "CREDIT";
+      this.onGetMotorizedPosiitonOrigin();
+      this.flagInitMap = flagInit;
+      this.updatePosition();
     });
   }
 
   mapClicked($event: MouseEvent) {
-    this.marker.lat = $event.coords.lat,
-    this.marker.lng = $event.coords.lng
+    (this.marker.lat = $event.coords.lat),
+      (this.marker.lng = $event.coords.lng);
+  }
+  onChangeMapMarkers($event: any) {
+    // debugger
+    const element = <HTMLInputElement>document.getElementById("txtUbicacion");
+     var geocoder = new google.maps.Geocoder;
+     var latlng = {
+      lat: $event.marker?.getPosition()?.lat(),
+      lng: $event.marker?.getPosition()?.lng()
+    };
+     geocoder.geocode({
+       'location': latlng
+     }, (results, status)=> {
+       if (status === 'OK') {
+         if (results[0]) {
+          element.value = results[0].formatted_address;
+          this.request_trip.addresses[1].point.type = "Point";
+          this.request_trip.addresses[1].floor = "";
+          this.request_trip.addresses[1].alias = "";
+          this.request_trip.addresses[1].marker = "store";
+          this.request_trip.addresses[1].addressStreet =
+            results[0].formatted_address;
+          this.request_trip.addresses[1].point.coordinates = [
+            $event.marker?.getPosition()?.lng(),
+            $event.marker?.getPosition()?.lat(),
+          ]
+          this.updatePosition();
+          this.onGetAmountOrder();
+         } else {
+           window.alert('No results found');
+         }
+       } else {
+         window.alert('Geocoder failed due to: ' + status);
+       }
+     });
+  }
+  nroViaje: number = 0;
+  findAdressOrigin() {
+    //  google.maps.
+    const element = <HTMLInputElement>(
+      document.getElementById("txtUbicacion_origin")
+    );
+    const autocomplete = new google.maps.places.Autocomplete(element, {
+      types: [],
+      fields: ["place_id"],
+      componentRestrictions: {
+        country: environment.conuntryCode,
+
+      },
+    });
+
+    autocomplete.addListener("place_changed", () => {
+      let place: any = autocomplete.getPlace().place_id;
+      this.geocodePlaceIdOrigin(place);
+    });
+  }
+  findAdress() {
+    //  google.maps.
+    const element = <HTMLInputElement>document.getElementById("txtUbicacion");
+    const autocomplete = new google.maps.places.Autocomplete(element, {
+      types: [],
+      fields: ["place_id"],
+      componentRestrictions: {
+        country: environment.conuntryCode,
+      },
+    });
+
+    autocomplete.addListener("place_changed", () => {
+      let place: any = autocomplete.getPlace().place_id;
+      this.geocodePlaceIdMultidestino(place);
+    });
   }
 
+  
+  geocoder: google.maps.Geocoder = new google.maps.Geocoder();
+  geocodePlaceIdOrigin(placeId) {
+    this.geocoder.geocode({ placeId: placeId }, (results, status) => {
+      if (status === google.maps.GeocoderStatus.OK) {
+        if (results[0]) {
+          this.request_trip.addresses[0].addressStreet =
+            results[0].formatted_address;
+          this.request_trip.addresses[0].point.type = "Point";
+          this.request_trip.addresses[0].floor = "";
+          this.request_trip.addresses[0].alias = "";
+          this.request_trip.addresses[0].marker = "store";
+          this.request_trip.addresses[0].point.coordinates = [
+            results[0].geometry.location.lng(),
+            results[0].geometry.location.lat(),
+          ];
+          // this.geocodePlaceId(place);
+          this.onGetMotorizedPosiitonOrigin();
+          this.updatePosition();
+        }
+      }
+    });
+  }
+
+  geocodePlaceIdMultidestino(placeId) {
+    this.geocoder.geocode({ placeId: placeId }, (results, status) => {
+      if (status === google.maps.GeocoderStatus.OK) {
+        if (results[0]) {
+          this.request_trip.addresses[1].point.type = "Point";
+          this.request_trip.addresses[1].floor = "";
+          this.request_trip.addresses[1].alias = "";
+          this.request_trip.addresses[1].marker = "store";
+          this.request_trip.addresses[1].addressStreet =
+            results[0].formatted_address;
+          this.request_trip.addresses[1].point.coordinates = [
+            results[0].geometry.location.lng(),
+            results[0].geometry.location.lat()
+          ];
+          // this.geocodePlaceId(place);
+          this.updatePosition();
+          this.onGetAmountOrder();
+        }
+      }
+    });
+  }
+  updatePosition() {
+    
+    var lstPosiciones: PersonalisationMarker[] = [];
+
+    
+    if (this.isCheckedStore == true) {
+      lstPosiciones.push(
+            UtilModalViaje.fnDetalleViaje(
+              new google.maps.LatLng(
+                this.request_trip.addresses[0].point.coordinates[1],
+                this.request_trip.addresses[0].point.coordinates[0]
+                ),
+                true,
+                "Origen",
+                TypeMarkers.ORIGEN,
+                true,
+                1,
+                false
+                )
+                );
+              } else {
+                lstPosiciones.push(
+                  UtilModalViaje.fnDetalleViaje(
+                    new google.maps.LatLng(this.marker.lat, this.marker.lng),
+                    true,
+                    "Origen",
+                    TypeMarkers.ORIGEN,
+                    false,
+                    1,
+                    false
+                    )
+                    );
+                
+        }
+
+
+    if (this.request_trip.addresses[1].point.coordinates[0] != 0) {
+      lstPosiciones.push(
+        UtilModalViaje.fnDetalleViaje(
+          new google.maps.LatLng(
+            this.request_trip.addresses[1].point.coordinates[1],
+            this.request_trip.addresses[1].point.coordinates[0]
+          ),
+          true,
+          "Destino",
+          TypeMarkers.DESTINO,
+          true,
+          1,
+          false
+        )
+      );
+    }
+
+    this.lstPosiciones = lstPosiciones;
+  }
+  onUpdatePositionDriver() {
+    var lstPosicionConductor: PersonalisationMarker[] = [];
+    if (this.data_driver) {
+      lstPosicionConductor = [];
+      // this.lstPosicionConductor = this.lstPosiciones.filter(item => item.tipoMarker != TypeMarkers.CONDUCTOR_LABEL)
+      for (let item of this.data_driver) {
+        lstPosicionConductor.push(
+          UtilModalViaje.fnDetalleViaje(
+            new google.maps.LatLng(
+              item.position.point.coordinates[1]!,
+              item.position.point.coordinates[0]!
+            ),
+            true,
+            "Conductor",
+            TypeMarkers.CONDUCTOR_LABEL,
+            false,
+            undefined,
+            1,
+            false
+          )
+        );
+      }
+    } else {
+      lstPosicionConductor.push(new PersonalisationMarker());
+    }
+    this.lstPosicionConductor = lstPosicionConductor;
+  }
+  data_driver: ResponseMotorizedOrigin[] = [];
+  onGetMotorizedPosiitonOrigin() {
+    let request: RequestMotorizedOrigin = {
+      origin: {
+        lat: this.request_trip.addresses[0].point.coordinates[0],
+        lng: this.request_trip.addresses[0].point.coordinates[1],
+      },
+      payment: {
+        method: {
+          type: this.method_payment,
+        },
+      },
+    };
+    this.requestTripService.onGetMotorizedPositionService(request).subscribe(
+      (data) => {
+        this.data_driver = data.data;
+        this.onUpdatePositionDriver();
+      },
+      (error) => {
+        alert("Ocurrió un error");
+      }
+    );
+  }
+uuid_price ?: string
+  onGetAmountOrder() {
+    let request: RequestOrderPayment = {
+      origin: {
+        lat: this.request_trip.addresses[0].point.coordinates[1],
+        lng: this.request_trip.addresses[0].point.coordinates[0],
+      },
+      destination: {
+        lat: this.request_trip.addresses[1].point.coordinates[1],
+        lng: this.request_trip.addresses[1].point.coordinates[0],
+      },
+    };
+    this.requestTripService.onGetPaymentOrderService(request).subscribe(
+      (data) => {
+        this.uuid_price = data.data.uuid
+        this.amount = data.data.amount;
+        // setTimeout(()=>{
+          this.polyline_order = [
+            { coordinateEncoded: data.data.overviewPolyline },
+          ];
+        // },500)
+
+      },
+      (error) => {
+        alert("Ocurrió un error al obtener la tarifa");
+      }
+    );
+  }
+
+  originMobilePhone: string
+  destinationMobilePhone: string
+  onSaveOrder() {
+    let order: RequestTrip = new RequestTrip();
+    if (!this.request_trip.description) {
+      alert("La descripción es obligatoria");
+    } else {
+      order.payment = {
+        amount: {
+          value: this.amount,
+        },
+        method: {
+          type: this.method_payment,
+        },
+      };
+      order.readyToDmAt = this.request_trip.readyToDmAt;
+      order.description = this.request_trip.description;
+      order.mobile = this.request_trip.mobile;
+      order.addresses = [
+        {
+          addressStreet: "",
+          alias: "",
+          floor: "",
+          phone: "",
+          marker: "store",
+          point: {
+            coordinates: [0, 0],
+            type: "Point",
+          },
+          sort: 1,
+          reference: this.input_reference_pickup,
+          label : "Recojo"
+        },
+        {
+          addressStreet: "",
+          alias: "",
+          floor: "",
+          phone: "",
+          marker: "Point",
+          point: {
+            coordinates: [0, 0],
+            type: "Point",
+          },
+          sort: 2,
+          reference: this.input_reference_destination,
+          label : "Entrega Final",
+          uuidRoutePrice : this.uuid_price
+        },
+      ];
+      this.request_trip.addresses.forEach((item, index) => {
+        if (item.sort == 1) {
+          order.addresses[0].addressStreet = item.addressStreet;
+          order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
+          order.addresses[0].marker = item.marker;
+          order.addresses[0].alias = item.alias;
+          order.addresses[0].reference = this.input_reference_pickup;
+          order.addresses[0].floor = item.floor;
+          order.addresses[0].point = item.point;
+        } else {
+          order.addresses[1].phone = this.destinationMobilePhone.toString();
+          order.addresses[1].marker = item.marker;
+          order.addresses[1].alias = item.alias;
+          order.addresses[1].reference = this.input_reference_destination;
+          order.addresses[1].floor = item.floor;
+          order.addresses[1].addressStreet = item.addressStreet;
+          order.addresses[1].point = item.point;
+          // order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
+        }
+      });
+      this.requestTripService.onSaveOrderService(order).subscribe(
+        (data) => {
+          this.ref = this.dialogService.open(LoadingMotorizedComponent, {
+            header: "Motorizado",
+          });
+          // alert("Se guardó correctamente");
+        },
+        (error) => {
+          alert("Ocurrió un error");
+        }
+      );
+    }
+  }
+
+  isCheckedStore: boolean = false
+  isHiddenInput: boolean = false
+  enablePickUpInput(){
+    if(this.isCheckedStore == true){
+      this.findAdressOrigin()
+      //this.onGetLocationStore(false)
+      this.is_disabled_pickup = !this.is_disabled_pickup
+      this.isHiddenInput = !this.isHiddenInput
+    } else {
+      this.is_disabled_pickup = !this.is_disabled_pickup
+      this.isHiddenInput = !this.isHiddenInput
+      this.input_reference_pickup = ''
+      this.request_trip.mobile = null
+      this.request_trip.addresses = [
+        {
+          addressStreet: "",
+          alias: "",
+          floor: "",
+          phone: "",
+          marker: "store",
+          point: {
+            coordinates: [0, 0],
+            type: "",
+          },
+          sort: 1,
+          reference: "",
+        },
+        {
+          addressStreet: "",
+          alias: "",
+          floor: "",
+          phone: "",
+          marker: "store",
+          point: {
+            coordinates: [0, 0],
+            type: "",
+          },
+          sort: 2,
+          reference: "",
+        },
+      ];
+      this.onGetLocationStore(true);
+    }
+  }
+
+  
 }

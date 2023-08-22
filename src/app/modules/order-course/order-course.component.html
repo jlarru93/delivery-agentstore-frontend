@@ -1,0 +1,192 @@
+<div class="p-grid">
+  <div class="p-col-4 container-service">
+    <!-- <pre>{{list_marker | json}}</pre> -->
+    <ng-container *ngIf="list_order.length > 0; else CursoTemplate">
+      <p-accordion
+        (onClose)="onTabClose($event)"
+        (onOpen)="onTapOpen($event, flagAccordion)"
+      >
+        <!-- [(selected)]="activeState[i]" -->
+        <p-accordionTab
+          transitionOptions="400ms cubic-bezier(0.86, 0, 0.07, 1)"
+          header="Orden  N°: {{ item.id + ' - ' }}{{
+            '(' + item.status_order + ')' 
+          }}"
+          *ngFor="let item of list_order; index as i"
+        >
+          <div class="grid m-0">
+            <div class="col-12">
+              <div class="grid flex">
+                <p class="etiqueta-lista col-5">Tienda</p>
+                <p class="contenido-lista col-7">
+                  {{ item.addresses[0].addressStreet }}
+                </p>
+              </div>
+              <div class="grid flex">
+                <p class="etiqueta-lista col-5">Destino</p>
+                <p class="contenido-lista col-7">
+                  {{ item.addresses[1].addressStreet }}
+                </p>
+              </div>
+              <!-- <div class="grid flex">
+                      <p class="etiqueta-lista col-5">Tipo de servicio</p>
+                      <p class="contenido-lista col-7">
+                        {{ item.serviceType!.name }}
+                      </p>
+                    </div> -->
+              <div class="grid flex">
+                <p class="etiqueta-lista col-5">Método de Pago</p>
+                <p class="contenido-lista col-7">
+                  {{ item.order_name}}
+                </p>
+              </div>
+              <!-- <div class="grid flex">
+                <p class="etiqueta-lista col-5">Fecha y hora</p>
+                <p class="contenido-lista col-7">
+                  {{ item.date_string }}
+                </p>
+              </div> -->
+
+              <div class="grid flex">
+                <p class="etiqueta-lista col-5">Precio Estimado</p>
+                <p
+                  class="contenido-lista col-7"
+                  style="color: #e52421; font-weight: 500"
+                >
+                {{ item.payment.amount.currency }}
+                  {{ item.payment.amount.value }}
+                
+                </p>
+              </div>
+            </div>
+          </div>
+          <br />
+          <ng-container *ngIf="item.deliveryMan">
+                  <div class="datos-conductor-container p-3 mb-3">
+                    <div class="p-grid m-0">
+                      <h4 class="pb-2">Datos del motorizado:</h4>
+                    </div>
+                    <div class="p-grid col-12 md:col-12 lg:col-12 p-0">
+                      <i class="pi pi-user m-2"></i>
+                      <div class="p-col">
+                        <h5 for="firstname2">
+                          {{ item.deliveryMan?.name! | uppercase }} 
+                        </h5>
+                      </div>
+                    </div>
+                    <div class="p-grid col-12 md:col-12 lg:col-12 p-0">
+                      <i class="pi pi-phone m-2"></i>
+                      <div class="p-col">
+                        <h5 for="firstname2">{{ item.deliveryMan?.phone!  }} </h5>
+                      </div>
+                    </div>
+                    <div
+                      class="p-grid col-12 md:col-12 lg:col-12 text-center"
+                      style="
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                      "
+                    >
+                      <p-avatar
+                        styleClass=" "
+                        shape="circle"
+                        [style]="{
+                          'background-color': '#2196F3',
+                          color: '#ffffff',
+                          width: '100px',
+                          height: '100px',
+                          'font-size': '3em'
+                        }"
+                        [label]="   item.deliveryMan?.name!.substring(0,1)
+                        "
+                        size="xlarge"
+                      >
+                      </p-avatar>
+                    </div>
+                  </div>
+
+                </ng-container>
+                <!-- <div class="grid col-12 md:col-12 lg:col-12 p-0">
+                  <div class="col" *ngIf="item.flagBuscandoConductor">
+                    <p-progressBar
+                      class="fadein animation-duration-1000"
+                      mode="indeterminate"
+                      [style]="{ color: '#e0040a', height: '4px' }"
+                    ></p-progressBar>
+                  </div>
+                </div> -->
+          <div class="p-grid">
+            <div class="p-col" *ngIf="!item.deliveryMan">
+              <button
+                (click)="btnCancelViaje(item)"
+                pButton
+                pRipple
+                type="button"
+                label="Cancelar"
+                class="btn btn-danger"
+              ></button>
+            </div>
+            <div class="p-col">
+              <div class="overlay-container">
+                <button pButton pRipple type="button" (click)="toggleDisplayDiv(item);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="item.messagesNoReadTotal" style="float: right;"></button>
+                <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="item.showButton" [@enterAnimation]>
+                   <app-chat 
+                      [isLoading]="item.isLoadingChat"
+                      [messages]="item.messagesChat" 
+                      [orderId]="item.id"
+                      [orderUuid]="item.uuid"
+                      [usuarioLogueado]="userName"
+                      [userId]="userId"
+                      [flagMainComponent]="true"
+                      (hideChat)="hideChatComponent(item)"
+                      (emitMessage)="sendMessage($event)"
+                      ></app-chat>
+                </div>
+             </div>
+              <!-- <div class="overlay-container">
+                <button
+                (click)="toggleDisplayDiv(item)"
+                pButton
+                pRipple
+                type="button"
+                label="Chat"
+                class="btn btn-danger"
+                style="float: right;"
+              ></button>
+              <pre>undoBtn {{item.messagesNoReadTotal}}</pre>
+              <div [attr.id]="'undoBtn'+item.messagesNoReadTotal" class="overlay-chat" *ngIf="item.showButton" [@enterAnimation]>
+                <app-chat 
+                   [isLoading]="item.isLoadingChat"
+                   [messages]="item.messagesChat" 
+                   [orderId]="item.id"
+                   [orderUuid]="item.uuid"
+                   [usuarioLogueado]="userName"
+                   [userId]="userId"
+                   (emitMessage)="sendMessage($event)"
+                   ></app-chat>
+             </div>
+              </div> -->
+            </div>
+            
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+    </ng-container>
+    <ng-template #CursoTemplate>
+      <h5>No hay órdenes en disponibles</h5>
+    </ng-template>
+  </div>
+  <div class="p-col-8">
+    <nexus-informacion-mapa
+      [idMap]="'Map-'"
+      [coberturePosition]="coberturePosition"
+      [lstPosiciones]="lstPosiciones"
+      [lstPosicionesDriver]="lstPosicionConductor"
+      [initMap]="flagInitMap"
+      [initMapViewAfter]="initMapViewAfter"
+      [lstCoordinateEncoded]="polyline_order"
+    >
+    </nexus-informacion-mapa>
+  </div>
+</div>

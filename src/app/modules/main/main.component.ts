@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Product } from "src/app/demo/domain/product";
 import { ProductService } from "src/app/demo/service/productservice";
@@ -20,6 +20,7 @@ import { ChatBean } from "src/app/chat/data.chat";
 import { AuthService } from "src/app/utils/auth.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
+import { ChatComponent } from "src/app/chat/chat.component";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -167,6 +168,12 @@ import { ModalComponent } from "src/app/modal/modal.component";
         this.sortOrders()
         this.isDoneGetOrders=true
         this.validOrdersSubscribe()
+
+        if(this.orderSelected?.status == 'inStore'){
+          this.isButtonEnabled = true;
+        } else {
+          this.isButtonEnabled = false;
+        }
       })
     }
     mqttListener(){
@@ -198,7 +205,7 @@ import { ModalComponent } from "src/app/modal/modal.component";
         }
       })
       this.chatHandler._data.subscribe((asyncData)=>{
-        if(asyncData){
+        if(asyncData && asyncData.data.uuid){
           let messageBean=ChatResponse.toBean(asyncData.data)
           
           let orderIndex=this.orders.findIndex((order)=>order.uuid==messageBean.uuidOrder)
@@ -232,6 +239,14 @@ import { ModalComponent } from "src/app/modal/modal.component";
       }
       
       this.displayOrder=true
+
+      // this.orderService.getOrders().subscribe((resp)=>{
+      //   if(this.orderSelected.status == 'inStore'){
+      //     this.isButtonEnabled = true;
+      //   } else {
+      //     this.isButtonEnabled = false;
+      //   }
+      // })
 
       this.orderSelected.products.forEach(element => {
         let priceformat = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(element.price.value)
@@ -306,8 +321,11 @@ import { ModalComponent } from "src/app/modal/modal.component";
       let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
       this.loadingButtonCancel=true
       this.orderService.cancelOrder(orderRequest.id.toString(),comment).subscribe((resp) => {
+        this.orders=this.orders.filter((order)=>order.id!=orderRequest.id)
+        this.sortOrders()
         this.displayOrderReject = false
         this.loadingButtonCancel = false
+        this.displayOrder = false
         this.messageService.add({severity:'success', summary: 'Exito', detail: 'Orden cancelado', life: 3000 });
       }, (error) => {
         this.displayOrderReject = false
@@ -385,6 +403,13 @@ import { ModalComponent } from "src/app/modal/modal.component";
         this.getMessages(order)
       }
     }
+
+    hideChatComponent(order:OrderBean){
+      order.showButton =  !order.showButton;
+    }
+
+    @ViewChild(ChatComponent) chatComponent!: ChatComponent;
+
     getMessages(order:OrderBean){
       console.log("mensajess",this.messagesChat)
       this.messagesChat=[]
@@ -393,6 +418,7 @@ import { ModalComponent } from "src/app/modal/modal.component";
         (resp)=>{
           order.isLoadingChat=false
           order.messagesChat= resp.data.map((message)=>ChatResponse.toBean(message))
+          this.chatComponent.scrollToBottom()
         },
         (error)=>{
           order.isLoadingChat=false
