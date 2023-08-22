@@ -9,7 +9,7 @@
         <!-- [(selected)]="activeState[i]" -->
         <p-accordionTab
           transitionOptions="400ms cubic-bezier(0.86, 0, 0.07, 1)"
-          header="Orden  N°: {{ item.id + ' - ' }}{{
+          header="Orden  N.°: {{ item.id + ' - ' }}{{
             '(' + item.status_order + ')' 
           }}"
           *ngFor="let item of list_order; index as i"

@@ -428,25 +428,25 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
         order = "El local está preparando tu orden";
         break;
       case enumStatusOrder.toStore:
-        order = "Te estas dirigiendo al local";
+        order = "Te estás dirigiendo al local";
         break;
       case enumStatusOrder.inStore:
-        order = "Llegue al local";
+        order = "Llegué al local";
         break;
       case enumStatusOrder.reciveDelivery:
-        order = "Recibi el pedido";
+        order = "Recibí el pedido";
         break;
       case enumStatusOrder.toHome:
-        order = "Estas en camino a entregar el pedido";
+        order = "Estás en camino a entregar el pedido";
         break;
       case enumStatusOrder.nearHome:
-        order = "Estas cerca del destino";
+        order = "Estás cerca del destino";
         break;
       case enumStatusOrder.inHome:
         order = "Has llegado a la puerta del cliente";
         break;
       case enumStatusOrder.orderReady:
-        order = "El pedido esta listo para recoger";
+        order = "El pedido está listo para recoger";
         break;
         case enumStatusOrder.reciveOrderDeliveryMan:
           order = "En camino al destino";
