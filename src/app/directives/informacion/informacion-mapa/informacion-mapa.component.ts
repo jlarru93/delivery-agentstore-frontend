@@ -155,7 +155,6 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
 
   }
   async ngOnChanges(changes: SimpleChanges) {
-    debugger
     if (this.initMap) {
       this.map = UtilInformacionMapa.fnInitMap(this.idMap, this.coberturePosition.latitude!, this.coberturePosition.longitude!, this.defaultUI);
       this.lstMarkers = this.fnActualizarPosicionMapa(this.lstMarkers, this.lstPosiciones);

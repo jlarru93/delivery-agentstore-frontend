@@ -11,6 +11,7 @@ import { InformacionMapaModule } from 'src/app/directives/informacion/informacio
 import { ButtonModule } from 'primeng/button';
 import { ChatModule } from 'src/app/chat/chat.module';
 import { AvatarModule } from 'primeng/avatar';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
   declarations: [OrderCourseComponent],
@@ -25,6 +26,7 @@ import { AvatarModule } from 'primeng/avatar';
     ButtonModule,
     AvatarModule,
     InformacionMapaModule,
+    TagModule,
     ChatModule
   ],
   exports : [OrderCourseComponent]

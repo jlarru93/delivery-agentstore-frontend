@@ -26,7 +26,7 @@ export class OrderHistoryComponent implements OnInit {
   status: any[] = [
     { name: 'Cancelado', value: 'cancel'},
     { name: 'Terminado', value: 'done'},
-    { name: 'Orden Lista', value: 'orderReady'},
+    { name: 'Orden lista', value: 'orderReady'},
     { name: 'Preparando orden', value: 'preparingOrder'}
   ]
   isDialogDetailOpen: boolean = false
@@ -268,5 +268,9 @@ export class OrderHistoryComponent implements OnInit {
     this.chatService.sendMessage(ChatBean.toRequest(message)).subscribe((resp)=>{    
     },
     (error)=>{})
+  }
+
+  filterGlobal(event: any){
+    console.log(event)
   }
 }
