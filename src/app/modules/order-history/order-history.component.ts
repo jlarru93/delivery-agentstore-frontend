@@ -269,4 +269,8 @@ export class OrderHistoryComponent implements OnInit {
     },
     (error)=>{})
   }
+
+  filterGlobal(event: any){
+    console.log(event)
+  }
 }

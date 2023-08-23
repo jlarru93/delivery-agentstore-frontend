@@ -85,6 +85,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     longitude: environment.centermap.lng,
     latitude: environment.centermap.lat,
   };
+
   ngAfterViewInit() {}
   isMqttConnect: boolean = false;
   isDoneGetOrders: boolean = false;
@@ -111,6 +112,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   hideChatComponent(order:ResponseLoadingOrder){
     order.showButton =  !order.showButton;
   }
+  
   mqttListener() {
     this.orderHandler._data.subscribe((asyncData) => {
       if (asyncData) {
@@ -182,7 +184,6 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.chatHandler._data.subscribe((asyncData) => {
-      debugger
       if (asyncData && asyncData.data.uuid) {
         let messageBean = ChatResponse.toBean(asyncData.data);
 
@@ -389,6 +390,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
             : element.status;
           order.order_name = this.onPaymentGroup(element.payment.method.type )
           order.status_order = this.onStatusGroup(status);
+          console.log('status', status)
           order.deliveryMan = element.deliveryMan;
           order.addresses = element.addresses;
           order.total = element.total;
@@ -421,35 +423,45 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   return order
 
   }
+  statusColor: string
   private onStatusGroup(status: string) {
     let order : string = ''
     switch (status) {
-      case enumStatusOrder.preparingOrder:
+      case enumStatusOrder.preparingOrder://verde
         order = "El local está preparando tu orden";
+        this.statusColor = '#689f38'
         break;
-      case enumStatusOrder.toStore:
+      case enumStatusOrder.toStore://amarillo
         order = "Te estás dirigiendo al local";
+        this.statusColor = '#fbc02d'
         break;
-      case enumStatusOrder.inStore:
+      case enumStatusOrder.inStore://amarillo
         order = "Llegué al local";
+        this.statusColor = '#fbc02d'
         break;
-      case enumStatusOrder.reciveDelivery:
+      case enumStatusOrder.reciveDelivery://amarillo
         order = "Recibí el pedido";
+        this.statusColor = '#fbc02d'
         break;
-      case enumStatusOrder.toHome:
+      case enumStatusOrder.toHome://amarillo
         order = "Estás en camino a entregar el pedido";
+        this.statusColor = '#fbc02d'
         break;
-      case enumStatusOrder.nearHome:
+      case enumStatusOrder.nearHome://amarillo
         order = "Estás cerca del destino";
+        this.statusColor = '#fbc02d'
         break;
-      case enumStatusOrder.inHome:
+      case enumStatusOrder.inHome://verde
         order = "Has llegado a la puerta del cliente";
+        this.statusColor = '#689f38'
         break;
-      case enumStatusOrder.orderReady:
+      case enumStatusOrder.orderReady://azul
         order = "El pedido está listo para recoger";
+        this.statusColor = '#0747A6'
         break;
-        case enumStatusOrder.reciveOrderDeliveryMan:
+        case enumStatusOrder.reciveOrderDeliveryMan://amarillo
           order = "En camino al destino";
+          this.statusColor = '#fbc02d'
           break;
       default:
         break;
