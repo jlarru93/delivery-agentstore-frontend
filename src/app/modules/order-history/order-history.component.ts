@@ -83,9 +83,9 @@ export class OrderHistoryComponent implements OnInit {
 
     this.items = [
       // {label: 'Abierto', icon: 'pi pi-check-circle', command: () => { this.onUpdateStatus('open') } },
-      {label: 'En proceso', icon: 'pi pi-forward' , command: () => { this.onUpdateStatus('inProcess') }},
-      {label: 'Terminado', icon: 'pi pi-thumbs-up-fill', command: () => { this.onUpdateStatus('done') }},
-      {label: 'Rechazar', icon: 'pi pi-times', command: () => { this.onUpdateStatus('reject') }},
+      {label: 'En proceso', icon: 'pi pi-forward' , command: () => { /*this.onUpdateStatus('inProcess')*/ }},
+      {label: 'Terminado', icon: 'pi pi-thumbs-up-fill', command: () => { /*this.onUpdateStatus('done') */}},
+      {label: 'Rechazar', icon: 'pi pi-times', command: () => { /*this.onUpdateStatus('reject')*/ }},
     ];
 
     if(this.mqtt.client.isConnected()){
