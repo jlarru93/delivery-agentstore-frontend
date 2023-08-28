@@ -49,49 +49,20 @@
                         <img src="assets/layout/images/topbar/avatar-eklund.png" alt="mirage-layout" />
                     </span>
                         <span class="profile-info-wrapper">
-                        <h3>{{userName}}</h3>
-                        <span>Design</span>
+                        <h3 style="color: #FFFFFF;">{{userName}}</h3>
+                        <span>{{userPhone}}</span>
                     </span>
                     </a>
                     <ul class="fadeInDown">
                         <li class="profile-submenu-header">
-                            <div class="performance">
-                                <span>Weekly Performance</span>
-                                <img src="assets/layout/images/topbar/asset-bars.svg" alt="mirage-layout" />
-                            </div>
                             <div class="profile">
-                                <img src="assets/layout/images/topbar/avatar-eklund.png" alt="mirage-layout" width="45" />
+                                <img src="assets/images/user.png" alt="mirage-layout"width="40" />
                                 <h1>{{userName}}</h1>
-                                <span>Design</span>
+                                <span>{{userPhone}}</span>
                             </div>
-                        </li>
-                        <li>
-                            <i class="pi pi-list icon icon-1"></i>
-                            <div class="menu-text">
-                                <p>Tasks</p>
-                                <span>3 open issues</span>
-                            </div>
-                            <i class="pi pi-angle-right"></i>
-                        </li>
-                        <li>
-                            <i class="pi pi-shopping-cart icon icon-2"></i>
-                            <div class="menu-text">
-                                <p>Payments</p>
-                                <span>24 new</span>
-                            </div>
-                            <i class="pi pi-angle-right"></i>
-                        </li>
-                        <li>
-                            <i class="pi pi-users icon icon-3"></i>
-                            <div class="menu-text">
-                                <p>Clients</p>
-                                <span>+80%</span>
-                            </div>
-                            <i class="pi pi-angle-right"></i>
                         </li>
                         <li class="layout-submenu-footer">
-                            <button class="signout-button">Sign Out</button>
-                            <button class="buy-mirage-button">Buy Mirage</button>
+                            <button class="signout-button" (click)="logout()">Cerrar Sesión</button>
                         </li>
                     </ul>
                 </li>
