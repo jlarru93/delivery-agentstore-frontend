@@ -19,13 +19,13 @@
     }
 }
 .overlay-container{
-    position: relative;
+    //position: relative;
 }
 .overlay-chat{
-    bottom: 30px;
+    bottom: 0;
     right: 0%;
     position: absolute;
-    z-index: 1001;
+    //z-index: 1001;
     transform-origin: center top;
     --overlayArrowLeft: 0px;
     opacity: 1;
