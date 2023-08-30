@@ -23,7 +23,7 @@ export class AppMenuComponent implements OnInit {
             { label: 'Solicitar Viaje', icon: 'pi pi-fw pi-car', routerLink: ['/request-trip']},
             { label: 'Servicios en curso', icon: 'pi pi-fw pi-history', routerLink: ['/order-course']},
             { label: 'Historial de Órdenes', icon: 'pi pi-fw pi-history', routerLink: ['/order-history']},
-            { label: 'Call Center', icon: 'pi pi-fw pi-box', routerLink: ['/complaint-report']}
+            { label: 'Quejas', icon: 'pi pi-fw pi-box', routerLink: ['/complaint-report']}
         ];
         this.getProducts()
     }
