@@ -37,7 +37,7 @@ import { AppAccessdeniedComponent } from './pages/app.accessdenied.component';
 import { AppCrudComponent } from './pages/app.crud.component';
 import { AppCalendarComponent } from './pages/app.calendar.component';
 import { AppTimelineDemoComponent } from './pages/app.timelinedemo.component';
-import { IsAuthenticated } from './utils/auth-guard';
+import { IsAuthenticated, IsNotAuthenticated } from './utils/auth-guard';
 import { SignInComponent } from './login/sign-in/sign-in.component';
 import { RequestTripComponent } from './modules/request-trip/request-trip.component';
 
@@ -58,19 +58,19 @@ const routes: Routes = [
             
             {
                 path: "request-trip",
-                loadChildren: () => import('./modules/request-trip/request-trip.module').then(m => m.RequestTripModule)
+                loadChildren: () => import('./modules/request-trip/request-trip.module').then(m => m.RequestTripModule), canActivate: [IsAuthenticated]
             },
             {
                 path: "order-history",
-                loadChildren: () => import('./modules/order-history/order-history.module').then(m => m.OrderHistoryModule)
+                loadChildren: () => import('./modules/order-history/order-history.module').then(m => m.OrderHistoryModule), canActivate: [IsAuthenticated]
             },
             {
                 path: "order-course",
-                loadChildren: () => import('./modules/order-course/order-course.module').then(m => m.OrderCourseModule)
+                loadChildren: () => import('./modules/order-course/order-course.module').then(m => m.OrderCourseModule), canActivate: [IsAuthenticated]
             },
             {
                 path: "complaint-report",
-                loadChildren: () => import('./modules/complaint-report/complaint-report.module').then(m => m.ComplaintReportModule)
+                loadChildren: () => import('./modules/complaint-report/complaint-report.module').then(m => m.ComplaintReportModule), canActivate: [IsAuthenticated]
             },
             //THEME
             { path: '', component: DashboardDemoComponent },
@@ -111,7 +111,7 @@ const routes: Routes = [
     { path: 'error', component: AppErrorComponent },
     { path: 'accessdenied', component: AppAccessdeniedComponent },
     { path: 'notfound', component: AppNotfoundComponent },
-    { path: 'login', component: SignInComponent}, 
+    { path: 'login', component: SignInComponent, canActivate: [IsNotAuthenticated]}, 
     { path: '**', redirectTo: '/notfound' },
 ]
 @NgModule({
