@@ -6,27 +6,27 @@ export const environment = {
   production: false,
   url:{
     backEndInit : [
-      'https://dev-api.delivery-app.net/agent-store',
-      'https://dev-api.delivery-app.net/tracking',
-      "https://dev-api.delivery-app.net/utils",
+      'https://dev-api.tres22.net/agent-store',
+      'https://dev-api.tres22.net/tracking',
+      "https://dev-api.tres22.net/utils",
 
     ],
-    backEnd: 'https://dev-api.delivery-app.net/agent-store',
-    url_back_tracking : 'https://dev-api.delivery-app.net/tracking',
-    util_banckEnd:"https://dev-api.delivery-app.net/utils"
+    backEnd: 'https://dev-api.tres22.net/agent-store',
+    url_back_tracking : 'https://dev-api.tres22.net/tracking',
+    util_banckEnd:"https://dev-api.tres22.net/utils"
   },
-  region: 'us-east-1',
-  userPoolId: 'us-east-1_431zyrUar',
-  userPoolWebClientId: '7g2ofa36fep4l2nre1g9gh8bq',
+  region: 'us-west-1',
+  userPoolId: 'us-west-1_4xM3rA9gH',
+  userPoolWebClientId: '2ai45jc047fbj9gbo9apju2e6l',
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/dev',
   mqttServer:{
-    url: "34.201.73.116",
-    port: 15675,
+    url: "devwss.tres22.net",
+    port: 443,
     path:"/ws",
-    user:null,
-    pwd:null,
-    useSSL:false
+    user:"socket",
+    pwd:"socket",
+    useSSL:true
   },
   MARKERS: {
     ORIGEN: {
