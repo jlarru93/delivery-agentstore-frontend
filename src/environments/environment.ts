@@ -21,12 +21,12 @@ export const environment = {
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/dev',
   mqttServer:{
-    url: "dev-mobile.mqtt.tres22.net",
-    port: 15675,
+    url: "devwss.tres22.net",
+    port: 443,
     path:"/ws",
-    user:undefined,
-    pwd:undefined,
-    useSSL:false
+    user:"socket",
+    pwd:"socket",
+    useSSL:true
   },
   MARKERS: {
     ORIGEN: {
