@@ -460,7 +460,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
         this.statusColor = '#0747A6'
         break;
         case enumStatusOrder.reciveOrderDeliveryMan://amarillo
-          order = "En camino al destino";
+          order = "El repartidor tiene el pedido";
           this.statusColor = '#fbc02d'
           break;
       default:
