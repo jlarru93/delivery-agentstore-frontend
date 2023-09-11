@@ -102,6 +102,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   ref?: DynamicDialogRef;
   ngAfterViewInit(): void {}
   ngOnInit(): void {
+    this.isDraggabled = false
     this.request_trip.readyToDmAt = 0 
     this.request_trip.addresses = [
       {
@@ -174,7 +175,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       (this.marker.lng = $event.coords.lng);
   }
   onChangeMapMarkers($event: any) {
-    debugger
+    //debugger
+    this.flagInitMap = false;
+    console.log('event--', $event)
+    const elementOrigin = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
+
     const element = <HTMLInputElement>document.getElementById("txtUbicacion");
      var geocoder = new google.maps.Geocoder;
      var latlng = {
@@ -185,27 +190,47 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
        'location': latlng
      }, (results, status)=> {
        if (status === 'OK') {
-         if (results[0]) {
-          element.value = results[0].formatted_address;
-          this.request_trip.addresses[1].point.type = "Point";
-          this.request_trip.addresses[1].floor = "";
-          this.request_trip.addresses[1].alias = "";
-          this.request_trip.addresses[1].marker = "store";
-          this.request_trip.addresses[1].addressStreet =
-            results[0].formatted_address;
-          this.request_trip.addresses[1].point.coordinates = [
-            $event.marker?.getPosition()?.lng(),
-            $event.marker?.getPosition()?.lat(),
-          ]
-          this.updatePosition();
-          this.onGetAmountOrder();
-         } else {
-           window.alert('No results found');
-         }
+        if($event.marker.title == "Destino"){
+          if (results[0]) {
+           element.value = results[0].formatted_address;
+           this.request_trip.addresses[1].point.type = "Point";
+           this.request_trip.addresses[1].floor = "";
+           this.request_trip.addresses[1].alias = "";
+           this.request_trip.addresses[1].marker = "store";
+           this.request_trip.addresses[1].addressStreet = results[0].formatted_address;
+           this.request_trip.addresses[1].point.coordinates = [
+             $event.marker?.getPosition()?.lng(),
+             $event.marker?.getPosition()?.lat(),
+           ]
+           this.updatePosition();
+           this.onGetAmountOrder();
+          } else {
+            window.alert('No results found');
+          }
+        } else if($event.marker.title == "Origen"){
+          if (results[0]) {
+            elementOrigin.value = results[0].formatted_address;
+            this.request_trip.addresses[0].point.type = "Point";
+            this.request_trip.addresses[0].floor = "";
+            this.request_trip.addresses[0].alias = "";
+            this.request_trip.addresses[0].marker = "store";
+            this.request_trip.addresses[0].addressStreet = results[0].formatted_address;
+            this.request_trip.addresses[0].point.coordinates = [
+              $event.marker?.getPosition()?.lng(),
+              $event.marker?.getPosition()?.lat(),
+            ]
+            this.updatePosition();
+            this.onGetAmountOrder();
+           } else {
+             window.alert('No results found');
+           }
+        }
        } else {
          window.alert('Geocoder failed due to: ' + status);
        }
      });
+
+
   }
   nroViaje: number = 0;
   findAdressOrigin() {
@@ -290,6 +315,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
+  isDraggabled: boolean
+
   updatePosition() {
     
     var lstPosiciones: PersonalisationMarker[] = [];
@@ -305,25 +333,25 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
                 true,
                 "Origen",
                 TypeMarkers.ORIGEN,
-                true,
+                this.isDraggabled,
                 1,
                 false
                 )
                 );
-              } else {
-                lstPosiciones.push(
-                  UtilModalViaje.fnDetalleViaje(
-                    new google.maps.LatLng(this.marker.lat, this.marker.lng),
-                    true,
-                    "Origen",
-                    TypeMarkers.ORIGEN,
-                    false,
-                    1,
-                    false
-                    )
-                    );
+    } else {
+          lstPosiciones.push(
+            UtilModalViaje.fnDetalleViaje(
+              new google.maps.LatLng(this.marker.lat, this.marker.lng),
+              true,
+              "Origen",
+              TypeMarkers.ORIGEN,
+              this.isDraggabled,
+              1,
+              false
+              )
+              );
                 
-        }
+    }
 
 
     if (this.request_trip.addresses[1].point.coordinates[0] != 0) {
@@ -510,13 +538,17 @@ uuid_price ?: string
   isCheckedStore: boolean = false
   isHiddenInput: boolean = false
   enablePickUpInput(){
+    //debugger
     if(this.isCheckedStore == true){
+      this.isDraggabled = true
       this.findAdressOrigin()
       this.updatePosition()
       //this.onGetLocationStore(false)
       this.is_disabled_pickup = !this.is_disabled_pickup
       this.isHiddenInput = !this.isHiddenInput
-    } else {
+    } 
+    else {
+      
       this.is_disabled_pickup = !this.is_disabled_pickup
       this.isHiddenInput = !this.isHiddenInput
       this.input_reference_pickup = ''
@@ -549,7 +581,7 @@ uuid_price ?: string
           reference: "",
         },
       ];
-      this.onGetLocationStore(true);
+      this.onGetLocationStore(false);
     }
   }
 
