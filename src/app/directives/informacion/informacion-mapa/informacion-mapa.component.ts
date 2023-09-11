@@ -155,6 +155,7 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
 
   }
   async ngOnChanges(changes: SimpleChanges) {
+    debugger
     if (this.initMap) {
       this.map = UtilInformacionMapa.fnInitMap(this.idMap, this.coberturePosition.latitude!, this.coberturePosition.longitude!, this.defaultUI);
       this.lstMarkers = this.fnActualizarPosicionMapa(this.lstMarkers, this.lstPosiciones);
@@ -259,8 +260,10 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
     }
     if (changes.lstCoordinateEncoded) {
       if (UtilInformacionMapa.fnDiferentCoordinateEncoded(this.lstCoordinateEncoded, this.lstPersonalizationPolyline)) {
+        if (this.lstCoordinateEncoded[0].coordinateEncoded != null ) {
         if (this.map) {
           this.fnActualizarPolylineMapa();
+        }
         }
       }
     }
@@ -277,6 +280,8 @@ export class InformacionMapaComponent implements OnInit, AfterViewInit, OnChange
             this.actualizarMarker(lstMarkers, lstPosiciones, i)
           }
           // this.markerListener(lstMarkers[i], i, lstPosiciones[i]);
+          this.markerListener(lstMarkers[i], lstPosiciones[i].idDestino, i, lstPosiciones[i]);
+
         }
 
       } else if (lstPosiciones.length < lstMarkers.length) {
