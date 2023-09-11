@@ -174,7 +174,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       (this.marker.lng = $event.coords.lng);
   }
   onChangeMapMarkers($event: any) {
-    // debugger
+    debugger
     const element = <HTMLInputElement>document.getElementById("txtUbicacion");
      var geocoder = new google.maps.Geocoder;
      var latlng = {
@@ -496,7 +496,7 @@ uuid_price ?: string
       this.requestTripService.onSaveOrderService(order).subscribe(
         (data) => {
           this.ref = this.dialogService.open(LoadingMotorizedComponent, {
-            header: "Motorizado",
+            header: "Repartidor",
           });
           // alert("Se guardó correctamente");
         },
@@ -512,6 +512,7 @@ uuid_price ?: string
   enablePickUpInput(){
     if(this.isCheckedStore == true){
       this.findAdressOrigin()
+      this.updatePosition()
       //this.onGetLocationStore(false)
       this.is_disabled_pickup = !this.is_disabled_pickup
       this.isHiddenInput = !this.isHiddenInput
