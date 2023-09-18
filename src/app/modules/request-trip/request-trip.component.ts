@@ -207,7 +207,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           } else {
             window.alert('No results found');
           }
-        } else if($event.marker.title == "Origen"){
+        } 
+        if($event.marker.title == "Origen"){
           if (results[0]) {
             elementOrigin.value = results[0].formatted_address;
             this.request_trip.addresses[0].point.type = "Point";
@@ -425,6 +426,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 uuid_price ?: string
   onGetAmountOrder() {
+    
     let request: RequestOrderPayment = {
       origin: {
         lat: this.request_trip.addresses[0].point.coordinates[1],
@@ -435,21 +437,28 @@ uuid_price ?: string
         lng: this.request_trip.addresses[1].point.coordinates[0],
       },
     };
-    this.requestTripService.onGetPaymentOrderService(request).subscribe(
-      (data) => {
-        this.uuid_price = data.data.uuid
-        this.amount = data.data.amount;
-        // setTimeout(()=>{
-          this.polyline_order = [
-            { coordinateEncoded: data.data.overviewPolyline },
-          ];
-        // },500)
 
-      },
-      (error) => {
-        alert("Ocurrió un error al obtener la tarifa");
-      }
-    );
+    if(request.destination.lat != 0 && request.destination.lng !=0){
+      this.requestTripService.onGetPaymentOrderService(request).subscribe(
+        (data) => {
+          this.uuid_price = data.data.uuid
+          this.amount = data.data.amount;
+          // setTimeout(()=>{
+            this.polyline_order = [
+              { coordinateEncoded: data.data.overviewPolyline },
+            ];
+          // },500)
+  
+        },
+        (error) => {
+          alert("Ocurrió un error al obtener la tarifa");
+        }
+      );
+
+    } else {
+      console.log("Debe haber un destino para calcular el precio");
+    }
+
   }
 
   originMobilePhone: string
