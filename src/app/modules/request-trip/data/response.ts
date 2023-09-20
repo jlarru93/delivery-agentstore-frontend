@@ -52,7 +52,7 @@ export class ResponseMotorizedOrigin {
   export class ResponseOrderPayment {
     distance: number;
     amount: number;
-    overviewPolyline: string;
+    polyLine: PolyLine[];
     travelTime: number;
     uuid : string;
 // const jsonData = {
@@ -61,6 +61,12 @@ export class ResponseMotorizedOrigin {
 //     "overviewPolyline": "y~ibA`ovgMANBXJVPP\\Lb@DTC\\KPO`@GV@fAd@b@P\\Nl@ThC`Ab@R|GlCl@V`Bh@jDfA`AVr@PrDv@p\\zJzAd@pAb@hBj@fCt@hA`@hBh@`Cv@r@RbDbAnCx@`@LNF^LxC~@r@Rd@NtA^n@P`Cr@dDdAp@RZJ^NPF`@LrA\\RPPLHL@BBTAVKRILKJMFOBQBQ?Q?QCOIKIIKGMEQCS?Q?WBe@Pa@Ti@n@{AfEmJd@kAx@oBd@gAdAaC|C{GdAgCz@oB~BiFhCkGpAeDz@iCvAsDj@}ATo@Ri@n@gBnAsDlAaDbAwC|@sCLYRk@Vo@Vo@t@aCXmBZgCjAeFx@gDNq@Ja@XoATcA\\oA^{@NYb@_An@cBrAmCvCcGjCrAj@oA",
 //  };
 }
+
+export class PolyLine {
+  lat: number;
+  lng: number;
+}
+
 export class ResponseLoadingOrder{
     user : UserBean;
     payment :Payment;
