@@ -132,6 +132,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   stateOptions: any[];
   method_payment = "efectivo";
   amount?: number = 0;
+  cashAmount?: number = 0;
   request_trip: RequestTrip = new RequestTrip();
   ref?: DynamicDialogRef;
   ngAfterViewInit(): void {}
