@@ -23,6 +23,11 @@ import { CheckboxModule } from 'primeng/checkbox';
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
   imports: [
+    AgmCoreModule.forRoot({
+      // please get your own API key here:
+      // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
+      apiKey: 'AIzaSyDl_Vavzdty qvdrsOy3Mnsg9hFusgMZ_SY',
+    }),
     CommonModule,
     CheckboxModule,
     RequestTripRoutingModule,

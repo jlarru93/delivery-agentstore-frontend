@@ -23,7 +23,7 @@ export class Point {
   
   // Define the class for the "payment" object
   export class Payment {
-    amount: { value: number };
+    amount?: { value: number };
     method: { type: string };
     id ?: number
   }
@@ -41,7 +41,8 @@ export class Point {
     addresses: Address[];
     mobile ?: string
     readyToDmAt ?: number
-    
+    uuid_price:string
+    productPrice?:number
   }
   
   export class RequestMotorizedOrigin {
