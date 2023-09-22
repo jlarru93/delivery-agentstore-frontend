@@ -669,7 +669,9 @@ uuid_price ?: string
       alert("es obligatorio generar la ruta");
       return;
     }
-    if(this.isCheckedStore == true && !((this.originMobilePhone && this.originMobilePhone.trim()==='') || (this.destinationMobilePhone && this.destinationMobilePhone.trim()===''))){
+    const isEmptyOriginMobilePhone=!this.originMobilePhone || this.originMobilePhone.toString().trim().length==0
+    const isEmpty=!this.destinationMobilePhone || this.destinationMobilePhone.toString().trim().length==0
+    if(this.isCheckedStore == true && (isEmptyOriginMobilePhone && isEmpty)){
       alert("es obligatorio escribir por lo menos un numero");
       return;
     }
