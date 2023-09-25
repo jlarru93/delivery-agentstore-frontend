@@ -6,7 +6,7 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { MouseEvent } from "src/agm/core";
+import { LatLngLiteral, MouseEvent } from "src/agm/core";
 import { AuthService } from "src/app/utils/auth.service";
 import { StoreService } from "../main/service/store.service";
 import { MapsAPILoader } from "src/agm/core";
@@ -29,6 +29,26 @@ import { ResponseMotorizedOrigin } from "./data/response";
 import { LoadingMotorizedComponent } from "./dialog/loading-motorized/loading-motorized.component";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { environment } from "src/environments/environment";
+
+interface PolyLine{
+  routePoints:RoutePoint[]
+}
+interface RoutePoint {
+  lat: number;
+  lng: number;
+}
+
+interface Marker {
+  lat: number;
+  lng: number;
+  label?: string;
+  maintext?: string;
+  secondText?: string;
+  iconUrl?:string
+  isDraggable?:boolean
+  onDragEnd?:(e:MouseEvent)=>void
+}
+
 @Component({
   selector: "app-request-trip",
   templateUrl: "./request-trip.component.html",
@@ -56,17 +76,20 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   input_reference_pickup?: string;
   input_reference_destination?: string;
   is_disabled_pickup: boolean = true;
-  center: any = {
+  center: LatLngLiteral = {
     lat: 10.96854,
     lng: -74.78132,
   };
 
-  marker = {
-    maintext: "Barranquilla",
-    secondText: "Hotel atrium",
-    lat: 10.96854,
-    lng: -74.78132,
-  };
+  markers: Marker[] = [
+    {
+      maintext: "Barranquilla",
+      secondText: "Hotel atrium",
+      lat: 10.96854,
+      lng: -74.78132,
+    }
+  ];
+
   lstPosiciones: PersonalisationMarker[] = [];
   lstPosicionConductor: PersonalisationMarker[] = [];
   //Mapa
@@ -89,6 +112,17 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       latitude: -12.1251109,
     };
   polyline_order?: PersonalisationPolyline[] = [];
+
+
+  //agm-map
+
+  
+  polyLines :PolyLine[] = [
+    {
+      routePoints:[]
+    }
+  ]
+
   constructor(
     private storeService: StoreService,
     private requestTripService: RequestTripService,
@@ -98,10 +132,15 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   stateOptions: any[];
   method_payment = "efectivo";
   amount?: number = 0;
+  cashAmount?: number = 0;
   request_trip: RequestTrip = new RequestTrip();
   ref?: DynamicDialogRef;
   ngAfterViewInit(): void {}
   ngOnInit(): void {
+    // this.center = {
+    //   lat: 10.96854,
+    //   lng: -74.78132,
+    // }
     this.isDraggabled = false
     this.request_trip.readyToDmAt = 0 
     this.request_trip.addresses = [
@@ -143,9 +182,27 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     // )
     // this.stateOptions = [{label: 'Efectivo', value: 'efectivo'}, {label: 'Pago Digital', value: 'e-wallet'}];
   }
-
+  
   dataStorePhone: string
+
+ globalIconOrigin: any = { 
+    url: this.origenIcon, 
+    scaledSize: {
+      height: 50, 
+      width: 50
+    }
+  }
+
+  globalIconDestination: any = { 
+    url: this.destinoIcon, 
+    scaledSize: {
+      height: 50, 
+      width: 50
+    }
+  }
+
   private onGetLocationStore(flagInit : boolean) {
+
     this.storeService.onGetLocationStoreService().subscribe((data) => {
       this.input_visible_pickup = data.data.store.fullName;
       this.dataStorePhone = data.data.store.phone;
@@ -160,9 +217,19 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       ];
 
       // this.input_visible_pickup = this.marker.maintext
-      this.marker.lng = data.data.store.location.coordinates[0];
-      this.marker.lat = data.data.store.location.coordinates[1];
+      this.markers[0].isDraggable=false
+      this.markers[0].onDragEnd=(e)=>{
+        console.log(e.coords)
+      }
+      this.markers[0].label = 'Origen'
+      this.markers[0].iconUrl = this.globalIconOrigin
+      this.markers[0].lng = data.data.store.location.coordinates[0];
+      this.markers[0].lat = data.data.store.location.coordinates[1];
       this.stateOptions = data.data.tripSetting.paymentMethod;
+      this.center = {
+        lat: data.data.store.location.coordinates[1],
+        lng: data.data.store.location.coordinates[0]
+      }
       this.method_payment = "CREDIT";
       this.onGetMotorizedPosiitonOrigin();
       this.flagInitMap = flagInit;
@@ -171,11 +238,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 
   mapClicked($event: MouseEvent) {
-    (this.marker.lat = $event.coords.lat),
-      (this.marker.lng = $event.coords.lng);
+    (this.markers[0].lat = $event.coords.lat),
+      (this.markers[0].lng = $event.coords.lng);
   }
-  onChangeMapMarkers($event: any) {
-    //debugger
+  onChangeMapMarkers($event: any, marker: any) {
     this.flagInitMap = false;
     console.log('event--', $event)
     const elementOrigin = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
@@ -183,31 +249,34 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     const element = <HTMLInputElement>document.getElementById("txtUbicacion");
      var geocoder = new google.maps.Geocoder;
      var latlng = {
-      lat: $event.marker?.getPosition()?.lat(),
-      lng: $event.marker?.getPosition()?.lng()
+      lat: $event.coords?.lat,
+      lng: $event.coords?.lng
     };
      geocoder.geocode({
        'location': latlng
      }, (results, status)=> {
        if (status === 'OK') {
-        if($event.marker.title == "Destino"){
-          if (results[0]) {
-           element.value = results[0].formatted_address;
-           this.request_trip.addresses[1].point.type = "Point";
-           this.request_trip.addresses[1].floor = "";
-           this.request_trip.addresses[1].alias = "";
-           this.request_trip.addresses[1].marker = "store";
-           this.request_trip.addresses[1].addressStreet = results[0].formatted_address;
-           this.request_trip.addresses[1].point.coordinates = [
-             $event.marker?.getPosition()?.lng(),
-             $event.marker?.getPosition()?.lat(),
-           ]
-           this.updatePosition();
-           this.onGetAmountOrder();
-          } else {
-            window.alert('No results found');
-          }
-        } else if($event.marker.title == "Origen"){
+         if(marker.label == "Destino"){
+           if (results[0]) {
+            element.value = results[0].formatted_address;
+            this.request_trip.addresses[1].point.type = "Point";
+            this.request_trip.addresses[1].floor = "";
+            this.request_trip.addresses[1].alias = "";
+            this.request_trip.addresses[1].marker = "store";
+            this.request_trip.addresses[1].addressStreet = results[0].formatted_address;
+            this.request_trip.addresses[1].point.coordinates = [
+              $event.coords?.lng,
+              $event.coords?.lat,
+            ]
+            //this.updatePosition();
+            this.onGetAmountOrder();
+            
+           } else {
+             window.alert('No results found');
+           }
+           
+        } 
+        if(marker.label == "Origen"){
           if (results[0]) {
             elementOrigin.value = results[0].formatted_address;
             this.request_trip.addresses[0].point.type = "Point";
@@ -216,10 +285,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             this.request_trip.addresses[0].marker = "store";
             this.request_trip.addresses[0].addressStreet = results[0].formatted_address;
             this.request_trip.addresses[0].point.coordinates = [
-              $event.marker?.getPosition()?.lng(),
-              $event.marker?.getPosition()?.lat(),
+              $event.coords?.lng,
+              $event.coords?.lat,
             ]
-            this.updatePosition();
+            //this.updatePosition();
             this.onGetAmountOrder();
            } else {
              window.alert('No results found');
@@ -273,6 +342,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   
   geocoder: google.maps.Geocoder = new google.maps.Geocoder();
   geocodePlaceIdOrigin(placeId) {
+    //debugger
     this.geocoder.geocode({ placeId: placeId }, (results, status) => {
       if (status === google.maps.GeocoderStatus.OK) {
         if (results[0]) {
@@ -286,6 +356,25 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             results[0].geometry.location.lng(),
             results[0].geometry.location.lat(),
           ];
+
+          const newMarkers: Marker = {
+            lat: results[0].geometry.location.lat(),
+            lng: results[0].geometry.location.lng(),
+            iconUrl: this.globalIconOrigin,
+            label: 'Origen',
+            isDraggable: true,
+            onDragEnd: (e)=>{
+              console.log(e.coords)
+            }
+          }
+
+          this.center = {
+            lat: results[0].geometry.location.lat(),
+            lng: results[0].geometry.location.lng(),
+          }
+
+          this.markers[0] = newMarkers
+
           // this.geocodePlaceId(place);
           this.onGetMotorizedPosiitonOrigin();
           this.updatePosition();
@@ -309,12 +398,113 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             results[0].geometry.location.lat()
           ];
           // this.geocodePlaceId(place);
+
+
+          const newMarkers: Marker = {
+            lat: results[0].geometry.location.lat(),
+            lng: results[0].geometry.location.lng(),
+            iconUrl: this.globalIconDestination,
+            label: 'Destino',
+            isDraggable: true,
+            onDragEnd: (e)=>{
+              console.log(e.coords)
+            }
+          }
+
+          // this.center = {
+          //   lat: results[0].geometry.location.lat(),
+          //   lng: results[0].geometry.location.lng(),
+          // }
+
+          this.markers[1] = newMarkers
+
+          //this.drawPolyline()
+
           this.updatePosition();
           this.onGetAmountOrder();
+          this.centrarMapa()
         }
       }
     });
   }
+
+  locationData: PolyLine[]
+  locationDestination: any
+
+  drawPolyline(overviewPolyline: any){
+    
+    this.locationData = overviewPolyline
+    // //this.locationDestination.push(overviewPolyline)
+
+    // const locationArray = this.locationData.map(
+    //   (l) => { return {
+    //     lat:l[0],
+    //     lng:l[1]
+    //   } as RoutePoint}
+    // );
+    //   console.log('polyline', locationArray)
+
+    this.polyLines[0].routePoints = overviewPolyline
+   
+
+  }
+
+  lat: number 
+  lng: number
+  zoom = 17;
+
+  centrarMapa() { 
+    if (this.markers.length >= 2) { 
+
+      const centerLat = (this.markers[0].lat + this.markers[1].lat ) / 2;
+      const centerLng = (this.markers[0].lng + this.markers[1].lng) / 2;
+
+      const distance = google.maps.geometry.spherical.computeDistanceBetween(
+        new google.maps.LatLng(this.markers[0].lat, this.markers[0].lng),
+        new google.maps.LatLng(this.markers[1].lat, this.markers[1].lng)
+      );
+      const zoom = this.calcularNivelDeZoom(distance);
+
+      console.log('distancia_ ', distance)
+
+      this.center = { lat: centerLat, lng: centerLng };
+      this.zoom = zoom;
+      console.log('zoom_ ', zoom)
+
+    } 
+  } 
+
+  calcularNivelDeZoom(distance: number): number{
+    // Puedes ajustar estos valores según tus preferencias
+    if (distance < 1000) {
+      return 20; // Zoom más cercano si la distancia es corta
+    } else if (distance < 5000) {
+      return 15; // Zoom intermedio para distancias medianas
+    } else {
+      return 14; // Zoom más alejado si la distancia es larga
+    }
+  }
+
+  private calcularZoom(bounds: google.maps.LatLngBounds): number { 
+    const GLOBE_WIDTH = 256; // Ancho de la proyección de Google Maps 
+    const ZOOM_MAX = 21; // Nivel de zoom máximo 
+    const ZOOM_MIN = 1; // Nivel de zoom mínimo 
+ 
+    const west = bounds.getSouthWest().lng(); 
+    const east = bounds.getNorthEast().lng(); 
+    const angle = east - west; 
+ 
+    if (angle < 0) { 
+      return ZOOM_MAX; // El mapa completo es visible 
+    } 
+ 
+    const zoom = Math.round( 
+      Math.log(window.innerWidth * 360 / angle / GLOBE_WIDTH) / Math.LN2 
+    ); 
+ 
+    return Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom)); 
+  } 
+
 
   isDraggabled: boolean
 
@@ -341,7 +531,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     } else {
           lstPosiciones.push(
             UtilModalViaje.fnDetalleViaje(
-              new google.maps.LatLng(this.marker.lat, this.marker.lng),
+              new google.maps.LatLng(this.markers[0].lat, this.markers[0].lng),
               true,
               "Origen",
               TypeMarkers.ORIGEN,
@@ -425,6 +615,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 uuid_price ?: string
   onGetAmountOrder() {
+    
     let request: RequestOrderPayment = {
       origin: {
         lat: this.request_trip.addresses[0].point.coordinates[1],
@@ -435,21 +626,29 @@ uuid_price ?: string
         lng: this.request_trip.addresses[1].point.coordinates[0],
       },
     };
-    this.requestTripService.onGetPaymentOrderService(request).subscribe(
-      (data) => {
-        this.uuid_price = data.data.uuid
-        this.amount = data.data.amount;
-        // setTimeout(()=>{
-          this.polyline_order = [
-            { coordinateEncoded: data.data.overviewPolyline },
-          ];
-        // },500)
 
-      },
-      (error) => {
-        alert("Ocurrió un error al obtener la tarifa");
-      }
-    );
+    if(request.destination.lat != 0 && request.destination.lng !=0){
+      this.requestTripService.onGetPaymentOrderService(request).subscribe(
+        (data) => {
+          this.uuid_price = data.data.uuid
+          this.amount = data.data.amount;
+          // setTimeout(()=>{
+            // this.polyline_order = [
+            //   { coordinateEncoded: data.data.overviewPolyline },
+            // ];
+            this.drawPolyline(data.data.polyLine)
+          // },500)
+  
+        },
+        (error) => {
+          alert("Ocurrió un error al obtener la tarifa");
+        }
+      );
+
+    } else {
+      console.log("Debe haber un destino para calcular el precio");
+    }
+
   }
 
   originMobilePhone: string
@@ -458,81 +657,102 @@ uuid_price ?: string
     let order: RequestTrip = new RequestTrip();
     if (!this.request_trip.description) {
       alert("La descripción es obligatoria");
-    } else {
-      order.payment = {
-        amount: {
-          value: this.amount,
-        },
-        method: {
-          type: this.method_payment,
-        },
-      };
-      order.readyToDmAt = this.request_trip.readyToDmAt;
-      order.description = this.request_trip.description;
-      order.mobile = this.request_trip.mobile;
-      order.addresses = [
-        {
-          addressStreet: "",
-          alias: "",
-          floor: "",
-          phone: "",
-          marker: "store",
-          point: {
-            coordinates: [0, 0],
-            type: "Point",
-          },
-          sort: 1,
-          reference: this.input_reference_pickup,
-          label : "Recojo"
-        },
-        {
-          addressStreet: "",
-          alias: "",
-          floor: "",
-          phone: "",
-          marker: "Point",
-          point: {
-            coordinates: [0, 0],
-            type: "Point",
-          },
-          sort: 2,
-          reference: this.input_reference_destination,
-          label : "Entrega Final",
-          uuidRoutePrice : this.uuid_price
-        },
-      ];
-      this.request_trip.addresses.forEach((item, index) => {
-        if (item.sort == 1) {
-          order.addresses[0].addressStreet = item.addressStreet;
-          order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
-          order.addresses[0].marker = item.marker;
-          order.addresses[0].alias = item.alias;
-          order.addresses[0].reference = this.input_reference_pickup;
-          order.addresses[0].floor = item.floor;
-          order.addresses[0].point = item.point;
-        } else {
-          order.addresses[1].phone = this.destinationMobilePhone.toString();
-          order.addresses[1].marker = item.marker;
-          order.addresses[1].alias = item.alias;
-          order.addresses[1].reference = this.input_reference_destination;
-          order.addresses[1].floor = item.floor;
-          order.addresses[1].addressStreet = item.addressStreet;
-          order.addresses[1].point = item.point;
-          // order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
-        }
-      });
-      this.requestTripService.onSaveOrderService(order).subscribe(
-        (data) => {
-          this.ref = this.dialogService.open(LoadingMotorizedComponent, {
-            header: "Repartidor",
-          });
-          // alert("Se guardó correctamente");
-        },
-        (error) => {
-          alert("Ocurrió un error");
-        }
-      );
+      return;
     }
+
+    if("CASH" === this.method_payment &&  (!this.cashAmount || this.cashAmount ===0 )){
+      alert("monto es obligarotio cuando selecionas efectivo");
+      return;
+    }
+
+    if(!this.uuid_price || this.uuid_price==''){
+      alert("es obligatorio generar la ruta");
+      return;
+    }
+    const isEmptyOriginMobilePhone=!this.originMobilePhone || this.originMobilePhone.toString().trim().length==0
+    const isEmpty=!this.destinationMobilePhone || this.destinationMobilePhone.toString().trim().length==0
+    if(this.isCheckedStore == true && (isEmptyOriginMobilePhone && isEmpty)){
+      alert("es obligatorio escribir por lo menos un numero");
+      return;
+    }
+
+    if ("CASH" === this.method_payment) {
+      order.productPrice = this.cashAmount
+    }
+
+    order.payment = {
+      method: {
+        type: this.method_payment,
+      },
+    };
+    order.uuid_price=this.uuid_price
+    order.readyToDmAt = this.request_trip.readyToDmAt;
+    order.description = this.request_trip.description;
+    order.mobile = this.request_trip.mobile;
+    order.addresses = [
+      {
+        addressStreet: "",
+        alias: "",
+        floor: "",
+        phone: "",
+        marker: "store",
+        point: {
+          coordinates: [0, 0],
+          type: "Point",
+        },
+        sort: 1,
+        reference: this.input_reference_pickup,
+        label : "Recojo"
+      },
+      {
+        addressStreet: "",
+        alias: "",
+        floor: "",
+        phone: "",
+        marker: "Point",
+        point: {
+          coordinates: [0, 0],
+          type: "Point",
+        },
+        sort: 2,
+        reference: this.input_reference_destination,
+        label : "Entrega Final",
+        uuidRoutePrice : this.uuid_price
+      },
+    ];
+    this.request_trip.addresses.forEach((item, index) => {
+      if (item.sort == 1) {
+        order.addresses[0].addressStreet = item.addressStreet;
+        order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
+        order.addresses[0].marker = item.marker;
+        order.addresses[0].alias = item.alias;
+        order.addresses[0].reference = this.input_reference_pickup;
+        order.addresses[0].floor = item.floor;
+        order.addresses[0].point = item.point;
+      } else {
+        order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
+        order.addresses[1].marker = item.marker;
+        order.addresses[1].alias = item.alias;
+        order.addresses[1].reference = this.input_reference_destination;
+        order.addresses[1].floor = item.floor;
+        order.addresses[1].addressStreet = item.addressStreet;
+        order.addresses[1].point = item.point;
+        //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
+      }
+    });
+    
+    this.requestTripService.onSaveOrderService(order).subscribe(
+      (data) => {
+        this.ref = this.dialogService.open(LoadingMotorizedComponent, {
+          header: "Repartidor",
+        });
+        // alert("Se guardó correctamente");
+      },
+      (error) => {
+        alert("Ocurrió un error");
+      }
+    );
+    
   }
 
   isCheckedStore: boolean = false

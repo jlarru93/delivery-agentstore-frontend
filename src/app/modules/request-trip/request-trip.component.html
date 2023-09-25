@@ -1,6 +1,6 @@
 <div class="p-grid">
   <div class="p-col-9 container-map">
-    <nexus-informacion-mapa
+    <!-- <nexus-informacion-mapa
     [idMap]="'MapModal-'"
     [coberturePosition]="coberturePosition"
     [lstPosiciones]="lstPosiciones"
@@ -14,7 +14,7 @@
     [initMapViewAfter]="initMapViewAfter"
     [lstCoordinateEncoded]="polyline_order"
   >
-  </nexus-informacion-mapa>
+  </nexus-informacion-mapa> -->
     <!-- <agm-map
       [style]="{ height: '89vh' }"
       [latitude]="center.lat"
@@ -29,6 +29,25 @@
         (dragEnd)="mapClicked($event)"
       ></agm-marker>
     </agm-map> -->
+    <agm-map 
+        [style]="{height:'100%'}" 
+        [latitude]="center.lat" 
+        [longitude]="center.lng" 
+        [zoom]="zoom"
+        >
+        <agm-marker *ngFor="let marker of markers" 
+            [markerDraggable]="true" 
+            [latitude]="marker.lat" 
+            [longitude]="marker.lng" 
+             
+            [iconUrl]="marker.iconUrl"
+            [markerDraggable]="marker.isDraggable"
+            (dragEnd)="onChangeMapMarkers($event, marker)"
+            ></agm-marker>
+        <agm-polyline *ngFor="let polyLine of polyLines" [editable]="false" [strokeColor]="'#FF5733'" [strokeWeight]="3">
+          <agm-polyline-point *ngFor="let point of polyLine.routePoints" [latitude]="point.lat" [longitude]="point.lng" [visible]="false"></agm-polyline-point>
+        </agm-polyline>
+    </agm-map>
   </div>
   <div class="p-col-3 information-service">
     <div class="search-container">
@@ -154,7 +173,7 @@
                 style="font-size: 1.5rem; color: #212222"
               ></i>
             </div>
-            <p-inputNumber mode="decimal" inputId="withoutgrouping" placeholder="Número de teléfono" 
+            <p-inputNumber inputId="withoutgrouping" placeholder="Número de teléfono" 
             [useGrouping]="false" [(ngModel)]="destinationMobilePhone"></p-inputNumber>
           </div>
 
@@ -222,7 +241,19 @@
         </div>
       </div>
       <div class="p-mt-3"></div>
-      <div class="p-grid">
+      <div class="p-grid p-fluid">
+        <div class="p-col-12" *ngIf="method_payment != 'CREDIT'">
+          <label for="cashAmount">Monto:</label>
+          <p-inputNumber [(ngModel)]="cashAmount" id="cashAmount" prefix="$ "></p-inputNumber>
+          <!-- <mat-form-field appearance="outline">
+            <mat-label>MONTO</mat-label>
+            <input
+              matInput
+              class="mat-input-custom"
+              [(ngModel)]="cashAmount"
+            />
+          </mat-form-field> -->
+        </div>
         <div class="p-col-12">
           <mat-form-field appearance="outline">
             <mat-label>DOMICILIO</mat-label>
@@ -238,7 +269,7 @@
         </div>
       </div>
       <h5>Minutos</h5>
-      <div class="p-grid">
+      <div class="p-grid p-fluid">
         <p-inputNumber 
         [(ngModel)]="request_trip.readyToDmAt" 
         [showButtons]="true" 
