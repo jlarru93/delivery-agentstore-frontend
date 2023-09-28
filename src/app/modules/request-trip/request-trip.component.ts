@@ -242,7 +242,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       (this.markers[0].lng = $event.coords.lng);
   }
   onChangeMapMarkers($event: any, marker: any) {
-    debugger
     this.flagInitMap = false;
     console.log('event--', $event)
     const elementOrigin = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
@@ -658,81 +657,102 @@ uuid_price ?: string
     let order: RequestTrip = new RequestTrip();
     if (!this.request_trip.description) {
       alert("La descripción es obligatoria");
-    } else {
-      order.payment = {
-        amount: {
-          value: this.amount,
-        },
-        method: {
-          type: this.method_payment,
-        },
-      };
-      order.readyToDmAt = this.request_trip.readyToDmAt;
-      order.description = this.request_trip.description;
-      order.mobile = this.request_trip.mobile;
-      order.addresses = [
-        {
-          addressStreet: "",
-          alias: "",
-          floor: "",
-          phone: "",
-          marker: "store",
-          point: {
-            coordinates: [0, 0],
-            type: "Point",
-          },
-          sort: 1,
-          reference: this.input_reference_pickup,
-          label : "Recojo"
-        },
-        {
-          addressStreet: "",
-          alias: "",
-          floor: "",
-          phone: "",
-          marker: "Point",
-          point: {
-            coordinates: [0, 0],
-            type: "Point",
-          },
-          sort: 2,
-          reference: this.input_reference_destination,
-          label : "Entrega Final",
-          uuidRoutePrice : this.uuid_price
-        },
-      ];
-      this.request_trip.addresses.forEach((item, index) => {
-        if (item.sort == 1) {
-          order.addresses[0].addressStreet = item.addressStreet;
-          order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
-          order.addresses[0].marker = item.marker;
-          order.addresses[0].alias = item.alias;
-          order.addresses[0].reference = this.input_reference_pickup;
-          order.addresses[0].floor = item.floor;
-          order.addresses[0].point = item.point;
-        } else {
-          order.addresses[1].phone = this.destinationMobilePhone.toString();
-          order.addresses[1].marker = item.marker;
-          order.addresses[1].alias = item.alias;
-          order.addresses[1].reference = this.input_reference_destination;
-          order.addresses[1].floor = item.floor;
-          order.addresses[1].addressStreet = item.addressStreet;
-          order.addresses[1].point = item.point;
-          // order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
-        }
-      });
-      this.requestTripService.onSaveOrderService(order).subscribe(
-        (data) => {
-          this.ref = this.dialogService.open(LoadingMotorizedComponent, {
-            header: "Repartidor",
-          });
-          // alert("Se guardó correctamente");
-        },
-        (error) => {
-          alert("Ocurrió un error");
-        }
-      );
+      return;
     }
+
+    if("CASH" === this.method_payment &&  (!this.cashAmount || this.cashAmount ===0 )){
+      alert("monto es obligarotio cuando selecionas efectivo");
+      return;
+    }
+
+    if(!this.uuid_price || this.uuid_price==''){
+      alert("es obligatorio generar la ruta");
+      return;
+    }
+    const isEmptyOriginMobilePhone=!this.originMobilePhone || this.originMobilePhone.toString().trim().length==0
+    const isEmpty=!this.destinationMobilePhone || this.destinationMobilePhone.toString().trim().length==0
+    if(this.isCheckedStore == true && (isEmptyOriginMobilePhone && isEmpty)){
+      alert("es obligatorio escribir por lo menos un numero");
+      return;
+    }
+
+    if ("CASH" === this.method_payment) {
+      order.productPrice = this.cashAmount
+    }
+
+    order.payment = {
+      method: {
+        type: this.method_payment,
+      },
+    };
+    order.uuid_price=this.uuid_price
+    order.readyToDmAt = this.request_trip.readyToDmAt;
+    order.description = this.request_trip.description;
+    order.mobile = this.request_trip.mobile;
+    order.addresses = [
+      {
+        addressStreet: "",
+        alias: "",
+        floor: "",
+        phone: "",
+        marker: "store",
+        point: {
+          coordinates: [0, 0],
+          type: "Point",
+        },
+        sort: 1,
+        reference: this.input_reference_pickup,
+        label : "Recojo"
+      },
+      {
+        addressStreet: "",
+        alias: "",
+        floor: "",
+        phone: "",
+        marker: "Point",
+        point: {
+          coordinates: [0, 0],
+          type: "Point",
+        },
+        sort: 2,
+        reference: this.input_reference_destination,
+        label : "Entrega Final",
+        uuidRoutePrice : this.uuid_price
+      },
+    ];
+    this.request_trip.addresses.forEach((item, index) => {
+      if (item.sort == 1) {
+        order.addresses[0].addressStreet = item.addressStreet;
+        order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
+        order.addresses[0].marker = item.marker;
+        order.addresses[0].alias = item.alias;
+        order.addresses[0].reference = this.input_reference_pickup;
+        order.addresses[0].floor = item.floor;
+        order.addresses[0].point = item.point;
+      } else {
+        order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
+        order.addresses[1].marker = item.marker;
+        order.addresses[1].alias = item.alias;
+        order.addresses[1].reference = this.input_reference_destination;
+        order.addresses[1].floor = item.floor;
+        order.addresses[1].addressStreet = item.addressStreet;
+        order.addresses[1].point = item.point;
+        //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
+      }
+    });
+    
+    this.requestTripService.onSaveOrderService(order).subscribe(
+      (data) => {
+        this.ref = this.dialogService.open(LoadingMotorizedComponent, {
+          header: "Repartidor",
+        });
+        // alert("Se guardó correctamente");
+      },
+      (error) => {
+        alert("Ocurrió un error");
+      }
+    );
+    
   }
 
   isCheckedStore: boolean = false
