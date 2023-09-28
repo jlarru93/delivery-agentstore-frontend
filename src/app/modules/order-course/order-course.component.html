@@ -95,7 +95,8 @@
                         align-items: center;
                       "
                     >
-                      <p-avatar
+                    <img [src]="{{ item.deliveryMan?.picture.profile }}" alt="" style="width: 100px; height: 100px;" onError="this.src='assets/images/user.png'">
+                      <!-- <p-avatar
                         image="{{ item.deliveryMan?.picture.profile }}"
                         styleClass=" "
                         shape="circle"
@@ -109,7 +110,7 @@
                         
                         size="xlarge"
                       >
-                      </p-avatar>
+                      </p-avatar> -->
                     </div>
                   </div>
 
