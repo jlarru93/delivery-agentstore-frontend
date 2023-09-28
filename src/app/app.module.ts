@@ -164,6 +164,8 @@ import { MqttRoutingService } from './modules/service/mqtt.routing.service';
 import { MqttService } from './modules/service/mqtt.service';
 import { ModalComponent } from './modal/modal.component';
 import { OrderCourseComponent } from './modules/order-course/order-course.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -262,7 +264,13 @@ FullCalendarModule.registerPlugins([
 
 
         MainModule,
-        ProductModule
+        ProductModule,
+        ServiceWorkerModule.register('ngsw-worker.js', {
+          enabled: environment.production,
+          // Register the ServiceWorker as soon as the app is stable
+          // or after 30 seconds (whichever comes first).
+          registrationStrategy: 'registerWhenStable:30000'
+        })
     ],
     declarations: [
         AppComponent,

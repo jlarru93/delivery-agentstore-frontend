@@ -29,7 +29,8 @@
                         "assets": [
                             "src/favicon.ico",
                             "src/upload.php",
-                            "src/assets"
+                            "src/assets",
+                            "src/manifest.webmanifest"
                         ],
                         "styles": [
                             "node_modules/primeicons/primeicons.css",
@@ -40,7 +41,9 @@
                             "node_modules/prismjs/prism.js",
                             "node_modules/prismjs/components/prism-typescript.js"
                         ],
-                        "allowedCommonJsDependencies": ["@fullcalendar/daygrid","@fullcalendar/timegrid","@fullcalendar/interaction","chart.js"]
+                        "allowedCommonJsDependencies": ["@fullcalendar/daygrid","@fullcalendar/timegrid","@fullcalendar/interaction","chart.js"],
+                        "serviceWorker": true,
+                        "ngswConfigPath": "ngsw-config.json"
                     },
                     "configurations": {
                         "prod": {
@@ -151,7 +154,8 @@
                         "assets": [
                             "src/favicon.ico",
                             "src/upload.php",
-                            "src/assets"
+                            "src/assets",
+                            "src/manifest.webmanifest"
                         ],
                         "styles": [
                             "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
