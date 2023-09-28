@@ -47,6 +47,10 @@ const routes: Routes = [
         canActivate: [IsAuthenticated],
         children: [
             //APP
+            { 
+                path: '',
+                loadChildren: () => import('./modules/main/main.module').then(m => m.MainModule), canActivate: [IsAuthenticated]
+            },
             {
                 path: "main",
                 loadChildren: () => import('./modules/main/main.module').then(m => m.MainModule), canActivate: [IsAuthenticated]
@@ -73,7 +77,7 @@ const routes: Routes = [
                 loadChildren: () => import('./modules/complaint-report/complaint-report.module').then(m => m.ComplaintReportModule), canActivate: [IsAuthenticated]
             },
             //THEME
-            { path: '', component: DashboardDemoComponent },
+            /*{ path: '', component: DashboardDemoComponent },
             { path: 'uikit/formlayout', component: FormLayoutDemoComponent },
             { path: 'uikit/floatlabel', component: FloatLabelDemoComponent },
             { path: 'uikit/invalidstate', component: InvalidStateDemoComponent },
@@ -105,7 +109,7 @@ const routes: Routes = [
             { path: 'pages/timeline', component: AppTimelineDemoComponent },
             { path: 'components/charts', component: ChartsDemoComponent },
             { path: 'components/file', component: FileDemoComponent },
-            { path: 'documentation', component: DocumentationComponent }
+            { path: 'documentation', component: DocumentationComponent }*/
         ]
     },
     { path: 'error', component: AppErrorComponent },
