@@ -33,6 +33,7 @@ import * as CONSTANTES from "src/app/utils/constant";
 import { MqttService } from "../service/mqtt.service";
 import { enumStatusOrder, enumTypePayment } from "../request-trip/data/enum";
 import { environment } from "src/environments/environment";
+import { AuthService } from "src/app/utils/auth.service";
 
 @Component({
   selector: "app-order-course",
@@ -46,7 +47,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     private chatHandler: ChatHandler,
     private storeHandler: StoreHandler,
     private orderHandler: OrderHandler,
-    private mqtt: MqttService
+    private mqtt: MqttService,
+    private auth: AuthService,
   ) {}
 
   list_order: ResponseLoadingOrder[] = [];
@@ -86,6 +88,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     latitude: environment.centermap.lat,
   };
 
+  userId: any
+
   ngAfterViewInit() {}
   isMqttConnect: boolean = false;
   isDoneGetOrders: boolean = false;
@@ -100,6 +104,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
         this.validOrdersSubscribe();
       }
     });
+    let id=this.auth.getParameterToken('id')
+    this.userId = Number(id)
   }
   validOrdersSubscribe() {
     if (this.isMqttConnect && this.isDoneGetOrders) {
