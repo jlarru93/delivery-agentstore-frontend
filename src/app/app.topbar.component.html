@@ -5,9 +5,15 @@
             <div class="layout-megamenu-wrapper" (click)="displayOpenStore=true">
                 <button pButton type="button"  [label]="isOpenStore?'Tienda abierta':'Abrir tienda'" icon="pi pi-home" [loading]="isLoadingOpenStatusStore" [ngClass]="isOpenStore?'p-button-success':'p-button-warning'" ></button>
             </div>
-            <div style="margin: 0 auto;">
+            <div style="margin: 0 auto;" id="logoImagen">
                 <img src="assets/images/Logotipo_TRES22-delivery-02.png" alt="LogoTRES22" class="image-container">
             </div>
+            <a href="#" class="sidebar-menu-button" (click)="appMain.onMenuButtonClick($event)">
+                <i class="pi pi-bars" style="color: #FFFFFF;"></i>
+            </a>
+            <a href="#" class="topbar-menu-mobile-button" (click)="appMain.onTopbarMobileMenuButtonClick($event)">
+                <i class="pi pi-ellipsis-v" style="color: #FFFFFF;"></i>
+            </a>
         </div>
         <div class="layout-topbar-right fadeInDown">
             <ul class="layout-topbar-actions">
