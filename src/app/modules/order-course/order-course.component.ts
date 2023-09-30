@@ -259,13 +259,13 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.onSearchMotorizedOrder();
     this.interval_motorized_order = setInterval(() => {
       this.onSearchMotorizedOrder();
-    }, 3000);
+    }, 30000);
   }
   async onOrderCourseIntervalSubscription(index: number) {
     await this.onSearchMotorizedOrderSubscription();
     this.interval_motorized_order = setInterval(() => {
       this.onSearchMotorizedOrderSubscription();
-    }, 3000);
+    }, 30000);
   }
   ngOnDestroy(): void {
     clearInterval(this.interval_motorized_order);
@@ -281,7 +281,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   onTabClose(envios: any) {
     this.onClearMap();
     this.flagAccordion = false;
-    this.onOrderCourseInterval(envios.index);
+    //this.onOrderCourseInterval(envios.index);
     clearInterval(this.set_interval_driver);
   }
   flagAccordion: boolean = false;
@@ -292,7 +292,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     // await this.onGetRouteServiceShared(select_service)
     // this.onUpdatePosicion(select_service)
     // this.getServiceRouteAssigned(select_service.id)
-    clearInterval(this.interval_motorized_order);
+    //clearInterval(this.interval_motorized_order);
     this.onViewOrder(envios.index);
   }
   onViewOrder(index: number) {
