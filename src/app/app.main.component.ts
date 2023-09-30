@@ -129,6 +129,13 @@ export class AppMainComponent {
         event.preventDefault();
     }
 
+    onTopbarMobileMenuButtonClick(event) {
+        this.topbarMobileMenuClick = true;
+        this.topbarMobileMenuActive = !this.topbarMobileMenuActive;
+
+        event.preventDefault();
+    }
+
     onRippleChange(event) {
         this.app.ripple = event.checked;
         this.primengConfig = event.checked;
@@ -152,5 +159,16 @@ export class AppMainComponent {
 
     changeStatusOpenStore(request:OpenStoreRequest){
         return this.storeService.changeStatusOpen(request)
+    }
+
+    onMenuButtonClick(event) {
+        this.menuClick = true;
+        this.topbarMenuActive = false;
+
+        if (this.isMobile()) {
+            this.menuMobileActive = !this.menuMobileActive;
+        }
+
+        event.preventDefault();
     }
 }

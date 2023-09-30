@@ -95,6 +95,11 @@ export class DeliveryManBean {
     name?: string
     phone?: string
     status?: string
+    picture?: PictureBean
+}
+
+export class PictureBean{
+    profile?: string   
 }
 
 export class Point {
