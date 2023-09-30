@@ -153,6 +153,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
             ? orderMqtt.deliveryMan.status
             : orderMqtt.status;
             order_response.status_order = this.onStatusGroup(status);
+            order_response.status_order_color = this.onStatusGroupColor(status)
             order_response.addresses = orderMqtt.addresses
 
             order_response.payment = {
@@ -360,6 +361,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           : element.status;
           order.order_name = this.onPaymentGroup(element.payment.method.type )
           order.status_order = this.onStatusGroup(status);
+          order.status_order_color = this.onStatusGroupColor(status)
           order.deliveryMan = element.deliveryMan;
           order.addresses = element.addresses;
           order.total = element.total;
@@ -396,6 +398,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
             : element.status;
           order.order_name = this.onPaymentGroup(element.payment.method.type )
           order.status_order = this.onStatusGroup(status);
+          order.status_order_color = this.onStatusGroupColor(status)
           console.log('status', status)
           order.deliveryMan = element.deliveryMan;
           order.addresses = element.addresses;
@@ -473,6 +476,42 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
         break;
     }
     return order
+  }
+
+  private onStatusGroupColor(status: string) {
+    let orderStatusColor : string = ''
+    switch (status) {
+      case enumStatusOrder.preparingOrder://verde
+        orderStatusColor = '#689f38'
+        break;
+      case enumStatusOrder.toStore://amarillo
+        orderStatusColor = '#fbc02d'
+        break;
+      case enumStatusOrder.inStore://amarillo
+        orderStatusColor = '#fbc02d'
+        break;
+      case enumStatusOrder.reciveDelivery://amarillo
+        orderStatusColor = '#fbc02d'
+        break;
+      case enumStatusOrder.toHome://amarillo
+        orderStatusColor = '#fbc02d'
+        break;
+      case enumStatusOrder.nearHome://amarillo
+        orderStatusColor = '#fbc02d'
+        break;
+      case enumStatusOrder.inHome://verde
+        orderStatusColor = '#689f38'
+        break;
+      case enumStatusOrder.orderReady://azul
+        orderStatusColor = '#0747A6'
+        break;
+        case enumStatusOrder.reciveOrderDeliveryMan://amarillo
+          orderStatusColor = '#fbc02d'
+          break;
+      default:
+        break;
+    }
+    return orderStatusColor
   }
 
   btnCancelViaje(item: ResponseLoadingOrder) {
