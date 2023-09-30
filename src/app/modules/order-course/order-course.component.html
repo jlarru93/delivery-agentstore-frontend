@@ -14,7 +14,7 @@
         >
         <ng-template pTemplate="header">
           <div>
-            Orden  N.°: {{ item.id + ' - ' }} <b [ngStyle]="{ color: statusColor }">
+            Orden  N.°: {{ item.id + ' - ' }} <b [ngStyle]="{ color: item.status_order_color }">
               {{
                 '(' + item.status_order + ')' 
               }}

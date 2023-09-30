@@ -88,6 +88,7 @@ export class ResponseLoadingOrder{
     showButton:boolean
     deliveryMan : DeliveryManBean
     status_order ?: string
+    status_order_color ?: string
     order_name ?: string
     constructor(){
         this.messagesNoReadTotal=0
