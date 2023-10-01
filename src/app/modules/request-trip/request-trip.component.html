@@ -120,7 +120,24 @@
             </div>
 
           </div>
-
+          <div class="p-col-12" *ngIf="isHiddenInput">
+            <div class="input-origin-content">
+              <div style="padding: 11px">
+                <i
+                  class="pi pi-user"
+                  style="font-size: 1.5rem; color: #212222"
+                ></i>
+              </div>
+              <input
+                type="text"
+                class="p-inputtext-lg"
+                pInputText
+                placeholder="Receptor"
+                [(ngModel)]="input_receptorNameOrigin_pickup"
+                autofocus
+              />
+            </div>
+          </div>
         <div class="p-col-12">
           <div class="p-ml-5">
             <label for="">Dirección de entrega</label>
@@ -175,6 +192,25 @@
             </div>
             <p-inputNumber inputId="withoutgrouping" placeholder="Número de teléfono" 
             [useGrouping]="false" [(ngModel)]="destinationMobilePhone"></p-inputNumber>
+          </div>
+
+        </div>
+        <div class="p-col-12">
+          <div class="input-origin-content">
+            <div style="padding: 11px">
+              <i
+                class="pi pi-user"
+                style="font-size: 1.5rem; color: #212222"
+              ></i>
+            </div>
+            <input
+              type="text"
+              class="p-inputtext-lg"
+              pInputText
+              placeholder="Receptor"
+              [(ngModel)]="destinationReceptorName"
+              autofocus
+            />
           </div>
 
         </div>

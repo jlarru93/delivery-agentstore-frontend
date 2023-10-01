@@ -75,6 +75,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   inputVisibleDestino: any;
   input_reference_pickup?: string;
   input_reference_destination?: string;
+  input_receptorNameOrigin_pickup?:string
   is_disabled_pickup: boolean = true;
   center: LatLngLiteral = {
     lat: 10.96854,
@@ -654,6 +655,7 @@ uuid_price ?: string
 
   originMobilePhone: string
   destinationMobilePhone: string
+  destinationReceptorName: string
   onSaveOrder() {
     let order: RequestTrip = new RequestTrip();
     if (!this.request_trip.description) {
@@ -730,6 +732,7 @@ uuid_price ?: string
         order.addresses[0].reference = this.input_reference_pickup;
         order.addresses[0].floor = item.floor;
         order.addresses[0].point = item.point;
+        order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup
       } else {
         order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
         order.addresses[1].marker = item.marker;
@@ -738,6 +741,7 @@ uuid_price ?: string
         order.addresses[1].floor = item.floor;
         order.addresses[1].addressStreet = item.addressStreet;
         order.addresses[1].point = item.point;
+        order.addresses[1].receptorName = this.destinationReceptorName;
         //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
       }
     });
