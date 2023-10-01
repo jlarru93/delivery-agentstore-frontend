@@ -75,6 +75,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   inputVisibleDestino: any;
   input_reference_pickup?: string;
   input_reference_destination?: string;
+  input_receptorNameOrigin_pickup?:string
   is_disabled_pickup: boolean = true;
   center: LatLngLiteral = {
     lat: 10.96854,
@@ -203,17 +204,18 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   private onGetLocationStore(flagInit : boolean) {
 
-    this.storeService.onGetLocationStoreService().subscribe((data) => {
-      this.input_visible_pickup = data.data.store.fullName;
-      this.dataStorePhone = data.data.store.phone;
+    this.storeService.onGetLocationStoreService().subscribe((resp) => {
+      console.log("resp.data.store",resp.data.store)
+      this.input_visible_pickup = resp.data.store.addressStreet+' ('+resp.data.store.fullName+')';
+      this.dataStorePhone = resp.data.store.phone;
       this.request_trip.addresses[0].point.type = "Point";
       this.request_trip.addresses[0].floor = "";
       this.request_trip.addresses[0].alias = "";
       this.request_trip.addresses[0].marker = "store";
       this.request_trip.addresses[0].addressStreet = this.input_visible_pickup;
       this.request_trip.addresses[0].point.coordinates = [
-        data.data.store.location.coordinates[0],
-        data.data.store.location.coordinates[1]
+        resp.data.store.location.coordinates[0],
+        resp.data.store.location.coordinates[1]
       ];
 
       // this.input_visible_pickup = this.marker.maintext
@@ -223,12 +225,12 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       }
       this.markers[0].label = 'Origen'
       this.markers[0].iconUrl = this.globalIconOrigin
-      this.markers[0].lng = data.data.store.location.coordinates[0];
-      this.markers[0].lat = data.data.store.location.coordinates[1];
-      this.stateOptions = data.data.tripSetting.paymentMethod;
+      this.markers[0].lng = resp.data.store.location.coordinates[0];
+      this.markers[0].lat = resp.data.store.location.coordinates[1];
+      this.stateOptions = resp.data.tripSetting.paymentMethod;
       this.center = {
-        lat: data.data.store.location.coordinates[1],
-        lng: data.data.store.location.coordinates[0]
+        lat: resp.data.store.location.coordinates[1],
+        lng: resp.data.store.location.coordinates[0]
       }
       this.method_payment = "CREDIT";
       this.onGetMotorizedPosiitonOrigin();
@@ -653,6 +655,7 @@ uuid_price ?: string
 
   originMobilePhone: string
   destinationMobilePhone: string
+  destinationReceptorName: string
   onSaveOrder() {
     let order: RequestTrip = new RequestTrip();
     if (!this.request_trip.description) {
@@ -729,6 +732,7 @@ uuid_price ?: string
         order.addresses[0].reference = this.input_reference_pickup;
         order.addresses[0].floor = item.floor;
         order.addresses[0].point = item.point;
+        order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup
       } else {
         order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
         order.addresses[1].marker = item.marker;
@@ -737,6 +741,7 @@ uuid_price ?: string
         order.addresses[1].floor = item.floor;
         order.addresses[1].addressStreet = item.addressStreet;
         order.addresses[1].point = item.point;
+        order.addresses[1].receptorName = this.destinationReceptorName;
         //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
       }
     });
