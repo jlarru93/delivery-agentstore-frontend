@@ -203,17 +203,18 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   private onGetLocationStore(flagInit : boolean) {
 
-    this.storeService.onGetLocationStoreService().subscribe((data) => {
-      this.input_visible_pickup = data.data.store.fullName;
-      this.dataStorePhone = data.data.store.phone;
+    this.storeService.onGetLocationStoreService().subscribe((resp) => {
+      console.log("resp.data.store",resp.data.store)
+      this.input_visible_pickup = resp.data.store.addressStreet+' ('+resp.data.store.fullName+')';
+      this.dataStorePhone = resp.data.store.phone;
       this.request_trip.addresses[0].point.type = "Point";
       this.request_trip.addresses[0].floor = "";
       this.request_trip.addresses[0].alias = "";
       this.request_trip.addresses[0].marker = "store";
       this.request_trip.addresses[0].addressStreet = this.input_visible_pickup;
       this.request_trip.addresses[0].point.coordinates = [
-        data.data.store.location.coordinates[0],
-        data.data.store.location.coordinates[1]
+        resp.data.store.location.coordinates[0],
+        resp.data.store.location.coordinates[1]
       ];
 
       // this.input_visible_pickup = this.marker.maintext
@@ -223,12 +224,12 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       }
       this.markers[0].label = 'Origen'
       this.markers[0].iconUrl = this.globalIconOrigin
-      this.markers[0].lng = data.data.store.location.coordinates[0];
-      this.markers[0].lat = data.data.store.location.coordinates[1];
-      this.stateOptions = data.data.tripSetting.paymentMethod;
+      this.markers[0].lng = resp.data.store.location.coordinates[0];
+      this.markers[0].lat = resp.data.store.location.coordinates[1];
+      this.stateOptions = resp.data.tripSetting.paymentMethod;
       this.center = {
-        lat: data.data.store.location.coordinates[1],
-        lng: data.data.store.location.coordinates[0]
+        lat: resp.data.store.location.coordinates[1],
+        lng: resp.data.store.location.coordinates[0]
       }
       this.method_payment = "CREDIT";
       this.onGetMotorizedPosiitonOrigin();
