@@ -18,10 +18,10 @@ import { TagModule } from 'primeng/tag';
   imports: [
     CommonModule,
     OrderCourseRoutingModule,
-    // AgmCoreModule.forRoot({
-    //   apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
-    //   libraries: ['drawing']
-    // }),
+    AgmCoreModule.forRoot({
+      apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
+      libraries: ['drawing']
+    }),
     AccordionModule,
     ButtonModule,
     AvatarModule,

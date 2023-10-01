@@ -11,6 +11,7 @@
           transitionOptions="400ms cubic-bezier(0.86, 0, 0.07, 1)"
 
           *ngFor="let item of list_order; index as i"
+          [(selected)]="selectedTabs[item.uuid]"
         >
         <ng-template pTemplate="header">
           <div>
@@ -186,7 +187,7 @@
     </ng-template>
   </div>
   <div class="p-col-8">
-    <nexus-informacion-mapa
+    <!-- <nexus-informacion-mapa
       [idMap]="'Map-'"
       [coberturePosition]="coberturePosition"
       [lstPosiciones]="lstPosiciones"
@@ -195,6 +196,25 @@
       [initMapViewAfter]="initMapViewAfter"
       [lstCoordinateEncoded]="polyline_order"
     >
-    </nexus-informacion-mapa>
+    </nexus-informacion-mapa> -->
+    <agm-map 
+      [style]="{height:'100%', width:'100%'}" 
+      [latitude]="center.lat" 
+      [longitude]="center.lng" 
+      [zoom]="zoom"
+      >
+      <agm-marker *ngFor="let marker of markers" 
+          [markerDraggable]="true" 
+          [latitude]="marker.lat" 
+          [longitude]="marker.lng" 
+          
+          [iconUrl]="marker.iconUrl"
+          [markerDraggable]="marker.isDraggable"
+          (dragEnd)="onChangeMapMarkers($event, marker)"
+          ></agm-marker>
+      <agm-polyline *ngFor="let polyLine of polyLines" [editable]="false" [strokeColor]="polyLine.color" [strokeWeight]="3">
+        <agm-polyline-point *ngFor="let point of polyLine.routePoints" [latitude]="point.lat" [longitude]="point.lng" [visible]="false"></agm-polyline-point>
+      </agm-polyline>
+    </agm-map>
   </div>
 </div>
