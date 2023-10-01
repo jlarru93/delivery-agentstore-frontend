@@ -50,11 +50,23 @@ export class ResponseOrderCourse {
         lng: number;
     };
     vehicle: string;
+    suggestedRoute: RouterResponse
+    deliveryManRoute: DeliveryManRouteResponse[]
 }
-
   export  class   DeliveryMan {
     id: number;
     name: string;
     phone: string;
-    status: string;
+    status?: string;
   };
+
+
+  export class RouterResponse{
+    polyline:{lat:number,lng:number}[]
+    color:string
+}
+
+export class DeliveryManRouteResponse extends RouterResponse{
+  deliveryMan:DeliveryMan
+
+}
