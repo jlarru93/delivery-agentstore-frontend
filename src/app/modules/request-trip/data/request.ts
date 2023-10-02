@@ -16,6 +16,7 @@ export class Point {
     alias: string;
     floor: string;
     reference: string;
+    receptorName?: string;
     phone: string;
     label ?: string;
     uuidRoutePrice ?: string;

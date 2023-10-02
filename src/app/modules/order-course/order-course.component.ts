@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { Viaje } from "./data";
-import { MouseEvent } from "src/agm/core";
+import { LatLngLiteral, MouseEvent } from "src/agm/core";
 import { RequestTripService } from "../request-trip/services/request-trip.service";
 import {
   AddressResponseLoadingOrder,
@@ -34,6 +34,28 @@ import { MqttService } from "../service/mqtt.service";
 import { enumStatusOrder, enumTypePayment } from "../request-trip/data/enum";
 import { environment } from "src/environments/environment";
 import { AuthService } from "src/app/utils/auth.service";
+import { DeliveryManRouteResponse, ResponseTrackingMotorized, RouterResponse } from "./data/response";
+
+class PolyLine{
+  routePoints:RoutePoint[]
+  color: string
+  text?: string
+}
+interface RoutePoint {
+  lat: number;
+  lng: number;
+}
+
+interface Marker {
+  lat: number;
+  lng: number;
+  label?: string;
+  maintext?: string;
+  secondText?: string;
+  iconUrl?:string
+  isDraggable?:boolean
+  onDragEnd?:(e:MouseEvent)=>void
+}
 
 @Component({
   selector: "app-order-course",
@@ -51,12 +73,77 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     private auth: AuthService,
   ) {}
 
-  list_order: ResponseLoadingOrder[] = [];
-  idClient?: string;
-  center: any = {
+
+  origenIcon: any =
+    "assets/empresas/" +
+    environment.NAME_COMPANY +
+    environment.MARKERS.ORIGEN.URL;
+
+  destinoIcon: any =
+    "assets/empresas/" +
+    environment.NAME_COMPANY +
+    environment.MARKERS.DESTINO.URL;
+  referenciaIcon: any = "assets/images/busqueda/referencia.svg";
+
+  repartidorIcon: any =
+    "assets/empresas/" +
+    environment.NAME_COMPANY +
+    environment.MARKERS.CONDUCTOR.URL;
+
+  globalIconOrigin: any = { 
+    url: this.origenIcon, 
+    scaledSize: {
+      height: 50, 
+      width: 50
+    }
+  }
+
+  globalIconDestination: any = { 
+    url: this.destinoIcon, 
+    scaledSize: {
+      height: 50, 
+      width: 50
+    }
+  }
+
+  globalIconDriver: any = {
+    url: this.repartidorIcon, 
+    scaledSize: {
+      height: 50, 
+      width: 50
+    }
+  }
+
+  center: LatLngLiteral = {
     lat: 10.96854,
     lng: -74.78132,
   };
+
+  markers: Marker[] = [
+    {
+      maintext: "Barranquilla",
+      secondText: "Hotel atrium",
+      lat: 10.96854,
+      lng: -74.78132,
+      iconUrl: 'none'
+    }
+  ];
+
+  polyLines :PolyLine[] = [
+    {
+      routePoints:[],
+      color: ''
+    }
+  ]
+
+  zoom = 17;
+
+  list_order: ResponseLoadingOrder[] = [];
+  idClient?: string;
+  // center: any = {
+  //   lat: 10.96854,
+  //   lng: -74.78132,
+  // };
   activeState: boolean[] = [true, false, false];
   interval_motorized_order?: any;
   marker?: any = {
@@ -89,6 +176,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   userId: any
+
+  
 
   ngAfterViewInit() {}
   isMqttConnect: boolean = false;
@@ -259,13 +348,13 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.onSearchMotorizedOrder();
     this.interval_motorized_order = setInterval(() => {
       this.onSearchMotorizedOrder();
-    }, 3000);
+    }, 30000);
   }
   async onOrderCourseIntervalSubscription(index: number) {
     await this.onSearchMotorizedOrderSubscription();
     this.interval_motorized_order = setInterval(() => {
       this.onSearchMotorizedOrderSubscription();
-    }, 3000);
+    }, 30000);
   }
   ngOnDestroy(): void {
     clearInterval(this.interval_motorized_order);
@@ -281,18 +370,19 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   onTabClose(envios: any) {
     this.onClearMap();
     this.flagAccordion = false;
-    this.onOrderCourseInterval(envios.index);
+    //this.onOrderCourseInterval(envios.index);
     clearInterval(this.set_interval_driver);
   }
   flagAccordion: boolean = false;
   async onTapOpen(envios: any, flagAccordion: boolean) {
+    this.polyLines=[]
     clearInterval(this.set_interval_driver);
     this.flagAccordion = true;
     this.onClearMap();
     // await this.onGetRouteServiceShared(select_service)
     // this.onUpdatePosicion(select_service)
     // this.getServiceRouteAssigned(select_service.id)
-    clearInterval(this.interval_motorized_order);
+    //clearInterval(this.interval_motorized_order);
     this.onViewOrder(envios.index);
   }
   onViewOrder(index: number) {
@@ -301,45 +391,115 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onUpdateDriver(select_service);
   }
   onChangePolyline(item: ResponseLoadingOrder) {}
-  updatePosition(select_service: ResponseLoadingOrder) {
-    var lstPosiciones: PersonalisationMarker[] = [];
-    lstPosiciones.push(
-      UtilModalViaje.fnDetalleViaje(
-        new google.maps.LatLng(
-          select_service.addresses[0].location.coordinates[1],
-          select_service.addresses[0].location.coordinates[0]
-        ),
-        true,
-        "Origen",
-        TypeMarkers.ORIGEN,
-        false,
-        1,
-        false
-      )
-    );
-    if (select_service.addresses.length > 1) {
-      lstPosiciones.push(
-        UtilModalViaje.fnDetalleViaje(
-          new google.maps.LatLng(
-            select_service.addresses[1].location.coordinates[1],
-            select_service.addresses[1].location.coordinates[0]
-          ),
-          true,
-          "Destino",
-          TypeMarkers.DESTINO,
-          false,
-          1,
-          false
-        )
-      );
-    }
 
-    this.lstPosiciones = lstPosiciones;
+  updatePosition(select_service: ResponseLoadingOrder) {
+
+    this.markers = []
+    const newMarkersOrigin: Marker = {
+      lat: select_service.addresses[0].location.coordinates[1],
+      lng: select_service.addresses[0].location.coordinates[0],
+      iconUrl: this.globalIconOrigin,
+      label: 'Origen',
+      isDraggable: false,
+    }
+    this.markers[0] = newMarkersOrigin
+
+    const newMarkersDestination: Marker = {
+      lat: select_service.addresses[1].location.coordinates[1],
+      lng: select_service.addresses[1].location.coordinates[0],
+      iconUrl: this.globalIconDestination,
+      label: 'Destino',
+      isDraggable: false,
+    }
+    this.markers[1] = newMarkersDestination
+    this.centrarMapa()
+
+    // var lstPosiciones: PersonalisationMarker[] = [];
+    // lstPosiciones.push(
+    //   UtilModalViaje.fnDetalleViaje(
+    //     new google.maps.LatLng(
+    //       select_service.addresses[0].location.coordinates[1],
+    //       select_service.addresses[0].location.coordinates[0]
+    //     ),
+    //     true,
+    //     "Origen",
+    //     TypeMarkers.ORIGEN,
+    //     false,
+    //     1,
+    //     false
+    //   )
+    // );
+    // if (select_service.addresses.length > 1) {
+    //   lstPosiciones.push(
+    //     UtilModalViaje.fnDetalleViaje(
+    //       new google.maps.LatLng(
+    //         select_service.addresses[1].location.coordinates[1],
+    //         select_service.addresses[1].location.coordinates[0]
+    //       ),
+    //       true,
+    //       "Destino",
+    //       TypeMarkers.DESTINO,
+    //       false,
+    //       1,
+    //       false
+    //     )
+    //   );
+    // }
+
+    // this.lstPosiciones = lstPosiciones;
   }
+
+  updatePositionDriver(item: ResponseTrackingMotorized){
+    const newMarkersDriver: Marker = {
+      lat: item.deliveryManRoute[0].polyline[0].lat,
+      lng: item.deliveryManRoute[0].polyline[0].lng,
+      //lat: select_service.addresses[0].location.coordinates[1],
+      //lng: select_service.addresses[0].location.coordinates[0],
+      iconUrl: this.globalIconDriver,
+      label: 'Repartidor',
+      isDraggable: false,
+    }
+    this.markers[2] = newMarkersDriver
+  }
+
+  centrarMapa() { 
+    if (this.markers.length >= 2) { 
+
+      const centerLat = (this.markers[0].lat + this.markers[1].lat ) / 2;
+      const centerLng = (this.markers[0].lng + this.markers[1].lng) / 2;
+
+      const distance = google.maps.geometry.spherical.computeDistanceBetween(
+        new google.maps.LatLng(this.markers[0].lat, this.markers[0].lng),
+        new google.maps.LatLng(this.markers[1].lat, this.markers[1].lng)
+      );
+      const zoom = this.calcularNivelDeZoom(distance);
+
+      console.log('distancia_ ', distance)
+
+      this.center = { lat: centerLat, lng: centerLng };
+      this.zoom = zoom;
+      console.log('zoom_ ', zoom)
+
+    } 
+  } 
+
+  calcularNivelDeZoom(distance: number): number{
+    // Puedes ajustar estos valores según tus preferencias
+    if (distance < 1000) {
+      return 20; // Zoom más cercano si la distancia es corta
+    } else if (distance < 5000) {
+      return 15; // Zoom intermedio para distancias medianas
+    } else {
+      return 11; // Zoom más alejado si la distancia es larga
+    }
+  }
+
+  selectedTabs: { [key: string]: boolean } = {};
   async onSearchMotorizedOrder() {
     await this.requestTripService
       .onLoadingMotorizedService()
       .subscribe((data) => {
+        const selectedTabsBackup = { ...this.selectedTabs };
         this.list_order = [];
         data.data.forEach((element) => {
           let order = new ResponseLoadingOrder();
@@ -369,6 +529,9 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.id = element.id 
           order.uuid = element.uuid
           // order.showButton = false
+
+          this.selectedTabs[order.uuid] = selectedTabsBackup[order.uuid];
+
           this.list_order.push(order);
         });
         this.isDoneGetOrders = true;
@@ -564,37 +727,54 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   set_interval_driver: any;
   onUpdateIntervalDriver(item: ResponseLoadingOrder) {
+    
     this.onUpdateDriverPullRequest(item);
     this.set_interval_driver = setInterval(() => {
       this.onUpdateDriverPullRequest(item);
     }, 20000);
   }
+  viajeTracking : ResponseTrackingMotorized
   async onUpdateDriverPullRequest(item: ResponseLoadingOrder) {
     let lstPosiciones: PersonalisationMarker[] = [];
     await this.requestTripService
       .onViewTrackingMotorizedService(item.uuid)
       .subscribe((viaje) => {
+        this.viajeTracking = viaje.data
         if (viaje.data.position) {
-          let tittle = viaje.data.deliveryMan.name;
-          lstPosiciones.push(
-            this.fnDetalleViajeLabelListServiceWeb(
-              new google.maps.LatLng(
-                viaje.data.position.lat,
-                viaje.data.position.lng
-              ),
-              tittle,
-              -1,
-              "",
-              "",
-              true
-            )
-          );
+          // let tittle = viaje.data.deliveryMan.name;
+          // lstPosiciones.push(
+          //   this.fnDetalleViajeLabelListServiceWeb(
+          //     new google.maps.LatLng(
+          //       viaje.data.position.lat,
+          //       viaje.data.position.lng
+          //     ),
+          //     tittle,
+          //     -1,
+          //     "",
+          //     "",
+          //     true
+          //   )
+          // );
 
-          this.lstPosicionConductor = lstPosiciones;
+          // this.lstPosicionConductor = lstPosiciones;
+
+          this.polyLines=[]
+        
+          const polySuggested=this.drawPolyline(viaje.data.suggestedRoute)
+          if(polySuggested){
+            this.polyLines.push(polySuggested)
+          }
+          const polyDeliveryMan=viaje.data.deliveryManRoute.map((dmr)=>this.drawPolylineDeliveryMan(dmr))
+          
+          this.polyLines=[...this.polyLines,...polyDeliveryMan]
+
         } else {
           this.onClearMap();
         }
         this.updatePosition(item);
+        if(this.viajeTracking){
+          this.updatePositionDriver(this.viajeTracking)
+        }
       });
 
     // let lstPosiciones = cloneDeep(
@@ -603,6 +783,27 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     //     )
     //   )
     // this.lstPosiciones.emit(lstPosiciones)
+  }
+
+  drawPolyline(overviewPolyline?: RouterResponse):PolyLine{  
+    if(overviewPolyline){
+      let polySuggestedRoute:PolyLine=new PolyLine()
+      polySuggestedRoute.color=overviewPolyline.color
+      polySuggestedRoute.routePoints=overviewPolyline.polyline
+      return polySuggestedRoute;
+    }
+    return null;
+  }
+
+  drawPolylineDeliveryMan(overviewPolyline: DeliveryManRouteResponse){
+    if(overviewPolyline){
+      let polySuggestedRoute:PolyLine=new PolyLine()
+      polySuggestedRoute.color=overviewPolyline.color
+      polySuggestedRoute.routePoints=overviewPolyline.polyline
+      polySuggestedRoute.text=overviewPolyline.deliveryMan.name
+      return polySuggestedRoute;
+    }
+    return null;
   }
 
   fnDetalleViajeLabelListServiceWeb(
