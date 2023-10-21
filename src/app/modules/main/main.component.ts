@@ -148,6 +148,7 @@ import { ChatComponent } from "src/app/chat/chat.component";
     }
 
     isButtonEnabled: boolean = false
+    
     getOrders(){
       this.orderService.getOrders().subscribe((resp)=>{
         this.orders=resp.data.map((it)=>{
@@ -155,14 +156,9 @@ import { ChatComponent } from "src/app/chat/chat.component";
           let currentOrden=this.orders.find((or)=>or.id==it.id)
           if(currentOrden){
             order.messagesChat=currentOrden.messagesChat
+            order.showButton = currentOrden.showButton;
           }
 
-          // if(currentOrden.status == 'inStore'){
-          //   this.isButtonEnabled = true;
-          // } else {
-          //   this.isButtonEnabled = false;
-          // }
-          
           return order
         })
         this.sortOrders()
@@ -275,6 +271,7 @@ import { ChatComponent } from "src/app/chat/chat.component";
     }
 
     sortOrders(){
+      debugger
       this.ordersOpen=this.orders.filter((order)=>order.status==CONSTANTES.OPEN_ORDER_STATUS &&  this.dmStatusOkay(order))
       this.ordersPreparing=this.orders.filter((order)=>order.status==CONSTANTES.PREPARING_ORDER_STATUS &&  this.dmStatusOkay(order))
       this.ordersReady=this.orders.filter((order)=>order.status==CONSTANTES.READY_ORDER_STATUS &&  this.dmStatusOkay(order))
@@ -403,6 +400,7 @@ import { ChatComponent } from "src/app/chat/chat.component";
         this.getMessages(order)
       }
     }
+    
 
     hideChatComponent(order:OrderBean){
       order.showButton =  !order.showButton;

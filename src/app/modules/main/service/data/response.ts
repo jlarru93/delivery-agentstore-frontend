@@ -261,11 +261,13 @@ export class UserResponse {
     id?: number
     fullName?: string
     address?: AddressResponse
+    phone? : string
     static toBean(self: UserResponse): UserBean {
         const bean = new UserBean()
         bean.id = self.id,
             bean.fullName = self.fullName,
             bean.address = AddressResponse.toBean(self.address)
+            bean.phone = self.phone
         return bean
     }
 }

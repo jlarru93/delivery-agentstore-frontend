@@ -120,6 +120,7 @@ export class UserBean {
     id?: number
     fullName?: string
     address?: AddressBean
+    phone?: string
 }
 
 export class CardBean {

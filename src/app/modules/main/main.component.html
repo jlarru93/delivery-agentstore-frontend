@@ -11,16 +11,16 @@
           </div>
           <div *ngFor="let order of ordersOpen; let i = index">
              <div class="p-col-12">
-                <div class="p-grid p-nogutter widget-overview-box p-shadow-3" style="background-color: #4BCCBD">
+                <div class="p-grid p-nogutter widget-overview-box p-shadow-3" style="background-color: #d94545">
                   <div class="p-col-12">
                      <div class="p-grid">
                         <div class="p-col" (click)=" openOrderDialog(order)">
-                           <h5>ID: {{order.id}}</h5>
-                           <p>{{order?.store?.addressStreet}}</p>
+                           <h5 style="color: #fff;">ID: {{order.id}}</h5>
+                           <p style="color: #fff;">{{order?.store?.addressStreet}}</p>
                         </div>
                         <div class="p-col">
                            <div class="overlay-container">
-                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
+                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-secondary p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
                                  <app-chat 
                                     [isLoading]="order.isLoadingChat"
@@ -39,7 +39,7 @@
                      </div>
                  </div>
                    <div class="p-col-12" (click)=" openOrderDialog(order)">
-                     <hr>  
+                     <hr style="border-color: #fff;">  
                     </div>
                     <div class="p-col-12" (click)=" openOrderDialog(order)">
                      <div class="p-grid">
@@ -316,7 +316,7 @@
             <div class="sidebar-container-title">Cliente</div>
             <div class="card-client">
                <b>{{orderSelected?.user?.fullName}}</b>
-               <p>+51 999 888 777</p>
+               <p>{{orderSelected?.user?.phone}}</p>
             </div>
             <div *ngIf="orderSelected.status=='open'">
                <div class="sidebar-container-title">Tiempo de preparación</div>
