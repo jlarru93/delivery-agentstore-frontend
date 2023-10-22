@@ -27,6 +27,7 @@ import { InputTextModule } from "primeng/inputtext";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { ModalModule } from "src/app/modal/modal.module";
 import { ChatModule } from "src/app/chat/chat.module";
+import { ToastModule } from "primeng/toast";
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
     imports: [
@@ -41,6 +42,7 @@ import { ChatModule } from "src/app/chat/chat.module";
       ChatModule,
       DialogModule,
       ButtonModule,
+      ToastModule,
       AccordionModule,
       TableModule,
       TreeTableModule,

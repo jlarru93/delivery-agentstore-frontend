@@ -1,3 +1,4 @@
+<p-toast [baseZIndex]="1000"></p-toast>
 <div class="p-grid">
     <div class="p-col-12 p-lg-4 p-md-6">
        <div class="card widget-support-request">
@@ -11,16 +12,16 @@
           </div>
           <div *ngFor="let order of ordersOpen; let i = index">
              <div class="p-col-12">
-                <div class="p-grid p-nogutter widget-overview-box p-shadow-3" style="background-color: #d94545">
+                <div class="p-grid p-nogutter widget-overview-box p-shadow-3" style="background: -webkit-gradient(linear, left bottom, right top, color-stop(0%, #bf616a), color-stop(100%, #ce9393));">
                   <div class="p-col-12">
                      <div class="p-grid">
                         <div class="p-col" (click)=" openOrderDialog(order)">
-                           <h5 style="color: #fff;">ID: {{order.id}}</h5>
-                           <p style="color: #fff;">{{order?.store?.addressStreet}}</p>
+                           <h5 style="color: #ffffff;">ID: {{order.id}}</h5>
+                           <p style="color: #ffffff;">{{order?.store?.addressStreet}}</p>
                         </div>
                         <div class="p-col">
                            <div class="overlay-container">
-                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-secondary p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
+                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right; background: linear-gradient(225deg, #f2c260 0%, #ebcb8b 100%);"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
                                  <app-chat 
                                     [isLoading]="order.isLoadingChat"
@@ -39,12 +40,12 @@
                      </div>
                  </div>
                    <div class="p-col-12" (click)=" openOrderDialog(order)">
-                     <hr style="border-color: #fff;">  
+                     <hr style="border-color: #ffffff;">  
                     </div>
                     <div class="p-col-12" (click)=" openOrderDialog(order)">
                      <div class="p-grid">
                         <div class="p-col-12">
-                           <button class="btn-preparation-2" pButton pRipple type="button" style="float: right;">Aceptar Orden</button>
+                           <button class="p-button-warning" pButton pRipple type="button" style="float: right; background: linear-gradient(225deg, #f2c260 0%, #ebcb8b 100%); color: #ffffff;">Aceptar Orden</button>
                         </div>
                      </div>
                     </div>
@@ -134,7 +135,7 @@
                         </div>
                      </div>
                      <div class="p-col-6">
-                        <button class="btn-preparation" pButton pRipple type="button" style="float: right;">Pedido listo</button>
+                        <button class="p-button-primary" pButton pRipple type="button" style="float: right;">Pedido listo</button>
                      </div>
                   </div>
                  </div>
@@ -230,6 +231,7 @@
     </div>
  </div>
  <p-dialog [(visible)]="displayOrder" [modal]="true">
+   <p-toast position="top-center" key="tc"></p-toast>
  <ng-template pTemplate="header">
    <div class="p-toolbar-group-left">
       <b><h3>Orden: {{orderSelected.id}}</h3></b>

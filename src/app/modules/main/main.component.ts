@@ -113,6 +113,8 @@ import { ChatComponent } from "src/app/chat/chat.component";
       const dialogRef = this.dialog.open(ModalComponent, {
         data: {imagenURL: this.imagenURL}
       });
+
+      this.flagOpenReceiptDialog = true
   
       dialogRef.afterClosed().subscribe(result => {
         console.log('Diálogo cerrado');
@@ -271,7 +273,6 @@ import { ChatComponent } from "src/app/chat/chat.component";
     }
 
     sortOrders(){
-      debugger
       this.ordersOpen=this.orders.filter((order)=>order.status==CONSTANTES.OPEN_ORDER_STATUS &&  this.dmStatusOkay(order))
       this.ordersPreparing=this.orders.filter((order)=>order.status==CONSTANTES.PREPARING_ORDER_STATUS &&  this.dmStatusOkay(order))
       this.ordersReady=this.orders.filter((order)=>order.status==CONSTANTES.READY_ORDER_STATUS &&  this.dmStatusOkay(order))
@@ -287,18 +288,38 @@ import { ChatComponent } from "src/app/chat/chat.component";
       return dmStatusOkay
     }
 
+    flagOpenReceiptDialog: boolean = false
+
     aceptOrder(){
       let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
       orderRequest.readyToDmAt=this.readyToDmAt
       this.loadingButtonAcept=true
-      this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
-        this.displayOrder=false
-        this.loadingButtonAcept=false
-      },()=>{
 
-        this.loadingButtonAcept=false
-      },()=>{
-      })
+      if(orderRequest.payment.method.type == 'CASH'){
+        this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
+          this.displayOrder=false
+          this.loadingButtonAcept=false
+        },()=>{
+  
+          this.loadingButtonAcept=false
+        },()=>{
+        })
+      } else {
+        if(!this.flagOpenReceiptDialog){
+          this.messageService.add({key: 'tc', severity: 'warn', summary: '', detail: 'Por favor revise el comprobante de pago primero'})
+          this.loadingButtonAcept = false
+        } else {
+          this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
+            this.displayOrder=false
+            this.loadingButtonAcept=false
+          },()=>{
+    
+            this.loadingButtonAcept=false
+          },()=>{
+          })
+        }
+      }
+
     }
     readyOrder(){
       const order=this.orderSelected
