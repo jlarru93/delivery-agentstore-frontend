@@ -432,7 +432,7 @@ h5{
     background-color: #DD1f26;
 }
 .content-print{
-    max-width: 450px;
+    max-width: 650px;
     width: 100%;
     box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
     margin: 0 auto;
@@ -484,5 +484,9 @@ h5{
   }
 
   .options{
-    margin-left: 15px;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 15px;
+    padding-right: 15px;
   }
+  

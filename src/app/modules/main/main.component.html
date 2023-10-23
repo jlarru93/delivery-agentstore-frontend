@@ -266,6 +266,7 @@
                     </div>
                     <div class="options" *ngFor="let option of product.options">
                         <div>{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}</div>
+                        <input type="checkbox" name="" id="">
                         <div *ngFor="let sub of option.subOptions">
                             <div class="p-grid" >
                                 <div class="p-col-6">
