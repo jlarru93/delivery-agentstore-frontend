@@ -432,7 +432,7 @@ h5{
     background-color: #DD1f26;
 }
 .content-print{
-    max-width: 650px;
+    max-width: 600px;
     width: 100%;
     box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
     margin: 0 auto;
@@ -450,7 +450,6 @@ h5{
     padding-left: 20px;
     font-family: 'Poppins', sans-serif;
 }
-
 .store-logo{
     height: 70px;
     width: 70px;
@@ -468,7 +467,7 @@ h5{
     padding: 0 50px 0 50px;
     font-family: 'Poppins', sans-serif;
   }
-  .comanda > h3 {
+  .comanda > h4 {
     text-align: center;
     font-weight: 700;
   }
@@ -484,9 +483,12 @@ h5{
   }
 
   .options{
-    display: flex;
-    justify-content: space-between;
     padding-left: 15px;
     padding-right: 15px;
+  }
+
+  .option-data{
+    display: flex;
+    justify-content: space-between;
   }
   

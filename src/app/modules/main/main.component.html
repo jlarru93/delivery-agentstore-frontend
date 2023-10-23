@@ -245,14 +245,14 @@
                 </div>
                 <div class="store-name">
                     <div>
-                        <strong>{{orderSelected.store.name}}</strong><br>
+                        <strong style="font-size: 20px;">{{orderSelected.store.name}}</strong><br>
                         <small>Información del pedido</small>
                     </div>
                     
                 </div>
             </div>
             <div class="comanda">
-                <h3>Comanda</h3>
+                <h4>Comanda</h4>
             </div>
             <div class="order-detail">
                 <div *ngFor="let product of orderSelected.products; index as i">
@@ -265,17 +265,19 @@
                         </div>
                     </div>
                     <div class="options" *ngFor="let option of product.options">
-                        <div>{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}</div>
-                        <input type="checkbox" name="" id="">
+                        <div class="option-data">
+                           <div>{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}</div>
+                           <input type="checkbox" name="" id="">
+                        </div>
                         <div *ngFor="let sub of option.subOptions">
-                            <div class="p-grid" >
-                                <div class="p-col-6">
-                                    <p style="font-size: 17px;">{{sub.name}}</p>
-                                 </div>
-                                 <div class="p-col-6">
-                                    <p style="float: right;">{{sub.quantity > 0 ? sub.quantity : '-' }}</p>
-                                 </div>
-                            </div>
+                           <div class="p-grid" style="padding-left: 10px;">
+                              <div class="p-col-6">
+                                 <div style="font-size: 17px;">{{sub.name}} x{{sub.quantity > 0 ? sub.quantity : '-' }}</div>
+                              </div>
+                              <div class="p-col-6">
+                                 <input type="checkbox" name="" id="">
+                              </div>
+                           </div>
                         </div>
                     </div>
                     <hr>
