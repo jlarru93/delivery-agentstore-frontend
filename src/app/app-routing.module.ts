@@ -83,7 +83,7 @@ const routes: Routes = [
     { path: 'accessdenied', component: AppAccessdeniedComponent },
     { path: 'notfound', component: AppNotfoundComponent },
     { path: 'login', component: SignInComponent, canActivate: [IsNotAuthenticated]}, 
-    { path: '**', redirectTo: '/notfound' },
+    { path: '**', redirectTo: '/notfound' }
 ]
 @NgModule({
     imports: [

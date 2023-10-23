@@ -424,3 +424,65 @@ h5{
     line-height: 1.2;
     color: inherit;
 }
+
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+.header-print{
+    height: 55px;
+    background-color: #DD1f26;
+}
+.content-print{
+    max-width: 450px;
+    width: 100%;
+    box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+    margin: 0 auto;
+    background-color: #fff;
+    padding-bottom: 10px;
+}
+.store-print{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 20px 50px 0 50px;
+}
+
+.store-name {
+    padding-left: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.store-logo{
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+  }
+  .store-logo > .store-img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    
+  }
+
+  .comanda{
+    padding: 0 50px 0 50px;
+    font-family: 'Poppins', sans-serif;
+  }
+  .comanda > h3 {
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .order-detail{
+    padding: 0 50px 0 50px;
+  }
+
+  .order-product-name{
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .options{
+    margin-left: 15px;
+  }

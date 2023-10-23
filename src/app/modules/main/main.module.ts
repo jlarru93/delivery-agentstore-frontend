@@ -28,6 +28,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { ModalModule } from "src/app/modal/modal.module";
 import { ChatModule } from "src/app/chat/chat.module";
 import { ToastModule } from "primeng/toast";
+import { NgxPrintModule } from "ngx-print";
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
     imports: [
@@ -45,6 +46,7 @@ import { ToastModule } from "primeng/toast";
       ToastModule,
       AccordionModule,
       TableModule,
+      NgxPrintModule,
       TreeTableModule,
       // AgmCoreModule.forRoot({
       //   apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",

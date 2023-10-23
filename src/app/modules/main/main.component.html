@@ -235,6 +235,57 @@
  <ng-template pTemplate="header">
    <div class="p-toolbar-group-left">
       <b><h3>Orden: {{orderSelected.id}}</h3></b>
+      <pre>{{orderSelected.product | json}}</pre>
+   </div>
+   <div class="p-toolbar-group-right">
+      <button  pButton type="button" icon="pi pi-print" class="p-button-text" printSectionId="print-section" ngxPrint [useExistingCss]="true" [previewOnly]="false"></button> 
+      <div id="print-section" style="display: none;"> 
+         <div class="content-print" id="printSection">
+            <div class="header-print"></div>
+            <div class="store-print">
+                <div class="store-logo">
+                    <img class="store-img" src="{{orderSelected.store.logo}}" alt="">
+                </div>
+                <div class="store-name">
+                    <div>
+                        <strong>{{orderSelected.store.name}}</strong><br>
+                        <small>Información del pedido</small>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="comanda">
+                <h3>Comanda</h3>
+            </div>
+            <div class="order-detail">
+                <div *ngFor="let product of orderSelected.products; index as i">
+                    <div class="order-product-name">
+                        <div>
+                            <strong>X{{product.quantity}}</strong> {{product.name}}
+                        </div>
+                        <div>
+                            <input type="checkbox" name="" id="">
+                        </div>
+                    </div>
+                    <div class="options" *ngFor="let option of product.options">
+                        <div>{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}</div>
+                        <div *ngFor="let sub of option.subOptions">
+                            <div class="p-grid" >
+                                <div class="p-col-6">
+                                    <p style="font-size: 17px;">{{sub.name}}</p>
+                                 </div>
+                                 <div class="p-col-6">
+                                    <p style="float: right;">{{sub.quantity > 0 ? sub.quantity : '-' }}</p>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+      </div>
+      
    </div>
  </ng-template>
  <ng-template pTemplate="body">

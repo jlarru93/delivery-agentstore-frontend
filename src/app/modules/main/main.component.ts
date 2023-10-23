@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Product } from "src/app/demo/domain/product";
 import { ProductService } from "src/app/demo/service/productservice";
@@ -82,7 +82,8 @@ import { ChatComponent } from "src/app/chat/chat.component";
       private messageService: MessageService,
       private confirmationService: ConfirmationService,
       private dialog: MatDialog,
-      private auth: AuthService){}
+      private auth: AuthService
+      ){}
     ngOnInit(): void { 
       this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
       console.log("MAIN")
@@ -472,4 +473,5 @@ import { ChatComponent } from "src/app/chat/chat.component";
     agregarCeros(valor: number): string {
       return valor < 10 ? `0${valor}` : valor.toString();
     }
+    
 }

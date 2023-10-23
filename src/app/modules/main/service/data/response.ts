@@ -166,12 +166,14 @@ export class StoreResponse {
     //address: AddressResponse
     addressStreet: string
     location?: Point
+    logo?: string
     static toBean(self: StoreResponse): StoreBean {
         const bean = new StoreBean()
         bean.id = self.id,
         bean.name = self?.name,
         bean.addressStreet = self.addressStreet,
         bean.location = self.location
+        bean.logo = self.logo
         return bean
     } 
 }
