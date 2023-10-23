@@ -272,7 +272,7 @@
                         <div *ngFor="let sub of option.subOptions">
                            <div class="p-grid" style="padding-left: 10px;">
                               <div class="p-col-6">
-                                 <div>suboption</div>
+                                 <div> <strong>{{sub.quantity > 0 ? 'x' + sub.quantity : '' }}</strong> {{sub.name}}</div>
                               </div>
                               <div class="p-col-6">
                                  <input type="checkbox" name="" id="" style="float: right;">
