@@ -22,11 +22,7 @@ export class CircleProgress implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-      console.log("startTime",this.startTime)
-      console.log("endTime",this.endTime)
-      console.log("this.startTime - this.endTime",this.endTime - this.startTime)
       this.totalTimeInSeconds = (this.endTime - this.startTime);
-      console.log("totalTimeInSeconds",this.totalTimeInSeconds)
       this.start();
     }
 
@@ -35,16 +31,11 @@ export class CircleProgress implements OnInit, AfterViewInit {
         const speed = 1000;
     
         const progress = setInterval(() => {
-            
             const now=Number(new Date().getTime().toString().substring(0,10))
-            console.log("now",now)
-            
+
             this.secondsElapsed=(this.endTime-now)
-            console.log("this.secondsElapsed",this.secondsElapsed)
             const progressPercentage = (this.secondsElapsed / this.totalTimeInSeconds) * progressEndValue;
-            console.log("progressPercentage",progressPercentage)
             this.minutesElapsed = Math.floor(this.secondsElapsed / 60);
-            console.log("this.minutesElapsed",this.minutesElapsed)
             this.progressValue.nativeElement.textContent = `${this.minutesElapsed} min`;
             this.circularProgress.nativeElement.style.background = `conic-gradient(#d94545 ${progressPercentage * 3.6}deg, #ededed 0deg)`;
       
