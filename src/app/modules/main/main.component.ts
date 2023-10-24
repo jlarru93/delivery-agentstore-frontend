@@ -479,6 +479,6 @@ import { NgxPrinterService } from "ngx-printer";
     @ViewChild('PrintTemplate') private PrintTemplateTpl: TemplateRef<any>;
 
     printTemplate() {
-      this.printerService.printAngular(this.PrintTemplateTpl);
+      this.printerService.printAngular(this.PrintTemplateTpl)
     }
 }
