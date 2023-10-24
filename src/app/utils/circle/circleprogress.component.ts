@@ -13,8 +13,8 @@ export class CircleProgress implements OnInit, AfterViewInit {
     secondsElapsed: number = 0;
     minutesElapsed: number = 0;
 
-    @Input() readyToDmAt: number;
-    @Input() acceptAgentStoreAt: number;
+    @Input() endTime: number;
+    @Input() startTime: number;
 
     ngOnInit(): void {
         // this.secondsDone=this.minutes*60
@@ -22,19 +22,20 @@ export class CircleProgress implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.totalTimeInSeconds = (this.readyToDmAt - this.acceptAgentStoreAt) / 1000;
-        this.start();
-      }
+      this.totalTimeInSeconds = (this.endTime - this.startTime);
+      this.start();
+    }
 
     start() {
         const progressEndValue = 100;
         const speed = 1000;
     
         const progress = setInterval(() => {
-            this.secondsElapsed++;
+            const now=Number(new Date().getTime().toString().substring(0,10))
+
+            this.secondsElapsed=(this.endTime-now)
             const progressPercentage = (this.secondsElapsed / this.totalTimeInSeconds) * progressEndValue;
             this.minutesElapsed = Math.floor(this.secondsElapsed / 60);
-      
             this.progressValue.nativeElement.textContent = `${this.minutesElapsed} min`;
             this.circularProgress.nativeElement.style.background = `conic-gradient(#d94545 ${progressPercentage * 3.6}deg, #ededed 0deg)`;
       
