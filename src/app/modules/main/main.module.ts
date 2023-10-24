@@ -29,7 +29,7 @@ import { ModalModule } from "src/app/modal/modal.module";
 import { ChatModule } from "src/app/chat/chat.module";
 import { ToastModule } from "primeng/toast";
 import { PrintTemplateModule } from "src/app/print-template/print-template.module";
-import { NgxPrinterModule } from "ngx-printer";
+//import { NgxPrinterModule } from "";
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
     imports: [
@@ -49,7 +49,7 @@ import { NgxPrinterModule } from "ngx-printer";
       AccordionModule,
       TableModule,
       TreeTableModule,
-      NgxPrinterModule.forRoot({printOpenWindow: false}),
+      //NgxPrinterModule.forRoot({printOpenWindow: false}),
       // AgmCoreModule.forRoot({
       //   apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
       //   libraries: ['drawing']
