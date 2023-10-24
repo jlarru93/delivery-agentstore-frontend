@@ -235,7 +235,7 @@
       <b><h3>Orden: {{orderSelected.id}}</h3></b>
    </div>
    <div class="p-toolbar-group-right">
-      <button  pButton type="button" icon="pi pi-print" class="p-button-text" printSectionId="print-section" ngxPrint [useExistingCss]="true" [previewOnly]="false"></button> 
+      <button  pButton type="button" icon="pi pi-print" class="p-button-text p-button-info" (click)="printTemplate()"></button> 
       <!-- <div id="print-section" style="display: none;"> 
          <div class="content-print" id="printSection">
             <div class="header-print"></div>
@@ -285,9 +285,12 @@
             </div>
         </div>
       </div> -->
-      <div id="print-section" style="display: none;">
-         <app-print-template #printTemplate [orderSelected]="orderSelected"></app-print-template>
-      </div>
+      <!-- <div id="print-section" style="display: none;">
+      </div> -->
+      <ng-template #PrintTemplate>
+         <app-print-template #PrintTemplate [orderSelected]="orderSelected"></app-print-template>
+
+      </ng-template>
    </div>
  </ng-template>
  <ng-template pTemplate="body">

@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-        <div class="detalle">
+        <div class="detalle" *ngIf="product.comment">
             <span><strong>Comentario</strong></span>
             <div class="item review"> 
                 <span>{{product.comment}}</span>              

@@ -28,8 +28,8 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { ModalModule } from "src/app/modal/modal.module";
 import { ChatModule } from "src/app/chat/chat.module";
 import { ToastModule } from "primeng/toast";
-import { NgxPrintModule } from "ngx-print";
 import { PrintTemplateModule } from "src/app/print-template/print-template.module";
+import { NgxPrinterModule } from "ngx-printer";
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
     imports: [
@@ -48,8 +48,8 @@ import { PrintTemplateModule } from "src/app/print-template/print-template.modul
       ToastModule,
       AccordionModule,
       TableModule,
-      NgxPrintModule,
       TreeTableModule,
+      NgxPrinterModule.forRoot({printOpenWindow: false}),
       // AgmCoreModule.forRoot({
       //   apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
       //   libraries: ['drawing']
