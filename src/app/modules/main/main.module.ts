@@ -29,6 +29,7 @@ import { ModalModule } from "src/app/modal/modal.module";
 import { ChatModule } from "src/app/chat/chat.module";
 import { ToastModule } from "primeng/toast";
 import { NgxPrintModule } from "ngx-print";
+import { PrintTemplateModule } from "src/app/print-template/print-template.module";
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
     imports: [
@@ -41,6 +42,7 @@ import { NgxPrintModule } from "ngx-print";
       ReactiveFormsModule,
       MainRoutingModule,
       ChatModule,
+      PrintTemplateModule,
       DialogModule,
       ButtonModule,
       ToastModule,

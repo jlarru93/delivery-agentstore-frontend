@@ -236,7 +236,7 @@
    </div>
    <div class="p-toolbar-group-right">
       <button  pButton type="button" icon="pi pi-print" class="p-button-text" printSectionId="print-section" ngxPrint [useExistingCss]="true" [previewOnly]="false"></button> 
-      <div id="print-section" style="display: none;"> 
+      <!-- <div id="print-section" style="display: none;"> 
          <div class="content-print" id="printSection">
             <div class="header-print"></div>
             <div class="store-print">
@@ -284,8 +284,10 @@
                 </div>
             </div>
         </div>
+      </div> -->
+      <div id="print-section" style="display: none;">
+         <app-print-template #printTemplate [orderSelected]="orderSelected"></app-print-template>
       </div>
-      
    </div>
  </ng-template>
  <ng-template pTemplate="body">
