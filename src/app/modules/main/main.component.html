@@ -91,7 +91,7 @@
                                     ></app-chat>
                               </div>
                            </div>
-                           <circle-progress [readyToDmAt]="order.readyToDmAt" [acceptAgentStoreAt]="order.acceptAgentStoreAt"  style="padding-right: 10px; float: right;"></circle-progress>
+                           <circle-progress [startTime]="order.acceptAgentStoreAt" [endTime]="order.readyToDmAt"  style="padding-right: 10px; float: right;"></circle-progress>
                         </div>
                      </div>
                  </div>
