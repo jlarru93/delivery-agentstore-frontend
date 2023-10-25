@@ -32,7 +32,7 @@ import {DividerModule} from 'primeng/divider';
 import {DropdownModule} from 'primeng/dropdown';
 import {FieldsetModule} from 'primeng/fieldset';
 import {FileUploadModule} from 'primeng/fileupload';
-import {FullCalendarModule} from '@fullcalendar/angular';
+//import {FullCalendarModule} from '@fullcalendar/angular';
 import {GalleriaModule} from 'primeng/galleria';
 import {ImageModule} from 'primeng/image';
 import {InplaceModule} from 'primeng/inplace';
@@ -150,7 +150,7 @@ import {BreadcrumbService} from './breadcrumb.service';
 import {MenuService} from './app.menu.service';
 import {AppCodeModule} from './app.code.component';
 
-import dayGridPlugin from '@fullcalendar/daygrid';
+//import dayGridPlugin from '@fullcalendar/daygrid';
 //import timeGridPlugin from '@fullcalendar/timegrid';
 //import interactionPlugin from '@fullcalendar/interaction';
 import { JWTInterceptor } from './utils/jwt-interceptor';
@@ -167,11 +167,11 @@ import { OrderCourseComponent } from './modules/order-course/order-course.compon
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
-FullCalendarModule.registerPlugins([
+/*FullCalendarModule.registerPlugins([
     dayGridPlugin,
     //timeGridPlugin,
     //interactionPlugin
-]);
+]);*/
 
 @NgModule({
     imports: [
@@ -207,7 +207,7 @@ FullCalendarModule.registerPlugins([
         DropdownModule,
         FieldsetModule,
         FileUploadModule,
-        FullCalendarModule,
+        //FullCalendarModule,
         GalleriaModule,
         ImageModule,
         InplaceModule,
