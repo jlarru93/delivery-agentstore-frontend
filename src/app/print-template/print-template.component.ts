@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { ViewEncapsulation, AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-print-template',
   templateUrl: './print-template.component.html',
-  styleUrls: ['./print-template.component.scss']
+  styleUrls: ['./print-template.component.scss'],
+  //encapsulation: ViewEncapsulation.None
 })
 export class PrintTemplateComponent implements OnInit, AfterViewInit {
 
