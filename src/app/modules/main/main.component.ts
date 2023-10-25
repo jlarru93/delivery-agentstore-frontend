@@ -21,7 +21,7 @@ import { AuthService } from "src/app/utils/auth.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
 import { ChatComponent } from "src/app/chat/chat.component";
-import { NgxPrinterService } from "ngx-printer";
+import { HttpClient } from "@angular/common/http";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -83,8 +83,8 @@ import { NgxPrinterService } from "ngx-printer";
       private messageService: MessageService,
       private confirmationService: ConfirmationService,
       private dialog: MatDialog,
-      private auth: AuthService,
-      private printerService: NgxPrinterService
+      private http: HttpClient,
+      private auth: AuthService
       
       ){}
     ngOnInit(): void { 
@@ -103,6 +103,11 @@ import { NgxPrinterService } from "ngx-printer";
         }
       })
       this.getUserData()
+      this.http.get('../../../assets/styles/print-template.component.scss', {responseType: 'text'}).subscribe(
+        styleSheet => {
+          this.styleString = styleSheet
+        }
+      )
     }
     ngOnDestroy(): void {
         clearInterval(this.set_interval)
@@ -472,13 +477,21 @@ import { NgxPrinterService } from "ngx-printer";
     
       return tiempoFormateado;
     }
+
+    styleString: string = '';
     
     agregarCeros(valor: number): string {
       return valor < 10 ? `0${valor}` : valor.toString();
     }
-    @ViewChild('PrintTemplate') private PrintTemplateTpl: TemplateRef<any>;
 
-    printTemplate() {
-      this.printerService.printAngular(this.PrintTemplateTpl);
+    printToPDF(){
+      const printArea: HTMLElement = document.getElementById('pdf');
+      const printWindow = window.open('','PRINT')!;
+      printWindow.document.write(`<html><head><style>${this.styleString}</style></head><body>${printArea.innerHTML}</body></html>`)
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+      },500) 
     }
 }
