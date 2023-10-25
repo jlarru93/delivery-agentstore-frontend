@@ -50,7 +50,6 @@
                             "optimization": true,
                             "outputHashing": "all",
                             "sourceMap": false,
-                            "extractCss": true,
                             "namedChunks": false,
                             "extractLicenses": true,
                             "vendorChunk": false,
@@ -88,7 +87,6 @@
                           ],
                           "optimization": false,
                           "sourceMap": false,
-                          "extractCss": true,
                           "namedChunks": false,
                           "extractLicenses": true,
                           "vendorChunk": false,
@@ -105,7 +103,6 @@
                             "optimization": false,
                             "outputHashing": "all",
                             "sourceMap": false,
-                            "extractCss": true,
                             "namedChunks": false,
                             "extractLicenses": true,
                             "vendorChunk": false,
@@ -162,18 +159,6 @@
                             "src/styles.scss"
                         ],
                         "scripts": []
-                    }
-                },
-                "lint": {
-                    "builder": "@angular-devkit/build-angular:tslint",
-                    "options": {
-                        "tsConfig": [
-                            "tsconfig.app.json",
-                            "tsconfig.spec.json"
-                        ],
-                        "exclude": [
-                            "**/node_modules/**"
-                        ]
                     }
                 }
             }

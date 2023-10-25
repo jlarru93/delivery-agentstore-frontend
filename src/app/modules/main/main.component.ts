@@ -21,7 +21,7 @@ import { AuthService } from "src/app/utils/auth.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
 import { ChatComponent } from "src/app/chat/chat.component";
-import { NgxPrinterService } from "ngx-printer";
+//import { NgxPrinterService } from "ngx-printer";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -84,7 +84,7 @@ import { NgxPrinterService } from "ngx-printer";
       private confirmationService: ConfirmationService,
       private dialog: MatDialog,
       private auth: AuthService,
-      private printerService: NgxPrinterService
+      //private printerService: NgxPrinterService
       
       ){}
     ngOnInit(): void { 
@@ -476,9 +476,9 @@ import { NgxPrinterService } from "ngx-printer";
     agregarCeros(valor: number): string {
       return valor < 10 ? `0${valor}` : valor.toString();
     }
-    @ViewChild('PrintTemplate') private PrintTemplateTpl: TemplateRef<any>;
+    //@ViewChild('PrintTemplate') private PrintTemplateTpl: TemplateRef<any>;
 
     printTemplate() {
-      this.printerService.printAngular(this.PrintTemplateTpl);
+      //this.printerService.printAngular(this.PrintTemplateTpl);
     }
 }

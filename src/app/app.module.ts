@@ -261,15 +261,13 @@ FullCalendarModule.registerPlugins([
         TreeModule,
         TreeTableModule,
         VirtualScrollerModule,
-
-
         MainModule,
         ProductModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
-          enabled: environment.production,
-          // Register the ServiceWorker as soon as the app is stable
-          // or after 30 seconds (whichever comes first).
-          registrationStrategy: 'registerWhenStable:30000'
+            enabled: environment.production,
+            // Register the ServiceWorker as soon as the app is stable
+            // or after 30 seconds (whichever comes first).
+            registrationStrategy: 'registerWhenStable:30000'
         })
     ],
     declarations: [
@@ -319,15 +317,14 @@ FullCalendarModule.registerPlugins([
         TextComponent,
         WidgetsComponent,
         SignInComponent
-        ],
+    ],
     providers: [
-        {provide: LocationStrategy, useClass: HashLocationStrategy},
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
         { provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, BreadcrumbService,
-        MqttService,MqttRoutingService,OrderHandler,StoreHandler
+        MqttService, MqttRoutingService, OrderHandler, StoreHandler
     ],
-    entryComponents: [ModalComponent],
     bootstrap: [AppComponent]
 })
 export class AppModule {
