@@ -18,7 +18,7 @@ import { ChatResponse } from "./service/data/chat.response";
 import { ChatService } from "./service/chat.service";
 import { ChatBean } from "src/app/chat/data.chat";
 import { AuthService } from "src/app/utils/auth.service";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
 import { ChatComponent } from "src/app/chat/chat.component";
 //import { NgxPrinterService } from "ngx-printer";
