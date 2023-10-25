@@ -1,6 +1,6 @@
 <div class="comanda" #printSection>
     <div class="logo">
-        <img src="{{orderSelected.store.logo}}" alt="{{orderSelected.store.name}}">
+        <img [src]="sanitization.bypassSecurityTrustUrl(orderSelected.store.logo)" alt="{{orderSelected.store.name}}">
     </div>
     <h1>{{orderSelected.store.name}}</h1>
     <div *ngFor="let product of orderSelected.products; index as i">
