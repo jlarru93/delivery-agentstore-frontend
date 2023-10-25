@@ -27,6 +27,8 @@ import { InputTextModule } from "primeng/inputtext";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { ModalModule } from "src/app/modal/modal.module";
 import { ChatModule } from "src/app/chat/chat.module";
+import { ToastModule } from "primeng/toast";
+import { PrintTemplateModule } from "src/app/print-template/print-template.module";
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
     imports: [
@@ -39,8 +41,10 @@ import { ChatModule } from "src/app/chat/chat.module";
       ReactiveFormsModule,
       MainRoutingModule,
       ChatModule,
+      PrintTemplateModule,
       DialogModule,
       ButtonModule,
+      ToastModule,
       AccordionModule,
       TableModule,
       TreeTableModule,

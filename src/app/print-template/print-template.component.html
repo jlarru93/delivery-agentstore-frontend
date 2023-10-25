@@ -1,0 +1,63 @@
+<div class="comanda" #printSection>
+    <div class="logo">
+        <img [src]="sanitization.bypassSecurityTrustUrl(orderSelected.store.logo)" alt="{{orderSelected.store.name}}">
+    </div>
+    <h1>{{orderSelected.store.name}}</h1>
+    <div *ngFor="let product of orderSelected.products; index as i">
+        <div class="detalle">
+            <div class="item producto">
+                <span>{{product.quantity}}X {{product.name}}</span>
+                <span>
+                    <span class="checkbox">☐</span>
+                </span>
+            </div>
+            <div *ngFor="let option of product.options">
+                <div class="item opcion">
+                    <span>{{option.name}}</span>
+                    <span>
+                        <span class="checkbox">☐</span>
+                    </span>
+                </div>
+                <div *ngFor="let sub of option.subOptions">
+                    <div class="item subopcion">
+                        <span>{{sub.quantity > 0 ? 'X' + sub.quantity : '' }} {{sub.name}}</span>
+                        <span><span class="checkbox">☐</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="detalle" *ngIf="product.comment">
+            <span><strong>Comentario</strong></span>
+            <div class="item review"> 
+                <span>{{product.comment}}</span>              
+            </div>
+        </div>
+
+    </div>
+    <div class="detalle">
+        <div class="item">
+            <span>Orden: <strong>{{orderSelected.id}}</strong></span>
+        </div>
+        <div class="item">
+            <span>Fecha: <strong>{{getFormatDate(orderSelected.createdAt)}}</strong></span>
+        </div>
+        <div class="item">
+            <span>Hora: <strong>{{getFormatDateHour(orderSelected.createdAt)}}</strong></span>
+        </div>
+    </div>
+</div>
+
+ <!-- <div class="detalle">
+            <div class="item">
+                <span>Subtotal:</span>
+                <span>$68.75</span>
+            </div>
+            <div class="item">
+                <span>Impuesto (10%):</span>
+                <span>$6.88</span>
+            </div>
+            <div class="item">
+                <span>Total:</span>
+                <span>$75.63</span>
+            </div>
+        </div> -->

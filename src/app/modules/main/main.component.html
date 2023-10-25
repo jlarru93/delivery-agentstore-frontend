@@ -1,3 +1,4 @@
+<p-toast [baseZIndex]="1000"></p-toast>
 <div class="p-grid">
     <div class="p-col-12 p-lg-4 p-md-6">
        <div class="card widget-support-request">
@@ -11,16 +12,16 @@
           </div>
           <div *ngFor="let order of ordersOpen; let i = index">
              <div class="p-col-12">
-                <div class="p-grid p-nogutter widget-overview-box p-shadow-3" style="background-color: #4BCCBD">
+                <div class="p-grid p-nogutter widget-overview-box p-shadow-3" style="background: -webkit-gradient(linear, left bottom, right top, color-stop(0%, #bf616a), color-stop(100%, #ce9393));">
                   <div class="p-col-12">
                      <div class="p-grid">
                         <div class="p-col" (click)=" openOrderDialog(order)">
-                           <h5>ID: {{order.id}}</h5>
-                           <p>{{order?.store?.addressStreet}}</p>
+                           <h5 style="color: #ffffff;">ID: {{order.id}}</h5>
+                           <p style="color: #ffffff;">{{order?.store?.addressStreet}}</p>
                         </div>
                         <div class="p-col">
                            <div class="overlay-container">
-                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
+                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right; background: linear-gradient(225deg, #f2c260 0%, #ebcb8b 100%);"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
                                  <app-chat 
                                     [isLoading]="order.isLoadingChat"
@@ -39,12 +40,12 @@
                      </div>
                  </div>
                    <div class="p-col-12" (click)=" openOrderDialog(order)">
-                     <hr>  
+                     <hr style="border-color: #ffffff;">  
                     </div>
                     <div class="p-col-12" (click)=" openOrderDialog(order)">
                      <div class="p-grid">
                         <div class="p-col-12">
-                           <button class="btn-preparation-2" pButton pRipple type="button" style="float: right;">Aceptar Orden</button>
+                           <button class="p-button-warning" pButton pRipple type="button" style="float: right; background: linear-gradient(225deg, #f2c260 0%, #ebcb8b 100%); color: #ffffff;">Aceptar Orden</button>
                         </div>
                      </div>
                     </div>
@@ -69,11 +70,11 @@
                <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
                  <div class="p-col-12">
                      <div class="p-grid">
-                        <div class="p-col-10"  (click)=" openOrderDialog(order)">
+                        <div class="p-col-6"  (click)=" openOrderDialog(order)">
                            <h5>ID: {{order.id}}</h5>
                            <p>{{order?.store?.addressStreet}}</p>
                         </div>
-                        <div class="p-col">
+                        <div class="p-col-6">
                            <div class="overlay-container">
                               <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
@@ -90,9 +91,7 @@
                                     ></app-chat>
                               </div>
                            </div>
-                        </div>
-                        <div class="p-col-2">
-                           <circle-progress [readyToDmAt]="order.readyToDmAt" [acceptAgentStoreAt]="order.acceptAgentStoreAt"  style="float: right;"></circle-progress>
+                           <circle-progress [startTime]="order.acceptAgentStoreAt" [endTime]="order.readyToDmAt"  style="padding-right: 10px; float: right;"></circle-progress>
                         </div>
                      </div>
                  </div>
@@ -134,7 +133,7 @@
                         </div>
                      </div>
                      <div class="p-col-6">
-                        <button class="btn-preparation" pButton pRipple type="button" style="float: right;">Pedido listo</button>
+                        <button class="p-button-primary" pButton pRipple type="button" style="float: right;">Pedido listo</button>
                      </div>
                   </div>
                  </div>
@@ -230,9 +229,68 @@
     </div>
  </div>
  <p-dialog [(visible)]="displayOrder" [modal]="true">
+   <p-toast position="top-center" key="tc"></p-toast>
  <ng-template pTemplate="header">
    <div class="p-toolbar-group-left">
       <b><h3>Orden: {{orderSelected.id}}</h3></b>
+   </div>
+   <div class="p-toolbar-group-right">
+      <button  pButton type="button" icon="pi pi-print" class="p-button-text p-button-info" (click)="printToPDF()"></button> 
+      <!-- <div id="print-section" style="display: none;"> 
+         <div class="content-print" id="printSection">
+            <div class="header-print"></div>
+            <div class="store-print">
+                <div class="store-logo">
+                    <img class="store-img" src="{{orderSelected.store.logo}}" alt="">
+                </div>
+                <div class="store-name">
+                    <div>
+                        <strong style="font-size: 20px;">{{orderSelected.store.name}}</strong><br>
+                        <small>Información del pedido</small>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="comanda">
+                <h4>Comanda</h4>
+            </div>
+            <div class="order-detail">
+                <div *ngFor="let product of orderSelected.products; index as i">
+                    <div class="order-product-name">
+                        <div>
+                            <strong>X{{product.quantity}}</strong> {{product.name}}
+                        </div>
+                        <div>
+                            <input type="checkbox" name="" id="">
+                        </div>
+                    </div>
+                    <div class="options" *ngFor="let option of product.options">
+                        <div class="option-data">
+                           <div>{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}</div>
+                           <input type="checkbox" name="" id="">
+                        </div>
+                        <div *ngFor="let sub of option.subOptions">
+                           <div class="p-grid" style="padding-left: 10px;">
+                              <div class="p-col-6">
+                                 <div> <strong>{{sub.quantity > 0 ? 'x' + sub.quantity : '' }}</strong> {{sub.name}}</div>
+                              </div>
+                              <div class="p-col-6">
+                                 <input type="checkbox" name="" id="" style="float: right;">
+                              </div>
+                           </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+      </div> -->
+      <!-- <div id="print-section" style="display: none;">
+      </div> -->
+      <div id="pdf" style="display: none;">
+         <app-print-template [orderSelected]="orderSelected"></app-print-template>
+
+      </div>
    </div>
  </ng-template>
  <ng-template pTemplate="body">
@@ -316,7 +374,7 @@
             <div class="sidebar-container-title">Cliente</div>
             <div class="card-client">
                <b>{{orderSelected?.user?.fullName}}</b>
-               <p>+51 999 888 777</p>
+               <p>{{orderSelected?.user?.phone}}</p>
             </div>
             <div *ngIf="orderSelected.status=='open'">
                <div class="sidebar-container-title">Tiempo de preparación</div>

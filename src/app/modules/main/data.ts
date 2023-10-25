@@ -87,6 +87,7 @@ export class StoreBean {
     name?: string
     addressStreet: string
     location?: Point
+    logo?:string
 }
 
 
@@ -120,6 +121,7 @@ export class UserBean {
     id?: number
     fullName?: string
     address?: AddressBean
+    phone?: string
 }
 
 export class CardBean {

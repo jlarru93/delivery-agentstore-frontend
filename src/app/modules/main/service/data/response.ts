@@ -166,12 +166,14 @@ export class StoreResponse {
     //address: AddressResponse
     addressStreet: string
     location?: Point
+    logo?: string
     static toBean(self: StoreResponse): StoreBean {
         const bean = new StoreBean()
         bean.id = self.id,
         bean.name = self?.name,
         bean.addressStreet = self.addressStreet,
         bean.location = self.location
+        bean.logo = self.logo
         return bean
     } 
 }
@@ -261,11 +263,13 @@ export class UserResponse {
     id?: number
     fullName?: string
     address?: AddressResponse
+    phone? : string
     static toBean(self: UserResponse): UserBean {
         const bean = new UserBean()
         bean.id = self.id,
             bean.fullName = self.fullName,
             bean.address = AddressResponse.toBean(self.address)
+            bean.phone = self.phone
         return bean
     }
 }
