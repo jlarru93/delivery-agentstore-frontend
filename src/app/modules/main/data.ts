@@ -70,10 +70,10 @@ export class ProductBean {
         return this.price.currency, this.price.value + priceSubOption
     }
     getPriceMinimalCurrency(): string {
-        return this.price.currency + this.price.value.toString()
+        return this.price.currency + formatCurrency(this.price.value)
     }
     getTotalPriceAndCurrency(): string {
-        return this.price.currency + this.getTotalPrice().toString()
+        return this.price.currency + formatCurrency(this.getTotalPrice())
     }
 
 }
