@@ -502,6 +502,6 @@ import { HttpClient } from "@angular/common/http";
       printWindow.focus();
       setTimeout(() => {
         printWindow.print();
-      },500) 
+      },1000) 
     }
 }

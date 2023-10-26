@@ -69,7 +69,7 @@
     <hr style="border-top: dashed 1px;" />
     <div class="detalle">
         <div class="item" *ngIf="orderSelected.deliveryPriceDiscount > 0">
-            <span>Domicilio:</span>
+            <span>Domicilio: <del>{{orderSelected.getdeliveryPriceAndCurrency()}}</del></span>
             <span>{{orderSelected.getdeliveryPriceDiscountAndCurrency()}}</span>
         </div>
         <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == 0 || orderSelected.deliveryPriceDiscount == null">
