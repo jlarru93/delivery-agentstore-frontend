@@ -1,4 +1,5 @@
 import { ViewEncapsulation, AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-print-template',
@@ -10,7 +11,9 @@ export class PrintTemplateComponent implements OnInit, AfterViewInit {
 
   @Input() orderSelected: any
 
-  constructor() { }
+  constructor(
+    public sanitization: DomSanitizer,
+  ) { }
 
   ngOnInit(): void {
   }
