@@ -14,23 +14,23 @@
     <div class="detalle">
         <div class="item">
             <span>Orden:</span>
-            <span>{{orderSelected.id}}</span>
+            <span><strong>{{orderSelected.id}}</strong></span>
         </div>
         <div class="item">
             <span>Fecha:</span>
-            <span>{{getFormatDate(orderSelected.createdAt)}}</span>
+            <span><strong>{{getFormatDate(orderSelected.createdAt)}}</strong></span>
         </div>
         <div class="item">
             <span>Cliente:</span>
-            <span>{{orderSelected.user.fullName}}</span>
+            <span><strong>{{orderSelected.user.fullName}}</strong></span>
         </div>
         <div class="item">
             <span>Teléfono:</span>
-            <span>{{orderSelected.user.phone}}</span>
+            <span><strong>{{orderSelected.user.phone}}</strong></span>
         </div>
         <div class="item">
             <span>Dirección:</span>
-            <span>{{orderSelected.user.address.addressStreet}}</span>
+            <span><strong>{{orderSelected.user.address.addressStreet}}</strong></span>
         </div>
     </div>
     <hr style="border-top: dashed 1px;" />
@@ -70,27 +70,27 @@
     <div class="detalle">
         <div class="item" *ngIf="orderSelected.deliveryPriceDiscount > 0">
             <span>Domicilio: <del>{{orderSelected.getdeliveryPriceAndCurrency()}}</del></span>
-            <span>{{orderSelected.getdeliveryPriceDiscountAndCurrency()}}</span>
+            <span><strong>{{orderSelected.getdeliveryPriceDiscountAndCurrency()}}</strong></span>
         </div>
         <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == 0 || orderSelected.deliveryPriceDiscount == null">
             <span>Domicilio:</span>
-            <span>{{orderSelected.getdeliveryPriceAndCurrency()}}</span>
+            <span><strong>{{orderSelected.getdeliveryPriceAndCurrency()}}</strong></span>
         </div>
         <div class="item"> 
             <span>Productos:</span>
-            <span>{{orderSelected.getProductPriceAndCurrency()}}</span>
+            <span><strong>{{orderSelected.getProductPriceAndCurrency()}}</strong></span>
         </div>
         <div class="item">
             <span>Propina: </span>
-            <span>{{orderSelected.getTipAndCurrency()}}</span>
+            <span><strong>{{orderSelected.getTipAndCurrency()}}</strong></span>
         </div>
         <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == 0 || orderSelected.deliveryPriceDiscount == null">
             <span>Total:</span>
-            <span>{{orderSelected.getTotalAndCurrency()}}</span>
+            <span><strong>{{orderSelected.getTotalAndCurrency()}}</strong></span>
         </div>
         <div class="item" *ngIf="orderSelected.deliveryPriceDiscount > 0">
             <span>Total:</span>
-            <span>{{orderSelected.getTotalDiscountAndCurrency()}}</span>
+            <span><strong>{{orderSelected.getTotalDiscountAndCurrency()}}</strong></span>
         </div>
     </div>
 </div>
