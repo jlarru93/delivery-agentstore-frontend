@@ -95,5 +95,10 @@ export const environment = {
   centermap:{
     lat: 10.96854,
     lng: -74.78132
-  }
+  },
+  numberFormat: {
+    decimalSeparator: ',',
+    thousandsSeparator: '.',
+    decimalPlaces: 0
+  },
 };
