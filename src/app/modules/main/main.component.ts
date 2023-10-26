@@ -7,7 +7,7 @@ import { OrderHandler } from "../service/handlers/order.handler";
 import { OrderService } from "./service/order.service";
 import { OrderResponse } from "./service/data/response";
 import { OrderBean, PaymentBean } from "./data";
-import { DialogService } from "primeng/dynamicdialog";
+import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { OrderDialogComponent } from "./dialog/orderDialog.component";
 import * as CONSTANTES from "src/app/utils/constant";
 import { MqttService } from "../service/mqtt.service";
@@ -71,6 +71,9 @@ import { HttpClient } from "@angular/common/http";
     userName="usuario"
     userId: number = 123
     set_interval ?: any
+
+    ref: DynamicDialogRef | undefined;
+
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
@@ -118,17 +121,24 @@ import { HttpClient } from "@angular/common/http";
     }
 
     imagenURL: string = ''
-    openDialog(): void {
-      const dialogRef = this.dialog.open(ModalComponent, {
-        data: {imagenURL: this.imagenURL}
-      });
 
-      this.flagOpenReceiptDialog = true
+    dialogScreenshoot: boolean = false
+    openDialogScreenShoot() {
+
+      this.dialogScreenshoot = true
+
+      // const dialogRef = this.dialog.open(ModalComponent, {
+      //   data: {imagenURL: this.imagenURL}
+      // });
+
+     this.flagOpenReceiptDialog = true
   
-      dialogRef.afterClosed().subscribe(result => {
-        console.log('Diálogo cerrado');
-      });
+      // dialogRef.afterClosed().subscribe(result => {
+      //   console.log('Diálogo cerrado');
+      // });
     }
+
+    
 
     ngAfterViewInit(){
       const accordionContent = document.querySelectorAll(".accordion-item");

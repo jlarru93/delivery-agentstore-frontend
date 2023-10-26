@@ -320,6 +320,7 @@ export class OrderResponse {
     productPrice: number
     servicePrice: number
     deliveryPrice: number
+    deliveryPriceDiscount: number
     tip: number;
     total: number
     user: UserResponse
@@ -341,6 +342,7 @@ export class OrderResponse {
         bean.productPrice = self.productPrice
         bean.servicePrice = self.servicePrice
         bean.deliveryPrice = self.deliveryPrice
+        bean.deliveryPriceDiscount = self.deliveryPriceDiscount
         bean.tip = self.tip
         bean.total = self.total
         bean.user = UserResponse.toBean(self.user)

@@ -235,7 +235,7 @@
       <b><h3>Orden: {{orderSelected.id}}</h3></b>
    </div>
    <div class="p-toolbar-group-right">
-      <button  pButton type="button" icon="pi pi-print" class="p-button-text p-button-info" (click)="printToPDF()"></button> 
+      <button  pButton type="button" icon="pi pi-print" label="Imprimir comanda" class="p-button-info" (click)="printToPDF()"></button> 
       <!-- <div id="print-section" style="display: none;"> 
          <div class="content-print" id="printSection">
             <div class="header-print"></div>
@@ -367,7 +367,7 @@
             <div class="sidebar-container-title">Método de pago</div>
             <div class="method-payment-container">
                <b>{{paymentName}}</b>
-               <i *ngIf="payment.method.type == 'E-WALLET' || payment.method.type == 'BANK'" class="pi pi-eye" style="float: right; font-size: 1.5rem;" (click)="openDialog()"></i>
+               <i *ngIf="payment.method.type == 'E-WALLET' || payment.method.type == 'BANK'" class="pi pi-eye" style="float: right; font-size: 1.5rem;" (click)="openDialogScreenShoot()"></i>
                <!-- <button  pButton pRipple type="button" icon="pi pi-eye" style="float: right;"
                class="p-button p-button-rounded p-button-text" (click)="openDialog()"></button> -->
             </div>
@@ -504,6 +504,14 @@
          </div>
       </footer>
     </div>
+    <p-dialog id="imageDialog" header="Screenshoot" [(visible)]="dialogScreenshoot" [draggable]="false" [resizable]="false" 
+    [style]="{ width: '750px' }" (onHide)="dialogScreenshoot = false">
+    <div style="display: grid;
+    place-items: center;"> 
+      <img [src]="imagenURL" >
+
+    </div>
+   </p-dialog>
  </ng-template>
  </p-dialog>
 

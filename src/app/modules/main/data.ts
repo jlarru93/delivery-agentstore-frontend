@@ -148,6 +148,7 @@ export class OrderBean {
     productPrice: number
     servicePrice: number
     deliveryPrice: number
+    deliveryPriceDiscount : number
     tip: number;
     total: number
     user?: UserBean
@@ -204,7 +205,14 @@ export class OrderBean {
     getTotalAndCurrency(){
         return ""+this.getCurrency()+this.getTotal()
     }
+    getTotalDiscountAndCurrency(){
+        return ""+this.getCurrency() + (this.getTotal() - this.deliveryPriceDiscount )
+    }
     getCountProducts(): string {
         return this.products.reduce((accumulation, current) => { return accumulation+current.quantity }, 0).toString() +" productos"//.sumOf { it.quantity }.toString() + " productos"
+    }
+
+    getdeliveryPriceDiscountAndCurrency(): string{
+        return ""+this.getCurrency() + (this.deliveryPrice - this.deliveryPriceDiscount)
     }
 }
