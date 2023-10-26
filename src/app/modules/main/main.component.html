@@ -505,10 +505,10 @@
       </footer>
     </div>
     <p-dialog id="imageDialog" header="Screenshoot" [(visible)]="dialogScreenshoot" [draggable]="false" [resizable]="false" 
-    [style]="{ width: '750px' }" (onHide)="dialogScreenshoot = false">
+    [style]="{ width: '800px' }" (onHide)="dialogScreenshoot = false">
     <div style="display: grid;
     place-items: center;"> 
-      <img [src]="imagenURL" >
+      <img [src]="imagenURL" width="90%" >
 
     </div>
    </p-dialog>
