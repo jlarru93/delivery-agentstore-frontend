@@ -1,4 +1,5 @@
 import { ChatBean } from "src/app/chat/data.chat"
+import { formatCurrency } from "src/app/utils"
 
 export class StatusOpenStoreBean {
     status: boolean
@@ -49,7 +50,7 @@ export class PriceBean {
     currencyId?: number
 
     getCurrencyAndValue(): String {
-        return this.currency + this.value.toString()
+        return this.currency + formatCurrency(this.value)
     }
 }
 export class ProductBean {
@@ -69,10 +70,10 @@ export class ProductBean {
         return this.price.currency, this.price.value + priceSubOption
     }
     getPriceMinimalCurrency(): string {
-        return this.price.currency + this.price.value.toString()
+        return this.price.currency + formatCurrency(this.price.value)
     }
     getTotalPriceAndCurrency(): string {
-        return this.price.currency + this.getTotalPrice().toString()
+        return this.price.currency + formatCurrency(this.getTotalPrice())
     }
 
 }
@@ -148,6 +149,7 @@ export class OrderBean {
     productPrice: number
     servicePrice: number
     deliveryPrice: number
+    deliveryPriceDiscount : number
     tip: number;
     total: number
     user?: UserBean
@@ -177,34 +179,41 @@ export class OrderBean {
         return this.products.reduce((accumulation, current) => { return accumulation + current.getTotalPrice() }, 0)//sumOf { it.getTotalPrice() }
     }
     getProductPriceAndCurrency(): string {
-        return this.getCurrency() + this.getProductPrice().toString()
+        return this.getCurrency() + formatCurrency(this.getProductPrice());
     }
     getServicePriceAndCurrency(): string {
-        return this.getCurrency() + this.servicePrice.toString()
+        return this.getCurrency() + formatCurrency(this.servicePrice)
     }
     getDeliveryPriceAndCurrency(): string {
-        return this.getCurrency() + this.deliveryPrice.toString()
+        return this.getCurrency() + formatCurrency(this.deliveryPrice??0)
     }
     getSubTotalPrice(): number {
         return (this.getProductPrice() + this.servicePrice + this.deliveryPrice)
     }
     getSubTotalPriceAndCurrency(): string {
-        return this.getCurrency() + this.getSubTotalPrice().toString()
+        return this.getCurrency() + formatCurrency(this.getSubTotalPrice())
     }
 
     getdeliveryPriceAndCurrency():string{
-        return ""+this.getCurrency() +this.deliveryPrice
+        return ""+this.getCurrency() +formatCurrency(this.deliveryPrice)
     }
     getTipAndCurrency():string{
-        return ""+this.getCurrency() +this.tip
+        return ""+this.getCurrency() +formatCurrency(this.tip)
     }
     getTotal():number{
         return this.getSubTotalPrice()+this.tip;
     }
     getTotalAndCurrency(){
-        return ""+this.getCurrency()+this.getTotal()
+        return ""+this.getCurrency()+formatCurrency(this.getTotal())
+    }
+    getTotalDiscountAndCurrency(){
+        return ""+this.getCurrency() + formatCurrency((this.getTotal() - this.deliveryPriceDiscount ))
     }
     getCountProducts(): string {
         return this.products.reduce((accumulation, current) => { return accumulation+current.quantity }, 0).toString() +" productos"//.sumOf { it.quantity }.toString() + " productos"
+    }
+
+    getdeliveryPriceDiscountAndCurrency(): string{
+        return ""+this.getCurrency() + formatCurrency((this.deliveryPrice - this.deliveryPriceDiscount))
     }
 }

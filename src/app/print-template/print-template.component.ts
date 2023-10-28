@@ -52,21 +52,14 @@ export class PrintTemplateComponent implements OnInit, AfterViewInit {
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
     const day = ("0" + date.getDate()).slice(-2);
 
-    const formattedDate = `${day}-${month}-${year}`;
-
-    return formattedDate
-  }
-
-  getFormatDateHour(timestamp : number) {
-    const date = new Date(timestamp * 1000);
     let hours = date.getHours();
     const minutes = ("0" + date.getMinutes()).slice(-2);
     const ampm = hours >= 12 ? "PM" : "AM";
 
     hours = hours % 12;
-    hours = hours ? hours : 12;
+    hours = hours ? hours : 12; // Si hours es 0, asigna 12 en su lugar
 
-    const formattedDate = `${hours}:${minutes} ${ampm}`;
+    const formattedDate = `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
 
     return formattedDate
   }
