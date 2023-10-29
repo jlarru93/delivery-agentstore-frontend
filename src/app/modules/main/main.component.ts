@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Product } from "src/app/demo/domain/product";
 import { ProductService } from "src/app/demo/service/productservice";
@@ -7,7 +7,7 @@ import { OrderHandler } from "../service/handlers/order.handler";
 import { OrderService } from "./service/order.service";
 import { OrderResponse } from "./service/data/response";
 import { OrderBean, PaymentBean } from "./data";
-import { DialogService } from "primeng/dynamicdialog";
+import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { OrderDialogComponent } from "./dialog/orderDialog.component";
 import * as CONSTANTES from "src/app/utils/constant";
 import { MqttService } from "../service/mqtt.service";
@@ -21,6 +21,7 @@ import { AuthService } from "src/app/utils/auth.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
 import { ChatComponent } from "src/app/chat/chat.component";
+import { HttpClient } from "@angular/common/http";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -70,6 +71,9 @@ import { ChatComponent } from "src/app/chat/chat.component";
     userName="usuario"
     userId: number = 123
     set_interval ?: any
+
+    ref: DynamicDialogRef | undefined;
+
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
@@ -82,7 +86,10 @@ import { ChatComponent } from "src/app/chat/chat.component";
       private messageService: MessageService,
       private confirmationService: ConfirmationService,
       private dialog: MatDialog,
-      private auth: AuthService){}
+      private http: HttpClient,
+      private auth: AuthService
+      
+      ){}
     ngOnInit(): void { 
       this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
       console.log("MAIN")
@@ -99,6 +106,11 @@ import { ChatComponent } from "src/app/chat/chat.component";
         }
       })
       this.getUserData()
+      this.http.get('../../../assets/styles/print-template.component.scss', {responseType: 'text'}).subscribe(
+        styleSheet => {
+          this.styleString = styleSheet
+        }
+      )
     }
     ngOnDestroy(): void {
         clearInterval(this.set_interval)
@@ -109,15 +121,24 @@ import { ChatComponent } from "src/app/chat/chat.component";
     }
 
     imagenURL: string = ''
-    openDialog(): void {
-      const dialogRef = this.dialog.open(ModalComponent, {
-        data: {imagenURL: this.imagenURL}
-      });
+
+    dialogScreenshoot: boolean = false
+    openDialogScreenShoot() {
+
+      this.dialogScreenshoot = true
+
+      // const dialogRef = this.dialog.open(ModalComponent, {
+      //   data: {imagenURL: this.imagenURL}
+      // });
+
+     this.flagOpenReceiptDialog = true
   
-      dialogRef.afterClosed().subscribe(result => {
-        console.log('Diálogo cerrado');
-      });
+      // dialogRef.afterClosed().subscribe(result => {
+      //   console.log('Diálogo cerrado');
+      // });
     }
+
+    
 
     ngAfterViewInit(){
       const accordionContent = document.querySelectorAll(".accordion-item");
@@ -148,6 +169,7 @@ import { ChatComponent } from "src/app/chat/chat.component";
     }
 
     isButtonEnabled: boolean = false
+    
     getOrders(){
       this.orderService.getOrders().subscribe((resp)=>{
         this.orders=resp.data.map((it)=>{
@@ -155,14 +177,9 @@ import { ChatComponent } from "src/app/chat/chat.component";
           let currentOrden=this.orders.find((or)=>or.id==it.id)
           if(currentOrden){
             order.messagesChat=currentOrden.messagesChat
+            order.showButton = currentOrden.showButton;
           }
 
-          // if(currentOrden.status == 'inStore'){
-          //   this.isButtonEnabled = true;
-          // } else {
-          //   this.isButtonEnabled = false;
-          // }
-          
           return order
         })
         this.sortOrders()
@@ -290,18 +307,38 @@ import { ChatComponent } from "src/app/chat/chat.component";
       return dmStatusOkay
     }
 
+    flagOpenReceiptDialog: boolean = false
+
     aceptOrder(){
       let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
       orderRequest.readyToDmAt=this.readyToDmAt
       this.loadingButtonAcept=true
-      this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
-        this.displayOrder=false
-        this.loadingButtonAcept=false
-      },()=>{
 
-        this.loadingButtonAcept=false
-      },()=>{
-      })
+      if(orderRequest.payment.method.type == 'CASH'){
+        this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
+          this.displayOrder=false
+          this.loadingButtonAcept=false
+        },()=>{
+  
+          this.loadingButtonAcept=false
+        },()=>{
+        })
+      } else {
+        if(!this.flagOpenReceiptDialog){
+          this.messageService.add({key: 'tc', severity: 'warn', summary: '', detail: 'Por favor revise el comprobante de pago primero'})
+          this.loadingButtonAcept = false
+        } else {
+          this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
+            this.displayOrder=false
+            this.loadingButtonAcept=false
+          },()=>{
+    
+            this.loadingButtonAcept=false
+          },()=>{
+          })
+        }
+      }
+
     }
     readyOrder(){
       const order=this.orderSelected
@@ -403,6 +440,7 @@ import { ChatComponent } from "src/app/chat/chat.component";
         this.getMessages(order)
       }
     }
+    
 
     hideChatComponent(order:OrderBean){
       order.showButton =  !order.showButton;
@@ -449,8 +487,21 @@ import { ChatComponent } from "src/app/chat/chat.component";
     
       return tiempoFormateado;
     }
+
+    styleString: string = '';
     
     agregarCeros(valor: number): string {
       return valor < 10 ? `0${valor}` : valor.toString();
+    }
+
+    printToPDF(){
+      const printArea: HTMLElement = document.getElementById('pdf');
+      const printWindow = window.open('','PRINT')!;
+      printWindow.document.write(`<html><head><style>${this.styleString}</style></head><body>${printArea.innerHTML}</body></html>`)
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+      },1000) 
     }
 }

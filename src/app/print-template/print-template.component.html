@@ -1,0 +1,96 @@
+<div class="comanda" #printSection>
+    <div class="logo-wrapper">
+        <div class="item">
+            <div class="logo">
+                <img src="assets/images/Logotipo_TRES22-01.png" class="logo-tres22" alt="logo-tres22">
+            </div>
+            <div class="logo">
+                <img [src]="sanitization.bypassSecurityTrustUrl(orderSelected.store.logo)" alt="{{orderSelected.store.name}}">
+            </div>
+        </div>
+    </div>
+    <h1>{{orderSelected.store.name}}</h1>
+
+    <div class="detalle">
+        <div class="item">
+            <span>Orden:</span>
+            <span><strong>{{orderSelected.id}}</strong></span>
+        </div>
+        <div class="item">
+            <span>Fecha:</span>
+            <span><strong>{{getFormatDate(orderSelected.createdAt)}}</strong></span>
+        </div>
+        <div class="item">
+            <span>Cliente:</span>
+            <span><strong>{{orderSelected.user.fullName}}</strong></span>
+        </div>
+        <div class="item">
+            <span>Teléfono:</span>
+            <span><strong>{{orderSelected.user.phone}}</strong></span>
+        </div>
+        <div class="item">
+            <span>Dirección:</span>
+            <span><strong>{{orderSelected.user.address.addressStreet}}</strong></span>
+        </div>
+    </div>
+    <hr style="border-top: dashed 1px;" />
+    <div *ngFor="let product of orderSelected.products; index as i">
+        <div class="detalle">
+            <div class="item producto">
+                <span>{{product.quantity}}X {{product.name}}</span>
+                <span>
+                    <span class="checkbox">☐</span>
+                </span>
+            </div>
+            <div *ngFor="let option of product.options">
+                <div class="item opcion">
+                    <span>{{option.name}}</span>
+                    <span>
+                        <span class="checkbox">☐</span>
+                    </span>
+                </div>
+                <div *ngFor="let sub of option.subOptions">
+                    <div class="item subopcion">
+                        <span>{{sub.quantity > 0 ? 'X' + sub.quantity : '' }} {{sub.name}}</span>
+                        <span><span class="checkbox">☐</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="detalle" *ngIf="product.comment">
+            <span><strong>Comentario</strong></span>
+            <div class="item review"> 
+                <span>{{product.comment}}</span>              
+            </div>
+        </div>
+
+    </div>
+
+    <hr style="border-top: dashed 1px;" />
+    <div class="detalle">
+        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount > 0">
+            <span>Domicilio: <del>{{orderSelected.getdeliveryPriceAndCurrency()}}</del></span>
+            <span><strong>{{orderSelected.getdeliveryPriceDiscountAndCurrency()}}</strong></span>
+        </div>
+        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == 0 || orderSelected.deliveryPriceDiscount == null">
+            <span>Domicilio:</span>
+            <span><strong>{{orderSelected.getdeliveryPriceAndCurrency()}}</strong></span>
+        </div>
+        <div class="item"> 
+            <span>Productos:</span>
+            <span><strong>{{orderSelected.getProductPriceAndCurrency()}}</strong></span>
+        </div>
+        <div class="item">
+            <span>Propina: </span>
+            <span><strong>{{orderSelected.getTipAndCurrency()}}</strong></span>
+        </div>
+        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == 0 || orderSelected.deliveryPriceDiscount == null">
+            <span>Total:</span>
+            <span><strong>{{orderSelected.getTotalAndCurrency()}}</strong></span>
+        </div>
+        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount > 0">
+            <span>Total:</span>
+            <span><strong>{{orderSelected.getTotalDiscountAndCurrency()}}</strong></span>
+        </div>
+    </div>
+</div>

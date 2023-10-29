@@ -7,6 +7,7 @@ import { AppErrorComponent } from './pages/app.error.component';
 import { AppAccessdeniedComponent } from './pages/app.accessdenied.component';
 import { IsAuthenticated, IsNotAuthenticated } from './utils/auth-guard';
 import { SignInComponent } from './login/sign-in/sign-in.component';
+import { PrintTemplateComponent } from './print-template/print-template.component';
 
 const routes: Routes = [
     {
@@ -82,8 +83,9 @@ const routes: Routes = [
     { path: 'error', component: AppErrorComponent },
     { path: 'accessdenied', component: AppAccessdeniedComponent },
     { path: 'notfound', component: AppNotfoundComponent },
+    // { path: 'print', component: PrintTemplateComponent },
     { path: 'login', component: SignInComponent, canActivate: [IsNotAuthenticated]}, 
-    { path: '**', redirectTo: '/notfound' },
+    { path: '**', redirectTo: '/notfound' }
 ]
 @NgModule({
     imports: [

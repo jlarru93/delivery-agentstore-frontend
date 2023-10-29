@@ -24,7 +24,7 @@ export const environment = {
   mqttServer:{
     url: "qawss.tres22.net",
     port: 443,
-    path:"/ws",
+    path:"/",
     user:"socket",
     pwd:"socket",
     useSSL:true
@@ -101,7 +101,12 @@ export const environment = {
   centermap:{
     lat: 10.96854,
     lng: -74.78132
-  }
+  },
+  numberFormat: {
+    decimalSeparator: ',',
+    thousandsSeparator: '.',
+    decimalPlaces: 0
+  },
 };
 
 /*
