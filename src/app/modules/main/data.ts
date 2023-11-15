@@ -184,9 +184,7 @@ export class OrderBean {
     getServicePriceAndCurrency(): string {
         return this.getCurrency() + formatCurrency(this.servicePrice)
     }
-    getDeliveryPriceAndCurrency(): string {
-        return this.getCurrency() + formatCurrency(this.deliveryPrice??0)
-    }
+
     getSubTotalPrice(): number {
         return (this.getProductPrice() + this.servicePrice + this.deliveryPrice)
     }
@@ -195,7 +193,7 @@ export class OrderBean {
     }
 
     getdeliveryPriceAndCurrency():string{
-        return ""+this.getCurrency() +formatCurrency(this.deliveryPrice)
+        return ""+this.getCurrency() +formatCurrency(this.deliveryPrice??0)
     }
     getTipAndCurrency():string{
         return ""+this.getCurrency() +formatCurrency(this.tip)
@@ -207,13 +205,13 @@ export class OrderBean {
         return ""+this.getCurrency()+formatCurrency(this.getTotal())
     }
     getTotalDiscountAndCurrency(){
-        return ""+this.getCurrency() + formatCurrency((this.getTotal() - this.deliveryPriceDiscount ))
+        return ""+this.getCurrency() + formatCurrency((this.getTotal() - (this.deliveryPriceDiscount??0) ))
     }
     getCountProducts(): string {
         return this.products.reduce((accumulation, current) => { return accumulation+current.quantity }, 0).toString() +" productos"//.sumOf { it.quantity }.toString() + " productos"
     }
 
     getdeliveryPriceDiscountAndCurrency(): string{
-        return ""+this.getCurrency() + formatCurrency((this.deliveryPrice - this.deliveryPriceDiscount))
+        return ""+this.getCurrency() + formatCurrency(((this.deliveryPrice??0) - (this.deliveryPriceDiscount??0)))
     }
 }

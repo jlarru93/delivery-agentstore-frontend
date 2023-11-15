@@ -487,7 +487,15 @@
          <div class="grid-resume">
             <div id="residency">
                <p>Domicilio</p>
-               <p>{{orderSelected.getdeliveryPriceAndCurrency()}}</p>
+               <p>
+                  <ng-container *ngIf="orderSelected.deliveryPriceDiscount">
+                     <del>{{orderSelected.getdeliveryPriceAndCurrency()}}</del> | 
+                  </ng-container>
+                  
+                  
+                  {{orderSelected.getdeliveryPriceDiscountAndCurrency()}} </p>
+               
+               
             </div>
             <div id="tip">
                <p>Propina</p>
@@ -499,7 +507,7 @@
             </div>
             <div id="total-amount">
                <p>Monto Total</p>
-               <p>{{orderSelected.getTotalAndCurrency()}}</p>
+               <p>{{orderSelected.getTotalDiscountAndCurrency()}}</p>
             </div>
          </div>
       </footer>

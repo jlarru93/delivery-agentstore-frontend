@@ -18,7 +18,7 @@ export const environment = {
   mqttServer:{
     url: "prodwss.tres22.net",
     port: 443,
-    path:"/ws",
+    path:"/",
     user:"socket",
     pwd:"socket",
     useSSL:true
