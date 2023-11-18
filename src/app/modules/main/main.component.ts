@@ -325,7 +325,7 @@ import { HttpClient } from "@angular/common/http";
       orderRequest.readyToDmAt=this.readyToDmAt
       this.loadingButtonAcept=true
 
-      if(orderRequest.payment.method.type == 'CASH'){
+      if(orderRequest.payment.method.type == 'CASH' || orderRequest.payment.method.type == 'CARD'){
         this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
           this.displayOrder=false
           this.loadingButtonAcept=false
