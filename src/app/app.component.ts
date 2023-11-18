@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {PrimeNGConfig} from 'primeng/api';
 import { MqttService } from './modules/service/mqtt.service';
-
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -27,6 +26,7 @@ export class AppComponent implements OnInit{
     constructor(private primengConfig: PrimeNGConfig,private mqtt:MqttService) {}
 
     ngOnInit() {
+        console.log("appComponenete")
         this.primengConfig.ripple = true;
     }
 }

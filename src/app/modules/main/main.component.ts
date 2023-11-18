@@ -278,12 +278,23 @@ import { HttpClient } from "@angular/common/http";
       this.imagenURL = this.payment?.method?.url
       let methodName=this.payment.method.name?.toUpperCase()
       methodName=methodName?methodName:""
-      this.paymentName = this.payment.method.type.toUpperCase() + methodName
-
+      //this.paymentName = this.payment.method.type.toUpperCase() + methodName
+      this.paymentName = this.onGetMethodType(this.payment.method.type)
       setTimeout(() => {
         var button2 = document.getElementById('btnOnClicked')
         button2.click()
       }, 500)
+    }
+
+    onGetMethodType(method: string){
+      let methodConverted: string
+      switch(method){
+        case 'CARD' : methodConverted = 'Tarjeta de crédito'; break;
+        case 'CASH' : methodConverted = 'Efectivo'; break;
+        case 'BANK' : methodConverted = 'Cuenta bancaria'; break;
+        case 'E-WALLET' : methodConverted = 'Billetera electrónica'; break;
+      }
+      return methodConverted 
     }
 
     isOpenDialogMethodImg: boolean = false
