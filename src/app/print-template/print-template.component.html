@@ -68,14 +68,6 @@
 
     <hr style="border-top: dashed 1px;" />
     <div class="detalle">
-        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount > 0">
-            <span>Domicilio: <del>{{orderSelected.getdeliveryPriceAndCurrency()}}</del></span>
-            <span><strong>{{orderSelected.getdeliveryPriceDiscountAndCurrency()}}</strong></span>
-        </div>
-        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == 0 || orderSelected.deliveryPriceDiscount == null">
-            <span>Domicilio:</span>
-            <span><strong>{{orderSelected.getdeliveryPriceAndCurrency()}}</strong></span>
-        </div>
         <div class="item"> 
             <span>Productos:</span>
             <span><strong>{{orderSelected.getProductPriceAndCurrency()}}</strong></span>
@@ -83,6 +75,14 @@
         <div class="item">
             <span>Propina: </span>
             <span><strong>{{orderSelected.getTipAndCurrency()}}</strong></span>
+        </div>
+        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount > 0">
+            <span>Domicilio: <del>{{orderSelected.getdeliveryPriceAndCurrency()}}</del></span>
+            <span><strong>{{orderSelected.getdeliveryPriceDiscountAndCurrency()}}</strong></span>
+        </div>
+        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == 0 || orderSelected.deliveryPriceDiscount == null">
+            <span>Domicilio:</span>
+            <span><strong>{{orderSelected.getdeliveryPriceAndCurrency()}}</strong></span>
         </div>
         <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == 0 || orderSelected.deliveryPriceDiscount == null">
             <span>Total:</span>

@@ -137,11 +137,17 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   request_trip: RequestTrip = new RequestTrip();
   ref?: DynamicDialogRef;
   ngAfterViewInit(): void {}
+
+  editTripData: any
+
   ngOnInit(): void {
     // this.center = {
     //   lat: 10.96854,
     //   lng: -74.78132,
     // }
+
+    this.editTripData = JSON.parse(localStorage.getItem('edit-trip'))
+    
     this.isDraggabled = false
     this.request_trip.readyToDmAt = 0 
     this.request_trip.addresses = [

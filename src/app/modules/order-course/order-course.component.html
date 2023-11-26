@@ -25,6 +25,12 @@
           <div class="grid m-0">
             <div class="col-12">
               <div class="grid flex">
+                <p class="etiqueta-lista col-5">Cliente</p>
+                <p class="contenido-lista col-7">
+                  {{ item.user.fullName }}
+                </p>
+              </div>
+              <div class="grid flex">
                 <p class="etiqueta-lista col-5">Tienda</p>
                 <p class="contenido-lista col-7">
                   {{ item.addresses[0].addressStreet }}
@@ -133,7 +139,15 @@
                 pRipple
                 type="button"
                 label="Cancelar"
-                class="btn btn-danger"
+                class="p-mr-2"
+              ></button>
+              <button
+                (click)="redirectOrderTrip(item)"
+                pButton
+                pRipple
+                type="button"
+                label="Editar"
+                class="p-button-outlined"
               ></button>
             </div>
             <div class="p-col">

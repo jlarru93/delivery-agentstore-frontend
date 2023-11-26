@@ -70,11 +70,15 @@
                <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
                  <div class="p-col-12">
                      <div class="p-grid">
-                        <div class="p-col-6"  (click)=" openOrderDialog(order)">
+                        <div class="p-col-4"  (click)=" openOrderDialog(order)">
                            <h5>ID: {{order.id}}</h5>
                            <p>{{order?.store?.addressStreet}}</p>
                         </div>
-                        <div class="p-col-6">
+                        <div class="p-col-4">
+                           <p>{{calculateTime(order?.createdAt)}} min</p>
+                           
+                        </div>
+                        <div class="p-col-4">
                            <div class="overlay-container">
                               <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
@@ -148,10 +152,6 @@
              <div class="p-col-6 title">
                 <h5>Por Entregar</h5>
              </div>
-             <!-- <div class="p-col-6 support-info">
-                <p>⏰ Estimated wait time</p>
-                <span class="highlighted">21 minutes</span>
-             </div> -->
           </div>
           <div *ngFor="let order of ordersReady; let i = index">
             <div class="p-col-12">
@@ -374,7 +374,7 @@
             <div class="sidebar-container-title">Cliente</div>
             <div class="card-client">
                <b>{{orderSelected?.user?.fullName}}</b>
-               <p>{{orderSelected?.user?.phone}}</p>
+               <p>{{orderSelected?.user?.phone}}  <i class="pi pi-whatsapp" (click)="sendMessageWhatsApp(orderSelected.user.phone)"></i></p>
             </div>
             <div *ngIf="orderSelected.status=='open'">
                <div class="sidebar-container-title">Tiempo de preparación</div>

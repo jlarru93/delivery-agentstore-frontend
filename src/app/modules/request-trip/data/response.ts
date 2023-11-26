@@ -68,7 +68,7 @@ export class PolyLine {
 }
 
 export class ResponseLoadingOrder{
-    user : UserBean;
+    user : UserOrderResponse;
     payment :Payment;
     addresses :AddressResponseLoadingOrder[];
     status: string;
@@ -99,6 +99,13 @@ export class ResponseLoadingOrder{
     }
 
 }
+
+export class UserOrderResponse {
+  id?: number
+  fullName?: string
+  type?: string
+}
+
 export class AddressResponseLoadingOrder {
   sort: number;
   marker: string;

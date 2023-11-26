@@ -35,6 +35,7 @@ import { enumStatusOrder, enumTypePayment } from "../request-trip/data/enum";
 import { environment } from "src/environments/environment";
 import { AuthService } from "src/app/utils/auth.service";
 import { DeliveryManRouteResponse, ResponseTrackingMotorized, RouterResponse } from "./data/response";
+import { Router } from "@angular/router";
 
 class PolyLine{
   routePoints:RoutePoint[]
@@ -71,6 +72,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     private orderHandler: OrderHandler,
     private mqtt: MqttService,
     private auth: AuthService,
+    private router: Router,
   ) {}
 
 
@@ -522,6 +524,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.order_name = this.onPaymentGroup(element.payment.method.type )
           order.status_order = this.onStatusGroup(status);
           order.status_order_color = this.onStatusGroupColor(status)
+          order.user = element.user
           order.deliveryMan = element.deliveryMan;
           order.addresses = element.addresses;
           order.total = element.total;
@@ -563,6 +566,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.status_order = this.onStatusGroup(status);
           order.status_order_color = this.onStatusGroupColor(status)
           console.log('status', status)
+          order.user = element.user
           order.deliveryMan = element.deliveryMan;
           order.addresses = element.addresses;
           order.total = element.total;
@@ -876,5 +880,10 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
       (resp) => {},
       (error) => {}
     );
+  }
+
+  redirectOrderTrip(order: any){
+    localStorage.setItem('edit-trip', JSON.stringify(order))
+    this.router.navigate(['/request-trip'])
   }
 }

@@ -515,4 +515,19 @@ import { HttpClient } from "@angular/common/http";
         printWindow.print();
       },1000) 
     }
+
+    sendMessageWhatsApp(phoneNumber: string){
+      const url = `https://wa.me/${phoneNumber}`;
+      window.open(url, '_blank');
+    }
+
+    calculateTime(createdAt: number): number {
+      const tiempoActual = new Date().getTime();
+      const tiempoCreacion = createdAt
+
+      const diferenciaEnMilisegundos = tiempoActual - tiempoCreacion;
+
+      const minutosTranscurridos = Math.floor(diferenciaEnMilisegundos / 60000);
+      return minutosTranscurridos;
+    }
 }
