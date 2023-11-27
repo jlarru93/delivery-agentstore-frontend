@@ -166,6 +166,7 @@ import { ModalComponent } from './modal/modal.component';
 import { OrderCourseComponent } from './modules/order-course/order-course.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { AlertModule } from './directives/alert/alert.module';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -270,7 +271,8 @@ FullCalendarModule.registerPlugins([
           // Register the ServiceWorker as soon as the app is stable
           // or after 30 seconds (whichever comes first).
           registrationStrategy: 'registerWhenStable:30000'
-        })
+        }),
+        AlertModule
     ],
     declarations: [
         AppComponent,

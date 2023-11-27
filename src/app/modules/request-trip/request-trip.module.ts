@@ -19,6 +19,8 @@ import { LoadingMotorizedComponent } from './dialog/loading-motorized/loading-mo
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { TabViewModule } from 'primeng/tabview';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
@@ -44,7 +46,9 @@ import { CheckboxModule } from 'primeng/checkbox';
     InformacionMapaModule,
     InputNumberModule,
     ProgressBarModule,
-    ButtonModule
+    ButtonModule,
+    TabViewModule,
+    BsDatepickerModule.forRoot()
   ]
 })
 export class RequestTripModule { }
