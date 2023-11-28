@@ -1,6 +1,6 @@
 <p-toast [baseZIndex]="1000"></p-toast>
 <div class="p-grid">
-    <div class="p-col-12 p-lg-4 p-md-6">
+    <div class="p-col-12 p-lg-2 p-md-6">
        <div class="card widget-support-request">
           <div class="card-header">
              <div class="title">
@@ -54,7 +54,7 @@
           </div>
        </div>
     </div>
-    <div class="p-col-12 p-lg-4 p-md-6">
+    <div class="p-col-12 p-lg-3 p-md-6">
        <div class="card widget-support-request">
           <div class="p-grid p-nogutter">
              <div class="p-col-6 title">
@@ -146,14 +146,95 @@
          </div>
        </div>
     </div>
-    <div class="p-col-12 p-lg-4 p-md-6">
+    <div class="p-col-12 p-lg-3 p-md-6">
        <div class="card widget-support-request">
-          <div class="p-grid p-nogutter">
-             <div class="p-col-6 title">
-                <h5>Por Entregar</h5>
-             </div>
-          </div>
-          <div *ngFor="let order of ordersReady; let i = index">
+            <div class="p-grid p-nogutter">
+               <div class="p-col-6 title">
+                  <h5>Por Entregar</h5>
+               </div>
+            </div>
+            <div *ngFor="let order of ordersReady; let i = index">
+               <div class="p-col-12">
+                  <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
+                     <div class="p-col-12">
+                        <div class="p-grid">
+                           <div class="p-col-10" (click)=" openOrderDialog(order)">
+                              <h5>ID: {{order.id}}</h5>
+                              <p>{{order?.store?.addressStreet}}</p>
+                           </div>
+                           <div class="p-col">
+                              <div class="overlay-container">
+                                 <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
+                                 <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                                    <app-chat 
+                                       [isLoading]="order.isLoadingChat"
+                                       [messages]="order.messagesChat" 
+                                       [orderId]="order.id"
+                                       [orderUuid]="order.uuid"
+                                       [usuarioLogueado]="userName"
+                                       [userId]="userId"
+                                       (emitMessage)="sendMessage($event)"
+                                       ></app-chat>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                  </div>
+                  <div class="p-col-12" (click)=" openOrderDialog(order)">
+                     <hr>  
+                  </div>
+                  <div class="p-col-12" (click)=" openOrderDialog(order)">
+                     <div class="p-grid">
+                        <div class="p-col-6">
+                           <div *ngIf="order?.deliveryMan?.status == 'toStore'">
+                              <div class="p-grid">
+                                 <div class="p-col-1">
+                                    <img src="assets/images/icon-bike.svg" alt="" width="25">
+                                 </div>
+                                 <div class="p-col-11" style="margin-top: 3px;">
+                                    <span style="padding-left: 10px;">Repartidor en camino</span>
+                                 </div>
+                              </div>
+                           </div>
+                           <div *ngIf="order?.deliveryMan?.status == 'inStore'">
+                              <div class="p-grid">
+                                 <div class="p-col-1">
+                                    <img src="assets/images/icon-store.svg" alt="" width="25">
+                                 </div>
+                                 <div class="p-col-11" style="margin-top: 3px;">
+                                    <span style="padding-left: 10px;">Repartidor está en la tienda</span>
+                                 </div>
+                              </div>
+                           </div>
+                           <div *ngIf="order?.deliveryMan == null">
+                              <div class="p-grid">
+                                 <div class="p-col-1">
+                                    <img src="assets/images/icon-target.svg" alt="" width="25">
+                                 </div>
+                                 <div class="p-col-11" style="margin-top: 3px;">
+                                    <span style="padding-left: 10px;">Buscando repartidor</span>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="p-col-6">
+                           <button class="p-button-primary" pButton pRipple type="button" style="float: right;">Entregar pedido</button>
+                        </div>
+                     </div>
+                  </div>
+                  </div>
+               </div>
+            </div>
+       </div>
+    </div>
+   <div class="p-col-12 p-lg-2 p-md-6">
+      <div class="card widget-support-request">
+         <div class="p-grid p-nogutter">
+            <div class="p-col-6 title">
+               <h5>En reparto</h5>
+            </div>
+         </div>
+         <div *ngFor="let order of ordersInRoute; let i = index">
             <div class="p-col-12">
                <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
                   <div class="p-col-12">
@@ -179,11 +260,11 @@
                            </div>
                         </div>
                      </div>
-                 </div>
-                 <div class="p-col-12" (click)=" openOrderDialog(order)">
+               </div>
+               <div class="p-col-12" (click)=" openOrderDialog(order)">
                   <hr>  
-                 </div>
-                 <div class="p-col-12" (click)=" openOrderDialog(order)">
+               </div>
+               <div class="p-col-12" (click)=" openOrderDialog(order)">
                   <div class="p-grid">
                      <div class="p-col-6">
                         <div *ngIf="order?.deliveryMan?.status == 'toStore'">
@@ -206,7 +287,7 @@
                               </div>
                            </div>
                         </div>
-                        <div *ngIf="order?.deliveryMan == null">
+                        <!-- <div *ngIf="order?.deliveryMan == null">
                            <div class="p-grid">
                               <div class="p-col-1">
                                  <img src="assets/images/icon-target.svg" alt="" width="25">
@@ -215,18 +296,99 @@
                                  <span style="padding-left: 10px;">Buscando repartidor</span>
                               </div>
                            </div>
-                        </div>
+                        </div> -->
                      </div>
-                     <div class="p-col-6">
-                        <button class="btn-preparation" pButton pRipple type="button" style="float: right;">Entregar pedido</button>
-                     </div>
+                     <!-- <div class="p-col-6">
+                        <button class="p-button-primary" pButton pRipple type="button" style="float: right;">Entregar pedido</button>
+                     </div> -->
                   </div>
-                 </div>
+               </div>
                </div>
             </div>
          </div>
-       </div>
-    </div>
+      </div>
+   </div>
+   <div class="p-col-12 p-lg-2 p-md-6">
+      <div class="card widget-support-request">
+         <div class="p-grid p-nogutter">
+            <div class="p-col-6 title">
+               <h5>Culminado</h5>
+            </div>
+            <div *ngFor="let order of ordersFinis; let i = index">
+               <div class="p-col-12">
+                  <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
+                     <div class="p-col-12">
+                        <div class="p-grid">
+                           <div class="p-col-10" (click)=" openOrderDialog(order)">
+                              <h5>ID: {{order.id}}</h5>
+                              <p>{{order?.store?.addressStreet}}</p>
+                           </div>
+                           <div class="p-col">
+                              <div class="overlay-container">
+                                 <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
+                                 <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                                    <app-chat 
+                                       [isLoading]="order.isLoadingChat"
+                                       [messages]="order.messagesChat" 
+                                       [orderId]="order.id"
+                                       [orderUuid]="order.uuid"
+                                       [usuarioLogueado]="userName"
+                                       [userId]="userId"
+                                       (emitMessage)="sendMessage($event)"
+                                       ></app-chat>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                  </div>
+                  <div class="p-col-12" (click)=" openOrderDialog(order)">
+                     <hr>  
+                  </div>
+                  <div class="p-col-12" (click)=" openOrderDialog(order)">
+                     <div class="p-grid">
+                        <div class="p-col-6">
+                           <div *ngIf="order?.deliveryMan?.status == 'toStore'">
+                              <div class="p-grid">
+                                 <div class="p-col-1">
+                                    <img src="assets/images/icon-bike.svg" alt="" width="25">
+                                 </div>
+                                 <div class="p-col-11" style="margin-top: 3px;">
+                                    <span style="padding-left: 10px;">Repartidor en camino</span>
+                                 </div>
+                              </div>
+                           </div>
+                           <div *ngIf="order?.deliveryMan?.status == 'inStore'">
+                              <div class="p-grid">
+                                 <div class="p-col-1">
+                                    <img src="assets/images/icon-store.svg" alt="" width="25">
+                                 </div>
+                                 <div class="p-col-11" style="margin-top: 3px;">
+                                    <span style="padding-left: 10px;">Repartidor está en la tienda</span>
+                                 </div>
+                              </div>
+                           </div>
+                           <div *ngIf="order?.deliveryMan == null">
+                              <div class="p-grid">
+                                 <div class="p-col-1">
+                                    <img src="assets/images/icon-target.svg" alt="" width="25">
+                                 </div>
+                                 <div class="p-col-11" style="margin-top: 3px;">
+                                    <span style="padding-left: 10px;">Buscando repartidor</span>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <!-- <div class="p-col-6">
+                           <button class="btn-preparation" pButton pRipple type="button" style="float: right;">Entregar pedido</button>
+                        </div> -->
+                     </div>
+                  </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
  </div>
  <p-dialog [(visible)]="displayOrder" [modal]="true">
    <p-toast position="top-center" key="tc"></p-toast>

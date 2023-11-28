@@ -166,6 +166,7 @@ export class OrderBean {
     messagesChat:ChatBean[]
     isLoadingChat:boolean
     showButton:boolean
+    statusForAgentStore:string
     constructor(){
         this.messagesNoReadTotal=0
         this.messagesChat=[]

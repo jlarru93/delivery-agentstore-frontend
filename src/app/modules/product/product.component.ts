@@ -27,7 +27,12 @@ export class ProductComponent implements OnInit {
     productDialog: boolean = false;
     deleteProductDialog: boolean = false;
     storeBean: StoreBean
-
+    ProductOptions: any[] = [
+        { name: 'EN STOCK', value: false },
+        { name: 'SIN STOCK', value: true },
+        { name: 'TODOS', value: -1 },
+    ];
+    filterProduc:any=false
     constructor(
         private productService: ProductService,
         private messageService: MessageService
@@ -50,7 +55,13 @@ export class ProductComponent implements OnInit {
             this.storeBean = storeBean;
         })
     }
-
+    ChangeFilterProduc(filterProduc:any){
+        if(filterProduc!=-1){
+            this.products=this.storeBean.products.filter((prod)=>prod.isOutStock!=undefined&&prod.isOutStock==filterProduc)
+        }else{
+            this.products=this.storeBean.products
+        }
+    }
     getProductsFromMenu(menuSelected:string=null){
         this.progressBar = true
         this.itemSelecciona = menuSelected
@@ -59,7 +70,11 @@ export class ProductComponent implements OnInit {
                 let storeBean=StoreResponse.toBean(resp.data)
                 this.products=storeBean.products
                 this.productsMenuSelected= this.products.filter((product)=>product.menu.includes(menuSelected))
-                this.products = this.productsMenuSelected
+                if(this.filterProduc!=-1){
+                    this.products = this.productsMenuSelected.filter((prod)=>prod.isOutStock==this.filterProduc)
+                }else{
+                    this.products = this.productsMenuSelected
+                }
                 this.progressBar = false;
             })
         }else{

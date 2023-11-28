@@ -334,6 +334,7 @@ export class OrderResponse {
     readyToDmAt: number
     acceptAgentStoreAt: number
     addresses ?: AddressResponseLoadingOrder[]
+    statusForAgentStore:string
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
         bean.id = self?.id
@@ -355,6 +356,7 @@ export class OrderResponse {
         bean.createdAt = self.createdAt
         bean.readyToDmAt = self.readyToDmAt
         bean.acceptAgentStoreAt = self.acceptAgentStoreAt
+        bean.statusForAgentStore=self.statusForAgentStore
         return bean
     }
 }

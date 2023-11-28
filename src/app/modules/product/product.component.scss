@@ -55,3 +55,28 @@
         opacity: 0.5;
     }
 }
+
+
+:host ::ng-deep .p-selectbutton .p-button.p-highlight {
+    background-color: #dc3545;
+    border: 1px solid #dc3545;
+    //padding: 0.8rem;
+    color: #ffffff;
+}
+
+:host ::ng-deep .p-selectbutton .p-button {
+    background: transparent;
+    //border: 1px solid #;
+    border: 1px solid #ced4da;
+    color: #000000;
+}
+
+:host ::ng-deep .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight):hover {
+    background-color: #F28686;
+    border: 1px solid #F28686;
+}
+
+
+.select-button-custom{
+    margin-top: -3rem !important;
+}
