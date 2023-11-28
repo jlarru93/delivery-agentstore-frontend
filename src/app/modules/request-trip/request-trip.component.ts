@@ -210,7 +210,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
 
   loadDataForm(){
-    this.enablePickUpInput()
+    this.onGetLocationStore(false);
     
     
     setTimeout( () => {
@@ -1036,7 +1036,7 @@ uuid_price ?: string
   isCheckedStore: boolean = false
   isHiddenInput: boolean = false
   enablePickUpInput(){
-    //debugger
+    debugger
     if(this.isCheckedStore == true){
       this.isDraggabled = true
       this.findAdressOrigin()
