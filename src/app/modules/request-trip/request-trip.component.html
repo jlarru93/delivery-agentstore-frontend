@@ -317,7 +317,7 @@
       </div>
     </div>
     <div class="p-mt-3"></div>
-    <div class="p-grid p-fluid">
+    <div class="p-grid p-fluid" *ngIf="!editTripData">
       <div class="p-col-12">
         <button 
         (click)="onSaveOrder()"
@@ -333,5 +333,22 @@
         </button>
       </div>
     </div>
+    <div class="p-grid p-fluid" *ngIf="editTripData">
+      <div class="p-col-12">
+        <button 
+        (click)="onUpdateOrder()"
+          pButton
+          pRipple
+          class="col-12 p-button-danger p-button-lg"
+          style="position: relative; padding: 1rem"
+        >
+          <label for="">ACTUALIZAR ORDEN</label>
+          <span style="position: absolute; right: 2%">
+            <img src="{{ imgLogo }}" class="sign-logo" alt="" />
+          </span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
+<pre>{{request_trip | json}}</pre>

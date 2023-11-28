@@ -377,6 +377,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   flagAccordion: boolean = false;
   async onTapOpen(envios: any, flagAccordion: boolean) {
+    
     this.polyLines=[]
     clearInterval(this.set_interval_driver);
     this.flagAccordion = true;
@@ -574,6 +575,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.id = element.id 
           order.uuid = element.uuid
           // order.showButton = false
+          order.detail = element.detail
           this.list_order.push(order);
         });
         this.isDoneGetOrders = true;

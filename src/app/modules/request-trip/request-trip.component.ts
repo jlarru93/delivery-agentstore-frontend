@@ -25,7 +25,7 @@ import {
 } from "./data/request";
 import * as UtilModalViaje from "./util-modal-viaje-corporate";
 import { RequestTripService } from "./services/request-trip.service";
-import { ResponseMotorizedOrigin } from "./data/response";
+import { ResponseLoadingOrder, ResponseMotorizedOrigin } from "./data/response";
 import { LoadingMotorizedComponent } from "./dialog/loading-motorized/loading-motorized.component";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { environment } from "src/environments/environment";
@@ -147,47 +147,45 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     // }
 
     this.editTripData = JSON.parse(localStorage.getItem('edit-trip'))
+    if(this.editTripData) {
+      this.loadDataForm()
+    } else {
+      this.isDraggabled = false
+      this.request_trip.readyToDmAt = 0 
+      this.request_trip.addresses = [
+        {
+          addressStreet: "",
+          alias: "",
+          floor: "",
+          phone: "",
+          marker: "store",
+          point: {
+            coordinates: [0, 0],
+            type: "",
+          },
+          sort: 1,
+          reference: "",
+        },
+        {
+          addressStreet: "",
+          alias: "",
+          floor: "",
+          phone: "",
+          marker: "store",
+          point: {
+            coordinates: [0, 0],
+            type: "",
+          },
+          sort: 2,
+          reference: "",
+        },
+      ];
+      this.findAdress();
+      this.onGetLocationStore(true);
+
+    }
     
-    this.isDraggabled = false
-    this.request_trip.readyToDmAt = 0 
-    this.request_trip.addresses = [
-      {
-        addressStreet: "",
-        alias: "",
-        floor: "",
-        phone: "",
-        marker: "store",
-        point: {
-          coordinates: [0, 0],
-          type: "",
-        },
-        sort: 1,
-        reference: "",
-      },
-      {
-        addressStreet: "",
-        alias: "",
-        floor: "",
-        phone: "",
-        marker: "store",
-        point: {
-          coordinates: [0, 0],
-          type: "",
-        },
-        sort: 2,
-        reference: "",
-      },
-    ];
-    this.findAdress();
-    this.onGetLocationStore(true);
-    // this.auth.getUserDetails().then(
-    //   (data) => {
-    //       this.userAttributes = data
-    //       let userPhoneObj = this.userAttributes.find(attributes => attributes.Name == 'phone_number')
-    //       this.userPhone = userPhoneObj.Value
-    //   }
-    // )
-    // this.stateOptions = [{label: 'Efectivo', value: 'efectivo'}, {label: 'Pago Digital', value: 'e-wallet'}];
+  
   }
   
   dataStorePhone: string
@@ -208,8 +206,144 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private onGetLocationStore(flagInit : boolean) {
 
+  loadDataForm(){
+    this.enablePickUpInput()
+    
+    
+    setTimeout( () => {
+      this.findAdress()
+      this.findAdressOrigin()
+      this.isCheckedStore = true
+      this.is_disabled_pickup = false
+      this.isHiddenInput = true
+
+      this.onUpdateEditOrder(this.editTripData)
+      this.input_visible_pickup = this.editTripData.addresses[0].addressStreet
+      this.input_reference_pickup = this.editTripData.addresses[0].reference
+      this.originMobilePhone = this.editTripData.addresses[0].phone
+      this.input_receptorNameOrigin_pickup = this.editTripData.addresses[0].receptorName
+
+      this.inputVisibleDestino = this.editTripData.addresses[1].addressStreet
+      this.input_reference_destination = this.editTripData.addresses[1].reference
+      this.destinationMobilePhone = this.editTripData.addresses[1].phone
+      this.destinationReceptorName = this.editTripData.addresses[1].receptorName
+      this.request_trip.description = this.editTripData.detail
+
+      this.method_payment = this.editTripData.payment.method.type
+
+
+      this.request_trip.addresses[0].addressStreet = this.editTripData.addresses[0].addressStreet
+      this.request_trip.addresses[0].phone = this.editTripData.addresses[0].phone
+      this.request_trip.addresses[0].reference = this.editTripData.addresses[0].reference
+
+      this.request_trip.addresses[1].addressStreet = this.editTripData.addresses[1].addressStreet
+      this.request_trip.addresses[1].phone = this.editTripData.addresses[1].phone
+      this.request_trip.addresses[1].reference = this.editTripData.addresses[1].reference
+      this.request_trip.addresses[1].point.type = this.editTripData.addresses[1].location.type
+
+      this.request_trip.addresses[0].point.coordinates[1] = this.editTripData.addresses[0].location.coordinates[1]
+      this.request_trip.addresses[0].point.coordinates[0] = this.editTripData.addresses[0].location.coordinates[0]
+
+      this.request_trip.addresses[1].point.coordinates[1] = this.editTripData.addresses[1].location.coordinates[1]
+      this.request_trip.addresses[1].point.coordinates[0] = this.editTripData.addresses[1].location.coordinates[0]
+
+      
+
+      this.request_trip.readyToDmAt = this.editTripData.readyToDmAt
+      
+      this.onGetAmountOrder()
+    }, 1500)
+  }
+
+  fnDetalleViajeLabelListServiceWeb(
+    latLng: google.maps.LatLng,
+    tittle: string,
+    isEstado: number,
+    labelSelector: string,
+    id: any,
+    view_screen_map?: boolean
+  ): PersonalisationMarker {
+    let detalle: PersonalisationMarker = new PersonalisationMarker();
+
+    detalle.posicion = latLng;
+    detalle.showTittle = true;
+    detalle.tittle = tittle;
+    detalle.tipoMarker = TypeMarkers.CONDUCTOR;
+    detalle.isDragable = false;
+    // detalle.selector = ColorStatusLablelMarker.STATUS_DRIVER + isEstado;
+    // detalle.labelSelector = labelSelector + '';
+    detalle.idEstado = isEstado;
+    // detalle.estado = ValorComparativo.ESTADO_CONDUCTOR;
+    detalle.showInfowindow = true;
+    detalle.typeServicesId = id;
+    detalle.infoWindow = new google.maps.InfoWindow({
+      content: "<b> " + "   " + tittle + "</b> ",
+    });
+    detalle.view_screen_map = view_screen_map ? view_screen_map : false;
+    return detalle;
+  }
+
+  async onUpdateEditOrder(item: ResponseLoadingOrder) {
+    let lstPosiciones: PersonalisationMarker[] = [];
+    await this.requestTripService
+      .onViewTrackingMotorizedService(item.uuid)
+      .subscribe((viaje) => {
+        if (viaje.data.position) {
+          let tittle = viaje.data.deliveryMan.name;
+          lstPosiciones.push(
+            this.fnDetalleViajeLabelListServiceWeb(
+              new google.maps.LatLng(
+                viaje.data.position.lat,
+                viaje.data.position.lng
+              ),
+              tittle,
+              -1,
+              "",
+              "",
+              true
+            )
+          );
+          
+          this.lstPosicionConductor = lstPosiciones;
+        } else {
+          this.onClearMap();
+          this.updatePositionOrderEdit(item);
+        }
+      });
+  }
+
+  updatePositionOrderEdit(select_service: ResponseLoadingOrder) {
+
+    this.markers = []
+    const newMarkersOrigin: Marker = {
+      lat: select_service.addresses[0].location.coordinates[1],
+      lng: select_service.addresses[0].location.coordinates[0],
+      iconUrl: this.globalIconOrigin,
+      label: 'Origen',
+      isDraggable: false,
+    }
+    this.markers[0] = newMarkersOrigin
+
+    const newMarkersDestination: Marker = {
+      lat: select_service.addresses[1].location.coordinates[1],
+      lng: select_service.addresses[1].location.coordinates[0],
+      iconUrl: this.globalIconDestination,
+      label: 'Destino',
+      isDraggable: false,
+    }
+    this.markers[1] = newMarkersDestination
+    this.centrarMapa()
+  }
+
+  onClearMap() {
+    this.polilyneRuta = [];
+    this.lstPosiciones = [];
+    this.lstPosicionConductor = [];
+  }
+
+  private onGetLocationStore(flagInit : boolean) {
+    
     this.storeService.onGetLocationStoreService().subscribe((resp) => {
       console.log("resp.data.store",resp.data.store)
       this.input_visible_pickup = resp.data.store.addressStreet+' ('+resp.data.store.fullName+')';
@@ -350,7 +484,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   
   geocoder: google.maps.Geocoder = new google.maps.Geocoder();
   geocodePlaceIdOrigin(placeId) {
-    //debugger
+    
     this.geocoder.geocode({ placeId: placeId }, (results, status) => {
       if (status === google.maps.GeocoderStatus.OK) {
         if (results[0]) {
@@ -386,6 +520,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           // this.geocodePlaceId(place);
           this.onGetMotorizedPosiitonOrigin();
           this.updatePosition();
+
+          if(this.request_trip.addresses[1].point.coordinates[1] && this.request_trip.addresses[1].point.coordinates[0]){
+            this.onGetAmountOrder()
+          }
         }
       }
     });
@@ -765,6 +903,123 @@ uuid_price ?: string
     );
     
   }
+
+  onUpdateOrder() {
+    let order: RequestTrip = new RequestTrip();
+    if (!this.request_trip.description) {
+      alert("La descripción es obligatoria");
+      return;
+    }
+
+    if("CASH" === this.method_payment &&  (!this.cashAmount || this.cashAmount ===0 )){
+      alert("monto es obligarotio cuando selecionas efectivo");
+      return;
+    }
+
+    if(!this.uuid_price || this.uuid_price==''){
+      alert("es obligatorio generar la ruta");
+      return;
+    }
+    const isEmptyOriginMobilePhone=!this.originMobilePhone || this.originMobilePhone.toString().trim().length==0
+    const isEmpty=!this.destinationMobilePhone || this.destinationMobilePhone.toString().trim().length==0
+    if(this.isCheckedStore == true && (isEmptyOriginMobilePhone && isEmpty)){
+      alert("es obligatorio escribir por lo menos un numero");
+      return;
+    }
+
+    if ("CASH" === this.method_payment) {
+      order.productPrice = this.cashAmount
+    }
+
+    order.payment = {
+      method: {
+        type: this.method_payment,
+      },
+    };
+
+    order.uuid = this.editTripData.uuid
+
+    order.uuid_price=this.uuid_price
+    order.readyToDmAt = this.request_trip.readyToDmAt ? this.request_trip.readyToDmAt : 0;
+    order.description = this.request_trip.description;
+    order.mobile = this.request_trip.mobile;
+    order.addresses = [
+      {
+        addressStreet: "",
+        alias: "",
+        floor: "",
+        phone: "",
+        marker: "store",
+        point: {
+          coordinates: [0, 0],
+          type: "Point",
+        },
+        sort: 1,
+        reference: this.input_reference_pickup,
+        label : "Recojo"
+      },
+      {
+        addressStreet: "",
+        alias: "",
+        floor: "",
+        phone: "",
+        marker: "Point",
+        point: {
+          coordinates: [0, 0],
+          type: "Point",
+        },
+        sort: 2,
+        reference: this.input_reference_destination,
+        label : "Entrega Final",
+        uuidRoutePrice : this.uuid_price
+      },
+    ];
+    debugger
+    this.request_trip.addresses.forEach((item, index) => {
+      if (item.sort == 1) {
+        order.addresses[0].id = this.editTripData.addresses[0].id
+        order.addresses[0].addressStreet = item.addressStreet;
+        order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
+        order.addresses[0].marker = item.marker;
+        order.addresses[0].alias = item.alias;
+        order.addresses[0].reference = this.input_reference_pickup;
+        order.addresses[0].floor = item.floor;
+        order.addresses[0].point = item.point;
+        
+        order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup
+        console.log('receptorname', this.input_receptorNameOrigin_pickup)
+      } else {
+        order.addresses[1].id = this.editTripData.addresses[1].id
+        order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
+        order.addresses[1].marker = item.marker;
+        order.addresses[1].alias = item.alias;
+        order.addresses[1].reference = this.input_reference_destination;
+        order.addresses[1].floor = item.floor;
+        order.addresses[1].addressStreet = item.addressStreet;
+        order.addresses[1].point = item.point;
+        order.addresses[1].receptorName = this.destinationReceptorName;
+        //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
+      }
+    });
+    console.log('request',order)
+    this.requestTripService.onUpdateOrderService(order).subscribe(
+      (data) => {
+        this.ref = this.dialogService.open(LoadingMotorizedComponent, {
+          header: "Repartidor",
+          data: {
+            isUpdated: true
+          }
+        });
+        // alert("Se guardó correctamente");
+      },
+      (error) => {
+        alert("Ocurrió un error");
+      }
+    );
+    
+  }
+
+
 
   isCheckedStore: boolean = false
   isHiddenInput: boolean = false

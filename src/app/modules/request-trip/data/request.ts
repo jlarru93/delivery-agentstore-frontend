@@ -9,6 +9,7 @@ export class Point {
   
   // Define the class for the "addresses" object
   export class Address {
+    id?: number;
     sort: number;
     marker: string;
     addressStreet: string;
@@ -41,7 +42,7 @@ export class Point {
     payment: Payment;
     addresses: Address[];
     mobile ?: string
-    readyToDmAt ?: number
+    readyToDmAt ?: number = 0
     uuid_price:string
     productPrice?:number
   }

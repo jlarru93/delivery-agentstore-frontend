@@ -79,6 +79,7 @@ export class ResponseLoadingOrder{
     uuid: string;
     type: string;
     zoneId: number;
+    detail: string;
     deliveryPrice: number;
     total: number;
     date_string : string
