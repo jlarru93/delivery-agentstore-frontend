@@ -525,13 +525,15 @@ import { HttpClient } from "@angular/common/http";
       window.open(url, '_blank');
     }
 
-    calculateTime(createdAt: number): number {
-      const tiempoActual = new Date().getTime();
-      const tiempoCreacion = createdAt
-
-      const diferenciaEnMilisegundos = tiempoActual - tiempoCreacion;
-
-      const minutosTranscurridos = Math.floor(diferenciaEnMilisegundos / 60000);
-      return minutosTranscurridos;
+    calculateTime(createdAt: number) {
+      const tiempoActual = new Date();
+      const tiempoCreacion = new Date(createdAt*1000);
+      const diferencia = (tiempoActual.getTime() - tiempoCreacion.getTime());
+      const daysDifference = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+      const hoursDifference = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutesDifference = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+      var day= daysDifference>0?daysDifference+' d':''
+      var res = (day +' '+hoursDifference+':'+minutesDifference).toString()
+      return res;
     }
 }

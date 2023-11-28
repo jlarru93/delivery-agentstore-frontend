@@ -74,11 +74,11 @@
                            <h5>ID: {{order.id}}</h5>
                            <p>{{order?.store?.addressStreet}}</p>
                         </div>
-                        <div class="p-col-4">
+                        <div class="p-col-5">
                            <p>{{calculateTime(order?.createdAt)}} min</p>
                            
                         </div>
-                        <div class="p-col-4">
+                        <div class="p-col-3">
                            <div class="overlay-container">
                               <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
