@@ -919,23 +919,23 @@ uuid_price ?: string
   onUpdateOrder() {
     let order: RequestTrip = new RequestTrip();
     if (!this.request_trip.description) {
-      alert("La descripción es obligatoria");
+      this.alert.showError('',"La descripción es obligatoria");
       return;
     }
 
     if("CASH" === this.method_payment &&  (!this.cashAmount || this.cashAmount ===0 )){
-      alert("monto es obligarotio cuando selecionas efectivo");
+      this.alert.showError('',"La descripción es obligatoria");
       return;
     }
 
     if(!this.uuid_price || this.uuid_price==''){
-      alert("es obligatorio generar la ruta");
+      this.alert.showError('',"es obligatorio generar la ruta");
       return;
     }
     const isEmptyOriginMobilePhone=!this.originMobilePhone || this.originMobilePhone.toString().trim().length==0
     const isEmpty=!this.destinationMobilePhone || this.destinationMobilePhone.toString().trim().length==0
     if(this.isCheckedStore == true && (isEmptyOriginMobilePhone && isEmpty)){
-      alert("es obligatorio escribir por lo menos un numero");
+      this.alert.showError('',"es obligatorio escribir por lo menos un numero");
       return;
     }
 
@@ -986,7 +986,7 @@ uuid_price ?: string
         uuidRoutePrice : this.uuid_price
       },
     ];
-    debugger
+
     this.request_trip.addresses.forEach((item, index) => {
       if (item.sort == 1) {
         order.addresses[0].id = this.editTripData.addresses[0].id
