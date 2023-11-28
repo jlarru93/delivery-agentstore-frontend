@@ -45,6 +45,10 @@ export class Point {
     readyToDmAt ?: number = 0
     uuid_price:string
     productPrice?:number
+    isReadyToDmAt:boolean
+    constructor(){
+      this.isReadyToDmAt=true
+    }
   }
   
   export class RequestMotorizedOrigin {

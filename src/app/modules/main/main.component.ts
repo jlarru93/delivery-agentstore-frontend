@@ -50,6 +50,8 @@ import { HttpClient } from "@angular/common/http";
     ordersOpen:OrderBean[]=[]
     ordersPreparing:OrderBean[]=[]
     ordersReady:OrderBean[]=[]
+    ordersInRoute:OrderBean[]=[]
+    ordersFinis:OrderBean[]=[]
     orderSelected:OrderBean
     readyToDmAt:number=10
     count: number = 10
@@ -303,9 +305,11 @@ import { HttpClient } from "@angular/common/http";
     }
 
     sortOrders(){
-      this.ordersOpen=this.orders.filter((order)=>order.status==CONSTANTES.OPEN_ORDER_STATUS &&  this.dmStatusOkay(order))
-      this.ordersPreparing=this.orders.filter((order)=>order.status==CONSTANTES.PREPARING_ORDER_STATUS &&  this.dmStatusOkay(order))
-      this.ordersReady=this.orders.filter((order)=>order.status==CONSTANTES.READY_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersOpen=this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.OPEN_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersPreparing=this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.PREPARING_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersReady=this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.READY_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersInRoute=this.orders.filter((order)=>(order.statusForAgentStore==CONSTANTES.IN_ROUTE_ORDER_STATUS))
+      this.ordersFinis = this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.DONE_ORDER_STATUS)
     }
 
     dmStatusOkay(order:OrderBean){
@@ -521,13 +525,15 @@ import { HttpClient } from "@angular/common/http";
       window.open(url, '_blank');
     }
 
-    calculateTime(createdAt: number): number {
-      const tiempoActual = new Date().getTime();
-      const tiempoCreacion = createdAt
-
-      const diferenciaEnMilisegundos = tiempoActual - tiempoCreacion;
-
-      const minutosTranscurridos = Math.floor(diferenciaEnMilisegundos / 60000);
-      return minutosTranscurridos;
+    calculateTime(createdAt: number) {
+      const tiempoActual = new Date();
+      const tiempoCreacion = new Date(createdAt*1000);
+      const diferencia = (tiempoActual.getTime() - tiempoCreacion.getTime());
+      const daysDifference = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+      const hoursDifference = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutesDifference = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+      var day= daysDifference>0?daysDifference+' d':''
+      var res = (day +' '+hoursDifference+':'+minutesDifference).toString()
+      return res;
     }
 }

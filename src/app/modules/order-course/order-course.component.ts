@@ -36,6 +36,7 @@ import { environment } from "src/environments/environment";
 import { AuthService } from "src/app/utils/auth.service";
 import { DeliveryManRouteResponse, ResponseTrackingMotorized, RouterResponse } from "./data/response";
 import { Router } from "@angular/router";
+import { AlertServices } from "../service/alert.service";
 
 class PolyLine{
   routePoints:RoutePoint[]
@@ -73,6 +74,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     private mqtt: MqttService,
     private auth: AuthService,
     private router: Router,
+    private alert:AlertServices
   ) {}
 
 
@@ -686,12 +688,12 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   btnCancelViaje(item: ResponseLoadingOrder) {
     this.requestTripService.onCancelOrderService(item.uuid).subscribe(
       (data) => {
-        alert("Se canceló la orden");
+        this.alert.showSuccess('',"Se canceló la orden");
         this.onSearchMotorizedOrder();
         this.onClearMap();
       },
       (error) => {
-        alert("Ocurrió un error");
+        this.alert.showError('',"Ocurrió un error");
       }
     );
     // this.cancelViaje.emit(item)

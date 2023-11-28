@@ -304,17 +304,27 @@
           </mat-form-field>
         </div>
       </div>
-      <h5>Minutos</h5>
-      <div class="p-grid p-fluid">
-        <p-inputNumber 
-        [(ngModel)]="request_trip.readyToDmAt" 
-        [showButtons]="true" 
-        min="0"
-        buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="5"
-    decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" 
-    incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" 
-    currency="EUR"></p-inputNumber>
-      </div>
+      <p-tabView (onChange)="onChangeOrder($event)">
+        <p-tabPanel  header="Minutos">
+          <!-- <h5>Minutos</h5> -->
+          <div class="p-grid p-fluid">
+            <p-inputNumber 
+              [(ngModel)]="request_trip.readyToDmAt" 
+              [showButtons]="true" 
+              min="0"
+              buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="5"
+              decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" 
+              incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" currency="EUR">
+            </p-inputNumber>
+          </div>
+        </p-tabPanel>
+        <p-tabPanel  header="Calendario">
+          <div class="p-grid p-fluid">
+            <input type="text" [(ngModel)]="creadDate" pInputText bsDatepicker [bsConfig]="{ adaptivePosition: true,withTimepicker: true,dateInputFormat: 'DD-MM-YYYY h:mm:ss a'}">
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+      
     </div>
     <div class="p-mt-3"></div>
     <div class="p-grid p-fluid" *ngIf="!editTripData">

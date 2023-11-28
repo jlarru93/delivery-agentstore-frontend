@@ -29,6 +29,7 @@ import { ResponseLoadingOrder, ResponseMotorizedOrigin } from "./data/response";
 import { LoadingMotorizedComponent } from "./dialog/loading-motorized/loading-motorized.component";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { environment } from "src/environments/environment";
+import { AlertServices } from "../service/alert.service";
 
 interface PolyLine{
   routePoints:RoutePoint[]
@@ -123,11 +124,12 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       routePoints:[]
     }
   ]
-
+  creadDate:Date= new Date()
   constructor(
     private storeService: StoreService,
     private requestTripService: RequestTripService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private alert:AlertServices
   ) {}
 
   stateOptions: any[];
@@ -800,26 +802,33 @@ uuid_price ?: string
   originMobilePhone: string
   destinationMobilePhone: string
   destinationReceptorName: string
+  onChangeOrder(event:any){
+    if(event.index==0){
+      this.request_trip.isReadyToDmAt=true
+    }else{
+      this.request_trip.isReadyToDmAt=false
+    }
+  }
   onSaveOrder() {
     let order: RequestTrip = new RequestTrip();
     if (!this.request_trip.description) {
-      alert("La descripción es obligatoria");
+      this.alert.showError('',"La descripción es obligatoria");
       return;
     }
 
     if("CASH" === this.method_payment &&  (!this.cashAmount || this.cashAmount ===0 )){
-      alert("monto es obligarotio cuando selecionas efectivo");
+      this.alert.showError('',"monto es obligarotio cuando selecionas efectivo");
       return;
     }
 
     if(!this.uuid_price || this.uuid_price==''){
-      alert("es obligatorio generar la ruta");
+      this.alert.showError('',"es obligatorio generar la ruta");
       return;
     }
     const isEmptyOriginMobilePhone=!this.originMobilePhone || this.originMobilePhone.toString().trim().length==0
     const isEmpty=!this.destinationMobilePhone || this.destinationMobilePhone.toString().trim().length==0
     if(this.isCheckedStore == true && (isEmptyOriginMobilePhone && isEmpty)){
-      alert("es obligatorio escribir por lo menos un numero");
+      this.alert.showError('',"es obligatorio escribir por lo menos un numero");
       return;
     }
 
@@ -889,7 +898,10 @@ uuid_price ?: string
         //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
       }
     });
-    
+    order.isReadyToDmAt=this.request_trip.isReadyToDmAt
+    if(!this.request_trip.isReadyToDmAt){
+      order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10))
+    }
     this.requestTripService.onSaveOrderService(order).subscribe(
       (data) => {
         this.ref = this.dialogService.open(LoadingMotorizedComponent, {
