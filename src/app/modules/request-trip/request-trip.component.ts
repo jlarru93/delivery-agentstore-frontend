@@ -821,10 +821,6 @@ uuid_price ?: string
   }
   onSaveOrder() {
     let order: RequestTrip = new RequestTrip();
-    if (!this.request_trip.description) {
-      this.alert.showError('',"La descripción es obligatoria");
-      return;
-    }
 
     if("CASH" === this.method_payment &&  (!this.cashAmount || this.cashAmount ===0 )){
       this.alert.showError('',"monto es obligarotio cuando selecionas efectivo");
@@ -892,19 +888,19 @@ uuid_price ?: string
         order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
-        order.addresses[0].reference = this.input_reference_pickup;
+        order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
         order.addresses[0].floor = item.floor;
         order.addresses[0].point = item.point;
-        order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup
+        order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup ? this.input_reference_pickup : '';
       } else {
         order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
         order.addresses[1].marker = item.marker;
         order.addresses[1].alias = item.alias;
-        order.addresses[1].reference = this.input_reference_destination;
+        order.addresses[1].reference = this.input_reference_destination ? this.input_reference_destination : '';
         order.addresses[1].floor = item.floor;
         order.addresses[1].addressStreet = item.addressStreet;
         order.addresses[1].point = item.point;
-        order.addresses[1].receptorName = this.destinationReceptorName;
+        order.addresses[1].receptorName = this.destinationReceptorName ? this.destinationReceptorName : '';
         //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
       }
     });
@@ -931,10 +927,7 @@ uuid_price ?: string
 
   onUpdateOrder() {
     let order: RequestTrip = new RequestTrip();
-    if (!this.request_trip.description) {
-      this.alert.showError('',"La descripción es obligatoria");
-      return;
-    }
+
 
     if("CASH" === this.method_payment &&  (!this.cashAmount || this.cashAmount ===0 )){
       this.alert.showError('',"La descripción es obligatoria");
