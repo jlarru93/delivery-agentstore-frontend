@@ -64,7 +64,7 @@ export class MqttService {
 
 
     subscribe(channel: string) {
-        console.log("Suscrito a:",channel)
+        //console.log("Suscrito a:",channel)
         this.client.subscribe(channel)
     }
 

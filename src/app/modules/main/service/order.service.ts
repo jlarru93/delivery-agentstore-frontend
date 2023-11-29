@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ObjetResponse } from "../../../models";
 import { OrderResponse } from "./data/response";
@@ -11,8 +11,11 @@ import { CANCEL_ORDER_STATUS, PREPARING_ORDER_STATUS, READY_ORDER_STATUS } from 
 export class OrderService {
   constructor(private http: HttpClient) { }
 
-  getOrders() {
-    return this.http.get<ObjetResponse<OrderResponse[]>>(env.url.backEnd + "/order")
+  getOrders(id:string) {
+    let headers: HttpHeaders = new HttpHeaders({
+      store_ids:id
+    });
+    return this.http.get<ObjetResponse<OrderResponse[]>>(env.url.backEnd + "/order",{headers:headers})
   }
 
   aceptOder(orderId:string,readyToDmAt:number){

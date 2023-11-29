@@ -22,6 +22,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
 import { ChatComponent } from "src/app/chat/chat.component";
 import { HttpClient } from "@angular/common/http";
+import { dataSharedService } from "../service/data-shared.service";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -75,7 +76,7 @@ import { HttpClient } from "@angular/common/http";
     set_interval ?: any
 
     ref: DynamicDialogRef | undefined;
-
+    idStore:string=''
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
@@ -89,14 +90,26 @@ import { HttpClient } from "@angular/common/http";
       private confirmationService: ConfirmationService,
       private dialog: MatDialog,
       private http: HttpClient,
-      private auth: AuthService
-      
-      ){}
+      private auth: AuthService,
+      private dataShared:dataSharedService
+      ){
+        dataShared.listStore$.subscribe((data:any)=>{
+          this.idStore=''
+          data.forEach((element,i) => {
+            if(i==0)
+            this.idStore+=element
+            else
+            this.idStore+=','+element
+          console.log(this.idStore)
+          });
+          this.getOrders()
+        })
+      }
     ngOnInit(): void { 
       this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
       console.log("MAIN")
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
-      this.getOrders()
+      //this.getOrders()
       this.set_interval = setInterval(()=>{
         this.getOrders()
       },30000)
@@ -173,7 +186,7 @@ import { HttpClient } from "@angular/common/http";
     isButtonEnabled: boolean = false
     
     getOrders(){
-      this.orderService.getOrders().subscribe((resp)=>{
+      this.orderService.getOrders(this.idStore).subscribe((resp)=>{
         this.orders=resp.data.map((it)=>{
           let order=OrderResponse.toBean(it)
           let currentOrden=this.orders.find((or)=>or.id==it.id)
