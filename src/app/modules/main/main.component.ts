@@ -93,23 +93,17 @@ import { dataSharedService } from "../service/data-shared.service";
       private auth: AuthService,
       private dataShared:dataSharedService
       ){
-        dataShared.listStore$.subscribe((data:any)=>{
-          this.idStore=''
-          data.forEach((element,i) => {
-            if(i==0)
-            this.idStore+=element
-            else
-            this.idStore+=','+element
-          console.log(this.idStore)
-          });
+        dataShared.listStore$.subscribe((data:any)=>{          
+          this.idStore=data
           this.getOrders()
         })
       }
     ngOnInit(): void { 
+      this.idStore= JSON.parse(localStorage.getItem('lstIdStore'))
       this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
       console.log("MAIN")
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
-      //this.getOrders()
+      this.getOrders()
       this.set_interval = setInterval(()=>{
         this.getOrders()
       },30000)
