@@ -577,7 +577,9 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.id = element.id 
           order.uuid = element.uuid
           // order.showButton = false
+          order.createdAt = element.createdAt
           order.detail = element.detail
+          order.readyToDmAt = element.readyToDmAt
           this.list_order.push(order);
         });
         this.isDoneGetOrders = true;

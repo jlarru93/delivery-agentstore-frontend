@@ -210,18 +210,26 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
 
   loadDataForm(){
-    this.onGetLocationStore(false);
+    this.enablePickUpInput()
     
     
     setTimeout( () => {
       this.findAdress()
       this.findAdressOrigin()
-      this.isCheckedStore = true
-      this.is_disabled_pickup = false
-      this.isHiddenInput = true
+      
 
       this.onUpdateEditOrder(this.editTripData)
       this.input_visible_pickup = this.editTripData.addresses[0].addressStreet
+
+      if(this.validationPhoneStore == this.editTripData.addresses[0].phone){
+        this.is_disabled_pickup = true
+        this.isHiddenInput = false
+      } else {
+        this.isCheckedStore = true
+        this.is_disabled_pickup = false
+        this.isHiddenInput = true
+      }
+
       this.input_reference_pickup = this.editTripData.addresses[0].reference
       this.originMobilePhone = this.editTripData.addresses[0].phone
       this.input_receptorNameOrigin_pickup = this.editTripData.addresses[0].receptorName
@@ -250,9 +258,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.request_trip.addresses[1].point.coordinates[1] = this.editTripData.addresses[1].location.coordinates[1]
       this.request_trip.addresses[1].point.coordinates[0] = this.editTripData.addresses[1].location.coordinates[0]
 
-      
-
-      this.request_trip.readyToDmAt = this.editTripData.readyToDmAt
+      let differenceInSeconds = this.editTripData.readyToDmAt - this.editTripData.createdAt
+      let differenceInMinutes = differenceInSeconds / 60
+      this.request_trip.readyToDmAt = differenceInMinutes
       
       this.onGetAmountOrder()
     }, 1500)
@@ -344,10 +352,12 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.lstPosicionConductor = [];
   }
 
+  validationPhoneStore: string
   private onGetLocationStore(flagInit : boolean) {
     
     this.storeService.onGetLocationStoreService().subscribe((resp) => {
-      console.log("resp.data.store",resp.data.store)
+      console.log("resp.data.store",resp.data.store.phone)
+      this.validationPhoneStore = resp.data.store.phone
       this.input_visible_pickup = resp.data.store.addressStreet+' ('+resp.data.store.fullName+')';
       this.dataStorePhone = resp.data.store.phone;
       this.request_trip.addresses[0].point.type = "Point";
@@ -906,6 +916,9 @@ uuid_price ?: string
       (data) => {
         this.ref = this.dialogService.open(LoadingMotorizedComponent, {
           header: "Repartidor",
+          data: {
+            isUpdated: false
+          }
         });
         // alert("Se guardó correctamente");
       },
