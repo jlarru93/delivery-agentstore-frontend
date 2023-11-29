@@ -142,6 +142,7 @@ export interface Store {
     brand_id?: number,
     zone_id?: number
     status?: string;
+    store_id?:number
 }
 export interface AdminZone {
     id?: number;
