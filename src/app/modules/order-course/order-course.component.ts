@@ -456,8 +456,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   updatePositionDriver(item: ResponseTrackingMotorized){
     const newMarkersDriver: Marker = {
-      lat: item.deliveryManRoute[0].polyline[0].lat,
-      lng: item.deliveryManRoute[0].polyline[0].lng,
+      lat: item.position.lat,
+      lng: item.position.lng,
       //lat: select_service.addresses[0].location.coordinates[1],
       //lng: select_service.addresses[0].location.coordinates[0],
       iconUrl: this.globalIconDriver,
@@ -703,26 +703,15 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   async onUpdateDriver(item: ResponseLoadingOrder) {
     let lstPosiciones: PersonalisationMarker[] = [];
-    await this.requestTripService
-      .onViewTrackingMotorizedService(item.uuid)
-      .subscribe((viaje) => {
-        if (viaje.data.position) {
-          let tittle = viaje.data.deliveryMan.name;
-          lstPosiciones.push(
-            this.fnDetalleViajeLabelListServiceWeb(
-              new google.maps.LatLng(
-                viaje.data.position.lat,
-                viaje.data.position.lng
-              ),
-              tittle,
-              -1,
-              "",
-              "",
-              true
-            )
-          );
+    await this.requestTripService.onViewTrackingMotorizedService(item.uuid).subscribe((viaje) => {
+      
+        if (viaje.data) {
+          if(viaje.data.position){
+            let tittle = viaje.data.deliveryMan.name;
+            lstPosiciones.push( this.fnDetalleViajeLabelListServiceWeb(new google.maps.LatLng(viaje.data.position.lat,viaje.data.position.lng),tittle,-1, "","",true));
+            this.lstPosicionConductor = lstPosiciones;
+          }
           this.onUpdateIntervalDriver(item);
-          this.lstPosicionConductor = lstPosiciones;
         } else {
           this.onClearMap();
           this.updatePosition(item);
@@ -747,11 +736,9 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   viajeTracking : ResponseTrackingMotorized
   async onUpdateDriverPullRequest(item: ResponseLoadingOrder) {
     let lstPosiciones: PersonalisationMarker[] = [];
-    await this.requestTripService
-      .onViewTrackingMotorizedService(item.uuid)
-      .subscribe((viaje) => {
+    await this.requestTripService.onViewTrackingMotorizedService(item.uuid).subscribe((viaje) => {
         this.viajeTracking = viaje.data
-        if (viaje.data.position) {
+        if (viaje.data) {
           // let tittle = viaje.data.deliveryMan.name;
           // lstPosiciones.push(
           //   this.fnDetalleViajeLabelListServiceWeb(
@@ -775,7 +762,10 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           if(polySuggested){
             this.polyLines.push(polySuggested)
           }
-          const polyDeliveryMan=viaje.data.deliveryManRoute.map((dmr)=>this.drawPolylineDeliveryMan(dmr))
+          var polyDeliveryMan=[]
+          if(viaje.data.deliveryManRoute){
+            polyDeliveryMan=viaje.data.deliveryManRoute.map((dmr)=>this.drawPolylineDeliveryMan(dmr))
+          }
           
           this.polyLines=[...this.polyLines,...polyDeliveryMan]
 
@@ -783,7 +773,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           this.onClearMap();
         }
         this.updatePosition(item);
-        if(this.viajeTracking){
+        if(this.viajeTracking.position){
           this.updatePositionDriver(this.viajeTracking)
         }
       });
