@@ -27,7 +27,7 @@
               <div class="grid flex">
                 <p class="etiqueta-lista col-5">Cliente</p>
                 <p class="contenido-lista col-7">
-                  {{ item.user.fullName }}
+                  {{ item.addresses[1].receptorName ? item.addresses[1].receptorName : '' }}
                 </p>
               </div>
               <div class="grid flex">

@@ -241,7 +241,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.request_trip.description = this.editTripData.detail
 
       this.method_payment = this.editTripData.payment.method.type
-
+      this.cashAmount = this.editTripData.productPrice
 
       this.request_trip.addresses[0].addressStreet = this.editTripData.addresses[0].addressStreet
       this.request_trip.addresses[0].phone = this.editTripData.addresses[0].phone
@@ -925,12 +925,18 @@ uuid_price ?: string
     
   }
 
+  convertToTimestamp(minutos: number): number {
+    const segundos = minutos * 60;
+    const timestamp = segundos * 1000; 
+    return timestamp;
+  }
+
   onUpdateOrder() {
     let order: RequestTrip = new RequestTrip();
 
 
     if("CASH" === this.method_payment &&  (!this.cashAmount || this.cashAmount ===0 )){
-      this.alert.showError('',"La descripción es obligatoria");
+      this.alert.showError('',"monto es obligarotio cuando selecionas efectivo");
       return;
     }
 
@@ -958,7 +964,10 @@ uuid_price ?: string
     order.uuid = this.editTripData.uuid
 
     order.uuid_price=this.uuid_price
-    order.readyToDmAt = this.request_trip.readyToDmAt ? this.request_trip.readyToDmAt : 0;
+
+    let readyToDmAt = Number((this.editTripData.createdAt + (this.request_trip.readyToDmAt * 60)));
+
+    order.readyToDmAt = this.request_trip.readyToDmAt ? readyToDmAt : 0;
     order.description = this.request_trip.description;
     order.mobile = this.request_trip.mobile;
     order.addresses = [
@@ -1000,26 +1009,28 @@ uuid_price ?: string
         order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
-        order.addresses[0].reference = this.input_reference_pickup;
+        order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
         order.addresses[0].floor = item.floor;
-        order.addresses[0].point = item.point;
-        
-        order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup
-        console.log('receptorname', this.input_receptorNameOrigin_pickup)
+        order.addresses[0].point = item.point;        
+        order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup ? this.input_reference_pickup : '';
+    
       } else {
         order.addresses[1].id = this.editTripData.addresses[1].id
         order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
         order.addresses[1].marker = item.marker;
         order.addresses[1].alias = item.alias;
-        order.addresses[1].reference = this.input_reference_destination;
+        order.addresses[1].reference = this.input_reference_destination ? this.input_reference_destination : '';
         order.addresses[1].floor = item.floor;
         order.addresses[1].addressStreet = item.addressStreet;
         order.addresses[1].point = item.point;
-        order.addresses[1].receptorName = this.destinationReceptorName;
+        order.addresses[1].receptorName = this.destinationReceptorName ? this.destinationReceptorName : '';
         //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
       }
     });
-    console.log('request',order)
+    // if(!this.request_trip.isReadyToDmAt){
+    //   order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10))
+    // }
+    
     this.requestTripService.onUpdateOrderService(order).subscribe(
       (data) => {
         this.ref = this.dialogService.open(LoadingMotorizedComponent, {
@@ -1031,7 +1042,8 @@ uuid_price ?: string
         // alert("Se guardó correctamente");
       },
       (error) => {
-        alert("Ocurrió un error");
+        this.alert.showError('',"Ocurrió un error");
+        
       }
     );
     
@@ -1042,7 +1054,6 @@ uuid_price ?: string
   isCheckedStore: boolean = false
   isHiddenInput: boolean = false
   enablePickUpInput(){
-    debugger
     if(this.isCheckedStore == true){
       this.isDraggabled = true
       this.findAdressOrigin()

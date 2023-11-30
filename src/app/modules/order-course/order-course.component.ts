@@ -579,6 +579,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           // order.showButton = false
           order.createdAt = element.createdAt
           order.detail = element.detail
+          order.productPrice = element.productPrice
           order.readyToDmAt = element.readyToDmAt
           this.list_order.push(order);
         });

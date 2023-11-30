@@ -81,6 +81,7 @@ export class ResponseLoadingOrder{
     zoneId: number;
     detail: string;
     deliveryPrice: number;
+    productPrice?:number;
     total: number;
     date_string : string
     messagesNoReadTotal:number
@@ -116,6 +117,7 @@ export class AddressResponseLoadingOrder {
   floor: string;
   reference: string;
   phone: string;
+  receptorName: string;
   label ?: string;
   uuidRoutePrice ?: string;
 }
