@@ -539,8 +539,8 @@ import { dataSharedService } from "../service/data-shared.service";
       const daysDifference = Math.floor(diferencia / (1000 * 60 * 60 * 24));
       const hoursDifference = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutesDifference = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
-      var day= daysDifference>0?daysDifference+' d':''
-      var res = (day +' '+hoursDifference+':'+minutesDifference).toString()
+      var day= daysDifference>0?daysDifference+'d ':''
+      var res = (day+' '+hoursDifference+'h '+minutesDifference).toString()
       return res;
     }
 }
