@@ -210,7 +210,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     }
   }
 
-
+  activeIndexCalendar: number = 0
   loadDataForm(){
     this.enablePickUpInput()
     
@@ -245,6 +245,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.method_payment = this.editTripData.payment.method.type
       this.cashAmount = this.editTripData.productPrice
 
+      
+
       this.request_trip.addresses[0].addressStreet = this.editTripData.addresses[0].addressStreet
       this.request_trip.addresses[0].phone = this.editTripData.addresses[0].phone
       this.request_trip.addresses[0].reference = this.editTripData.addresses[0].reference
@@ -260,9 +262,16 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.request_trip.addresses[1].point.coordinates[1] = this.editTripData.addresses[1].location.coordinates[1]
       this.request_trip.addresses[1].point.coordinates[0] = this.editTripData.addresses[1].location.coordinates[0]
 
-      let differenceInSeconds = this.editTripData.readyToDmAt - this.editTripData.createdAt
-      let differenceInMinutes = differenceInSeconds / 60
-      this.request_trip.readyToDmAt = differenceInMinutes
+      if(this.editTripData.isOrderCalendar == true){
+        debugger
+        this.activeIndexCalendar = 1
+        
+        this.creadDate = new Date(this.editTripData.readyToDmAt * 1000)
+      } else {
+        let differenceInSeconds = this.editTripData.readyToDmAt - this.editTripData.createdAt
+        let differenceInMinutes = differenceInSeconds / 60
+        this.request_trip.readyToDmAt = differenceInMinutes
+      }
       
       this.onGetAmountOrder()
     }, 1500)
@@ -816,17 +825,25 @@ uuid_price ?: string
   destinationReceptorName: string
   onChangeOrder(event:any){
     if(event.index==0){
-
-      this.request_trip.isReadyToDmAt=true
+      
+      this.request_trip.isOrderCalendar=false
       //this.creadDate = new Date()
-      this.request_trip.readyToDmAt=this.creadDate.getMinutes()
+      //this.request_trip.readyToDmAt=this.creadDate.getMinutes()
+
+      if(this.editTripData && this.editTripData.isOrderCalendar == true){
+        this.request_trip.readyToDmAt=this.creadDate.getMinutes()
+      } else {
+        this.creadDate = new Date()
+      }
+
+
     }else{
-      if(this.request_trip.readyToDmAt>0){
+      if(this.editTripData && this.editTripData.isOrderCalendar == false && this.request_trip.readyToDmAt>0){
         var fecha = new Date()
          var minutos= fecha.getMinutes()+this.request_trip.readyToDmAt
         this.creadDate= new Date(fecha.setMinutes(minutos))
       }
-      this.request_trip.isReadyToDmAt=false
+      this.request_trip.isOrderCalendar=true
     }
   }
   onSaveOrder() {
@@ -901,7 +918,7 @@ uuid_price ?: string
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
         order.addresses[0].floor = item.floor;
         order.addresses[0].point = item.point;
-        order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup ? this.input_reference_pickup : '';
+        order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup ? this.input_receptorNameOrigin_pickup : '';
       } else {
         order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
         order.addresses[1].marker = item.marker;
@@ -914,9 +931,11 @@ uuid_price ?: string
         //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
       }
     });
-    order.isReadyToDmAt=this.request_trip.isReadyToDmAt
-    if(!this.request_trip.isReadyToDmAt){
+    order.isOrderCalendar=this.request_trip.isOrderCalendar
+    if(this.request_trip.isOrderCalendar){
+      
       order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10))
+      
     }
     this.requestTripService.onSaveOrderService(order).subscribe(
       (data) => {
@@ -975,9 +994,17 @@ uuid_price ?: string
 
     order.uuid_price=this.uuid_price
 
-    let readyToDmAt = Number((this.editTripData.createdAt + (this.request_trip.readyToDmAt * 60)));
+    
+    if(this.request_trip.isOrderCalendar){
+      
+      order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10)) 
+    } else {
+      let readyToDmAt = Number((this.editTripData.createdAt + (this.request_trip.readyToDmAt * 60)));
+      
+      order.readyToDmAt = this.request_trip.readyToDmAt ? readyToDmAt : 0;
+    }
 
-    order.readyToDmAt = this.request_trip.readyToDmAt ? readyToDmAt : 0;
+
     order.description = this.request_trip.description;
     order.mobile = this.request_trip.mobile;
     order.addresses = [
@@ -1022,7 +1049,7 @@ uuid_price ?: string
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
         order.addresses[0].floor = item.floor;
         order.addresses[0].point = item.point;        
-        order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup ? this.input_reference_pickup : '';
+        order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup ? this.input_receptorNameOrigin_pickup : '';
     
       } else {
         order.addresses[1].id = this.editTripData.addresses[1].id
@@ -1037,9 +1064,8 @@ uuid_price ?: string
         //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
       }
     });
-    // if(!this.request_trip.isReadyToDmAt){
-    //   order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10))
-    // }
+    order.isOrderCalendar=this.request_trip.isOrderCalendar
+    
     
     this.requestTripService.onUpdateOrderService(order).subscribe(
       (data) => {

@@ -45,9 +45,9 @@ export class Point {
     readyToDmAt ?: number = 0
     uuid_price:string
     productPrice?:number
-    isReadyToDmAt:boolean
+    isOrderCalendar?:boolean = false
     constructor(){
-      this.isReadyToDmAt=true
+      
     }
   }
   

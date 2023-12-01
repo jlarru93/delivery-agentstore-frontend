@@ -87,6 +87,7 @@ export class ResponseLoadingOrder{
     messagesNoReadTotal:number
     messagesChat:ChatBean[]
     isLoadingChat:boolean
+    isOrderCalendar?:boolean
     showButton:boolean
     deliveryMan : DeliveryManBean
     status_order ?: string

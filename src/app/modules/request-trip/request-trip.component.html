@@ -304,7 +304,8 @@
           </mat-form-field>
         </div>
       </div>
-      <p-tabView (onChange)="onChangeOrder($event)">
+      
+      <p-tabView [(activeIndex)]="activeIndexCalendar" (onChange)="onChangeOrder($event)" >
         <p-tabPanel  header="Minutos">
           <!-- <h5>Minutos</h5> -->
           <div class="p-grid p-fluid">
