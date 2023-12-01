@@ -816,7 +816,9 @@ uuid_price ?: string
   destinationReceptorName: string
   onChangeOrder(event:any){
     if(event.index==0){
+
       this.request_trip.isReadyToDmAt=true
+      //this.creadDate = new Date()
       this.request_trip.readyToDmAt=this.creadDate.getMinutes()
     }else{
       if(this.request_trip.readyToDmAt>0){
@@ -825,12 +827,6 @@ uuid_price ?: string
         this.creadDate= new Date(fecha.setMinutes(minutos))
       }
       this.request_trip.isReadyToDmAt=false
-      if(this.editTripData){
-     
-      } else {
-        let timestampDate = (this.creadDate.getTime() + (this.request_trip.readyToDmAt * 60000))
-        this.creadDate = new Date(timestampDate)
-      }
     }
   }
   onSaveOrder() {
