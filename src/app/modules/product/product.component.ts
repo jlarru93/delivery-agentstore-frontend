@@ -30,7 +30,7 @@ export class ProductComponent implements OnInit {
     ProductOptions: any[] = [
         { name: 'EN STOCK', value: false },
         { name: 'SIN STOCK', value: true },
-        { name: 'TODOS', value: -1 },
+        { name: 'AMBOS', value: -1 },
     ];
     filterProduc:any=false
     constructor(
@@ -57,9 +57,19 @@ export class ProductComponent implements OnInit {
     }
     ChangeFilterProduc(filterProduc:any){
         if(filterProduc!=-1){
-            this.products=this.storeBean.products.filter((prod)=>prod.isOutStock!=undefined&&prod.isOutStock==filterProduc)
+            if(this.itemSelecciona)
+            {
+                this.products=this.storeBean.products.filter((product)=>product.isOutStock==filterProduc&&product.menu.includes(this.itemSelecciona))
+            }else{
+                this.products=this.storeBean.products.filter((prod)=>prod.isOutStock!=undefined&&prod.isOutStock==filterProduc)
+            }
         }else{
-            this.products=this.storeBean.products
+            if(this.itemSelecciona)
+            {
+                this.products=this.storeBean.products.filter((product)=>product.menu.includes(this.itemSelecciona))
+            }else{                
+                this.products=this.storeBean.products
+            }
         }
     }
     getProductsFromMenu(menuSelected:string=null){
