@@ -30,6 +30,7 @@ import { LoadingMotorizedComponent } from "./dialog/loading-motorized/loading-mo
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { environment } from "src/environments/environment";
 import { AlertServices } from "../service/alert.service";
+import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
 
 interface PolyLine{
   routePoints:RoutePoint[]
@@ -125,6 +126,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     }
   ]
   creadDate:Date= new Date()
+  minDate:Date= new Date()
   constructor(
     private storeService: StoreService,
     private requestTripService: RequestTripService,
@@ -815,8 +817,13 @@ uuid_price ?: string
   onChangeOrder(event:any){
     if(event.index==0){
       this.request_trip.isReadyToDmAt=true
-      this.creadDate = new Date()
+      this.request_trip.readyToDmAt=this.creadDate.getMinutes()
     }else{
+      if(this.request_trip.readyToDmAt>0){
+        var fecha = new Date()
+         var minutos= fecha.getMinutes()+this.request_trip.readyToDmAt
+        this.creadDate= new Date(fecha.setMinutes(minutos))
+      }
       this.request_trip.isReadyToDmAt=false
       if(this.editTripData){
      
