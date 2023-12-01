@@ -815,8 +815,15 @@ uuid_price ?: string
   onChangeOrder(event:any){
     if(event.index==0){
       this.request_trip.isReadyToDmAt=true
+      this.creadDate = new Date()
     }else{
       this.request_trip.isReadyToDmAt=false
+      if(this.editTripData){
+     
+      } else {
+        let timestampDate = (this.creadDate.getTime() + (this.request_trip.readyToDmAt * 60000))
+        this.creadDate = new Date(timestampDate)
+      }
     }
   }
   onSaveOrder() {
