@@ -263,14 +263,14 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.request_trip.addresses[1].point.coordinates[0] = this.editTripData.addresses[1].location.coordinates[0]
 
       if(this.editTripData.isOrderCalendar == true){
-        debugger
+        
         this.activeIndexCalendar = 1
         
         this.creadDate = new Date(this.editTripData.readyToDmAt * 1000)
       } else {
-        let differenceInSeconds = this.editTripData.readyToDmAt - this.editTripData.createdAt
-        let differenceInMinutes = differenceInSeconds / 60
-        this.request_trip.readyToDmAt = differenceInMinutes
+         
+        
+        this.request_trip.readyToDmAt = this.editTripData.readyToDmAt
       }
       
       this.onGetAmountOrder()
