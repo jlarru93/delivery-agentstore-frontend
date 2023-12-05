@@ -262,15 +262,16 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.request_trip.addresses[1].point.coordinates[1] = this.editTripData.addresses[1].location.coordinates[1]
       this.request_trip.addresses[1].point.coordinates[0] = this.editTripData.addresses[1].location.coordinates[0]
 
+
       if(this.editTripData.isOrderCalendar == true){
         
         this.activeIndexCalendar = 1
         
         this.creadDate = new Date(this.editTripData.readyToDmAt * 1000)
       } else {
-         
-        
-        this.request_trip.readyToDmAt = this.editTripData.readyToDmAt
+        let differenceInSeconds = this.editTripData.readyToDmAt - this.editTripData.createdAt
+        let differenceInMinutes = differenceInSeconds / 60
+        this.request_trip.readyToDmAt = Math.round(differenceInMinutes)
       }
       
       this.onGetAmountOrder()
@@ -842,6 +843,10 @@ uuid_price ?: string
         var fecha = new Date()
          var minutos= fecha.getMinutes()+this.request_trip.readyToDmAt
         this.creadDate= new Date(fecha.setMinutes(minutos))
+      } else {
+        var fecha = new Date()
+         var minutos= fecha.getMinutes()+this.request_trip.readyToDmAt
+        this.creadDate= new Date(fecha.setMinutes(minutos))
       }
       this.request_trip.isOrderCalendar=true
     }
@@ -875,7 +880,8 @@ uuid_price ?: string
       },
     };
     order.uuid_price=this.uuid_price
-    order.readyToDmAt = this.request_trip.readyToDmAt;
+    let fechaActual = Date.now()
+    order.readyToDmAt = Number((fechaActual += this.request_trip.readyToDmAt *60 *1000).toString().substring(0,10));
     order.description = this.request_trip.description;
     order.mobile = this.request_trip.mobile;
     order.addresses = [
