@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { RequestTripRoutingModule } from './request-trip-routing.module';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { AgmCoreModule } from 'src/agm/core';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -22,6 +22,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { TabViewModule } from 'primeng/tabview';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { DropdownModule } from 'primeng/dropdown';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
@@ -32,10 +33,11 @@ import { DropdownModule } from 'primeng/dropdown';
       apiKey: 'AIzaSyDl_Vavzdty qvdrsOy3Mnsg9hFusgMZ_SY',
     }),
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     CheckboxModule,
     RequestTripRoutingModule,
     InputTextModule,
-    FormsModule,
     ButtonModule,
     InputTextareaModule,
     SelectButtonModule,
@@ -50,7 +52,8 @@ import { DropdownModule } from 'primeng/dropdown';
     ButtonModule,
     TabViewModule,
     DropdownModule ,
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    TypeaheadModule.forRoot()
   ]
 })
 export class RequestTripModule { }

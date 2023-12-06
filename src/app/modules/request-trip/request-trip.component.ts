@@ -155,10 +155,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     //   lat: 10.96854,
     //   lng: -74.78132,
     // }
-
     this.editTripData = JSON.parse(localStorage.getItem('edit-trip'))
     if(this.editTripData) {
       this.loadDataForm()
+      this.onGetLocationStore();
     } else {
       this.isDraggabled = false
       this.request_trip.readyToDmAt = 0 
@@ -190,6 +190,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           reference: "",
         },
       ];
+      this.findAdressOrigin()
       this.findAdress();
       this.onGetLocationStore();
 
@@ -373,15 +374,18 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   validationPhoneStore: string
   private onGetLocationStore() {
     //const storesAvailable:StoreTripResponse[]=[]
-    this.dataShared.storeAviliable.subscribe((storeAviliable)=>{
-      const storeId=storeAviliable.map((sA)=>sA.store_id).join(",")
+    this.dataShared.storeAviliable.subscribe((store)=>{
+      const storeId=store.map((sA)=>sA.store_id).join(",")
       this.storeService.onGetLocationStoreService(storeId).subscribe((resp)=>{
         this.storesAvailable=resp.data
+        //console.log('resp',resp)
       })
     })
   }
 
-  selectStore(flagInit : boolean=false){
+  selectStore(event:any, flagInit : any){
+    debugger
+    this.selectedStore= event.item
     const store=this.selectedStore.store
     const tripSetting=this.selectedStore.tripSetting
     
@@ -409,7 +413,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.markers[0].iconUrl = this.globalIconOrigin
     this.markers[0].lng = store.location.coordinates[0];
     this.markers[0].lat = store.location.coordinates[1];
-    this.stateOptions = tripSetting.paymentMethod;
+    this.stateOptions = tripSetting? tripSetting.paymentMethod:this.stateOptions;
     this.center = {
       lat: store.location.coordinates[1],
       lng: store.location.coordinates[0]
@@ -455,7 +459,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             this.onGetAmountOrder();
             
            } else {
-             window.alert('No results found');
+            this.alert.showError('','No results found');
            }
            
         } 
@@ -474,11 +478,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             //this.updatePosition();
             this.onGetAmountOrder();
            } else {
-             window.alert('No results found');
+            this.alert.showInfo('','No results found');
            }
         }
        } else {
-         window.alert('Geocoder failed due to: ' + status);
+        this.alert.showInfo('','Geocoder failed due to: ' + status);
        }
      });
 
@@ -487,9 +491,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   nroViaje: number = 0;
   findAdressOrigin() {
     //  google.maps.
-    const element = <HTMLInputElement>(
-      document.getElementById("txtUbicacion_origin")
-    );
+    const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
     const autocomplete = new google.maps.places.Autocomplete(element, {
       types: [],
       fields: ["place_id"],
@@ -796,7 +798,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         this.onUpdatePositionDriver();
       },
       (error) => {
-        alert("Ocurrió un error");
+        this.alert.showError('',"Ocurrió un error");
       }
     );
   }
@@ -815,8 +817,7 @@ uuid_price ?: string
     };
 
     if(request.destination.lat != 0 && request.destination.lng !=0){
-      this.requestTripService.onGetPaymentOrderService(request).subscribe(
-        (data) => {
+      this.requestTripService.onGetPaymentOrderService(request).subscribe((data) => {
           this.uuid_price = data.data.uuid
           this.amount = data.data.amount;
           // setTimeout(()=>{
@@ -828,7 +829,7 @@ uuid_price ?: string
   
         },
         (error) => {
-          alert("Ocurrió un error al obtener la tarifa");
+          this.alert.showError('',"Ocurrió un error al obtener la tarifa");
         }
       );
 
@@ -960,8 +961,7 @@ uuid_price ?: string
       order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10))
       
     }
-    this.requestTripService.onSaveOrderService(order).subscribe(
-      (data) => {
+    this.requestTripService.onSaveOrderService(order).subscribe((data) => {
         this.ref = this.dialogService.open(LoadingMotorizedComponent, {
           header: "Repartidor",
           data: {
@@ -971,7 +971,7 @@ uuid_price ?: string
         // alert("Se guardó correctamente");
       },
       (error) => {
-        alert("Ocurrió un error");
+        this.alert.showError('',"Ocurrió un error");
       }
     );
     

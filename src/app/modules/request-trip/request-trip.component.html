@@ -64,33 +64,21 @@
                 class="search-img-origin marker"
                 alt=""
               />
-              <ng-container *ngIf="isCheckedStore">
-                <input 
-                  #search
-                  type="text"
-                  class="p-inputtext-lg"
-                  pInputText
-                  id="txtUbicacion_origin"
-                  placeholder="¿Dónde lo recogemos?"
-                  [(ngModel)]="input_visible_pickup"
-                  [disabled]="is_disabled_pickup"
-                  required
-                  autofocus
-                />
-              </ng-container>
-              <ng-container *ngIf="!isCheckedStore">
-                <p-dropdown 
+                <!-- <input #search type="text" class="p-inputtext-lg" pInputText id="txtUbicacion_origin"
+                  placeholder="¿Dónde lo recogemos?" [(ngModel)]="input_visible_pickup" [disabled]="is_disabled_pickup" required autofocus/> -->
+              
+                <!-- <p-dropdown 
                   class="p-inputtext-lg"
                   [options]="storesAvailable" 
                   [(ngModel)]="selectedStore" 
                   optionLabel="store.fullName"
                   placeholder="¿Dónde lo recogemos?"
-                  (onChange)="selectStore()"></p-dropdown>
+                  (onChange)="selectStore()"></p-dropdown> -->
 
-              </ng-container>
-
+                  <input type="text" pInputText id="txtUbicacion_origin" [(ngModel)]="input_visible_pickup"   [typeaheadMinLength]="0" [typeahead]="storesAvailable"
+                  typeaheadOptionField="store.fullName" placeholder="¿Dónde lo recogemos?" (typeaheadOnSelect)="selectStore($event,input_visible_pickup)">
               
-              <div style="padding-left: 5px;">
+              <!-- <div style="padding-left: 5px;">
                 <p-checkbox
                   [(ngModel)]="isCheckedStore"
                   [binary]="true"
@@ -99,7 +87,7 @@
                 >                
                 </p-checkbox>
 
-              </div>
+              </div> -->
             </div>
           </div>
           <div class="p-col-12" *ngIf="isHiddenInput">
