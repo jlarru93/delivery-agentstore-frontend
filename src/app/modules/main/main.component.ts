@@ -93,7 +93,7 @@ import { dataSharedService } from "../service/data-shared.service";
       private auth: AuthService,
       private dataShared:dataSharedService
       ){
-        dataShared.listStore$.subscribe((data:any)=>{          
+        this.dataShared.listStore$.subscribe((data:any)=>{          
           this.idStore=data
           this.getOrders()
         })

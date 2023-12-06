@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { ObjetResponse } from './models';
 @Injectable()
 export class MenuService {
 
@@ -21,6 +22,14 @@ export class MenuService {
     
     getStoreByIdAgent(){
        var url=environment.url.backEnd+'/agentStore-store'
-       return this.http.get(url)
+       return this.http.get<ObjetResponse<AgentStoreStoreResponse>>(url)
     }
+}
+
+export class AgentStoreStoreResponse{
+    id: number
+    agentStore_id: string
+    store_id: number
+    store_name: string
+    enable: number
 }

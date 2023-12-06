@@ -31,6 +31,8 @@ import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { environment } from "src/environments/environment";
 import { AlertServices } from "../service/alert.service";
 import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
+import { StoreTripResponse } from "../main/service/data/response";
+import { dataSharedService } from "../service/data-shared.service";
 
 interface PolyLine{
   routePoints:RoutePoint[]
@@ -127,11 +129,15 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   ]
   creadDate:Date= new Date()
   minDate:Date= new Date()
+
+  selectedStore:StoreTripResponse
+  storesAvailable:StoreTripResponse[]
   constructor(
     private storeService: StoreService,
     private requestTripService: RequestTripService,
     private dialogService: DialogService,
-    private alert:AlertServices
+    private alert:AlertServices,
+    private dataShared:dataSharedService
   ) {}
 
   stateOptions: any[];
@@ -185,7 +191,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         },
       ];
       this.findAdress();
-      this.onGetLocationStore(true);
+      this.onGetLocationStore();
 
     }
     
@@ -365,42 +371,53 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 
   validationPhoneStore: string
-  private onGetLocationStore(flagInit : boolean) {
-    
-    this.storeService.onGetLocationStoreService().subscribe((resp) => {
-      console.log("resp.data.store",resp.data.store.phone)
-      this.validationPhoneStore = resp.data.store.phone
-      this.input_visible_pickup = resp.data.store.addressStreet+' ('+resp.data.store.fullName+')';
-      this.dataStorePhone = resp.data.store.phone;
-      this.request_trip.addresses[0].point.type = "Point";
-      this.request_trip.addresses[0].floor = "";
-      this.request_trip.addresses[0].alias = "";
-      this.request_trip.addresses[0].marker = "store";
-      this.request_trip.addresses[0].addressStreet = this.input_visible_pickup;
-      this.request_trip.addresses[0].point.coordinates = [
-        resp.data.store.location.coordinates[0],
-        resp.data.store.location.coordinates[1]
-      ];
+  private onGetLocationStore() {
+    //const storesAvailable:StoreTripResponse[]=[]
+    this.dataShared.storeAviliable.subscribe((storeAviliable)=>{
+      const storeId=storeAviliable.map((sA)=>sA.store_id).join(",")
+      this.storeService.onGetLocationStoreService(storeId).subscribe((resp)=>{
+        this.storesAvailable=resp.data
+      })
+    })
+  }
 
-      // this.input_visible_pickup = this.marker.maintext
-      this.markers[0].isDraggable=false
-      this.markers[0].onDragEnd=(e)=>{
-        console.log(e.coords)
-      }
-      this.markers[0].label = 'Origen'
-      this.markers[0].iconUrl = this.globalIconOrigin
-      this.markers[0].lng = resp.data.store.location.coordinates[0];
-      this.markers[0].lat = resp.data.store.location.coordinates[1];
-      this.stateOptions = resp.data.tripSetting.paymentMethod;
-      this.center = {
-        lat: resp.data.store.location.coordinates[1],
-        lng: resp.data.store.location.coordinates[0]
-      }
-      this.method_payment = "CREDIT";
-      this.onGetMotorizedPosiitonOrigin();
-      this.flagInitMap = flagInit;
-      this.updatePosition();
-    });
+  selectStore(flagInit : boolean=false){
+    const store=this.selectedStore.store
+    const tripSetting=this.selectedStore.tripSetting
+    
+    console.log("resp.data.store",store.phone)
+    
+    this.validationPhoneStore = store.phone
+    this.input_visible_pickup = store.addressStreet+' ('+store.fullName+')';
+    this.dataStorePhone = store.phone;
+    this.request_trip.addresses[0].point.type = "Point";
+    this.request_trip.addresses[0].floor = "";
+    this.request_trip.addresses[0].alias = "";
+    this.request_trip.addresses[0].marker = "store";
+    this.request_trip.addresses[0].addressStreet = this.input_visible_pickup;
+    this.request_trip.addresses[0].point.coordinates = [
+      store.location.coordinates[0],
+      store.location.coordinates[1]
+    ];
+
+    // this.input_visible_pickup = this.marker.maintext
+    this.markers[0].isDraggable=false
+    this.markers[0].onDragEnd=(e)=>{
+      console.log(e.coords)
+    }
+    this.markers[0].label = 'Origen'
+    this.markers[0].iconUrl = this.globalIconOrigin
+    this.markers[0].lng = store.location.coordinates[0];
+    this.markers[0].lat = store.location.coordinates[1];
+    this.stateOptions = tripSetting.paymentMethod;
+    this.center = {
+      lat: store.location.coordinates[1],
+      lng: store.location.coordinates[0]
+    }
+    this.method_payment = "CREDIT";
+    this.onGetMotorizedPosiitonOrigin();
+    this.flagInitMap = flagInit;
+    this.updatePosition();
   }
 
   mapClicked($event: MouseEvent) {
@@ -1138,7 +1155,7 @@ uuid_price ?: string
           reference: "",
         },
       ];
-      this.onGetLocationStore(false);
+      this.onGetLocationStore();
     }
   }
 

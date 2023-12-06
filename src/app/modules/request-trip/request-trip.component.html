@@ -64,18 +64,32 @@
                 class="search-img-origin marker"
                 alt=""
               />
-              <input 
-                #search
-                type="text"
-                class="p-inputtext-lg"
-                pInputText
-                id="txtUbicacion_origin"
-                placeholder="¿Dónde lo recogemos?"
-                [(ngModel)]="input_visible_pickup"
-                [disabled]="is_disabled_pickup"
-                required
-                autofocus
-              />
+              <ng-container *ngIf="isCheckedStore">
+                <input 
+                  #search
+                  type="text"
+                  class="p-inputtext-lg"
+                  pInputText
+                  id="txtUbicacion_origin"
+                  placeholder="¿Dónde lo recogemos?"
+                  [(ngModel)]="input_visible_pickup"
+                  [disabled]="is_disabled_pickup"
+                  required
+                  autofocus
+                />
+              </ng-container>
+              <ng-container *ngIf="!isCheckedStore">
+                <p-dropdown 
+                  class="p-inputtext-lg"
+                  [options]="storesAvailable" 
+                  [(ngModel)]="selectedStore" 
+                  optionLabel="store.fullName"
+                  placeholder="¿Dónde lo recogemos?"
+                  (onChange)="selectStore()"></p-dropdown>
+
+              </ng-container>
+
+              
               <div style="padding-left: 5px;">
                 <p-checkbox
                   [(ngModel)]="isCheckedStore"

@@ -21,6 +21,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TabViewModule } from 'primeng/tabview';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
@@ -48,6 +49,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     ProgressBarModule,
     ButtonModule,
     TabViewModule,
+    DropdownModule ,
     BsDatepickerModule.forRoot()
   ]
 })
