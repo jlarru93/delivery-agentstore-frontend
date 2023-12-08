@@ -103,8 +103,10 @@ import { dataSharedService } from "../service/data-shared.service";
       this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
       console.log("MAIN")
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
+      if(this.idStore)
       this.getOrders()
       this.set_interval = setInterval(()=>{
+        if(this.idStore)
         this.getOrders()
       },30000)
       this.mqtt._onConnect.subscribe((isConnect)=>{

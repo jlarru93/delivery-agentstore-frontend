@@ -1,28 +1,10 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  NgZone,
-  OnInit,
-  ViewChild,
-} from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild} from "@angular/core";
 import { LatLngLiteral, MouseEvent } from "src/agm/core";
-import { AuthService } from "src/app/utils/auth.service";
 import { StoreService } from "../main/service/store.service";
-import { MapsAPILoader } from "src/agm/core";
-import {
-  PersonalisationMarker,
-  PersonalisationPolyline,
-  TypeMarkers,
-} from "src/app/directives/informacion/data/enumMapa";
+import { PersonalisationMarker, PersonalisationPolyline, TypeMarkers} from "src/app/directives/informacion/data/enumMapa";
 import { Viaje } from "../order-course/data";
 import { RequestGeoAutocomplete } from "src/app/directives/informacion/data/serviceGeo";
-import {
-  Point,
-  RequestMotorizedOrigin,
-  RequestOrderPayment,
-  RequestTrip,
-} from "./data/request";
+import { RequestMotorizedOrigin, RequestOrderPayment, RequestTrip} from "./data/request";
 import * as UtilModalViaje from "./util-modal-viaje-corporate";
 import { RequestTripService } from "./services/request-trip.service";
 import { ResponseLoadingOrder, ResponseMotorizedOrigin } from "./data/response";
@@ -30,9 +12,9 @@ import { LoadingMotorizedComponent } from "./dialog/loading-motorized/loading-mo
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { environment } from "src/environments/environment";
 import { AlertServices } from "../service/alert.service";
-import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
 import { StoreTripResponse } from "../main/service/data/response";
 import { dataSharedService } from "../service/data-shared.service";
+import { MenuService } from "src/app/app.menu.service";
 
 interface PolyLine{
   routePoints:RoutePoint[]
@@ -85,7 +67,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     lat: 10.96854,
     lng: -74.78132,
   };
-
   markers: Marker[] = [
     {
       maintext: "Barranquilla",
@@ -94,7 +75,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       lng: -74.78132,
     }
   ];
-
   lstPosiciones: PersonalisationMarker[] = [];
   lstPosicionConductor: PersonalisationMarker[] = [];
   //Mapa
@@ -117,11 +97,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       latitude: -12.1251109,
     };
   polyline_order?: PersonalisationPolyline[] = [];
-
-
   //agm-map
-
-  
   polyLines :PolyLine[] = [
     {
       routePoints:[]
@@ -129,32 +105,62 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   ]
   creadDate:Date= new Date()
   minDate:Date= new Date()
-
   selectedStore:StoreTripResponse
   storesAvailable:StoreTripResponse[]
-  constructor(
-    private storeService: StoreService,
-    private requestTripService: RequestTripService,
-    private dialogService: DialogService,
-    private alert:AlertServices,
-    private dataShared:dataSharedService
-  ) {}
-
+  uuid_price ?: string
+  originMobilePhone: string
+  destinationMobilePhone: string
+  destinationReceptorName: string
+  dataStorePhone: string
+  globalIconOrigin: any = {
+    url: this.origenIcon,
+    scaledSize: {
+      height: 50,
+      width: 50
+    }
+  }
+  globalIconDestination: any = {
+    url: this.destinoIcon,
+    scaledSize: {
+      height: 50,
+      width: 50
+    }
+  }
+  activeIndexCalendar: number = 0
   stateOptions: any[];
   method_payment = "efectivo";
   amount?: number = 0;
   cashAmount?: number = 0;
   request_trip: RequestTrip = new RequestTrip();
   ref?: DynamicDialogRef;
-  ngAfterViewInit(): void {}
-
   editTripData: any
-
+  validationPhoneStore: string
+  nroViaje: number = 0;
+  geocoder: google.maps.Geocoder = new google.maps.Geocoder();
+  locationData: PolyLine[]
+  locationDestination: any
+  lat: number 
+  lng: number
+  zoom = 17;
+  isDraggabled: boolean
+  data_driver: ResponseMotorizedOrigin[] = [];
+  isCheckedStore: boolean = false
+  isHiddenInput: boolean = false
+  constructor(
+    private storeService: StoreService,
+    private requestTripService: RequestTripService,
+    private dialogService: DialogService,
+    private alert:AlertServices,
+    private dataShared:dataSharedService,
+    private appSer:MenuService
+  ) {}
+  ngAfterViewInit(): void {}
   ngOnInit(): void {
     // this.center = {
     //   lat: 10.96854,
     //   lng: -74.78132,
     // }
+    
     this.editTripData = JSON.parse(localStorage.getItem('edit-trip'))
     if(this.editTripData) {
       this.loadDataForm()
@@ -195,29 +201,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.onGetLocationStore();
 
     }
-    
-  
   }
-  
-  dataStorePhone: string
-
- globalIconOrigin: any = { 
-    url: this.origenIcon, 
-    scaledSize: {
-      height: 50, 
-      width: 50
-    }
-  }
-
-  globalIconDestination: any = { 
-    url: this.destinoIcon, 
-    scaledSize: {
-      height: 50, 
-      width: 50
-    }
-  }
-
-  activeIndexCalendar: number = 0
   loadDataForm(){
     this.enablePickUpInput()
     
@@ -226,7 +210,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.findAdress()
       this.findAdressOrigin()
       
-
+debugger
       this.onUpdateEditOrder(this.editTripData)
       this.input_visible_pickup = this.editTripData.addresses[0].addressStreet
 
@@ -238,7 +222,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         this.is_disabled_pickup = false
         this.isHiddenInput = true
       }
-
+      this.request_trip.isOrderCalendar=this.editTripData.isOrderCalendar
       this.input_reference_pickup = this.editTripData.addresses[0].reference
       this.originMobilePhone = this.editTripData.addresses[0].phone
       this.input_receptorNameOrigin_pickup = this.editTripData.addresses[0].receptorName
@@ -252,16 +236,17 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.method_payment = this.editTripData.payment.method.type
       this.cashAmount = this.editTripData.productPrice
 
-      
+      debugger
 
       this.request_trip.addresses[0].addressStreet = this.editTripData.addresses[0].addressStreet
       this.request_trip.addresses[0].phone = this.editTripData.addresses[0].phone
       this.request_trip.addresses[0].reference = this.editTripData.addresses[0].reference
+      this.request_trip.addresses[0].point.type = 'Point'//this.editTripData.addresses[1].location.type
 
       this.request_trip.addresses[1].addressStreet = this.editTripData.addresses[1].addressStreet
       this.request_trip.addresses[1].phone = this.editTripData.addresses[1].phone
       this.request_trip.addresses[1].reference = this.editTripData.addresses[1].reference
-      this.request_trip.addresses[1].point.type = this.editTripData.addresses[1].location.type
+      this.request_trip.addresses[1].point.type = 'Point'//this.editTripData.addresses[1].location.type
 
       this.request_trip.addresses[0].point.coordinates[1] = this.editTripData.addresses[0].location.coordinates[1]
       this.request_trip.addresses[0].point.coordinates[0] = this.editTripData.addresses[0].location.coordinates[0]
@@ -284,7 +269,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.onGetAmountOrder()
     }, 1500)
   }
-
   fnDetalleViajeLabelListServiceWeb(
     latLng: google.maps.LatLng,
     tittle: string,
@@ -312,36 +296,21 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     detalle.view_screen_map = view_screen_map ? view_screen_map : false;
     return detalle;
   }
-
   async onUpdateEditOrder(item: ResponseLoadingOrder) {
     let lstPosiciones: PersonalisationMarker[] = [];
-    await this.requestTripService
-      .onViewTrackingMotorizedService(item.uuid)
-      .subscribe((viaje) => {
-        if (viaje.data.position) {
-          let tittle = viaje.data.deliveryMan.name;
-          lstPosiciones.push(
-            this.fnDetalleViajeLabelListServiceWeb(
-              new google.maps.LatLng(
-                viaje.data.position.lat,
-                viaje.data.position.lng
-              ),
-              tittle,
-              -1,
-              "",
-              "",
-              true
-            )
-          );
-          
-          this.lstPosicionConductor = lstPosiciones;
-        } else {
-          this.onClearMap();
-          this.updatePositionOrderEdit(item);
-        }
-      });
+    await this.requestTripService.onViewTrackingMotorizedService(item.uuid).subscribe((viaje) => {
+      if (viaje.data.position) {
+        let tittle = viaje.data.deliveryMan.name;
+        lstPosiciones.push(
+          this.fnDetalleViajeLabelListServiceWeb(new google.maps.LatLng(viaje.data.position.lat, viaje.data.position.lng), tittle, -1, "", "", true)
+        );
+        this.lstPosicionConductor = lstPosiciones;
+      } else {
+        this.onClearMap();
+        this.updatePositionOrderEdit(item);
+      }
+    });
   }
-
   updatePositionOrderEdit(select_service: ResponseLoadingOrder) {
 
     this.markers = []
@@ -364,27 +333,22 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.markers[1] = newMarkersDestination
     this.centrarMapa()
   }
-
   onClearMap() {
     this.polilyneRuta = [];
     this.lstPosiciones = [];
     this.lstPosicionConductor = [];
-  }
-
-  validationPhoneStore: string
+  }  
   private onGetLocationStore() {
     //const storesAvailable:StoreTripResponse[]=[]
-    this.dataShared.storeAviliable.subscribe((store)=>{
-      const storeId=store.map((sA)=>sA.store_id).join(",")
+    this.appSer.getStoreByIdAgent().subscribe((store:any)=>{
+      const storeId=store.data.map((sA)=>sA.store_id).join(",")
       this.storeService.onGetLocationStoreService(storeId).subscribe((resp)=>{
         this.storesAvailable=resp.data
         //console.log('resp',resp)
       })
     })
   }
-
   selectStore(event:any, flagInit : any){
-    debugger
     this.selectedStore= event.item
     const store=this.selectedStore.store
     const tripSetting=this.selectedStore.tripSetting
@@ -423,7 +387,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.flagInitMap = flagInit;
     this.updatePosition();
   }
-
   mapClicked($event: MouseEvent) {
     (this.markers[0].lat = $event.coords.lat),
       (this.markers[0].lng = $event.coords.lng);
@@ -488,11 +451,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
 
   }
-  nroViaje: number = 0;
+   autocompleteOri: google.maps.places.Autocomplete
   findAdressOrigin() {
     //  google.maps.
     const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
-    const autocomplete = new google.maps.places.Autocomplete(element, {
+     this.autocompleteOri = new google.maps.places.Autocomplete(element, {
       types: [],
       fields: ["place_id"],
       componentRestrictions: {
@@ -501,8 +464,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       },
     });
 
-    autocomplete.addListener("place_changed", () => {
-      let place: any = autocomplete.getPlace().place_id;
+    this.autocompleteOri.addListener("place_changed", () => {
+      let place: any = this.autocompleteOri.getPlace().place_id;
       this.geocodePlaceIdOrigin(place);
     });
   }
@@ -523,9 +486,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.onPlaceSelected();
     });
   }
-
-  
-  geocoder: google.maps.Geocoder = new google.maps.Geocoder();
   geocodePlaceIdOrigin(placeId) {
     
     this.geocoder.geocode({ placeId: placeId }, (results, status) => {
@@ -571,7 +531,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
   geocodePlaceIdMultidestino(placeId) {
     this.geocoder.geocode({ placeId: placeId }, (results, status) => {
       if (status === google.maps.GeocoderStatus.OK) {
@@ -616,10 +575,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
-  locationData: PolyLine[]
-  locationDestination: any
-
   drawPolyline(overviewPolyline: any){
     
     this.locationData = overviewPolyline
@@ -637,11 +592,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
    
 
   }
-
-  lat: number 
-  lng: number
-  zoom = 17;
-
   centrarMapa() { 
     if (this.markers.length >= 2) { 
 
@@ -661,8 +611,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       console.log('zoom_ ', zoom)
 
     } 
-  } 
-
+  }
   calcularNivelDeZoom(distance: number): number{
     // Puedes ajustar estos valores según tus preferencias
     if (distance < 1000) {
@@ -673,7 +622,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       return 14; // Zoom más alejado si la distancia es larga
     }
   }
-
   private calcularZoom(bounds: google.maps.LatLngBounds): number { 
     const GLOBE_WIDTH = 256; // Ancho de la proyección de Google Maps 
     const ZOOM_MAX = 21; // Nivel de zoom máximo 
@@ -692,64 +640,17 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     ); 
  
     return Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom)); 
-  } 
-
-
-  isDraggabled: boolean
-
+  }
   updatePosition() {
-    
     var lstPosiciones: PersonalisationMarker[] = [];
-
-    
     if (this.isCheckedStore == true) {
-      lstPosiciones.push(
-            UtilModalViaje.fnDetalleViaje(
-              new google.maps.LatLng(
-                this.request_trip.addresses[0].point.coordinates[1],
-                this.request_trip.addresses[0].point.coordinates[0]
-                ),
-                true,
-                "Origen",
-                TypeMarkers.ORIGEN,
-                this.isDraggabled,
-                1,
-                false
-                )
-                );
+      lstPosiciones.push(UtilModalViaje.fnDetalleViaje(new google.maps.LatLng(this.request_trip.addresses[0].point.coordinates[1],this.request_trip.addresses[0].point.coordinates[0]),true,"Origen",TypeMarkers.ORIGEN,this.isDraggabled,1,false));
     } else {
-          lstPosiciones.push(
-            UtilModalViaje.fnDetalleViaje(
-              new google.maps.LatLng(this.markers[0].lat, this.markers[0].lng),
-              true,
-              "Origen",
-              TypeMarkers.ORIGEN,
-              this.isDraggabled,
-              1,
-              false
-              )
-              );
-                
+      lstPosiciones.push( UtilModalViaje.fnDetalleViaje( new google.maps.LatLng(this.markers[0].lat, this.markers[0].lng),true,"Origen",TypeMarkers.ORIGEN,this.isDraggabled,1,false));
     }
-
-
     if (this.request_trip.addresses[1].point.coordinates[0] != 0) {
-      lstPosiciones.push(
-        UtilModalViaje.fnDetalleViaje(
-          new google.maps.LatLng(
-            this.request_trip.addresses[1].point.coordinates[1],
-            this.request_trip.addresses[1].point.coordinates[0]
-          ),
-          true,
-          "Destino",
-          TypeMarkers.DESTINO,
-          true,
-          1,
-          false
-        )
-      );
+      lstPosiciones.push(UtilModalViaje.fnDetalleViaje(new google.maps.LatLng( this.request_trip.addresses[1].point.coordinates[1], this.request_trip.addresses[1].point.coordinates[0] ),true,"Destino",TypeMarkers.DESTINO,true,1,false));
     }
-
     this.lstPosiciones = lstPosiciones;
   }
   onUpdatePositionDriver() {
@@ -758,28 +659,14 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       lstPosicionConductor = [];
       // this.lstPosicionConductor = this.lstPosiciones.filter(item => item.tipoMarker != TypeMarkers.CONDUCTOR_LABEL)
       for (let item of this.data_driver) {
-        lstPosicionConductor.push(
-          UtilModalViaje.fnDetalleViaje(
-            new google.maps.LatLng(
-              item.position.point.coordinates[1]!,
-              item.position.point.coordinates[0]!
-            ),
-            true,
-            "Conductor",
-            TypeMarkers.CONDUCTOR_LABEL,
-            false,
-            undefined,
-            1,
-            false
-          )
-        );
+        lstPosicionConductor.push( UtilModalViaje.fnDetalleViaje(new google.maps.LatLng(item.position.point.coordinates[1]!, item.position.point.coordinates[0]!), true,"Conductor", TypeMarkers.CONDUCTOR_LABEL,false,undefined,1,false));
       }
     } else {
       lstPosicionConductor.push(new PersonalisationMarker());
     }
     this.lstPosicionConductor = lstPosicionConductor;
   }
-  data_driver: ResponseMotorizedOrigin[] = [];
+ 
   onGetMotorizedPosiitonOrigin() {
     let request: RequestMotorizedOrigin = {
       origin: {
@@ -792,17 +679,13 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         },
       },
     };
-    this.requestTripService.onGetMotorizedPositionService(request).subscribe(
-      (data) => {
-        this.data_driver = data.data;
-        this.onUpdatePositionDriver();
-      },
-      (error) => {
-        this.alert.showError('',"Ocurrió un error");
-      }
-    );
+    this.requestTripService.onGetMotorizedPositionService(request).subscribe((data) => {
+      this.data_driver = data.data;
+      this.onUpdatePositionDriver();
+    },(error) => {
+        this.alert.showError('', "Ocurrió un error");
+    });
   }
-uuid_price ?: string
   onGetAmountOrder() {
     
     let request: RequestOrderPayment = {
@@ -839,18 +722,16 @@ uuid_price ?: string
 
   }
 
-  originMobilePhone: string
-  destinationMobilePhone: string
-  destinationReceptorName: string
   onChangeOrder(event:any){
     if(event.index==0){
-      
+      debugger
       this.request_trip.isOrderCalendar=false
-      //this.creadDate = new Date()
-      //this.request_trip.readyToDmAt=this.creadDate.getMinutes()
-
       if(this.editTripData && this.editTripData.isOrderCalendar == true){
-        this.request_trip.readyToDmAt=this.creadDate.getMinutes()
+        if(this.editTripData){
+          this.request_trip.readyToDmAt=new Date(this.editTripData.readyToDmAt*1000).getMinutes()
+        }else{  
+          this.request_trip.readyToDmAt=this.creadDate.getMinutes()
+        }
       } else {
         this.creadDate = new Date()
       }
@@ -862,9 +743,13 @@ uuid_price ?: string
          var minutos= fecha.getMinutes()+this.request_trip.readyToDmAt
         this.creadDate= new Date(fecha.setMinutes(minutos))
       } else {
-        var fecha = new Date()
-         var minutos= fecha.getMinutes()+this.request_trip.readyToDmAt
-        this.creadDate= new Date(fecha.setMinutes(minutos))
+        if(this.editTripData){
+          this.creadDate=new Date(this.editTripData.readyToDmAt*1000)
+        }else{
+          var fecha = new Date()
+           var minutos= fecha.getMinutes()+this.request_trip.readyToDmAt
+          this.creadDate= new Date(fecha.setMinutes(minutos))
+        }
       }
       this.request_trip.isOrderCalendar=true
     }
@@ -984,6 +869,7 @@ uuid_price ?: string
   }
 
   onUpdateOrder() {
+    debugger
     let order: RequestTrip = new RequestTrip();
 
 
@@ -1022,7 +908,7 @@ uuid_price ?: string
       
       order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10)) 
     } else {
-      let readyToDmAt = Number((this.editTripData.createdAt + (this.request_trip.readyToDmAt * 60)));
+      let readyToDmAt =  this.minutesToReadyToDm(this.request_trip.readyToDmAt,this.editTripData.createdAt );
       
       order.readyToDmAt = this.request_trip.readyToDmAt ? readyToDmAt : 0;
     }
@@ -1050,7 +936,7 @@ uuid_price ?: string
         alias: "",
         floor: "",
         phone: "",
-        marker: "Point",
+        marker: "point",
         point: {
           coordinates: [0, 0],
           type: "Point",
@@ -1108,11 +994,17 @@ uuid_price ?: string
     
   }
 
+  minutesToReadyToDm(addMinutes:number,create?:number){ 
+    let newDate = new Date(); 
+    if(create){ 
+        newDate=new Date(create*1000); 
+    } 
+    newDate.setMinutes(newDate.getMinutes() + addMinutes); 
+    return Number(newDate.getTime().toString().substring(0,10)) 
+  }
 
-
-  isCheckedStore: boolean = false
-  isHiddenInput: boolean = false
   enablePickUpInput(){
+    const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");    
     if(this.isCheckedStore == true){
       this.isDraggabled = true
       this.findAdressOrigin()
@@ -1122,11 +1014,11 @@ uuid_price ?: string
       this.isHiddenInput = !this.isHiddenInput
     } 
     else {
-      
       this.is_disabled_pickup = !this.is_disabled_pickup
       this.isHiddenInput = !this.isHiddenInput
       this.input_reference_pickup = ''
       this.request_trip.mobile = null
+      this.input_visible_pickup=''
       this.request_trip.addresses = [
         {
           addressStreet: "",
