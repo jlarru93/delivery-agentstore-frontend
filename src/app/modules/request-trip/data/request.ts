@@ -4,6 +4,7 @@ export class Point {
     type: string;
     coordinates: number[];
     constructor() {
+      this.type="Point"
     }
   }
   

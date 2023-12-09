@@ -59,30 +59,27 @@
               <label for="">Tienda</label>
             </div>
             <div class="input-origin-content">
-              <img
-                src="{{ origenIcon }}"
-                class="search-img-origin marker"
-                alt=""
-              />
-              <input 
-                #search
-                type="text"
-                class="p-inputtext-lg"
-                pInputText
-                id="txtUbicacion_origin"
-                placeholder="¿Dónde lo recogemos?"
-                [(ngModel)]="input_visible_pickup"
-                [disabled]="is_disabled_pickup"
-                required
-                autofocus
-              />
+              <img src="{{ origenIcon }}" class="search-img-origin marker" alt=""/>
+                <!-- <input #search type="text" class="p-inputtext-lg" pInputText id="txtUbicacion_origin"
+                  placeholder="¿Dónde lo recogemos?" [(ngModel)]="input_visible_pickup" [disabled]="is_disabled_pickup" required autofocus/> -->
+              
+                <!-- <p-dropdown 
+                  class="p-inputtext-lg"
+                  [options]="storesAvailable" 
+                  [(ngModel)]="selectedStore" 
+                  optionLabel="store.fullName"
+                  placeholder="¿Dónde lo recogemos?"
+                  (onChange)="selectStore()"></p-dropdown> -->
+
+                  <input type="text" pInputText id="txtUbicacion_origin" [(ngModel)]="input_visible_pickup"   [typeaheadMinLength]="0" [typeahead]="storesAvailable"
+                  typeaheadOptionField="store.fullName" placeholder="¿Dónde lo recogemos?" (typeaheadOnSelect)="selectStore($event,input_visible_pickup)">
+              
               <div style="padding-left: 5px;">
                 <p-checkbox
                   [(ngModel)]="isCheckedStore"
                   [binary]="true"
                   inputId="binary"
-                  (onChange)="enablePickUpInput()"
-                >                
+                  (onChange)="enablePickUpInput()" >                
                 </p-checkbox>
 
               </div>

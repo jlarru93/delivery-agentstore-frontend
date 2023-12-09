@@ -5,7 +5,7 @@ import { AuthService } from './utils/auth.service';
 import { OpenStoreRequest } from './modules/main/service/data/request';
 import { MqttService } from './modules/service/mqtt.service';
 import { Store } from './models';
-import { MenuService } from './app.menu.service';
+import { AgentStoreStoreResponse, MenuService } from './app.menu.service';
 import { environment } from 'src/environments/environment';
 import { dataSharedService } from './modules/service/data-shared.service';
 
@@ -25,7 +25,7 @@ export class AppTopBarComponent implements OnInit{
     IdAgent:any
     isConnectMqtt:boolean=false
     isDoneGetStatusOpenStore:boolean=false
-    Stores: Store[]
+    stores: AgentStoreStoreResponse[]
     selectedStore: Store[]=[]
     selectStore:Number[]=[]
     origenIcon: any ="assets/empresas/" + environment.NAME_COMPANY + environment.MARKERS.ORIGEN.URL;
@@ -59,7 +59,7 @@ export class AppTopBarComponent implements OnInit{
                     }else{
                         this.selectStore .push(this.IdAgent.Value)
                     }
-                    this.dataShared.UpdateListStore(this.selectStore)
+                    this.dataShared.updateListStore(this.selectStore)
                 }
         })
     }
@@ -126,11 +126,13 @@ export class AppTopBarComponent implements OnInit{
         
         console.log(this.IdAgent)
         this.service.getStoreByIdAgent().subscribe((data:any)=>{
-            this.Stores=data.data
+            this.stores=data.data
+
+            this.dataShared.setStoreAviliable(this.stores)
         })
     }
     setStoreId(store:Store,id:any,event:any){
-        this.dataShared.UpdateListStore(this.selectStore)                   
+        this.dataShared.updateListStore(this.selectStore)                   
         if(this.selectStore.findIndex((eve)=>eve==id)==-1){
             this.isOpenStore=false
         }

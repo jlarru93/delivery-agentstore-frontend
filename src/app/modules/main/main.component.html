@@ -18,6 +18,7 @@
                         <div class="p-col" (click)=" openOrderDialog(order)">
                            <h5 style="color: #ffffff;">ID: {{order.id}}</h5>
                            <p style="color: #ffffff;">{{order?.store?.addressStreet}}</p>
+                           <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
                         </div>
                         <div class="p-col">
                            <div class="overlay-container">
@@ -73,6 +74,7 @@
                         <div class="p-col-4"  (click)=" openOrderDialog(order)">
                            <h5>ID: {{order.id}}</h5>
                            <p>{{order?.store?.addressStreet}}</p>
+                           <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
                         </div>
                         <div class="p-col-5">
                            <p>{{calculateTime(order?.createdAt)}} min</p>
@@ -161,6 +163,7 @@
                            <div class="p-col-10" (click)=" openOrderDialog(order)">
                               <h5>ID: {{order.id}}</h5>
                               <p>{{order?.store?.addressStreet}}</p>
+                              <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
                            </div>
                            <div class="p-col-2">
                               <div class="overlay-container">
@@ -242,6 +245,7 @@
                         <div class="p-col-9" (click)=" openOrderDialog(order)">
                            <h5>ID: {{order.id}}</h5>
                            <p>{{order?.store?.addressStreet}}</p>
+                           <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
                         </div>
                         <div class="p-col-3">
                            <div class="overlay-container">
@@ -322,6 +326,7 @@
                            <div class="p-col-10" (click)=" openOrderDialog(order)">
                               <h5>ID: {{order.id}}</h5>
                               <p>{{order?.store?.addressStreet}}</p>
+                              <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
                            </div>
                            <div class="p-col-2">
                               <div class="overlay-container">

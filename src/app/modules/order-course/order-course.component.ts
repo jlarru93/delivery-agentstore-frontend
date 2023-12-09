@@ -501,9 +501,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   selectedTabs: { [key: string]: boolean } = {};
   async onSearchMotorizedOrder() {
-    await this.requestTripService
-      .onLoadingMotorizedService()
-      .subscribe((data) => {
+    await this.requestTripService.onLoadingMotorizedService().subscribe((data) => {
+      debugger
         const selectedTabsBackup = { ...this.selectedTabs };
         this.list_order = [];
         data.data.forEach((element) => {
