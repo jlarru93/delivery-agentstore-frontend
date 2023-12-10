@@ -183,7 +183,7 @@ import { dataSharedService } from "../service/data-shared.service";
     
     getOrders(){
       this.orderService.getOrders(this.idStore).subscribe((resp)=>{
-        this.orders=resp.data.map((it)=>{
+        resp.data.map((it)=>{
           let order=OrderResponse.toBean(it)
           let currentOrden=this.orders.find((or)=>or.id==it.id)
           if(currentOrden){
@@ -192,7 +192,16 @@ import { dataSharedService } from "../service/data-shared.service";
           }
 
           return order
+        }).forEach((order)=>{
+          let indexOrderExists=this.orders.findIndex(o=>o.id==order.id)
+          if(indexOrderExists!=-1){
+            this.orders[indexOrderExists]=order
+          }else{
+            this.orders.push(order)
+          }
         })
+
+
         this.sortOrders()
         this.isDoneGetOrders=true
         this.validOrdersSubscribe()
@@ -215,8 +224,12 @@ import { dataSharedService } from "../service/data-shared.service";
           }else {
             let orderMqtt=OrderResponse.toBean(asyncData.data)
             let orderIndex=this.orders.findIndex((order)=>order.id === orderMqtt.id)
-            this.orders[orderIndex]=orderMqtt
-            console.log(orderMqtt)
+            if(orderIndex==-1){
+              this.orders.push(orderMqtt)
+            }else{
+              this.orders[orderIndex]=orderMqtt
+            }
+            
           }
           this.sortOrders()
         }
@@ -224,9 +237,15 @@ import { dataSharedService } from "../service/data-shared.service";
       })
       this.storeHandler._data.subscribe((asyncData)=>{
         if(asyncData){
-          
+          console.log("Store",asyncData)
           let orderMqtt=OrderResponse.toBean(asyncData.data)
-          this.orders.push(orderMqtt)
+          let indexOrder=this.orders.findIndex(o=>o.id==orderMqtt.id)
+          if(indexOrder==-1){
+            this.orders.push(orderMqtt)
+          }else{
+            this.orders[indexOrder]=orderMqtt
+          }
+          
           this.sortOrders()
           this.subscribeOrder(orderMqtt.uuid)
           this.subscribeChat(orderMqtt.uuid)
@@ -323,7 +342,7 @@ import { dataSharedService } from "../service/data-shared.service";
 
     dmStatusOkay(order:OrderBean){
       let dmStatusOkay=false
-      if(order.deliveryMan){
+      if(order?.deliveryMan){
         dmStatusOkay=order.deliveryMan.status=='toStore' || order.deliveryMan.status=='inStore' 
       }else{
         dmStatusOkay=true

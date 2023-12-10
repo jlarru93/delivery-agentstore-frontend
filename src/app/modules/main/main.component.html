@@ -15,12 +15,16 @@
                 <div class="p-grid p-nogutter widget-overview-box p-shadow-3" style="background: -webkit-gradient(linear, left bottom, right top, color-stop(0%, #bf616a), color-stop(100%, #ce9393));">
                   <div class="p-col-12">
                      <div class="p-grid">
-                        <div class="p-col" (click)=" openOrderDialog(order)">
+                        <div class="p-col-4" (click)=" openOrderDialog(order)">
                            <h5 style="color: #ffffff;">ID: {{order.id}}</h5>
                            <p style="color: #ffffff;">{{order?.store?.addressStreet}}</p>
                            <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
                         </div>
-                        <div class="p-col">
+                        <div class="p-col-5">
+                           <p style="color: #ffffff;">{{calculateTime(order?.createdAt)}} min</p>
+                           
+                        </div>
+                        <div class="p-col-3">
                            <div class="overlay-container">
                               <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right; background: linear-gradient(225deg, #f2c260 0%, #ebcb8b 100%);"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
@@ -323,12 +327,12 @@
                   <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
                      <div class="p-col-12">
                         <div class="p-grid">
-                           <div class="p-col-10" (click)=" openOrderDialog(order)">
+                           <div class="p-col-9" (click)=" openOrderDialog(order)">
                               <h5>ID: {{order.id}}</h5>
                               <p>{{order?.store?.addressStreet}}</p>
                               <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
                            </div>
-                           <div class="p-col-2">
+                           <div class="p-col-3">
                               <div class="overlay-container">
                                  <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
                                  <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
