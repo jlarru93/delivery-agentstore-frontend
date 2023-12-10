@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { AgentStoreStoreResponse } from 'src/app/app.menu.service';
 import { StoreResponse } from '../main/service/data/response';
 @Injectable({
@@ -9,8 +9,8 @@ export class dataSharedService{
     public listStore = new Subject<any>();
     listStore$ = this.listStore.asObservable();
 
-    storeAviliable = new Subject<AgentStoreStoreResponse[]>();
-
+    public storeAviliable = new BehaviorSubject<AgentStoreStoreResponse[]>([]);
+    storeAviliable$ = this.storeAviliable.asObservable()
     _storeBean=new Subject<StoreResponse>()
     storeBean$ = this._storeBean.asObservable()
     updateListStore(lst:any){
@@ -18,7 +18,11 @@ export class dataSharedService{
     }
 
     setStoreAviliable(storeAviliable:AgentStoreStoreResponse[]){
-        this.storeAviliable.next(storeAviliable)
+        if(storeAviliable?.length>0){
+            console.log(storeAviliable)
+            this.storeAviliable.next(storeAviliable)
+        }
+        
     }
     setStoreBean(store:any){
         this._storeBean.next(store)

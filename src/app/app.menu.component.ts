@@ -30,6 +30,10 @@ export class AppMenuComponent implements OnInit {
             { label: 'Quejas', icon: 'pi pi-fw pi-box', routerLink: ['/complaint-report']}
         ];
         this.store.storeAviliable.subscribe((storesAvilible)=>{
+            if(storesAvilible?.length==0){
+                return
+            }
+            console.log(storesAvilible)
             const store_id=storesAvilible[0].store_id
             this.getProducts(store_id)
         })

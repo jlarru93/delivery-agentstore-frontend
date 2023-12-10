@@ -52,6 +52,9 @@ export class ProductComponent implements OnInit {
     }
     getStores(){
         this.dataShared.storeAviliable.subscribe((resp)=>{
+            if(resp?.length==0){
+                return
+            }
             this.stores=resp
             this.storeSelected=this.stores[0]
             this.getProducts()

@@ -130,7 +130,7 @@ export class AppTopBarComponent implements OnInit{
         console.log(this.IdAgent)
         this.service.getStoreByIdAgent().subscribe((data:any)=>{
             this.stores=data.data
-
+            console.log(this.stores)
             this.dataShared.setStoreAviliable(this.stores)
         })
     }
