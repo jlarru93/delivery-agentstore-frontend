@@ -11,7 +11,7 @@ import { OpenStoreRequest } from "./data/request";
     constructor(private http:HttpClient) { }
 
     getStatusOpen(){
-        return this.http.get<ObjetResponse<StatusOpenStoreResponse>>(env.url.backEnd+"/store/status/open")
+        return this.http.get<ObjetResponse<StatusOpenStoreResponse[]>>(env.url.backEnd+"/store/status/open")
     }
 
     changeStatusOpen(request:OpenStoreRequest){

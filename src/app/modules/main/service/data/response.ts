@@ -3,7 +3,9 @@ import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, MethodBean,
 import { AddressResponseLoadingOrder } from "src/app/modules/request-trip/data/response"
 
 export class StatusOpenStoreResponse {
-    status: boolean
+    id:number
+    name:string
+    isOpen: boolean
 }
 
 export class SubOptionResponse {

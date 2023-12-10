@@ -2,9 +2,15 @@
     <div class="layout-topbar-wrapper">
         <div class="layout-topbar-left">
 
-            <div class="layout-megamenu-wrapper" (click)="displayOpenStore=true">
-                <button pButton type="button"  [label]="isOpenStore?'Tienda abierta':'Abrir tienda'" icon="pi pi-home" [loading]="isLoadingOpenStatusStore" [ngClass]="isOpenStore?'p-button-success':'p-button-warning'" ></button>
-            </div>
+            <ng-container *ngFor="let storeOpen of storesOpen">
+                <div class="layout-megamenu-wrapper" (click)="displayOpenStore=true;storeOpenSelected=storeOpen">
+                    <button pButton type="button"  [label]="storeOpen.name" icon="pi pi-home" [loading]="storeOpen.isLoadingOpenStatusStore" [ngClass]="storeOpen.isOpen?'p-button-success':'p-button-warning'" ></button>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="isAllLoadingOpenStatusStore">
+                <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="1"></p-progressSpinner>
+            </ng-container>
+            
             <div style="margin: 0 auto;" id="logoImagen">
                 <img src="assets/images/Logotipo_TRES22-delivery-02.png" alt="LogoTRES22" class="image-container">
             </div>
