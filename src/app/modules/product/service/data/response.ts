@@ -59,6 +59,7 @@ export class StoreResponse {
     menu ?: string[];
     products ?: ProductsResponse[];
     isOpen: boolean;
+    tripSetting:any[]
     static toBean(self: StoreResponse) : StoreBean{
         const bean = new StoreBean()
             bean.id = self.id;
@@ -71,6 +72,7 @@ export class StoreResponse {
             bean.menu = self.menu;
             bean.products = self.products.filter((it)=>it.isEnabled).map((it) => ProductsResponse.toBean(it));
             bean.isOpen = self.isOpen
+            bean.tripSetting=self.tripSetting
         return bean
     }
 }

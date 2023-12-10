@@ -3,6 +3,7 @@ import { AppMainComponent } from './app.main.component';
 import { ProductService } from './modules/product/service/product.service';
 import { StoreResponse } from './modules/product/service/data/response';
 import { Router } from '@angular/router';
+import { dataSharedService } from './modules/service/data-shared.service';
 
 @Component({
     selector: 'app-menu',
@@ -15,7 +16,8 @@ export class AppMenuComponent implements OnInit {
     constructor(
         public appMain: AppMainComponent,
         private productService: ProductService,
-        private router: Router
+        private router: Router,
+        private store:dataSharedService
     ) { }
 
     ngOnInit() {
@@ -35,11 +37,11 @@ export class AppMenuComponent implements OnInit {
     }
 
     storeFullName: string
-    getProducts(){
-        
+    getProducts(){        
         this.productService.getProducts().subscribe((resp) => { 
             let storeBean=StoreResponse.toBean(resp.data)
             this.storeFullName = storeBean.fullName
+            this.store.setStoreBean(storeBean)
         })
     }
 

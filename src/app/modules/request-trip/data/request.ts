@@ -47,6 +47,7 @@ export class Point {
     uuid_price:string
     productPrice?:number
     isOrderCalendar?:boolean = false
+    isCheckedStore:boolean
     constructor(){
       
     }

@@ -15,6 +15,7 @@ import { AlertServices } from "../service/alert.service";
 import { StoreTripResponse } from "../main/service/data/response";
 import { dataSharedService } from "../service/data-shared.service";
 import { MenuService } from "src/app/app.menu.service";
+import { AppMainComponent } from "src/app/app.main.component";
 
 interface PolyLine{
   routePoints:RoutePoint[]
@@ -152,9 +153,16 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     private dialogService: DialogService,
     private alert:AlertServices,
     private dataShared:dataSharedService,
-    private appSer:MenuService
+    private appSer:MenuService,
+    private main: AppMainComponent
   ) {}
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    setTimeout( () => {
+      if(!this.stateOptions||this.stateOptions.length==0){
+        this.stateOptions=this.main.DataStore.tripSetting.paymentMethod
+      }
+    }, 1500)
+  }
   ngOnInit(): void {
     // this.center = {
     //   lat: 10.96854,
@@ -209,16 +217,15 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     setTimeout( () => {
       this.findAdress()
       this.findAdressOrigin()
-      
-debugger
       this.onUpdateEditOrder(this.editTripData)
       this.input_visible_pickup = this.editTripData.addresses[0].addressStreet
 
-      if(this.validationPhoneStore == this.editTripData.addresses[0].phone){
+      if(this.editTripData.isCheckedStore){
         this.is_disabled_pickup = true
         this.isHiddenInput = false
-      } else {
         this.isCheckedStore = true
+      } else {
+        this.isCheckedStore = false
         this.is_disabled_pickup = false
         this.isHiddenInput = true
       }
@@ -235,9 +242,6 @@ debugger
 
       this.method_payment = this.editTripData.payment.method.type
       this.cashAmount = this.editTripData.productPrice
-
-      debugger
-
       this.request_trip.addresses[0].addressStreet = this.editTripData.addresses[0].addressStreet
       this.request_trip.addresses[0].phone = this.editTripData.addresses[0].phone
       this.request_trip.addresses[0].reference = this.editTripData.addresses[0].reference
@@ -841,6 +845,7 @@ debugger
       }
     });
     order.isOrderCalendar=this.request_trip.isOrderCalendar
+    order.isCheckedStore=this.isCheckedStore
     if(this.request_trip.isOrderCalendar){
       
       order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10))
@@ -974,7 +979,7 @@ debugger
       }
     });
     order.isOrderCalendar=this.request_trip.isOrderCalendar
-    
+    order.isCheckedStore=this.isCheckedStore
     
     this.requestTripService.onUpdateOrderService(order).subscribe(
       (data) => {
