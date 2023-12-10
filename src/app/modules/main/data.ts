@@ -86,6 +86,7 @@ export class StoreBean {
     addressStreet: string
     location?: Point
     logo?:string
+    tripSetting:any
 }
 
 

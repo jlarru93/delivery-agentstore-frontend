@@ -169,6 +169,7 @@ export class StoreResponse {
     addressStreet: string
     location?: Point
     logo?: string
+    tripSetting:any
     static toBean(self: StoreResponse): StoreBean {
         const bean = new StoreBean()
         bean.id = self.id,
@@ -176,6 +177,7 @@ export class StoreResponse {
         bean.addressStreet = self.addressStreet,
         bean.location = self.location
         bean.logo = self.logo
+        bean.tripSetting=self.tripSetting
         return bean
     } 
 }

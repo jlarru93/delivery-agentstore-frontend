@@ -3,6 +3,7 @@ import { AppMainComponent } from './app.main.component';
 import { ProductService } from './modules/product/service/product.service';
 import { StoreResponse } from './modules/product/service/data/response';
 import { Router } from '@angular/router';
+import { dataSharedService } from './modules/service/data-shared.service';
 
 @Component({
     selector: 'app-menu',
@@ -14,7 +15,9 @@ export class AppMenuComponent implements OnInit {
     model: any[];
     constructor(
         public appMain: AppMainComponent,
-        private router: Router
+        private productService: ProductService,
+        private router: Router,
+        private store:dataSharedService
     ) { }
 
     ngOnInit() {
@@ -26,12 +29,24 @@ export class AppMenuComponent implements OnInit {
             { label: 'Historial de Órdenes', icon: 'pi pi-fw pi-history', routerLink: ['/order-history']},
             { label: 'Quejas', icon: 'pi pi-fw pi-box', routerLink: ['/complaint-report']}
         ];
+        this.store.storeAviliable.subscribe((storesAvilible)=>{
+            const store_id=storesAvilible[0].store_id
+            this.getProducts(store_id)
+        })
     }
 
     onMenuClick() {
         this.appMain.menuClick = true;
     }
 
+    storeFullName: string
+    getProducts(store_id:number){        
+        this.productService.getProducts(store_id).subscribe((resp) => { 
+            let storeBean=StoreResponse.toBean(resp.data)
+            //this.storeFullName = storeBean.fullName
+            this.store.setStoreBean(storeBean)
+        })
+    }
 
     redirectRequestTrip(){
         localStorage.removeItem('edit-trip');
