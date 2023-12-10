@@ -14,7 +14,6 @@ export class AppMenuComponent implements OnInit {
     model: any[];
     constructor(
         public appMain: AppMainComponent,
-        private productService: ProductService,
         private router: Router
     ) { }
 
@@ -27,21 +26,12 @@ export class AppMenuComponent implements OnInit {
             { label: 'Historial de Órdenes', icon: 'pi pi-fw pi-history', routerLink: ['/order-history']},
             { label: 'Quejas', icon: 'pi pi-fw pi-box', routerLink: ['/complaint-report']}
         ];
-        this.getProducts()
     }
 
     onMenuClick() {
         this.appMain.menuClick = true;
     }
 
-    storeFullName: string
-    getProducts(){
-        
-        this.productService.getProducts().subscribe((resp) => { 
-            let storeBean=StoreResponse.toBean(resp.data)
-            this.storeFullName = storeBean.fullName
-        })
-    }
 
     redirectRequestTrip(){
         localStorage.removeItem('edit-trip');

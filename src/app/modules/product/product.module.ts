@@ -14,6 +14,7 @@ import { TreeModule } from 'primeng/tree';
 import { ToastModule } from 'primeng/toast';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { FormsModule } from '@angular/forms';
       ProgressBarModule,
       TreeModule,
       ToastModule,
-      SelectButtonModule
+      SelectButtonModule,
+      DropdownModule
     ],
     providers:[ProductService]
   })

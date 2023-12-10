@@ -14,8 +14,8 @@ import { ProductStockRequest } from "./data/request";
       private http: HttpClient
     ){}
 
-    getProducts() {
-      return this.http.get<ObjetResponse<StoreResponse>>(env.url.backEnd + "/store/items")
+    getProducts(storeId:number) {
+      return this.http.get<ObjetResponse<StoreResponse>>(env.url.backEnd + "/store/"+storeId+"/items")
     }
 
     deleteProduct(bodyRequest){

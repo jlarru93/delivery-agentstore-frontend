@@ -4,6 +4,8 @@ import { DialogService } from "primeng/dynamicdialog";
 import { ProductService } from "./service/product.service";
 import { ProductBean, StoreBean } from "./data";
 import { StoreResponse } from "./service/data/response";
+import { dataSharedService } from "../service/data-shared.service";
+import { AgentStoreStoreResponse } from "src/app/app.menu.service";
 
 @Component({
     selector: 'app-stores',
@@ -33,20 +35,31 @@ export class ProductComponent implements OnInit {
         { name: 'AMBOS', value: -1 },
     ];
     filterProduc:any=false
+
+    stores:AgentStoreStoreResponse[]
+    storeSelected:AgentStoreStoreResponse
     constructor(
         private productService: ProductService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private dataShared:dataSharedService
     ){
 
     }
 
     ngOnInit(): void {
-        this.getProducts()
+        //this.getProducts()
+        this.getStores()
     }
-
+    getStores(){
+        this.dataShared.storeAviliable.subscribe((resp)=>{
+            this.stores=resp
+            this.storeSelected=this.stores[0]
+            this.getProducts()
+        })
+    }
     getProducts(){
         this.progressBar = true
-        this.productService.getProducts().subscribe((resp) => { 
+        this.productService.getProducts(this.storeSelected.store_id).subscribe((resp) => { 
             let storeBean=StoreResponse.toBean(resp.data)
             this.products=storeBean.products
             this.menu = storeBean.menu
@@ -76,7 +89,7 @@ export class ProductComponent implements OnInit {
         this.progressBar = true
         this.itemSelecciona = menuSelected
         if(menuSelected){
-            this.productService.getProducts().subscribe((resp) => {
+            this.productService.getProducts(this.storeSelected.store_id).subscribe((resp) => {
                 let storeBean=StoreResponse.toBean(resp.data)
                 this.products=storeBean.products
                 this.productsMenuSelected= this.products.filter((product)=>product.menu.includes(menuSelected))

@@ -2,6 +2,9 @@
 <div *ngIf="progressBar">
     <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
 </div>
+<div class="p-col-12 p-lg-3">
+    <p-dropdown [options]="stores" [(ngModel)]="storeSelected" optionLabel="store_name" (onChange)="getProducts()"></p-dropdown>
+</div>
 <div class="p-grid layout-dashboard">
     <div class="p-col-12 p-lg-3">
         <div class="card widget-download-files">
