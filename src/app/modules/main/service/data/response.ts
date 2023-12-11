@@ -3,7 +3,9 @@ import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, MethodBean,
 import { AddressResponseLoadingOrder } from "src/app/modules/request-trip/data/response"
 
 export class StatusOpenStoreResponse {
-    status: boolean
+    id:number
+    name:string
+    isOpen: boolean
 }
 
 export class SubOptionResponse {
@@ -167,6 +169,7 @@ export class StoreResponse {
     addressStreet: string
     location?: Point
     logo?: string
+    tripSetting:any
     static toBean(self: StoreResponse): StoreBean {
         const bean = new StoreBean()
         bean.id = self.id,
@@ -174,6 +177,7 @@ export class StoreResponse {
         bean.addressStreet = self.addressStreet,
         bean.location = self.location
         bean.logo = self.logo
+        bean.tripSetting=self.tripSetting
         return bean
     } 
 }
@@ -334,6 +338,7 @@ export class OrderResponse {
     readyToDmAt: number
     acceptAgentStoreAt: number
     addresses ?: AddressResponseLoadingOrder[]
+    statusForAgentStore:string
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
         bean.id = self?.id
@@ -355,6 +360,7 @@ export class OrderResponse {
         bean.createdAt = self.createdAt
         bean.readyToDmAt = self.readyToDmAt
         bean.acceptAgentStoreAt = self.acceptAgentStoreAt
+        bean.statusForAgentStore=self.statusForAgentStore
         return bean
     }
 }

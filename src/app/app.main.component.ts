@@ -1,10 +1,13 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component, Renderer2, OnInit, AfterViewInit } from '@angular/core';
 import { MenuService } from './app.menu.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { PrimeNGConfig } from 'primeng/api';
 import {AppComponent} from './app.component';
 import { StoreService } from './modules/main/service/store.service';
 import { OpenStoreRequest } from './modules/main/service/data/request';
+import { dataSharedService } from './modules/service/data-shared.service';
+import { Subscription } from 'rxjs';
+import { StoreResponse } from './modules/main/service/data/response';
 
 @Component({
     selector: 'app-main',
@@ -21,7 +24,7 @@ import { OpenStoreRequest } from './modules/main/service/data/request';
         ])
     ]
 })
-export class AppMainComponent {
+export class AppMainComponent implements AfterViewInit {
 
     rightPanelClick: boolean;
 
@@ -56,9 +59,22 @@ export class AppMainComponent {
     menuHoverActive: boolean;
 
     configActive: boolean;
-
-    constructor(public renderer: Renderer2, private menuService: MenuService,
-                private primengConfig: PrimeNGConfig, public app: AppComponent,private storeService:StoreService) {}
+    dataSubscription: Subscription;
+    DataStore:StoreResponse = new StoreResponse()
+    constructor(
+        public renderer: Renderer2, 
+        private menuService: MenuService,
+        private primengConfig: PrimeNGConfig, 
+        public app: AppComponent,
+        private storeService:StoreService,
+        private store:dataSharedService
+    ) {}
+    ngAfterViewInit(): void {
+        this.dataSubscription= this.store.storeBean$.subscribe((data)=>{
+            this.DataStore=data as StoreResponse
+        })
+    }
+    
 
     onLayoutClick() {
         if (!this.topbarItemClick) {

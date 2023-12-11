@@ -2,9 +2,16 @@
     <div class="col-12 md:col-12">
       <div class="grid mt-1 mb-4 ml-1">
         <div class="">
-          <h4 class="font-weight: 500;">
-            Su orden ha sido creada
-          </h4>
+          <ng-container *ngIf="!config.data.isUpdated">
+            <h4 class="font-weight: 500;">
+              Su orden ha sido creada
+            </h4>
+          </ng-container>
+          <ng-container *ngIf="config.data.isUpdated">
+            <h4 class="font-weight: 500;">
+              Su orden ha sido actualizada
+            </h4>
+          </ng-container>
         </div>
       </div>
       <!-- <p-progressBar *ngIf="true"

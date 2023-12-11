@@ -3,7 +3,11 @@
   background-image: url("../assets/layout/images/dashboard/news-1.png");
 
 }
-
+.search-img{
+  height: 22px;
+  width: 22px;
+  margin-right: 12px;
+}
 .image-container {
   height: 135px;
   width: auto;
@@ -27,4 +31,11 @@
     font-weight: 600;
     line-height: 1.2;
     color: inherit;
+}
+:host ::ng-deep.layout-submenu-header{
+  padding: 10px !important;
+}
+
+:host ::ng-deep.layout-topbar .layout-topbar-wrapper .layout-topbar-right .layout-topbar-actions > li > ul > li {
+  padding: 0px;
 }

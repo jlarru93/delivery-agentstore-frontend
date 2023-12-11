@@ -1,5 +1,7 @@
 $gutter: .5rem; //for primeflex grid system
-
+:root {
+ --primary: rgba(211,47,47,.92);
+}
 @import "../node_modules/primeng/resources/primeng.min.css";
 @import "../node_modules/primeflex/primeflex.scss";
 @import "../node_modules/primeicons/primeicons.css";
@@ -7,7 +9,7 @@ $gutter: .5rem; //for primeflex grid system
 @import "../node_modules/@fullcalendar/daygrid/main.min.css";
 @import "../node_modules/@fullcalendar/timegrid/main.min.css";
 @import "assets/demo/flags/flags.css";
-
+@import "./assets/styles/datepicker.css";
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 

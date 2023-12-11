@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { RequestTripRoutingModule } from './request-trip-routing.module';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { AgmCoreModule } from 'src/agm/core';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -19,6 +19,10 @@ import { LoadingMotorizedComponent } from './dialog/loading-motorized/loading-mo
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { TabViewModule } from 'primeng/tabview';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { DropdownModule } from 'primeng/dropdown';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
@@ -29,10 +33,11 @@ import { CheckboxModule } from 'primeng/checkbox';
       apiKey: 'AIzaSyDl_Vavzdty qvdrsOy3Mnsg9hFusgMZ_SY',
     }),
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     CheckboxModule,
     RequestTripRoutingModule,
     InputTextModule,
-    FormsModule,
     ButtonModule,
     InputTextareaModule,
     SelectButtonModule,
@@ -44,7 +49,11 @@ import { CheckboxModule } from 'primeng/checkbox';
     InformacionMapaModule,
     InputNumberModule,
     ProgressBarModule,
-    ButtonModule
+    ButtonModule,
+    TabViewModule,
+    DropdownModule ,
+    BsDatepickerModule.forRoot(),
+    TypeaheadModule.forRoot()
   ]
 })
 export class RequestTripModule { }

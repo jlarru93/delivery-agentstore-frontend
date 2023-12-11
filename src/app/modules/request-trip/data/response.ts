@@ -68,7 +68,7 @@ export class PolyLine {
 }
 
 export class ResponseLoadingOrder{
-    user : UserBean;
+    user : UserOrderResponse;
     payment :Payment;
     addresses :AddressResponseLoadingOrder[];
     status: string;
@@ -79,12 +79,15 @@ export class ResponseLoadingOrder{
     uuid: string;
     type: string;
     zoneId: number;
+    detail: string;
     deliveryPrice: number;
+    productPrice?:number;
     total: number;
     date_string : string
     messagesNoReadTotal:number
     messagesChat:ChatBean[]
     isLoadingChat:boolean
+    isOrderCalendar?:boolean
     showButton:boolean
     deliveryMan : DeliveryManBean
     status_order ?: string
@@ -99,6 +102,13 @@ export class ResponseLoadingOrder{
     }
 
 }
+
+export class UserOrderResponse {
+  id?: number
+  fullName?: string
+  type?: string
+}
+
 export class AddressResponseLoadingOrder {
   sort: number;
   marker: string;
@@ -108,6 +118,7 @@ export class AddressResponseLoadingOrder {
   floor: string;
   reference: string;
   phone: string;
+  receptorName: string;
   label ?: string;
   uuidRoutePrice ?: string;
 }
