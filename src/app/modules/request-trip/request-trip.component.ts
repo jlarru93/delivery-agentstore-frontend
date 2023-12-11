@@ -128,7 +128,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     }
   }
   activeIndexCalendar: number = 0
-  stateOptions: any[];
+  stateOptions: any[]=[];
   method_payment = "efectivo";
   amount?: number = 0;
   cashAmount?: number = 0;
@@ -220,7 +220,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.onUpdateEditOrder(this.editTripData)
       this.input_visible_pickup = this.editTripData.addresses[0].addressStreet
 
-      if(this.editTripData.isCheckedStore){
+      if(!this.editTripData.isCheckedStore){
         this.is_disabled_pickup = true
         this.isHiddenInput = false
         this.isCheckedStore = true
@@ -257,8 +257,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
       this.request_trip.addresses[1].point.coordinates[1] = this.editTripData.addresses[1].location.coordinates[1]
       this.request_trip.addresses[1].point.coordinates[0] = this.editTripData.addresses[1].location.coordinates[0]
-
-
+      this.request_trip.store.id= this.editTripData.store.id
+      this.isCheckedStore=this.editTripData.isCheckedStore
       if(this.editTripData.isOrderCalendar == true){
         
         this.activeIndexCalendar = 1
@@ -348,12 +348,23 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       const storeId=store.data.map((sA)=>sA.store_id).join(",")
       this.storeService.onGetLocationStoreService(storeId).subscribe((resp)=>{
         this.storesAvailable=resp.data
+        if(this.storesAvailable.length>0){
+          if(!this.editTripData){
+
+            this.request_trip.store=this.storesAvailable[0]
+            this.selectStore(this.storesAvailable[0],'',true)
+          }
+        }
         //console.log('resp',resp)
       })
     })
   }
-  selectStore(event:any, flagInit : any){
-    this.selectedStore= event.item
+  selectStore(event:any, flagInit : any,Defauliten:boolean=false){
+    if(!Defauliten)
+    this.selectedStore= event.item?event.item:this.storesAvailable.find((store)=>store.store.id==event.value)
+    else{
+      this.selectedStore= event
+    }
     const store=this.selectedStore.store
     const tripSetting=this.selectedStore.tripSetting
     
@@ -377,6 +388,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.markers[0].onDragEnd=(e)=>{
       console.log(e.coords)
     }
+    this.request_trip.store.id=store.id
     this.markers[0].label = 'Origen'
     this.markers[0].iconUrl = this.globalIconOrigin
     this.markers[0].lng = store.location.coordinates[0];
@@ -846,6 +858,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     });
     order.isOrderCalendar=this.request_trip.isOrderCalendar
     order.isCheckedStore=this.isCheckedStore
+    order.store.id= this.request_trip.store.id
     if(this.request_trip.isOrderCalendar){
       
       order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10))
@@ -980,7 +993,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     });
     order.isOrderCalendar=this.request_trip.isOrderCalendar
     order.isCheckedStore=this.isCheckedStore
-    
+    order.store.id=this.request_trip.store.id
     this.requestTripService.onUpdateOrderService(order).subscribe(
       (data) => {
         this.ref = this.dialogService.open(LoadingMotorizedComponent, {

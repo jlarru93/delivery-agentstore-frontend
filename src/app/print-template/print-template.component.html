@@ -30,7 +30,7 @@
         </div>
         <div class="item">
             <span>Dirección:</span>
-            <span><strong>{{orderSelected.user.address.addressStreet}}</strong></span>
+            <span><strong>{{orderSelected?.user?.address?.addressStreet}}</strong></span>
         </div>
     </div>
     <hr style="border-top: dashed 1px;" />
@@ -70,7 +70,7 @@
     <div class="detalle">
         <div class="item"> 
             <span>Productos:</span>
-            <span><strong>{{orderSelected.getProductPriceAndCurrency()}}</strong></span>
+            <span><strong>{{orderSelected?.getProductPriceAndCurrency()}}</strong></span>
         </div>
         <div class="item">
             <span>Propina: </span>
