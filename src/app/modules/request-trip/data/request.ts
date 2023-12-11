@@ -4,11 +4,13 @@ export class Point {
     type: string;
     coordinates: number[];
     constructor() {
+      this.type="Point"
     }
   }
   
   // Define the class for the "addresses" object
   export class Address {
+    id?: number;
     sort: number;
     marker: string;
     addressStreet: string;
@@ -41,9 +43,14 @@ export class Point {
     payment: Payment;
     addresses: Address[];
     mobile ?: string
-    readyToDmAt ?: number
+    readyToDmAt ?: number = 0
     uuid_price:string
     productPrice?:number
+    isOrderCalendar?:boolean = false
+    isCheckedStore:boolean
+    constructor(){
+      
+    }
   }
   
   export class RequestMotorizedOrigin {

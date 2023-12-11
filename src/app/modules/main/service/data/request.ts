@@ -1,4 +1,5 @@
 export class OpenStoreRequest{
+    id:number
     status: boolean;
 }
 export class AceptOrderRequest{

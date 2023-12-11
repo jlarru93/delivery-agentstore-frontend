@@ -27,6 +27,15 @@ export class RequestTripService {
       request
     );
   }
+
+  onUpdateOrderService(request: RequestTrip){
+    let path = "/order-trip/:uuid"
+    path = path.replace(':uuid', request.uuid)
+    return this.http.put<ObjetResponse<ResponseTrip>>(
+      env.url.backEnd + path, request
+    )
+  }
+
   onGetMotorizedPositionService(request: RequestMotorizedOrigin) {
     let path = "/delivery-man/near/location";
     return this.http.post<ObjetResponse<ResponseMotorizedOrigin[]>>(

@@ -29,4 +29,5 @@ export class StoreBean {
     menu ?: string[];
     products ?: ProductBean[];
     isOpen: boolean;
+    tripSetting:any[]
 }

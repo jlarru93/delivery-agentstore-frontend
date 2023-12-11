@@ -35,6 +35,8 @@ import { enumStatusOrder, enumTypePayment } from "../request-trip/data/enum";
 import { environment } from "src/environments/environment";
 import { AuthService } from "src/app/utils/auth.service";
 import { DeliveryManRouteResponse, ResponseTrackingMotorized, RouterResponse } from "./data/response";
+import { Router } from "@angular/router";
+import { AlertServices } from "../service/alert.service";
 
 class PolyLine{
   routePoints:RoutePoint[]
@@ -71,6 +73,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     private orderHandler: OrderHandler,
     private mqtt: MqttService,
     private auth: AuthService,
+    private router: Router,
+    private alert:AlertServices
   ) {}
 
 
@@ -375,6 +379,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   flagAccordion: boolean = false;
   async onTapOpen(envios: any, flagAccordion: boolean) {
+    
     this.polyLines=[]
     clearInterval(this.set_interval_driver);
     this.flagAccordion = true;
@@ -451,8 +456,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   updatePositionDriver(item: ResponseTrackingMotorized){
     const newMarkersDriver: Marker = {
-      lat: item.deliveryManRoute[0].polyline[0].lat,
-      lng: item.deliveryManRoute[0].polyline[0].lng,
+      lat: item.position.lat,
+      lng: item.position.lng,
       //lat: select_service.addresses[0].location.coordinates[1],
       //lng: select_service.addresses[0].location.coordinates[0],
       iconUrl: this.globalIconDriver,
@@ -496,9 +501,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   selectedTabs: { [key: string]: boolean } = {};
   async onSearchMotorizedOrder() {
-    await this.requestTripService
-      .onLoadingMotorizedService()
-      .subscribe((data) => {
+    await this.requestTripService.onLoadingMotorizedService().subscribe((data) => {
+      debugger
         const selectedTabsBackup = { ...this.selectedTabs };
         this.list_order = [];
         data.data.forEach((element) => {
@@ -522,6 +526,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.order_name = this.onPaymentGroup(element.payment.method.type )
           order.status_order = this.onStatusGroup(status);
           order.status_order_color = this.onStatusGroupColor(status)
+          order.user = element.user
           order.deliveryMan = element.deliveryMan;
           order.addresses = element.addresses;
           order.total = element.total;
@@ -563,6 +568,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.status_order = this.onStatusGroup(status);
           order.status_order_color = this.onStatusGroupColor(status)
           console.log('status', status)
+          order.user = element.user
           order.deliveryMan = element.deliveryMan;
           order.addresses = element.addresses;
           order.total = element.total;
@@ -570,6 +576,11 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.id = element.id 
           order.uuid = element.uuid
           // order.showButton = false
+          order.createdAt = element.createdAt
+          order.detail = element.detail
+          order.productPrice = element.productPrice
+          order.readyToDmAt = element.readyToDmAt
+          order.isOrderCalendar = element.isOrderCalendar
           this.list_order.push(order);
         });
         this.isDoneGetOrders = true;
@@ -680,38 +691,27 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   btnCancelViaje(item: ResponseLoadingOrder) {
     this.requestTripService.onCancelOrderService(item.uuid).subscribe(
       (data) => {
-        alert("Se canceló la orden");
+        this.alert.showSuccess('',"Se canceló la orden");
         this.onSearchMotorizedOrder();
         this.onClearMap();
       },
       (error) => {
-        alert("Ocurrió un error");
+        this.alert.showError('',"Ocurrió un error");
       }
     );
     // this.cancelViaje.emit(item)
   }
   async onUpdateDriver(item: ResponseLoadingOrder) {
     let lstPosiciones: PersonalisationMarker[] = [];
-    await this.requestTripService
-      .onViewTrackingMotorizedService(item.uuid)
-      .subscribe((viaje) => {
-        if (viaje.data.position) {
-          let tittle = viaje.data.deliveryMan.name;
-          lstPosiciones.push(
-            this.fnDetalleViajeLabelListServiceWeb(
-              new google.maps.LatLng(
-                viaje.data.position.lat,
-                viaje.data.position.lng
-              ),
-              tittle,
-              -1,
-              "",
-              "",
-              true
-            )
-          );
+    await this.requestTripService.onViewTrackingMotorizedService(item.uuid).subscribe((viaje) => {
+      
+        if (viaje.data) {
+          if(viaje.data.position){
+            let tittle = viaje.data.deliveryMan.name;
+            lstPosiciones.push( this.fnDetalleViajeLabelListServiceWeb(new google.maps.LatLng(viaje.data.position.lat,viaje.data.position.lng),tittle,-1, "","",true));
+            this.lstPosicionConductor = lstPosiciones;
+          }
           this.onUpdateIntervalDriver(item);
-          this.lstPosicionConductor = lstPosiciones;
         } else {
           this.onClearMap();
           this.updatePosition(item);
@@ -736,11 +736,9 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   viajeTracking : ResponseTrackingMotorized
   async onUpdateDriverPullRequest(item: ResponseLoadingOrder) {
     let lstPosiciones: PersonalisationMarker[] = [];
-    await this.requestTripService
-      .onViewTrackingMotorizedService(item.uuid)
-      .subscribe((viaje) => {
+    await this.requestTripService.onViewTrackingMotorizedService(item.uuid).subscribe((viaje) => {
         this.viajeTracking = viaje.data
-        if (viaje.data.position) {
+        if (viaje.data) {
           // let tittle = viaje.data.deliveryMan.name;
           // lstPosiciones.push(
           //   this.fnDetalleViajeLabelListServiceWeb(
@@ -764,7 +762,10 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           if(polySuggested){
             this.polyLines.push(polySuggested)
           }
-          const polyDeliveryMan=viaje.data.deliveryManRoute.map((dmr)=>this.drawPolylineDeliveryMan(dmr))
+          var polyDeliveryMan=[]
+          if(viaje.data.deliveryManRoute){
+            polyDeliveryMan=viaje.data.deliveryManRoute.map((dmr)=>this.drawPolylineDeliveryMan(dmr))
+          }
           
           this.polyLines=[...this.polyLines,...polyDeliveryMan]
 
@@ -772,7 +773,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           this.onClearMap();
         }
         this.updatePosition(item);
-        if(this.viajeTracking){
+        if(this.viajeTracking.position){
           this.updatePositionDriver(this.viajeTracking)
         }
       });
@@ -876,5 +877,10 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
       (resp) => {},
       (error) => {}
     );
+  }
+
+  redirectOrderTrip(order: any){
+    localStorage.setItem('edit-trip', JSON.stringify(order))
+    this.router.navigate(['/request-trip'])
   }
 }

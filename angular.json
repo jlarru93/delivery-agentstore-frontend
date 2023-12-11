@@ -41,7 +41,21 @@
                             "node_modules/prismjs/prism.js",
                             "node_modules/prismjs/components/prism-typescript.js"
                         ],
-                        "allowedCommonJsDependencies": ["@fullcalendar/daygrid","@fullcalendar/timegrid","@fullcalendar/interaction","chart.js"],
+                        "allowedCommonJsDependencies": [
+                            "@fullcalendar/daygrid",
+                            "@fullcalendar/timegrid",
+                            "@fullcalendar/interaction",
+                            "chart.js",
+                            "uuid",
+                            "lodash",
+                            "buffer",
+                            "@aws-crypto/sha256-browser",
+                            "@aws-crypto/sha256-js",
+                            "isomorphic-unfetch",
+                            "ulid",
+                            "camelcase-keys",
+                            "@aws-crypto/crc32"
+                        ],
                         "serviceWorker": true,
                         "ngswConfigPath": "ngsw-config.json"
                     },

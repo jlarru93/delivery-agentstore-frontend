@@ -2,9 +2,15 @@
     <div class="layout-topbar-wrapper">
         <div class="layout-topbar-left">
 
-            <div class="layout-megamenu-wrapper" (click)="displayOpenStore=true">
-                <button pButton type="button"  [label]="isOpenStore?'Tienda abierta':'Abrir tienda'" icon="pi pi-home" [loading]="isLoadingOpenStatusStore" [ngClass]="isOpenStore?'p-button-success':'p-button-warning'" ></button>
-            </div>
+            <ng-container *ngFor="let storeOpen of storesOpen">
+                <div class="layout-megamenu-wrapper" (click)="displayOpenStore=true;storeOpenSelected=storeOpen">
+                    <button pButton type="button"  [label]="storeOpen.name" icon="pi pi-home" [loading]="storeOpen.isLoadingOpenStatusStore" [ngClass]="storeOpen.isOpen?'p-button-success':'p-button-warning'" ></button>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="isAllLoadingOpenStatusStore">
+                <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="1"></p-progressSpinner>
+            </ng-container>
+            
             <div style="margin: 0 auto;" id="logoImagen">
                 <img src="assets/images/Logotipo_TRES22-delivery-02.png" alt="LogoTRES22" class="image-container">
             </div>
@@ -17,6 +23,38 @@
         </div>
         <div class="layout-topbar-right fadeInDown">
             <ul class="layout-topbar-actions">
+                <li #message class="topbar-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === message}">
+                    <a href="#" (click)="appMain.onTopbarItemClick($event,message)">
+                        <img src="{{ origenIcon }}" class="search-img marker" alt=""/>
+                        <!-- <i class="topbar-icon pi pi-desktop" style="color: #FFFFFF;"></i> -->
+                    </a>
+                    <ul class="fadeInDown scrollable-menu">
+                        <li class="layout-submenu-header">
+                            <h1>Tiendas Disponibles</h1>
+                            <span>Seleccione las Tiendas disponibles</span>
+                        </li>
+                        <li class="layout-submenu-item" *ngFor="let Store of stores" class="scrollable-menu" >
+                            <!-- <p-avatar label="{{(Store.store_name).toUpperCase()}}" styleClass="mr-2" [style]="{'background-color':'#2D2D2D', 'color': '#ffffff'}" shape="circle"></p-avatar> -->
+                            <div class="p-col-12">
+                                <div class="p-grid">
+                                    <div class="p-col-2">
+                                        <img src="{{ origenIcon }}" class="search-img marker" alt=""/>
+                                    </div>
+                                    <div class="p-col-7">
+                                        <div class="menu-text">
+                                            <p>{{Store.store_name.toUpperCase()}}</p>
+                                            <!-- <span>{{Store.id}}</span> -->
+                                        </div>
+                                    </div>
+                                    <div class="p-col-2">
+                                        <p-checkbox name="{{Store.id}}" value="{{Store.store_id}}" [(ngModel)]="selectStore" inputId="ny" class="float-right" (onChange)="setStoreId(Store,Store.store_id,$event)"></p-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </li>        
+                    </ul>
+                </li>
                 <li #profile class="topbar-item profile-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === profile}">
                     <a href="#" (click)="appMain.onTopbarItemClick($event,profile)">
                         <span class="profile-image-wrapper">
@@ -49,6 +87,7 @@
             </ul>
 
             <ul class="profile-mobile-wrapper">
+                
                 <li #mobileProfile class="topbar-item profile-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === mobileProfile}">
                     <a href="#" (click)="appMain.onTopbarItemClick($event,mobileProfile)">
                     <span class="profile-image-wrapper">

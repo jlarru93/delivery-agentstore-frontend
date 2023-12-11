@@ -4,6 +4,8 @@ import { DialogService } from "primeng/dynamicdialog";
 import { ProductService } from "./service/product.service";
 import { ProductBean, StoreBean } from "./data";
 import { StoreResponse } from "./service/data/response";
+import { dataSharedService } from "../service/data-shared.service";
+import { AgentStoreStoreResponse } from "src/app/app.menu.service";
 
 @Component({
     selector: 'app-stores',
@@ -27,21 +29,40 @@ export class ProductComponent implements OnInit {
     productDialog: boolean = false;
     deleteProductDialog: boolean = false;
     storeBean: StoreBean
+    ProductOptions: any[] = [
+        { name: 'EN STOCK', value: false },
+        { name: 'SIN STOCK', value: true },
+        { name: 'AMBOS', value: -1 },
+    ];
+    filterProduc:any=false
 
+    stores:AgentStoreStoreResponse[]
+    storeSelected:AgentStoreStoreResponse
     constructor(
         private productService: ProductService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private dataShared:dataSharedService
     ){
 
     }
 
     ngOnInit(): void {
-        this.getProducts()
+        //this.getProducts()
+        this.getStores()
     }
-
+    getStores(){
+        this.dataShared.storeAviliable.subscribe((resp)=>{
+            if(resp?.length==0){
+                return
+            }
+            this.stores=resp
+            this.storeSelected=this.stores[0]
+            this.getProducts()
+        })
+    }
     getProducts(){
         this.progressBar = true
-        this.productService.getProducts().subscribe((resp) => { 
+        this.productService.getProducts(this.storeSelected.store_id).subscribe((resp) => { 
             let storeBean=StoreResponse.toBean(resp.data)
             this.products=storeBean.products
             this.menu = storeBean.menu
@@ -50,16 +71,36 @@ export class ProductComponent implements OnInit {
             this.storeBean = storeBean;
         })
     }
-
+    ChangeFilterProduc(filterProduc:any){
+        if(filterProduc!=-1){
+            if(this.itemSelecciona)
+            {
+                this.products=this.storeBean.products.filter((product)=>product.isOutStock==filterProduc&&product.menu.includes(this.itemSelecciona))
+            }else{
+                this.products=this.storeBean.products.filter((prod)=>prod.isOutStock!=undefined&&prod.isOutStock==filterProduc)
+            }
+        }else{
+            if(this.itemSelecciona)
+            {
+                this.products=this.storeBean.products.filter((product)=>product.menu.includes(this.itemSelecciona))
+            }else{                
+                this.products=this.storeBean.products
+            }
+        }
+    }
     getProductsFromMenu(menuSelected:string=null){
         this.progressBar = true
         this.itemSelecciona = menuSelected
         if(menuSelected){
-            this.productService.getProducts().subscribe((resp) => {
+            this.productService.getProducts(this.storeSelected.store_id).subscribe((resp) => {
                 let storeBean=StoreResponse.toBean(resp.data)
                 this.products=storeBean.products
                 this.productsMenuSelected= this.products.filter((product)=>product.menu.includes(menuSelected))
-                this.products = this.productsMenuSelected
+                if(this.filterProduc!=-1){
+                    this.products = this.productsMenuSelected.filter((prod)=>prod.isOutStock==this.filterProduc)
+                }else{
+                    this.products = this.productsMenuSelected
+                }
                 this.progressBar = false;
             })
         }else{

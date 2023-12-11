@@ -2,6 +2,9 @@
 <div *ngIf="progressBar">
     <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
 </div>
+<div class="p-col-12 p-lg-3">
+    <p-dropdown [options]="stores" [(ngModel)]="storeSelected" optionLabel="store_name" (onChange)="getProducts()"></p-dropdown>
+</div>
 <div class="p-grid layout-dashboard">
     <div class="p-col-12 p-lg-3">
         <div class="card widget-download-files">
@@ -26,7 +29,7 @@
                         </div>
                         <div class="p-col-2">
                             <button type="button" pButton pRipple class="p-button-text p-button-rounded p-button-plain" 
-                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" (click)="expandListProducts(item)"></button>
+                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" ></button>
                         </div>
                     </div>
                     <div *ngIf="expanded">
@@ -40,18 +43,20 @@
     <div class="p-col-12 p-lg-9">
         <div class="card widget-store-items">
             <div class="p-grid p-nogutter">
-                <div class="p-col-6 title">
+                <div class="p-col-3 title">
                     <h5>Productos de Tienda</h5>
                 </div>
-                <!-- <div class="p-col-6 store-info">
-                    <div class="info-item add"><i class="pi pi-plus"></i> Add
+                <div class="p-col-6 p-4">
+                    <p-selectButton class="select-button-custom"  [options]="ProductOptions" [(ngModel)]="filterProduc" optionLabel="name" optionValue="value" (onChange)="ChangeFilterProduc(filterProduc)"></p-selectButton>
+
+                    <!-- <div class="info-item add"><i class="pi pi-plus"></i> Add
                         Item</div>
                     <div class="info-item library">
                         <img
                             src="assets/layout/images/dashboard/icon-library.svg"
                             alt="mirage-layout" />
-                        Library</div>
-                </div> -->
+                        Library</div> -->
+                </div>
             </div>
 
             <div class="store-cards-container">
@@ -75,7 +80,7 @@
                                 <div class="product-grid-item-top">
                                     <span [class]="'product-badge status-' + product.isOutStock">{{product.isOutStock == false ? 'En Stock' : 'Sin Stock'}}</span>
                                 </div>
-                                <img src="{{product.picture}}" alt="mirage-layout" class="coverImg" onError="this.src='https:/demofree.sirv.com/nope-not-here.jpg'"/>
+                                <img src="{{product.picture}}" alt="mirage-layout" class="coverImg" onError="this.src='https://delivery-production-app-imagenes-archivos.s3.amazonaws.com/deafultPictures/product-not-found.jpeg'"/>
                             </div>
                             <div class="store-card-content">
                                 <h5>{{product.name}}</h5>
@@ -95,7 +100,7 @@
         <div class="p-grid">
             <div class="p-col-5">
                 <div class="productImg">
-                    <img src="{{product?.picture}}" alt="" class="imgCover" onError="this.src='assets/images/Imagen_No_Disponible.jpg'">
+                    <img src="{{product?.picture}}" alt="" class="imgCover" onError="this.src='../../../assets/images/Imagen_No_Disponible.jpg'">
                 </div>
             </div>
             <div class="p-col-7">

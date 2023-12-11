@@ -1,9 +1,6 @@
 import { ChatBean } from "src/app/chat/data.chat"
 import { formatCurrency } from "src/app/utils"
 
-export class StatusOpenStoreBean {
-    status: boolean
-}
 
 export abstract class SubOptionBean {
     id?: number
@@ -89,6 +86,7 @@ export class StoreBean {
     addressStreet: string
     location?: Point
     logo?:string
+    tripSetting:any
 }
 
 
@@ -166,6 +164,7 @@ export class OrderBean {
     messagesChat:ChatBean[]
     isLoadingChat:boolean
     showButton:boolean
+    statusForAgentStore:string
     constructor(){
         this.messagesNoReadTotal=0
         this.messagesChat=[]
@@ -214,4 +213,10 @@ export class OrderBean {
     getdeliveryPriceDiscountAndCurrency(): string{
         return ""+this.getCurrency() + formatCurrency(((this.deliveryPrice??0) - (this.deliveryPriceDiscount??0)))
     }
+}
+export interface StatusOpenStoreBean{
+    id:number
+    name:string
+    isOpen:boolean
+    isLoadingOpenStatusStore?:boolean
 }

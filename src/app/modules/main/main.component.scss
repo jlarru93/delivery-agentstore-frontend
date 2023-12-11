@@ -10,7 +10,9 @@
     }
 
   }
-  
+  :host ::ng-deep.card{
+    padding: 5px !important;
+  } 
 
 .container-dialog{
     display: grid;
