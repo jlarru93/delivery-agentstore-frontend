@@ -59,7 +59,7 @@
             <label for="">Tienda factura</label>
           </div>     
           <div class="p-col-11 float-right">
-            <p-dropdown [options]="storesAvailable"   optionLabel="store.fullName" optionValue="store.id" (onChange)="selectStore($event,input_visible_pickup)"   placeholder="Tienda factura"></p-dropdown> 
+            <p-dropdown [options]="storesAvailable"  [(ngModel)]="request_trip.store.id" optionLabel="store.fullName" optionValue="store.id" (onChange)="selectStore($event,input_visible_pickup)"   placeholder="Tienda factura"></p-dropdown> 
           </div>     
         </div>
         <div class="p-col-12">
