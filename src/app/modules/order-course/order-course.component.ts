@@ -37,6 +37,7 @@ import { AuthService } from "src/app/utils/auth.service";
 import { DeliveryManRouteResponse, ResponseTrackingMotorized, RouterResponse } from "./data/response";
 import { Router } from "@angular/router";
 import { AlertServices } from "../service/alert.service";
+import { HttpErrorResponse } from "@angular/common/http";
 
 class PolyLine{
   routePoints:RoutePoint[]
@@ -697,8 +698,13 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
         this.onSearchMotorizedOrder();
         this.onClearMap();
       },
-      (error) => {
-        this.alert.showError('',"Ocurrió un error");
+      (error:HttpErrorResponse) => {
+        console.log(error.message)
+        if(error.status==400){
+          this.alert.showError('',error.error.messages[0].message);
+        }else{
+          this.alert.showError('',"Ocurrió un error");
+        }
       }
     );
     // this.cancelViaje.emit(item)
