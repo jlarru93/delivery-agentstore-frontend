@@ -203,6 +203,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     clearInterval(this.interval_motorized_order);
+    clearInterval(this.set_interval_driver );
     // if (this.suscripcionTopic) {
     //   this.webSocketMqtt.ususcribeSuscription(this.suscripcionTopic.id!);
     // }
