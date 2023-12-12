@@ -1040,7 +1040,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.isHiddenInput = !this.isHiddenInput
       this.input_reference_pickup = ''
       this.request_trip.mobile = null
-      this.input_visible_pickup=''
+      //this.input_visible_pickup=''
       this.request_trip.addresses = [
         {
           addressStreet: "",
