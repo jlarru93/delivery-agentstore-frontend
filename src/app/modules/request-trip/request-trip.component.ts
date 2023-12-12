@@ -171,6 +171,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     
     this.editTripData = JSON.parse(localStorage.getItem('edit-trip'))
     if(this.editTripData) {
+      console.log()
       this.loadDataForm()
       this.onGetLocationStore();
     } else {
@@ -402,6 +403,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.onGetMotorizedPosiitonOrigin();
     this.flagInitMap = flagInit;
     this.updatePosition();
+    if(this.request_trip.addresses[0].point.coordinates.length>0){
+      this.onGetAmountOrder()
+    }
   }
   mapClicked($event: MouseEvent) {
     (this.markers[0].lat = $event.coords.lat),
@@ -1067,6 +1071,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       ];
       this.onGetLocationStore();
     }
+
   }
 
   isButtonDisabled: boolean = true;

@@ -1,5 +1,4 @@
-import {
-  Component,
+import { Component,
   OnInit,
   OnDestroy,
   AfterViewInit,
@@ -201,6 +200,14 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     let id=this.auth.getParameterToken('id')
     this.userId = Number(id)
   }
+
+  ngOnDestroy(): void {
+    clearInterval(this.interval_motorized_order);
+    // if (this.suscripcionTopic) {
+    //   this.webSocketMqtt.ususcribeSuscription(this.suscripcionTopic.id!);
+    // }
+  }
+
   validOrdersSubscribe() {
     if (this.isMqttConnect && this.isDoneGetOrders) {
       this.list_order.forEach((order) => {
@@ -361,12 +368,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
       this.onSearchMotorizedOrderSubscription();
     }, 30000);
   }
-  ngOnDestroy(): void {
-    clearInterval(this.interval_motorized_order);
-    // if (this.suscripcionTopic) {
-    //   this.webSocketMqtt.ususcribeSuscription(this.suscripcionTopic.id!);
-    // }
-  }
+ 
   onClearMap() {
     this.polilyneRuta = [];
     this.lstPosiciones = [];
