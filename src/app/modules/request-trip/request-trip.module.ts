@@ -23,6 +23,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { DropdownModule } from 'primeng/dropdown';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
@@ -53,7 +54,8 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
     TabViewModule,
     DropdownModule ,
     BsDatepickerModule.forRoot(),
-    TypeaheadModule.forRoot()
+    TypeaheadModule.forRoot(),
+    CalendarModule
   ]
 })
 export class RequestTripModule { }

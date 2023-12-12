@@ -327,7 +327,10 @@
         </p-tabPanel>
         <p-tabPanel  header="Calendario">
           <div class="p-grid p-fluid">
-            <input type="text" [(ngModel)]="creadDate" [minDate]="minDate" pInputText bsDatepicker [isOpen]="false" [bsConfig]="{ adaptivePosition: true,withTimepicker: true,dateInputFormat: 'DD-MM-YYYY h:mm:ss a'}">
+            <div class="p-col-12">
+              <p-calendar [(ngModel)]="creadDate" [minDate]="minDate" [showTime]="true" [showSeconds]="true" [showIcon]="true"  ></p-calendar>
+            </div>
+            <!-- <input type="text" [(ngModel)]="creadDate" [minDate]="minDate" pInputText bsDatepicker [isOpen]="false" [bsConfig]="{ adaptivePosition: true,withTimepicker: true,dateInputFormat: 'DD-MM-YYYY h:mm:ss a'}"> -->
           </div>
         </p-tabPanel>
       </p-tabView>
