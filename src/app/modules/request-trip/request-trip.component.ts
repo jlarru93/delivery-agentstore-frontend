@@ -352,50 +352,53 @@ debugger
     })
   }
   selectStore(event:any, flagInit : any,Defauliten:boolean=false){
-    if(!Defauliten)
-    this.selectedStore= event.item?event.item:this.storesAvailable.find((store)=>store.store.id==event.value)
-    else{
-      this.selectedStore= event
-    }
-    const store=this.selectedStore.store
-    const tripSetting=this.selectedStore.tripSetting
-    
-    console.log("resp.data.store",store.phone)
-    
-    this.validationPhoneStore = store.phone
-    this.input_visible_pickup = store.addressStreet+' ('+store.fullName+')';
-    this.dataStorePhone = store.phone;
-    this.request_trip.addresses[0].point.type = "Point";
-    this.request_trip.addresses[0].floor = "";
-    this.request_trip.addresses[0].alias = "";
-    this.request_trip.addresses[0].marker = "store";
-    this.request_trip.addresses[0].addressStreet = this.input_visible_pickup;
-    this.request_trip.addresses[0].point.coordinates = [
-      store.location.coordinates[0],
-      store.location.coordinates[1]
-    ];
+    if(!this.request_trip.isCheckedStore){
 
-    // this.input_visible_pickup = this.marker.maintext
-    this.markers[0].isDraggable=false
-    this.markers[0].onDragEnd=(e)=>{
-      console.log(e.coords)
-    }
-    this.request_trip.store.id=store.id
-    this.markers[0].label = 'Origen'
-    this.markers[0].iconUrl = this.globalIconOrigin
-    this.markers[0].lng = store.location.coordinates[0];
-    this.markers[0].lat = store.location.coordinates[1];
-    this.stateOptions = tripSetting? tripSetting.paymentMethod:this.stateOptions;
-    this.center = {
-      lat: store.location.coordinates[1],
-      lng: store.location.coordinates[0]
-    }
-    this.method_payment = "CREDIT";
-    this.onGetMotorizedPosiitonOrigin();
-    this.flagInitMap = flagInit;
-    this.updatePosition();
-    if(this.request_trip.addresses[0].point.coordinates.length>0){
-      this.onGetAmountOrder()
+      if(!Defauliten)
+      this.selectedStore= event.item?event.item:this.storesAvailable.find((store)=>store.store.id==event.value)
+      else{
+        this.selectedStore= event
+      }
+      const store=this.selectedStore.store
+      const tripSetting=this.selectedStore.tripSetting
+      
+      console.log("resp.data.store",store.phone)
+      
+      this.validationPhoneStore = store.phone
+      this.input_visible_pickup = store.addressStreet+' ('+store.fullName+')';
+      this.dataStorePhone = store.phone;
+      this.request_trip.addresses[0].point.type = "Point";
+      this.request_trip.addresses[0].floor = "";
+      this.request_trip.addresses[0].alias = "";
+      this.request_trip.addresses[0].marker = "store";
+      this.request_trip.addresses[0].addressStreet = this.input_visible_pickup;
+      this.request_trip.addresses[0].point.coordinates = [
+        store.location.coordinates[0],
+        store.location.coordinates[1]
+      ];
+  
+      // this.input_visible_pickup = this.marker.maintext
+      this.markers[0].isDraggable=false
+      this.markers[0].onDragEnd=(e)=>{
+        console.log(e.coords)
+      }
+      this.request_trip.store.id=store.id
+      this.markers[0].label = 'Origen'
+      this.markers[0].iconUrl = this.globalIconOrigin
+      this.markers[0].lng = store.location.coordinates[0];
+      this.markers[0].lat = store.location.coordinates[1];
+      this.stateOptions = tripSetting? tripSetting.paymentMethod:this.stateOptions;
+      this.center = {
+        lat: store.location.coordinates[1],
+        lng: store.location.coordinates[0]
+      }
+      this.method_payment = "CREDIT";
+      this.onGetMotorizedPosiitonOrigin();
+      this.flagInitMap = flagInit;
+      this.updatePosition();
+      if(this.request_trip.addresses[0].point.coordinates.length>0){
+        this.onGetAmountOrder()
+      }
     }
   }
   mapClicked($event: MouseEvent) {
@@ -832,7 +835,7 @@ debugger
     this.request_trip.addresses.forEach((item, index) => {
       if (item.sort == 1) {
         order.addresses[0].addressStreet = item.addressStreet;
-        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
+        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone?.toString()??'';
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
@@ -852,7 +855,7 @@ debugger
       }
     });
     order.isOrderCalendar=this.request_trip.isOrderCalendar
-    order.isCheckedStore=this.request_trip.isCheckedStore
+    order.isCheckedStore=this.request_trip.isCheckedStore??false
     order.store.id= this.request_trip.store.id
     if(this.request_trip.isOrderCalendar){
       
@@ -965,7 +968,7 @@ debugger
       if (item.sort == 1) {
         order.addresses[0].id = this.editTripData.addresses[0].id
         order.addresses[0].addressStreet = item.addressStreet;
-        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
+        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone?.toString()??'';
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
