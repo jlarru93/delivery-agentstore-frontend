@@ -145,7 +145,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   zoom = 17;
   isDraggabled: boolean
   data_driver: ResponseMotorizedOrigin[] = [];
-  isCheckedStore: boolean = false
   isHiddenInput: boolean = false
   constructor(
     private storeService: StoreService,
@@ -212,10 +211,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     }
   }
   loadDataForm(){
-    this.enablePickUpInput()
+    //this.enablePickUpInput()
     
     
     setTimeout( () => {
+      console.log('edit')
       this.findAdress()
       this.findAdressOrigin()
       this.onUpdateEditOrder(this.editTripData)
@@ -224,9 +224,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       if(!this.editTripData.isCheckedStore){
         this.is_disabled_pickup = true
         this.isHiddenInput = false
-        this.isCheckedStore = true
+        this.request_trip.isCheckedStore = true
       } else {
-        this.isCheckedStore = false
+        this.request_trip.isCheckedStore = false
         this.is_disabled_pickup = false
         this.isHiddenInput = true
       }
@@ -240,30 +240,22 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.destinationMobilePhone = this.editTripData.addresses[1].phone
       this.destinationReceptorName = this.editTripData.addresses[1].receptorName
       this.request_trip.description = this.editTripData.detail
-
+debugger
       this.method_payment = this.editTripData.payment.method.type
       this.cashAmount = this.editTripData.productPrice
-      this.request_trip.addresses[0].addressStreet = this.editTripData.addresses[0].addressStreet
-      this.request_trip.addresses[0].phone = this.editTripData.addresses[0].phone
-      this.request_trip.addresses[0].reference = this.editTripData.addresses[0].reference
-      this.request_trip.addresses[0].point.type = 'Point'//this.editTripData.addresses[1].location.type
-
-      this.request_trip.addresses[1].addressStreet = this.editTripData.addresses[1].addressStreet
-      this.request_trip.addresses[1].phone = this.editTripData.addresses[1].phone
-      this.request_trip.addresses[1].reference = this.editTripData.addresses[1].reference
-      this.request_trip.addresses[1].point.type = 'Point'//this.editTripData.addresses[1].location.type
-
-      this.request_trip.addresses[0].point.coordinates[1] = this.editTripData.addresses[0].location.coordinates[1]
-      this.request_trip.addresses[0].point.coordinates[0] = this.editTripData.addresses[0].location.coordinates[0]
-
-      this.request_trip.addresses[1].point.coordinates[1] = this.editTripData.addresses[1].location.coordinates[1]
-      this.request_trip.addresses[1].point.coordinates[0] = this.editTripData.addresses[1].location.coordinates[0]
+      this.editTripData.addresses.forEach((element,i) => {
+        if(i==0){
+          this.request_trip.addresses[i] = element          
+          this.request_trip.addresses[i].point = element.location          
+        }else{
+          this.request_trip.addresses[i]=element      
+          this.request_trip.addresses[i].point = element.location       
+        }
+      });
       this.request_trip.store.id= this.editTripData.store.id
-      this.isCheckedStore=this.editTripData.isCheckedStore
-      if(this.editTripData.isOrderCalendar == true){
-        
-        this.activeIndexCalendar = 1
-        
+      this.request_trip.isCheckedStore=this.editTripData.isCheckedStore
+      if(this.editTripData.isOrderCalendar == true){        
+        this.activeIndexCalendar = 1        
         this.creadDate = new Date(this.editTripData.readyToDmAt * 1000)
       } else {
         let differenceInSeconds = this.editTripData.readyToDmAt - this.editTripData.createdAt
@@ -351,7 +343,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         this.storesAvailable=resp.data
         if(this.storesAvailable.length>0){
           if(!this.editTripData){
-
             this.request_trip.store=this.storesAvailable[0]
             this.selectStore(this.storesAvailable[0],'',true)
           }
@@ -663,7 +654,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
   updatePosition() {
     var lstPosiciones: PersonalisationMarker[] = [];
-    if (this.isCheckedStore == true) {
+    if (this.request_trip.isCheckedStore == true) {
       lstPosiciones.push(UtilModalViaje.fnDetalleViaje(new google.maps.LatLng(this.request_trip.addresses[0].point.coordinates[1],this.request_trip.addresses[0].point.coordinates[0]),true,"Origen",TypeMarkers.ORIGEN,this.isDraggabled,1,false));
     } else {
       lstPosiciones.push( UtilModalViaje.fnDetalleViaje( new google.maps.LatLng(this.markers[0].lat, this.markers[0].lng),true,"Origen",TypeMarkers.ORIGEN,this.isDraggabled,1,false));
@@ -707,7 +698,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     });
   }
   onGetAmountOrder() {
-    
+    debugger
     let request: RequestOrderPayment = {
       origin: {
         lat: this.request_trip.addresses[0].point.coordinates[1],
@@ -788,7 +779,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     }
     const isEmptyOriginMobilePhone=!this.originMobilePhone || this.originMobilePhone.toString().trim().length==0
     const isEmpty=!this.destinationMobilePhone || this.destinationMobilePhone.toString().trim().length==0
-    if(this.isCheckedStore == true && (isEmptyOriginMobilePhone && isEmpty)){
+    if(this.request_trip.isCheckedStore == true && (isEmptyOriginMobilePhone && isEmpty)){
       this.alert.showError('',"es obligatorio escribir por lo menos un numero");
       return;
     }
@@ -841,7 +832,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.request_trip.addresses.forEach((item, index) => {
       if (item.sort == 1) {
         order.addresses[0].addressStreet = item.addressStreet;
-        order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
+        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
@@ -861,7 +852,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       }
     });
     order.isOrderCalendar=this.request_trip.isOrderCalendar
-    order.isCheckedStore=this.isCheckedStore
+    order.isCheckedStore=this.request_trip.isCheckedStore
     order.store.id= this.request_trip.store.id
     if(this.request_trip.isOrderCalendar){
       
@@ -906,7 +897,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     }
     const isEmptyOriginMobilePhone=!this.originMobilePhone || this.originMobilePhone.toString().trim().length==0
     const isEmpty=!this.destinationMobilePhone || this.destinationMobilePhone.toString().trim().length==0
-    if(this.isCheckedStore == true && (isEmptyOriginMobilePhone && isEmpty)){
+    if(this.request_trip.isCheckedStore == true && (isEmptyOriginMobilePhone && isEmpty)){
       this.alert.showError('',"es obligatorio escribir por lo menos un numero");
       return;
     }
@@ -974,7 +965,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       if (item.sort == 1) {
         order.addresses[0].id = this.editTripData.addresses[0].id
         order.addresses[0].addressStreet = item.addressStreet;
-        order.addresses[0].phone = this.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
+        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone.toString();
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
@@ -996,7 +987,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       }
     });
     order.isOrderCalendar=this.request_trip.isOrderCalendar
-    order.isCheckedStore=this.isCheckedStore
+    order.isCheckedStore=this.request_trip.isCheckedStore
     order.store.id=this.request_trip.store.id
     this.requestTripService.onUpdateOrderService(order).subscribe(
       (data) => {
@@ -1027,7 +1018,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   enablePickUpInput(){
     const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");    
-    if(this.isCheckedStore == true){
+    if(this.request_trip.isCheckedStore == true){
       this.isDraggabled = true
       this.findAdressOrigin()
       this.updatePosition()
@@ -1041,34 +1032,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.input_reference_pickup = ''
       this.request_trip.mobile = null
       //this.input_visible_pickup=''
-      this.request_trip.addresses = [
-        {
-          addressStreet: "",
-          alias: "",
-          floor: "",
-          phone: "",
-          marker: "store",
-          point: {
-            coordinates: [0, 0],
-            type: "",
-          },
-          sort: 1,
-          reference: "",
-        },
-        {
-          addressStreet: "",
-          alias: "",
-          floor: "",
-          phone: "",
-          marker: "store",
-          point: {
-            coordinates: [0, 0],
-            type: "",
-          },
-          sort: 2,
-          reference: "",
-        },
-      ];
+      
       this.onGetLocationStore();
     }
 

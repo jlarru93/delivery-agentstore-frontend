@@ -51,7 +51,7 @@ export class Point {
     isCheckedStore:boolean
     store:StoreRequest = new StoreRequest()
     constructor(){
-      
+      this.addresses= [new Address,new Address]
     }
   }
   
