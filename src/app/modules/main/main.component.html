@@ -13,16 +13,17 @@
           <div *ngFor="let order of ordersOpen; let i = index">
              <div class="p-col-12">
                 <div class="p-grid p-nogutter widget-overview-box p-shadow-3" style="background: -webkit-gradient(linear, left bottom, right top, color-stop(0%, #bf616a), color-stop(100%, #ce9393));">
-                  <div class="p-col-12">
+                  <div class="p-col-12" (click)=" openOrderDialog(order)">
                      <div class="p-grid">
-                        <div class="p-col-4" (click)=" openOrderDialog(order)">
-                           <h5 style="color: #ffffff;">ID: {{order.id}}</h5>
-                           <p style="color: #ffffff;">{{order?.store?.addressStreet}}</p>
-                           <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
-                        </div>
-                        <div class="p-col-5">
-                           <p style="color: #ffffff;">{{calculateTime(order?.createdAt)}} min</p>
-                           
+                        <div class="p-col-9"  >
+                           <div class="p-grid">
+                              <div class="p-col-6">
+                                 <h5 style="color: #ffffff;">{{order.id}}</h5>
+                              </div>
+                              <div class="p-col-6">
+                                 <p style="color: #ffffff;">{{calculateTime(order?.createdAt)}} min</p>                                 
+                              </div>
+                           </div>
                         </div>
                         <div class="p-col-3">
                            <div class="overlay-container">
@@ -42,9 +43,24 @@
                               </div>
                            </div>
                         </div>
+                        <div class="p-col-12">
+                           <div class="p-grid">
+                              <div class="p-col-8">
+                                 <p style="color: #ffffff;">{{order?.user?.fullName}}</p>
+                              </div>
+                              <div class="p-col-11">
+                                 <p style="color: #ffffff;">{{order?.user?.address?.addressStreet}}</p>
+                              </div>
+                              <div class="p-col-2">
+                                 <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
+
+                              </div>
+                           </div>
+                        </div>
+                        
                      </div>
-                 </div>
-                   <div class="p-col-12" (click)=" openOrderDialog(order)">
+                  </div>
+                  <div class="p-col-12" (click)=" openOrderDialog(order)">
                      <hr style="border-color: #ffffff;">  
                     </div>
                     <div class="p-col-12" (click)=" openOrderDialog(order)">
@@ -74,17 +90,21 @@
             <div class="p-col-12" id="btn-order">
                <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
                  <div class="p-col-12">
-                     <div class="p-grid">
-                        <div class="p-col-4"  (click)=" openOrderDialog(order)">
-                           <h5>ID: {{order.id}}</h5>
-                           <p>{{order?.store?.addressStreet}}</p>
-                           <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
+                     <div class="p-grid" >
+                        <div class="p-col-9" (click)=" openOrderDialog(order)">
+                           <div class="p-grid">
+                              <div class="p-col-6"  >
+                                 <h5>{{order.id}}</h5>
+                              </div>
+                              <div class="p-col-5">
+                                 <p>{{calculateTime(order?.createdAt)}} min</p>                                 
+                              </div>
+                              <div class="p-col-10">
+                                 <p >{{order?.user?.fullName}}</p>
+                              </div>
+                           </div>
                         </div>
-                        <div class="p-col-5">
-                           <p>{{calculateTime(order?.createdAt)}} min</p>
-                           
-                        </div>
-                        <div class="p-col-3">
+                        <div class="p-col-3" style="border-color: #bf616a;">
                            <div class="overlay-container">
                               <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
@@ -102,6 +122,20 @@
                               </div>
                            </div>
                            <circle-progress [startTime]="order.acceptAgentStoreAt" [endTime]="order.readyToDmAt"  style="padding-right: 10px; float: right;"></circle-progress>
+                        </div>
+                        
+                     </div>
+                     <div class="p-grid">
+                        <div class="p-col-12">
+                           <div class="p-grid">                              
+                              <div class="p-col-11">
+                                 <p >{{order?.user?.address?.addressStreet}}</p>
+                              </div>
+                              <div class="p-col-2">
+                                 <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
+
+                              </div>
+                           </div>
                         </div>
                      </div>
                  </div>
@@ -162,12 +196,21 @@
             <div *ngFor="let order of ordersReady; let i = index">
                <div class="p-col-12">
                   <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
-                     <div class="p-col-12">
+                     <div class="p-col-12" >
                         <div class="p-grid">
-                           <div class="p-col-10" (click)=" openOrderDialog(order)">
-                              <h5>ID: {{order.id}}</h5>
-                              <p>{{order?.store?.addressStreet}}</p>
-                              <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
+                           <div class="p-col-10"(click)=" openOrderDialog(order)" >
+                              <div class="p-grid">
+                                 <div class="p-col-6">
+                                    <h5>{{order.id}}</h5>
+                                 </div>
+                                 <div class="p-col-5">
+                                    <p>{{calculateTime(order?.createdAt)}} min</p>                                 
+                                 </div>
+                                 <div class="p-col-6">
+                                    <p>{{order?.user?.fullName}}</p>
+
+                                 </div>
+                              </div>                             
                            </div>
                            <div class="p-col-2">
                               <div class="overlay-container">
@@ -180,10 +223,20 @@
                                        [orderUuid]="order.uuid"
                                        [usuarioLogueado]="userName"
                                        [userId]="userId"
+                                       [flagMainComponent]="true"
+                                       (hideChat)="hideChatComponent(order)"
                                        (emitMessage)="sendMessage($event)"
                                        ></app-chat>
                                  </div>
                               </div>
+                           </div>
+                        </div>
+                        <div class="p-grid">
+                           <div class="p-col-12">
+                              <p >{{order?.user?.address?.addressStreet}}</p>
+                           </div>
+                           <div class="p-col-3">
+                              <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
                            </div>
                         </div>
                   </div>

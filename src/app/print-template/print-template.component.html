@@ -32,6 +32,10 @@
             <span>Dirección:</span>
             <span><strong>{{orderSelected?.user?.address?.addressStreet}}</strong></span>
         </div>
+        <div class="item">
+            <span>Método de pago:</span>
+            <span><strong>{{onGetMethodType(orderSelected?.payment?.method?.type)}}</strong></span>
+        </div>
     </div>
     <hr style="border-top: dashed 1px;" />
     <div *ngFor="let product of orderSelected.products; index as i">
