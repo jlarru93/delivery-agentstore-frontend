@@ -14,7 +14,7 @@
 .messages{
     width: 339px;
     margin: 16px;
-    border-radius: 16px 0px 16px 16px;
+    border-radius: 16px 16px 16px 16px;
     padding: 25px;
     background-color: #ffffff;
     //background: rgba(0, 0, 0, 0.05);
@@ -22,7 +22,7 @@
 }
 
 .messages::after{
-    content: '';
+    //content: '';
     position: absolute;
     border: 0.5em solid transparent;
     border-top-color: #ffffff;
