@@ -47,8 +47,7 @@
                            </div>
                         </div>
                         <div class="p-col-12">
-                           <div class="p-grid">
-                              
+                           <div class="p-grid">                              
                               <div class="p-col-11">
                                  <p style="color: #ffffff;">{{order?.user?.address?.addressStreet}}</p>
                               </div>
@@ -105,7 +104,7 @@
                               </div>
                            </div>
                         </div>
-                        <div class="p-col-3" style="border-color: #bf616a;">
+                        <div class="p-col-3">
                            <div class="overlay-container">
                               <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
                               <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
