@@ -16,6 +16,7 @@ import { StoreTripResponse } from "../main/service/data/response";
 import { dataSharedService } from "../service/data-shared.service";
 import { MenuService } from "src/app/app.menu.service";
 import { AppMainComponent } from "src/app/app.main.component";
+import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
 
 interface PolyLine{
   routePoints:RoutePoint[]
@@ -871,8 +872,13 @@ debugger
         });
         // alert("Se guardó correctamente");
       },
-      (error) => {
-        this.alert.showError('',"Ocurrió un error");
+      (error:HttpErrorResponse) => {
+        if(error.status==400){
+          this.alert.showError('',error.error.messages[0].message);
+        }else{
+
+          this.alert.showError('',"Ocurrió un error");
+        }
       }
     );
     
@@ -1002,8 +1008,13 @@ debugger
         });
         // alert("Se guardó correctamente");
       },
-      (error) => {
-        this.alert.showError('',"Ocurrió un error");
+      (error:HttpErrorResponse) => {
+        if(error.status==400){
+          this.alert.showError('',error.error.messages[0].message);
+        }else{
+
+          this.alert.showError('',"Ocurrió un error");
+        }
         
       }
     );
