@@ -176,7 +176,7 @@ export class OrderBean {
     constructor(){
     }
     getCurrency(): string {
-        return ""+this.products[0].price.currency
+        return ""+this.products[0]?.price.currency
     }
     getProductPrice(): number {
         return this.products.reduce((accumulation, current) => { return accumulation + current.getTotalPrice() }, 0)//sumOf { it.getTotalPrice() }

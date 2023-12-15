@@ -2,6 +2,7 @@ import { ChatBean, UserBean } from "src/app/chat/data.chat";
 import { Address, Payment, Point } from "./request";
 import { DeliveryMan } from "../../order-course/data/response";
 import { DeliveryManBean } from "../../main/data";
+import { StoreResponse } from "../../complaint-report/service/data/response";
 
 export class ResponseMotorizedOrigin {
     id: number;
@@ -93,6 +94,8 @@ export class ResponseLoadingOrder{
     status_order ?: string
     status_order_color ?: string
     order_name ?: string
+    store:StoreResponse
+    isCheckedStore:boolean
     constructor(){
         this.messagesNoReadTotal=0
         this.messagesChat=[]

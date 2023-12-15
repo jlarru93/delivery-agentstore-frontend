@@ -14,6 +14,19 @@
     padding: 5px !important;
   } 
 
+  :host ::ng-deep{
+
+    .p-overlaypanel .p-overlaypanel-content {
+       padding: 0.2rem !important;
+     }
+     .messages{
+        padding: 0.1rem;
+        height: 29rem;
+     }
+    
+
+  }
+
 .container-dialog{
     display: grid;
     height: calc(100vh - 50vh);
@@ -400,11 +413,13 @@ section{
 }
 
 .overlay-container{
-    position: relative;
+    //position: relative;
+    width: 100%;
+    flex: auto;
 }
 .overlay-chat{
     top: 20px;
-    right: 0%;
+    left: 1%;
     position: absolute;
     z-index: 1001;
     transform-origin: center top;

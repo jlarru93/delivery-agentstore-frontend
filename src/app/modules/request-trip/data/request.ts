@@ -1,3 +1,4 @@
+import { StoreRequest } from "../../main/service/data/chat.request";
 
 // Define the class for the "point" object within "addresses"
 export class Point {
@@ -48,8 +49,9 @@ export class Point {
     productPrice?:number
     isOrderCalendar?:boolean = false
     isCheckedStore:boolean
+    store:StoreRequest = new StoreRequest()
     constructor(){
-      
+      this.addresses= [new Address,new Address]
     }
   }
   
