@@ -11,7 +11,7 @@ import { CANCEL_ORDER_STATUS, PREPARING_ORDER_STATUS, READY_ORDER_STATUS } from 
 export class OrderService {
   constructor(private http: HttpClient) { }
 
-  getOrders(id:string) {
+  getOrders(id:any) {
     let headers: HttpHeaders = new HttpHeaders({
       store_ids:id
     });

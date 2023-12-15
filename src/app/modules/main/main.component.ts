@@ -76,7 +76,7 @@ import { dataSharedService } from "../service/data-shared.service";
     set_interval ?: any
 
     ref: DynamicDialogRef | undefined;
-    idStore:string=''
+    idStore:any[]=[]
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
@@ -181,38 +181,40 @@ import { dataSharedService } from "../service/data-shared.service";
 
     isButtonEnabled: boolean = false
     
-    getOrders(){
-      this.orderService.getOrders(this.idStore).subscribe((resp)=>{
-        resp.data.map((it)=>{
-          let order=OrderResponse.toBean(it)
-          let currentOrden=this.orders.find((or)=>or.id==it.id)
-          if(currentOrden){
-            order.messagesChat=currentOrden.messagesChat
-            order.showButton = currentOrden.showButton;
-          }
+  getOrders() {
+    var item = this.idStore.map(i => Number(i))
+    this.orderService.getOrders(this.idStore).subscribe((resp) => {
+     var ord =  resp.data.map((it) => {
+        let order = OrderResponse.toBean(it)
+        let currentOrden = this.orders.find((or) => or.id == it.id)
+        if (currentOrden) {
+          order.messagesChat = currentOrden.messagesChat
+          order.showButton = currentOrden.showButton;
+        }
 
-          return order
-        }).forEach((order)=>{
-          let indexOrderExists=this.orders.findIndex(o=>o.id==order.id)
-          if(indexOrderExists!=-1){
-            this.orders[indexOrderExists]=order
-          }else{
-            this.orders.push(order)
-          }
-        })
-
-
-        this.sortOrders()
-        this.isDoneGetOrders=true
-        this.validOrdersSubscribe()
-
-        if(this.orderSelected?.status == 'inStore'){
-          this.isButtonEnabled = true;
+        return order
+      })
+      ord.forEach((order) => {        
+        let indexOrderExists = this.orders.findIndex(o => o.id == order.id)
+        if (indexOrderExists != -1) {
+          this.orders[indexOrderExists] = order
         } else {
-          this.isButtonEnabled = false;
+          this.orders.push(order)
         }
       })
-    }
+      this.orders=this.orders.filter((da) => item.includes(da.store.id))
+      console.log(ord)
+      this.sortOrders()
+      this.isDoneGetOrders = true
+      this.validOrdersSubscribe()
+
+      if (this.orderSelected?.status == 'inStore') {
+        this.isButtonEnabled = true;
+      } else {
+        this.isButtonEnabled = false;
+      }
+    })
+  }
     mqttListener(){
       this.orderHandler._data.subscribe((asyncData)=>{
         if(asyncData){
