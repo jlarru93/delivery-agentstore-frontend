@@ -60,6 +60,14 @@ export class MqttService {
             connectionOptions.password=mqttPwd
         }
         this.client.connect(connectionOptions);
+        setInterval(()=>{
+            if(this.client.isConnected()){
+                console.log('this.client.isConnected()',this.client.isConnected())
+            }else{
+                console.log('this.client.connect')
+                this.client.connect(connectionOptions);
+            }
+        },15000)
     }
 
 

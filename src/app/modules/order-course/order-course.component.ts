@@ -1,5 +1,4 @@
-import {
-  Component,
+import { Component,
   OnInit,
   OnDestroy,
   AfterViewInit,
@@ -37,6 +36,7 @@ import { AuthService } from "src/app/utils/auth.service";
 import { DeliveryManRouteResponse, ResponseTrackingMotorized, RouterResponse } from "./data/response";
 import { Router } from "@angular/router";
 import { AlertServices } from "../service/alert.service";
+import { HttpErrorResponse } from "@angular/common/http";
 
 class PolyLine{
   routePoints:RoutePoint[]
@@ -200,6 +200,15 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     let id=this.auth.getParameterToken('id')
     this.userId = Number(id)
   }
+
+  ngOnDestroy(): void {
+    clearInterval(this.interval_motorized_order);
+    clearInterval(this.set_interval_driver );
+    // if (this.suscripcionTopic) {
+    //   this.webSocketMqtt.ususcribeSuscription(this.suscripcionTopic.id!);
+    // }
+  }
+
   validOrdersSubscribe() {
     if (this.isMqttConnect && this.isDoneGetOrders) {
       this.list_order.forEach((order) => {
@@ -360,12 +369,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
       this.onSearchMotorizedOrderSubscription();
     }, 30000);
   }
-  ngOnDestroy(): void {
-    clearInterval(this.interval_motorized_order);
-    // if (this.suscripcionTopic) {
-    //   this.webSocketMqtt.ususcribeSuscription(this.suscripcionTopic.id!);
-    // }
-  }
+ 
   onClearMap() {
     this.polilyneRuta = [];
     this.lstPosiciones = [];
@@ -581,6 +585,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.productPrice = element.productPrice
           order.readyToDmAt = element.readyToDmAt
           order.isOrderCalendar = element.isOrderCalendar
+          order.store=element.store
+          order.isCheckedStore=element.isCheckedStore??false
           this.list_order.push(order);
         });
         this.isDoneGetOrders = true;
@@ -695,8 +701,13 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
         this.onSearchMotorizedOrder();
         this.onClearMap();
       },
-      (error) => {
-        this.alert.showError('',"Ocurrió un error");
+      (error:HttpErrorResponse) => {
+        console.log(error.message)
+        if(error.status==400){
+          this.alert.showError('',error.error.messages[0].message);
+        }else{
+          this.alert.showError('',"Ocurrió un error");
+        }
       }
     );
     // this.cancelViaje.emit(item)

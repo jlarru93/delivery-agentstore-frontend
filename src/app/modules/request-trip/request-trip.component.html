@@ -54,87 +54,93 @@
       <div class="p-grid p-fluid">
         <!-- is_disabled_pickup -->
         <!-- <pre>{{this.request_trip.addresses | json}}</pre> -->
-          <div class="p-col-12">
-            <div class="p-ml-5">
-              <label for="">Tienda</label>
-            </div>
-            <div class="input-origin-content">
-              <img src="{{ origenIcon }}" class="search-img-origin marker" alt=""/>
-                <!-- <input #search type="text" class="p-inputtext-lg" pInputText id="txtUbicacion_origin"
-                  placeholder="¿Dónde lo recogemos?" [(ngModel)]="input_visible_pickup" [disabled]="is_disabled_pickup" required autofocus/> -->
-              
-                <!-- <p-dropdown 
-                  class="p-inputtext-lg"
-                  [options]="storesAvailable" 
-                  [(ngModel)]="selectedStore" 
-                  optionLabel="store.fullName"
-                  placeholder="¿Dónde lo recogemos?"
-                  (onChange)="selectStore()"></p-dropdown> -->
-
-                  <input type="text" pInputText id="txtUbicacion_origin" [(ngModel)]="input_visible_pickup"   [typeaheadMinLength]="0" [typeahead]="storesAvailable"
-                  typeaheadOptionField="store.fullName" placeholder="¿Dónde lo recogemos?" (typeaheadOnSelect)="selectStore($event,input_visible_pickup)">
-              
-              <div style="padding-left: 5px;">
-                <p-checkbox
-                  [(ngModel)]="isCheckedStore"
-                  [binary]="true"
-                  inputId="binary"
-                  (onChange)="enablePickUpInput()" >                
-                </p-checkbox>
-
-              </div>
-            </div>
+        <div class="p-col-12">
+          <div class="p-ml-5">
+            <label for="">Tienda factura</label>
+          </div>     
+          <div class="p-col-11 float-right">
+            <p-dropdown [options]="storesAvailable"  [(ngModel)]="request_trip.store.id" optionLabel="store.fullName" optionValue="store.id" (onChange)="selectStore($event,input_visible_pickup)"   placeholder="Tienda factura"></p-dropdown> 
+          </div>     
+        </div>
+        <div class="p-col-12">
+          <div class="p-ml-5">
+            <label for="">Tienda</label>
           </div>
-          <div class="p-col-12" *ngIf="isHiddenInput">
-            <div class="input-origin-content">
-              <img
-                src="{{ referenciaIcon }}"
-                class="search-img-origin marker"
-                alt=""
-                width="6"
-              />
-              <input
-                type="text"
+          <div class="input-origin-content">
+            <img src="{{origenIcon}}" class="search-img-origin marker" alt=""/>
+              <!-- <input #search type="text" class="p-inputtext-lg" pInputText id="txtUbicacion_origin"
+                placeholder="¿Dónde lo recogemos?" [(ngModel)]="input_visible_pickup" [disabled]="is_disabled_pickup" required autofocus/> -->
+            
+              <!-- <p-dropdown 
                 class="p-inputtext-lg"
-                pInputText
-                placeholder="Referencia"
-                [(ngModel)]="input_reference_pickup"
-                required
-                autofocus
-              />
-            </div>
-          </div>
-          <div class="p-col-12" *ngIf="isHiddenInput">
-            <div class="input-origin-content">
-              <div style="padding: 11px">
-                <i
-                  class="pi pi-phone"
-                  style="font-size: 1.5rem; color: #212222"
-                ></i>
-              </div>
-              <p-inputNumber mode="decimal" inputId="withoutgrouping" placeholder="Número de teléfono" 
-              [useGrouping]="false" [(ngModel)]="originMobilePhone"></p-inputNumber>
-            </div>
+                [options]="storesAvailable" 
+                [(ngModel)]="selectedStore" 
+                optionLabel="store.fullName"
+                placeholder="¿Dónde lo recogemos?"
+                (onChange)="selectStore()"></p-dropdown> -->
+                <input type="text" pInputText id="txtUbicacion_origin" [disabled]="!request_trip.isCheckedStore" [(ngModel)]="input_visible_pickup"  placeholder="¿Dónde lo recogemos?">
 
-          </div>
-          <div class="p-col-12" *ngIf="isHiddenInput">
-            <div class="input-origin-content">
-              <div style="padding: 11px">
-                <i
-                  class="pi pi-user"
-                  style="font-size: 1.5rem; color: #212222"
-                ></i>
-              </div>
-              <input
-                type="text"
-                class="p-inputtext-lg"
-                pInputText
-                placeholder="¿Quién recibe?"
-                [(ngModel)]="input_receptorNameOrigin_pickup"
-                autofocus
-              />
+                <!-- <input type="text" pInputText id="txtUbicacion_origin" [(ngModel)]="input_visible_pickup"  placeholder="¿Dónde lo recogemos?"
+                 [typeaheadMinLength]="0" [typeahead]="storesAvailable" [disabled]="!isCheckedStore"
+                typeaheadOptionField="store.fullName"  (typeaheadOnSelect)="selectStore($event,input_visible_pickup)"
+                > -->
+            
+            <div style="padding-left: 5px;">
+              <p-checkbox [(ngModel)]="request_trip.isCheckedStore" [binary]="true" inputId="binary" (onChange)="enablePickUpInput()" >                
+              </p-checkbox>
             </div>
           </div>
+        </div>
+        <div class="p-col-12" *ngIf="isHiddenInput">
+          <div class="input-origin-content">
+            <img
+              src="{{ referenciaIcon }}"
+              class="search-img-origin marker"
+              alt=""
+              width="6"
+            />
+            <input
+              type="text"
+              class="p-inputtext-lg"
+              pInputText
+              placeholder="Referencia"
+              [(ngModel)]="input_reference_pickup"
+              required
+              autofocus
+            />
+          </div>
+        </div>
+        <div class="p-col-12" *ngIf="isHiddenInput">
+          <div class="input-origin-content">
+            <div style="padding: 11px">
+              <i
+                class="pi pi-phone"
+                style="font-size: 1.5rem; color: #212222"
+              ></i>
+            </div>
+            <p-inputNumber mode="decimal" inputId="withoutgrouping" placeholder="Número de teléfono" 
+            [useGrouping]="false" [(ngModel)]="originMobilePhone"></p-inputNumber>
+          </div>
+
+        </div>
+        <div class="p-col-12" *ngIf="isHiddenInput">
+          <div class="input-origin-content">
+            <div style="padding: 11px">
+              <i
+                class="pi pi-user"
+                style="font-size: 1.5rem; color: #212222"
+              ></i>
+            </div>
+            <input
+              type="text"
+              class="p-inputtext-lg"
+              pInputText
+              placeholder="¿Quién recibe?"
+              [(ngModel)]="input_receptorNameOrigin_pickup"
+              autofocus
+            />
+          </div>
+        </div>
         <div class="p-col-12">
           <div class="p-ml-5">
             <label for="">Dirección de entrega</label>
@@ -319,7 +325,10 @@
         </p-tabPanel>
         <p-tabPanel  header="Calendario">
           <div class="p-grid p-fluid">
-            <input type="text" [(ngModel)]="creadDate" [minDate]="minDate" pInputText bsDatepicker [isOpen]="false" [bsConfig]="{ adaptivePosition: true,withTimepicker: true,dateInputFormat: 'DD-MM-YYYY h:mm:ss a'}">
+            <div class="p-col-12">
+              <p-calendar [(ngModel)]="creadDate" [minDate]="minDate" [showTime]="true" [showSeconds]="true" [showIcon]="true"  ></p-calendar>
+            </div>
+            <!-- <input type="text" [(ngModel)]="creadDate" [minDate]="minDate" pInputText bsDatepicker [isOpen]="false" [bsConfig]="{ adaptivePosition: true,withTimepicker: true,dateInputFormat: 'DD-MM-YYYY h:mm:ss a'}"> -->
           </div>
         </p-tabPanel>
       </p-tabView>

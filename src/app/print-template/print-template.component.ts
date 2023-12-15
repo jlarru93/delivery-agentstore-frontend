@@ -64,4 +64,15 @@ export class PrintTemplateComponent implements OnInit, AfterViewInit {
     return formattedDate
   }
 
+  onGetMethodType(method: string){
+    let methodConverted: string
+    switch(method){
+      case 'CARD' : methodConverted = 'Tarjeta de crédito'; break;
+      case 'CASH' : methodConverted = 'Efectivo'; break;
+      case 'BANK' : methodConverted = 'Cuenta bancaria'; break;
+      case 'E-WALLET' : methodConverted = 'Billetera electrónica'; break;
+    }
+    return methodConverted 
+  }
+
 }
