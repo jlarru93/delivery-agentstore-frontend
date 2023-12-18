@@ -300,9 +300,18 @@
                   <div class="p-col-12">
                      <div class="p-grid">
                         <div class="p-col-9" (click)=" openOrderDialog(order)">
-                           <h5>ID: {{order.id}}</h5>
-                           <p>{{order?.store?.addressStreet}}</p>
-                           <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
+                           <div class="p-grid">
+                              <div class="p-col-6"  >
+                                 <h5>{{order.id}}</h5>
+                              </div>
+                              <div class="p-col-5">
+                                 <p>{{calculateTime(order?.createdAt)}} min</p>                                 
+                              </div>
+                              <div class="p-col-10">
+                                 <p>{{order?.user?.fullName}}</p>
+                              </div>
+                           </div>
+                           
                         </div>
                         <div class="p-col-3">
                            <div class="overlay-container">
@@ -321,49 +330,20 @@
                            </div>
                         </div>
                      </div>
-               </div>
-               <div class="p-col-12" (click)=" openOrderDialog(order)">
-                  <hr>  
-               </div>
-               <div class="p-col-12" (click)=" openOrderDialog(order)">
-                  <div class="p-grid">
-                     <div class="p-col-6">
-                        <div *ngIf="order?.deliveryMan?.status == 'toStore'">
-                           <div class="p-grid">
-                              <div class="p-col-1">
-                                 <img src="assets/images/icon-bike.svg" alt="" width="25">
+                     <div class="p-grid">
+                        <div class="p-col-12">
+                           <div class="p-grid">                              
+                              <div class="p-col-11">
+                                 <p >{{order?.user?.address?.addressStreet}}</p>
                               </div>
-                              <div class="p-col-11" style="margin-top: 3px;">
-                                 <span style="padding-left: 10px;">Repartidor en camino</span>
+                              <div class="p-col-12">
+                                 <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
+
                               </div>
                            </div>
                         </div>
-                        <div *ngIf="order?.deliveryMan?.status == 'inStore'">
-                           <div class="p-grid">
-                              <div class="p-col-1">
-                                 <img src="assets/images/icon-store.svg" alt="" width="25">
-                              </div>
-                              <div class="p-col-11" style="margin-top: 3px;">
-                                 <span style="padding-left: 10px;">Repartidor está en la tienda</span>
-                              </div>
-                           </div>
-                        </div>
-                        <!-- <div *ngIf="order?.deliveryMan == null">
-                           <div class="p-grid">
-                              <div class="p-col-1">
-                                 <img src="assets/images/icon-target.svg" alt="" width="25">
-                              </div>
-                              <div class="p-col-11" style="margin-top: 3px;">
-                                 <span style="padding-left: 10px;">Buscando repartidor</span>
-                              </div>
-                           </div>
-                        </div> -->
                      </div>
-                     <!-- <div class="p-col-6">
-                        <button class="p-button-primary" pButton pRipple type="button" style="float: right;">Entregar pedido</button>
-                     </div> -->
                   </div>
-               </div>
                </div>
             </div>
          </div>
@@ -381,9 +361,18 @@
                      <div class="p-col-12">
                         <div class="p-grid">
                            <div class="p-col-9" (click)=" openOrderDialog(order)">
-                              <h5>ID: {{order.id}}</h5>
-                              <p>{{order?.store?.addressStreet}}</p>
-                              <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
+                              <div class="p-grid">
+                                 <div class="p-col-6"  >
+                                    <h5>{{order.id}}</h5>
+                                 </div>
+                                 <div class="p-col-5">
+                                    <p>{{calculateTime(order?.createdAt)}} min</p>                                 
+                                 </div>
+                                 <div class="p-col-10">
+                                    <p>{{order?.user?.fullName}}</p>
+                                 </div>
+                              </div>
+                              
                            </div>
                            <div class="p-col-3">
                               <div class="overlay-container">
@@ -402,47 +391,18 @@
                               </div>
                            </div>
                         </div>
-                     </div>
-                     <div class="p-col-12" (click)=" openOrderDialog(order)">
-                        <hr>  
-                     </div>
-                     <div class="p-col-12" (click)=" openOrderDialog(order)">
                         <div class="p-grid">
-                           <div class="p-col-6">
-                              <div *ngIf="order?.deliveryMan?.status == 'toStore'">
-                                 <div class="p-grid">
-                                    <div class="p-col-1">
-                                       <img src="assets/images/icon-bike.svg" alt="" width="25">
-                                    </div>
-                                    <div class="p-col-11" style="margin-top: 3px;">
-                                       <span style="padding-left: 10px;">Repartidor en camino</span>
-                                    </div>
+                           <div class="p-col-12">
+                              <div class="p-grid">                              
+                                 <div class="p-col-11">
+                                    <p >{{order?.user?.address?.addressStreet}}</p>
                                  </div>
-                              </div>
-                              <div *ngIf="order?.deliveryMan?.status == 'inStore'">
-                                 <div class="p-grid">
-                                    <div class="p-col-1">
-                                       <img src="assets/images/icon-store.svg" alt="" width="25">
-                                    </div>
-                                    <div class="p-col-11" style="margin-top: 3px;">
-                                       <span style="padding-left: 10px;">Repartidor está en la tienda</span>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div *ngIf="order?.deliveryMan == null">
-                                 <div class="p-grid">
-                                    <div class="p-col-1">
-                                       <img src="assets/images/icon-target.svg" alt="" width="25">
-                                    </div>
-                                    <div class="p-col-11" style="margin-top: 3px;">
-                                       <span style="padding-left: 10px;">Buscando repartidor</span>
-                                    </div>
+                                 <div class="p-col-12">
+                                    <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
+   
                                  </div>
                               </div>
                            </div>
-                           <!-- <div class="p-col-6">
-                              <button class="btn-preparation" pButton pRipple type="button" style="float: right;">Entregar pedido</button>
-                           </div> -->
                         </div>
                      </div>
                   </div>
