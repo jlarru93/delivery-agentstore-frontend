@@ -325,6 +325,7 @@ import { dataSharedService } from "../service/data-shared.service";
         case 'CASH' : methodConverted = 'Efectivo'; break;
         case 'BANK' : methodConverted = 'Cuenta bancaria'; break;
         case 'E-WALLET' : methodConverted = 'Billetera electrónica'; break;
+        case 'PAYMENT-BUTTON' : methodConverted = 'PSE' ; break
       }
       return methodConverted 
     }
@@ -359,7 +360,7 @@ import { dataSharedService } from "../service/data-shared.service";
       orderRequest.readyToDmAt=this.readyToDmAt
       this.loadingButtonAcept=true
 
-      if(orderRequest.payment.method.type == 'CASH' || orderRequest.payment.method.type == 'CARD'){
+      if(orderRequest.payment.method.type == 'CASH' || orderRequest.payment.method.type == 'CARD' || orderRequest.payment.method.type == 'PAYMENT-BUTTON'){
         this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
           this.displayOrder=false
           this.loadingButtonAcept=false
