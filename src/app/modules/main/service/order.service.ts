@@ -38,4 +38,8 @@ export class OrderService {
     const body = {status: CANCEL_ORDER_STATUS, comment: cancellation} as CancelOrderRequest
     return this.http.put<ObjetResponse<any>>(env.url.backEnd + path,body)
   }
+  UpdateReadyToDm(data:any){
+    var url = env.url.backEnd+'/order/readyToDm'
+    return this.http.put<ObjetResponse<any>>(url,data)
+  }
 }

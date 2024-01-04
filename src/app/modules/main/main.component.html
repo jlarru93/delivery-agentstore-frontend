@@ -23,9 +23,7 @@
                               <div class="p-col-6">
                                  <p style="color: #ffffff;">{{calculateTime(order?.createdAt)}} min</p>                                 
                               </div>
-                              <div class="p-col-8">
-                                 <p style="color: #ffffff;">{{order?.user?.fullName}}</p>
-                              </div>
+                              
                            </div>
                         </div>
                         <div class="p-col-3">
@@ -47,8 +45,9 @@
                            </div>
                         </div>
                         <div class="p-col-12">
-                           <div class="p-grid">                              
-                              <div class="p-col-11">
+                           <div class="p-grid">   
+                              <div class="p-col-12">
+                                 <p style="color: #ffffff;">{{order?.user?.fullName}}</p>                              
                                  <p style="color: #ffffff;">{{order?.user?.address?.addressStreet}}</p>
                               </div>
                               <div class="p-col-12">
@@ -604,8 +603,20 @@
             <div *ngIf="orderSelected.status=='preparingOrder'">
                <div class="sidebar-container-title">Repartidor</div>
                <div class="card-client">
-                  <b>Hora de llegada del DM</b>
-                  <p>{{formatearTiempo(orderSelected?.readyToDmAt)}}</p>
+                  <div class="p-grid">
+                     <div class="p-col-12">
+                        <b>Hora de llegada del DM</b>
+                     </div>
+                     <!-- <div class="p-col-6">
+                        <p class="float-right">{{formatearTiempo(orderSelected?.readyToDmAt)}}</p>
+                     </div> -->
+                     <div class="p-col-6 p-fluid">
+                        <input type="time" value="{{formatearTiempo(orderSelected?.readyToDmAt)}}" [(ngModel)]="ReadyToDmAt" pInputText min="{{tiempoReadyToDmAt}}" max="23:59:59" class="p-inputtext-sm">
+                     </div>
+                     <div class=" p-col-6 ">
+                        <button class="p-button-outlined float-right" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Actulazar hora" [loading]="loadingButtonAcept" (click)="updateTimes(orderSelected)"></button>
+                     </div>
+                  </div>
                </div>
                <!-- <div class="card-time">
                   <div class="card-repartidor">
@@ -657,8 +668,8 @@
 
           </div>
           <div class="sidebar-bottom" id="buttons">
-            <div id="reject">
-               <button class="btn-order" *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
+             <div id="reject">
+               <button class="btn-order "  *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" [loading]="loadingButtonAcept" (click)="readyOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()" [disabled]="!isButtonEnabled"></button>
                <button pButton type="button" *ngIf="orderSelected.status!='done'" label="Rechazar orden" class="p-button-danger btn-reject p-mt-2" (click)="openDialogDenyOrder()"></button>
