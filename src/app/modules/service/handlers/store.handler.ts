@@ -12,11 +12,13 @@ export class StoreHandler{
     data$ = this._data.asObservable();
     audio=new Audio('assets/audio/audio.mp3');
     isPlaying = false;
-
+    loopAudio = true;
+    audioEnabled: boolean;
 
     constructor() {
         this.audio.loop = true;
         this.audio.load();
+        this.audioEnabled = this.retrieveAudioEnabledStateFromLocalStorage();
     }
 
     handle(payload: string) {
@@ -28,16 +30,28 @@ export class StoreHandler{
 
     private onPlayAudio() {
 
-        if(!this.isPlaying){
+        if (!this.isPlaying && this.audioEnabled !== null) {
+            this.loopAudio = this.audioEnabled;
+            this.audio.loop = this.audioEnabled;
+      
             this.audio.play();
-            this.isPlaying = true
-        }
+            this.isPlaying = true;
 
+            this.storeAudioEnabledStateInLocalStorage();
+        }
     }
 
     stopAudio(){
         this.audio.pause();
         this.audio.currentTime = 0;
         this.isPlaying = false;
+    }
+
+    retrieveAudioEnabledStateFromLocalStorage(): boolean {
+        const storedValue = localStorage.getItem('audioEnabled');
+        return storedValue ? JSON.parse(storedValue) : null;
+    }
+    storeAudioEnabledStateInLocalStorage() {
+        localStorage.setItem('audioEnabled', JSON.stringify(this.audioEnabled));
     }
 }

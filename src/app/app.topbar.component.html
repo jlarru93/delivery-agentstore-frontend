@@ -24,7 +24,7 @@
             </a>
         </div>
         <div class="tristate">
-            <p-triStateCheckbox [(ngModel)]="audioEnabled" label=""></p-triStateCheckbox>
+            <p-triStateCheckbox [(ngModel)]="audioEnabled" label="Alarma" (onChange)="onChangeFlagAudio()"></p-triStateCheckbox>
         </div>
         <div class="layout-topbar-right fadeInDown">
             <ul class="layout-topbar-actions">

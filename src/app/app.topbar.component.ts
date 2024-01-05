@@ -9,6 +9,7 @@ import { AgentStoreStoreResponse, MenuService } from './app.menu.service';
 import { environment } from 'src/environments/environment';
 import { dataSharedService } from './modules/service/data-shared.service';
 import { StatusOpenStoreBean } from './modules/main/data';
+import { StoreHandler } from './modules/service/handlers/store.handler';
 
 @Component({
     selector: 'app-topbar',
@@ -36,7 +37,7 @@ export class AppTopBarComponent implements OnInit{
     selectStore:Number[]=[]
     origenIcon: any ="assets/empresas/" + environment.NAME_COMPANY + environment.MARKERS.ORIGEN.URL;
 
-     audioEnabled: boolean = null;
+     audioEnabled: boolean;
 
     constructor(
         private auth: AuthService,
@@ -44,12 +45,16 @@ export class AppTopBarComponent implements OnInit{
         public appMain: AppMainComponent,
         private mqtt:MqttService,
         private service: MenuService,
-        private dataShared:dataSharedService
+        private dataShared:dataSharedService,
+        private storeHandler: StoreHandler
     ) {}
     
     ngOnInit(): void {
+        var flagAudio = JSON.parse(localStorage.getItem('audioEnabled'))
         var lstIdStore= JSON.parse(localStorage.getItem('lstIdStore'))
-        
+        if(flagAudio != undefined){
+            this.audioEnabled = flagAudio
+        }
         this.getStatusOpenStore()
         this.mqtt._onConnect.subscribe((isConnect)=>{
             this.isConnectMqtt=isConnect
@@ -147,5 +152,13 @@ export class AppTopBarComponent implements OnInit{
         }*/
         localStorage.setItem('lstIdStore',JSON.stringify(this.selectStore))       
         this.processSubsCribeStore(id) 
+    }
+
+    onChangeFlagAudio(){
+         // Actualiza el estado en el servicio StoreHandler
+    this.storeHandler.audioEnabled = this.audioEnabled;
+
+    // Almacena el estado en el localStorage
+    this.storeHandler.storeAudioEnabledStateInLocalStorage();
     }
 }
