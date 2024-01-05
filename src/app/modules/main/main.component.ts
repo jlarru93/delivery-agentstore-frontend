@@ -608,4 +608,47 @@ import { AlertServices } from "../service/alert.service";
       this.messageService.showSuccess('Error', error.message)
     })
   }
+  selfManagedOrder(item: OrderBean){
+    this.orderService.selfManagedOrder(item.uuid).subscribe((respons)=>{
+      console.log(respons)
+      setTimeout(() => {
+        this.displayOrder = false
+      }, 1500);
+      this.getOrders()
+      this.messageService.showSuccess('', 'Orden Autogestionado')
+    },(error:HttpErrorResponse)=>{
+      if(error.status==400){
+        error.error.messages.forEach(element => {
+          this.messageService.showError('Error',element.message)
+        });
+      }else{
+        this.messageService.showError('Error',error.message)
+      }
+      console.log(error)
+    })
+  }
+
+  
+  finishOrder(item: OrderBean){
+    var json={
+      status:"done"
+    }
+    this.orderService.UpdateStatus(item.id,json).subscribe((respons)=>{
+      console.log(respons)
+      setTimeout(() => {
+        this.displayOrder = false
+      }, 1500);
+      this.getOrders()
+      this.messageService.showSuccess('', 'Orden Terminado')
+    },(error:HttpErrorResponse)=>{
+      if(error.status==400){
+        error.error.messages.forEach(element => {
+          this.messageService.showError('Error',element.message)
+        });
+      }else{
+        this.messageService.showError('Error',error.message)
+      }
+      console.log(error)
+    })
+  }
 }

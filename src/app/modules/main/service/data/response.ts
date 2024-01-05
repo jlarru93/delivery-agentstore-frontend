@@ -339,6 +339,8 @@ export class OrderResponse {
     acceptAgentStoreAt: number
     addresses ?: AddressResponseLoadingOrder[]
     statusForAgentStore:string
+    isApprovedSelfManaged:boolean
+    isSelfManaged:boolean
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
         bean.id = self?.id
@@ -361,6 +363,8 @@ export class OrderResponse {
         bean.readyToDmAt = self.readyToDmAt
         bean.acceptAgentStoreAt = self.acceptAgentStoreAt
         bean.statusForAgentStore=self.statusForAgentStore
+        bean.isApprovedSelfManaged=self.isApprovedSelfManaged??false
+        bean.isSelfManaged = self.isSelfManaged??false
         return bean
     }
 }
