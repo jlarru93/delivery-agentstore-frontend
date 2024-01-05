@@ -42,7 +42,8 @@
         <div class="detalle">
             <div class="item producto">
                 <span>{{product.quantity}}X {{product.name}}</span>
-                <span>
+                <span style="display: flex; justify-content: space-between; gap: 5px; align-items: baseline;">
+                    <span *ngIf="isPriceForEachFroduct">{{product.getPriceMinimalCurrency()}} </span>
                     <span class="checkbox">☐</span>
                 </span>
             </div>

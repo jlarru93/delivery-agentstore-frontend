@@ -23,6 +23,7 @@ import { ModalComponent } from "src/app/modal/modal.component";
 import { ChatComponent } from "src/app/chat/chat.component";
 import { HttpClient } from "@angular/common/http";
 import { dataSharedService } from "../service/data-shared.service";
+import { StoreBean } from "../product/data";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -77,6 +78,9 @@ import { dataSharedService } from "../service/data-shared.service";
 
     ref: DynamicDialogRef | undefined;
     idStore:any[]=[]
+
+    isIconUp: boolean = false
+
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
@@ -251,6 +255,7 @@ import { dataSharedService } from "../service/data-shared.service";
           this.sortOrders()
           this.subscribeOrder(orderMqtt.uuid)
           this.subscribeChat(orderMqtt.uuid)
+          this.isIconUp = true
         }
       })
       this.chatHandler._data.subscribe((asyncData)=>{
@@ -274,10 +279,16 @@ import { dataSharedService } from "../service/data-shared.service";
         }
       })
     }
+
+    stopAudio(){
+      this.storeHandler.stopAudio();
+      this.isIconUp = false
+    }
     priceValueFormat: string[] = []
     totalPriceValueFormat : string
     payment: PaymentBean
     paymentName: string
+    storeDataStorage: StoreBean
 
     openOrderDialog(order:OrderBean){
       this.orderSelected=order
@@ -288,6 +299,8 @@ import { dataSharedService } from "../service/data-shared.service";
       }
       
       this.displayOrder=true
+
+      this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
 
       // this.orderService.getOrders().subscribe((resp)=>{
       //   if(this.orderSelected.status == 'inStore'){

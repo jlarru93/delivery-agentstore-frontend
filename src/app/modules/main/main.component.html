@@ -6,13 +6,15 @@
              <div class="title">
                 <h5>{{title}}</h5>
              </div>
+             <i *ngIf="isIconUp" class="pi pi-volume-up" (click)="stopAudio()"></i>
+             <i *ngIf="!isIconUp" class="pi pi-volume-off"></i>
              <!-- <div class=" task-info">
                 <span>You have</span><span class="highlighted"> 2 tasks</span><span> today</span>
              </div> -->
           </div>
           <div *ngFor="let order of ordersOpen; let i = index">
              <div class="p-col-12">
-                <div class="p-grid p-nogutter widget-overview-box p-shadow-3" style="background: -webkit-gradient(linear, left bottom, right top, color-stop(0%, #bf616a), color-stop(100%, #ce9393));">
+                <div class="p-grid p-nogutter widget-overview-box p-shadow-3 wave-background">
                   <div class="p-col-12" >
                      <div class="p-grid">
                         <div class="p-col-9" (click)=" openOrderDialog(order)" >
@@ -420,59 +422,8 @@
    </div>
    <div class="p-toolbar-group-right">
       <button  pButton type="button" icon="pi pi-print" label="Imprimir comanda" class="p-button-info" (click)="printToPDF()"></button> 
-      <!-- <div id="print-section" style="display: none;"> 
-         <div class="content-print" id="printSection">
-            <div class="header-print"></div>
-            <div class="store-print">
-                <div class="store-logo">
-                    <img class="store-img" src="{{orderSelected.store.logo}}" alt="">
-                </div>
-                <div class="store-name">
-                    <div>
-                        <strong style="font-size: 20px;">{{orderSelected.store.name}}</strong><br>
-                        <small>Información del pedido</small>
-                    </div>
-                    
-                </div>
-            </div>
-            <div class="comanda">
-                <h4>Comanda</h4>
-            </div>
-            <div class="order-detail">
-                <div *ngFor="let product of orderSelected.products; index as i">
-                    <div class="order-product-name">
-                        <div>
-                            <strong>X{{product.quantity}}</strong> {{product.name}}
-                        </div>
-                        <div>
-                            <input type="checkbox" name="" id="">
-                        </div>
-                    </div>
-                    <div class="options" *ngFor="let option of product.options">
-                        <div class="option-data">
-                           <div>{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}</div>
-                           <input type="checkbox" name="" id="">
-                        </div>
-                        <div *ngFor="let sub of option.subOptions">
-                           <div class="p-grid" style="padding-left: 10px;">
-                              <div class="p-col-6">
-                                 <div> <strong>{{sub.quantity > 0 ? 'x' + sub.quantity : '' }}</strong> {{sub.name}}</div>
-                              </div>
-                              <div class="p-col-6">
-                                 <input type="checkbox" name="" id="" style="float: right;">
-                              </div>
-                           </div>
-                        </div>
-                    </div>
-                    <hr>
-                </div>
-            </div>
-        </div>
-      </div> -->
-      <!-- <div id="print-section" style="display: none;">
-      </div> -->
       <div id="pdf" style="display: none;">
-         <app-print-template [orderSelected]="orderSelected"></app-print-template>
+         <app-print-template [orderSelected]="orderSelected" [storeData]="storeDataStorage"></app-print-template>
 
       </div>
    </div>

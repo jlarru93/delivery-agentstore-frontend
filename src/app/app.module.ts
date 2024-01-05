@@ -85,6 +85,7 @@ import {ToolbarModule} from 'primeng/toolbar';
 import {TooltipModule} from 'primeng/tooltip';
 import {TreeModule} from 'primeng/tree';
 import {TreeTableModule} from 'primeng/treetable';
+import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
 
 // Application Components
@@ -261,6 +262,7 @@ FullCalendarModule.registerPlugins([
         TooltipModule,
         TreeModule,
         TreeTableModule,
+        TriStateCheckboxModule,
         VirtualScrollerModule,
 
 

@@ -7,9 +7,18 @@ import { OrderResponse } from "../../main/service/data/response";
     providedIn: 'root'
 })
 export class StoreHandler{
+
     public _data: BehaviorSubject<AsyncData<OrderResponse>> = new BehaviorSubject<AsyncData<OrderResponse>>(null);
     data$ = this._data.asObservable();
     audio=new Audio('assets/audio/audio.mp3');
+    isPlaying = false;
+
+
+    constructor() {
+        this.audio.loop = true;
+        this.audio.load();
+    }
+
     handle(payload: string) {
         this.onPlayAudio();
         console.log("StoreHandler",payload)
@@ -18,13 +27,17 @@ export class StoreHandler{
     }
 
     private onPlayAudio() {
-        const promise = this.audio.play();
-        if (promise !== undefined) {
-            promise.then(() => {
-            }).catch(error => {
-                console.log('error controlado audio');
-                this.audio.play();
-            });
+
+        if(!this.isPlaying){
+            this.audio.play();
+            this.isPlaying = true
         }
+
+    }
+
+    stopAudio(){
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.isPlaying = false;
     }
 }

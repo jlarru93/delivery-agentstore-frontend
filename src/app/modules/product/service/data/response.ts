@@ -1,4 +1,4 @@
-import { PriceBean, StoreBean, ProductBean } from "../../data";
+import { PriceBean, StoreBean, ProductBean, TiketKitchenBean } from "../../data";
 
 export class PriceResponse{
     currency ?: string;
@@ -59,7 +59,8 @@ export class StoreResponse {
     menu ?: string[];
     products ?: ProductsResponse[];
     isOpen: boolean;
-    tripSetting:any[]
+    ticketKitchen: TiketKitchenResponse[];
+    tripSetting:any[];
     static toBean(self: StoreResponse) : StoreBean{
         const bean = new StoreBean()
             bean.id = self.id;
@@ -73,6 +74,20 @@ export class StoreResponse {
             bean.products = self.products.filter((it)=>it.isEnabled).map((it) => ProductsResponse.toBean(it));
             bean.isOpen = self.isOpen
             bean.tripSetting=self.tripSetting
+            bean.ticketKitchen = self.ticketKitchen.map((it) => TiketKitchenResponse.toBean(it)) 
+        return bean
+    }
+}
+
+export class TiketKitchenResponse {
+    key?: string
+    value?: boolean
+    tag?: string
+    static toBean(response: TiketKitchenResponse) : TiketKitchenBean {
+        let bean = new TiketKitchenBean()
+            bean.key = response.key
+            bean.value = response.value
+            bean.tag = response.tag
         return bean
     }
 }

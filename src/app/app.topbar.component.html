@@ -10,6 +10,8 @@
             <ng-container *ngIf="isAllLoadingOpenStatusStore">
                 <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="1"></p-progressSpinner>
             </ng-container>
+
+            
             
             <div style="margin: 0 auto;" id="logoImagen">
                 <img src="assets/images/Logotipo_TRES22-delivery-02.png" alt="LogoTRES22" class="image-container">
@@ -20,6 +22,9 @@
             <a href="#" class="topbar-menu-mobile-button" (click)="appMain.onTopbarMobileMenuButtonClick($event)">
                 <i class="pi pi-ellipsis-v" style="color: #FFFFFF;"></i>
             </a>
+        </div>
+        <div class="tristate">
+            <p-triStateCheckbox [(ngModel)]="audioEnabled" label=""></p-triStateCheckbox>
         </div>
         <div class="layout-topbar-right fadeInDown">
             <ul class="layout-topbar-actions">

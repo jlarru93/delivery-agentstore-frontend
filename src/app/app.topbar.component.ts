@@ -23,6 +23,9 @@ export class AppTopBarComponent implements OnInit{
     //isOpenStore:boolean=false
     isAllLoadingOpenStatusStore:boolean=false
 
+    value: any;
+
+
     userDetails: any
     userName: string
     IdAgent:any
@@ -32,6 +35,9 @@ export class AppTopBarComponent implements OnInit{
     selectedStore: Store[]=[]
     selectStore:Number[]=[]
     origenIcon: any ="assets/empresas/" + environment.NAME_COMPANY + environment.MARKERS.ORIGEN.URL;
+
+     audioEnabled: boolean = null;
+
     constructor(
         private auth: AuthService,
         private router: Router,

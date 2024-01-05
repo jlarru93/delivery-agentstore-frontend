@@ -508,3 +508,21 @@ h5{
     justify-content: space-between;
   }
   //p{margin:0 0 -14px !important }
+
+  .wave-background {
+    background: linear-gradient(to right, #b92b27, #1565c0);
+    background-size: 300% 300%;
+    animation: colorwave 12s ease-in-out infinite;
+  }
+
+  @keyframes colorwave {
+    0% {
+        background-position: 0 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100%{
+        background-position: 0 50%;
+    }
+  }
