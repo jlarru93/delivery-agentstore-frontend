@@ -4,8 +4,8 @@
             <div class="logo">
                 <img src="assets/images/Logotipo_TRES22-01.png" class="logo-tres22" alt="logo-tres22">
             </div>
-            <div class="logo">
-                <img [src]="sanitization.bypassSecurityTrustUrl(orderSelected.store.logo)" alt="{{orderSelected.store.name}}">
+            <div class="logo">                
+                <img src="{{orderSelected.store.logo}}" alt="{{orderSelected.store.name}}" onError="this.src='../../assets/images/user.png'">
             </div>
         </div>
     </div>

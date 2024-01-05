@@ -30,6 +30,8 @@ import { ChatModule } from "src/app/chat/chat.module";
 import { ToastModule } from "primeng/toast";
 import { PrintTemplateModule } from "src/app/print-template/print-template.module";
 import { TagModule } from "primeng/tag";
+import { InputSwitchModule } from 'primeng/inputswitch';
+
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
     imports: [
@@ -62,7 +64,8 @@ import { TagModule } from "primeng/tag";
       MatButtonModule,
       MatIconModule,
       InputTextModule,
-      TagModule
+      TagModule,
+      InputSwitchModule
     ],
     providers:[OrderService]
   })

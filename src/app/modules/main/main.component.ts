@@ -21,9 +21,11 @@ import { AuthService } from "src/app/utils/auth.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
 import { ChatComponent } from "src/app/chat/chat.component";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { dataSharedService } from "../service/data-shared.service";
 import { StoreBean } from "../product/data";
+import { setHours, setMinutes, setSeconds } from "ngx-bootstrap/chronos/utils/date-setters";
+import { AlertServices } from "../service/alert.service";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -90,7 +92,7 @@ import { StoreBean } from "../product/data";
       private storeHandler:StoreHandler,
       private chatHandler:ChatHandler,
       private chatService:ChatService ,
-      private messageService: MessageService,
+      private messageService:AlertServices,
       private confirmationService: ConfirmationService,
       private dialog: MatDialog,
       private http: HttpClient,
@@ -104,7 +106,7 @@ import { StoreBean } from "../product/data";
       }
     ngOnInit(): void { 
       this.idStore= JSON.parse(localStorage.getItem('lstIdStore'))
-      this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
+      this.messageService.showSuccess( 'Success',  'Message Content');
       console.log("MAIN")
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
       if(this.idStore)
@@ -384,7 +386,7 @@ import { StoreBean } from "../product/data";
         })
       } else {
         if(!this.flagOpenReceiptDialog){
-          this.messageService.add({key: 'tc', severity: 'warn', summary: '', detail: 'Por favor revise el comprobante de pago primero'})
+          this.messageService.showWarning('', 'Por favor revise el comprobante de pago primero')
           this.loadingButtonAcept = false
         } else {
           this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
@@ -422,11 +424,11 @@ import { StoreBean } from "../product/data";
         this.displayOrderReject = false
         this.loadingButtonCancel = false
         this.displayOrder = false
-        this.messageService.add({severity:'success', summary: 'Exito', detail: 'Orden cancelado', life: 3000 });
-      }, (error) => {
+        this.messageService.showSuccess('Exito',  'Orden cancelado' );
+      }, (error:HttpErrorResponse) => {
         this.displayOrderReject = false
         this.loadingButtonCancel = false
-        this.messageService.add({severity:'error', summary: 'Error', detail: error, life: 3000});
+        this.messageService.showError( 'Error' , error.message );
       })
     }
 
@@ -528,15 +530,18 @@ import { StoreBean } from "../product/data";
       },
       (error)=>{})
     }
-
+     tiempoReadyToDmAt:string
+     ReadyToDmAt:string
     formatearTiempo(timestamp: number): string {
       const fecha = new Date(timestamp * 1000);
       const horas = fecha.getHours();
       const minutos = fecha.getMinutes();
       const segundos = fecha.getSeconds();
-    
       let tiempoFormateado = `${this.agregarCeros(horas)}:${this.agregarCeros(minutos)}:${this.agregarCeros(segundos)}`;
-    
+      this.tiempoReadyToDmAt=`${this.agregarCeros(horas)}:${this.agregarCeros(minutos)}:${this.agregarCeros(segundos)}`
+      if(!this.ReadyToDmAt){
+        this.ReadyToDmAt=this.tiempoReadyToDmAt
+      }
       // Agregar designación AM/PM
       if (horas >= 12) {
         tiempoFormateado += ' PM';
@@ -580,4 +585,25 @@ import { StoreBean } from "../product/data";
       var res = (day+' '+hoursDifference+'h '+minutesDifference).toString()
       return res;
     }
+
+  updateTimes(item: OrderBean) {
+    var [hora, minuto, segundo] = this.ReadyToDmAt.split(':');
+    var newDate = new Date()
+    newDate.setHours(+hora);
+    newDate.setMinutes(+minuto);
+    newDate.setSeconds(+segundo);
+    var json = {
+      uuid: item.uuid,
+      readyToDmAt: Number(newDate.getTime().toString().substring(0, 10))
+    }
+    this.orderService.UpdateReadyToDm(json).subscribe((response) => {
+      setTimeout(() => {
+        this.displayOrder = false
+      }, 1500);
+      console.log(response)
+      this.messageService.showSuccess('', 'El tiempo estimada modificado')
+    }, (error: HttpErrorResponse) => {
+      this.messageService.showSuccess('Error', error.message)
+    })
+  }
 }
