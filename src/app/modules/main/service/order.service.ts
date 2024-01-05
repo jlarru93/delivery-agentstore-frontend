@@ -42,4 +42,15 @@ export class OrderService {
     var url = env.url.backEnd+'/order/readyToDm'
     return this.http.put<ObjetResponse<any>>(url,data)
   }
+
+  selfManagedOrder(uuid:any){
+    var url = env.url.backEnd+`/order/${uuid}/selfManaged`
+    return this.http.put<ObjetResponse<any>>(url,{})
+  }
+
+  UpdateStatus(id:any,json:any){
+    var url = env.url.backEnd+`/order/${id}/status`
+    return this.http.put<ObjetResponse<any>>(url,json)
+  }
+
 }

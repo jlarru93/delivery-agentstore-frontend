@@ -165,6 +165,8 @@ export class OrderBean {
     isLoadingChat:boolean
     showButton:boolean
     statusForAgentStore:string
+    isApprovedSelfManaged:boolean
+    isSelfManaged:boolean
     constructor(){
         this.messagesNoReadTotal=0
         this.messagesChat=[]
