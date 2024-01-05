@@ -894,4 +894,11 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     localStorage.setItem('edit-trip', JSON.stringify(order))
     this.router.navigate(['/request-trip'])
   }
+
+  filterOrder: any
+
+  orderCourseOptions: any[] = [
+    { name: 'Regular', value: false },
+    { name: 'Express', value: true }
+];
 }

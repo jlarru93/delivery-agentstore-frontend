@@ -82,6 +82,7 @@ import { AlertServices } from "../service/alert.service";
     idStore:any[]=[]
 
     isIconUp: boolean = false
+    otherReasonOrder: string = ""
 
     constructor(
       public dialogService: DialogService,
@@ -485,6 +486,7 @@ import { AlertServices } from "../service/alert.service";
 
     openDialogDenyOrder(){
       this.displayOrderReject = true
+      this.otherReasonOrder
       this.selectedTab = false
     }
 

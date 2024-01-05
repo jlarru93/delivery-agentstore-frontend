@@ -1,5 +1,12 @@
 <div class="p-grid">
   <div class="p-col-4 container-service">
+
+    <div style="display: flex; justify-content: center;">
+      <p-selectButton class="select-button-custom"  [options]="orderCourseOptions" 
+      [(ngModel)]="filterOrder" optionLabel="name" optionValue="value" 
+      ></p-selectButton>
+    </div>
+
     <!-- <pre>{{list_marker | json}}</pre> -->
     <ng-container *ngIf="list_order.length > 0; else CursoTemplate">
       <p-accordion

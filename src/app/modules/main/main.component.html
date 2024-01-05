@@ -718,6 +718,20 @@
                </div>
             </div>
          </p-accordionTab>
+         <p-accordionTab header="Otro" [selected]="false">
+            <div class="p-grid p-fluid">
+               <div class="p-col-12">
+                  <label for="">Escriba el motivo de rechazo de orden</label>
+                  <input type="text" [(ngModel)]="otherReasonOrder" pInputText class="p-inputtext-sm">
+               </div>       
+            </div>
+            <div class="p-grid">
+               <div class="p-col-12">
+                  <button valign="bottom" pButton type="button" (click)="cancelOrder(otherReasonOrder)"
+                  [loading]="loadingButtonCancel" style="float: right;" label="Seleccionar" class="p-button-info"></button>
+               </div>
+            </div>
+         </p-accordionTab>
      </p-accordion>
    </div>
  </p-dialog>

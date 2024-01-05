@@ -12,6 +12,8 @@ import { ButtonModule } from 'primeng/button';
 import { ChatModule } from 'src/app/chat/chat.module';
 import { AvatarModule } from 'primeng/avatar';
 import { TagModule } from 'primeng/tag';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [OrderCourseComponent],
@@ -24,8 +26,10 @@ import { TagModule } from 'primeng/tag';
     }),
     AccordionModule,
     ButtonModule,
+    FormsModule,
     AvatarModule,
     InformacionMapaModule,
+    SelectButtonModule,
     TagModule,
     ChatModule
   ],
