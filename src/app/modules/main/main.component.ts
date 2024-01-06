@@ -417,20 +417,27 @@ import { AlertServices } from "../service/alert.service";
 
     loadingButtonCancel: boolean = false
     cancelOrder(comment: string){
-      let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
-      this.loadingButtonCancel=true
-      this.orderService.cancelOrder(orderRequest.id.toString(),comment).subscribe((resp) => {
-        this.orders=this.orders.filter((order)=>order.id!=orderRequest.id)
-        this.sortOrders()
-        this.displayOrderReject = false
-        this.loadingButtonCancel = false
-        this.displayOrder = false
-        this.messageService.showSuccess('Exito',  'Orden cancelado' );
-      }, (error:HttpErrorResponse) => {
-        this.displayOrderReject = false
-        this.loadingButtonCancel = false
-        this.messageService.showError( 'Error' , error.message );
-      })
+
+      if(this.accordionIndex == 6 && this.otherReasonOrder == ''){
+        this.messageService.showError('', 'Por favor llene la casilla con el motivo del rechazo de orden')
+      } else {
+
+        let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
+        this.loadingButtonCancel=true
+        this.orderService.cancelOrder(orderRequest.id.toString(),comment).subscribe((resp) => {
+          this.orders=this.orders.filter((order)=>order.id!=orderRequest.id)
+          this.sortOrders()
+          this.displayOrderReject = false
+          this.loadingButtonCancel = false
+          this.displayOrder = false
+          this.messageService.showSuccess('Exito',  'Orden cancelado' );
+        }, (error:HttpErrorResponse) => {
+          this.displayOrderReject = false
+          this.loadingButtonCancel = false
+          this.messageService.showError( 'Error' , error.message );
+        })
+      }
+
     }
 
     giveOrderToDriver(){
@@ -650,5 +657,11 @@ import { AlertServices } from "../service/alert.service";
       }
       console.log(error)
     })
+  }
+
+  accordionIndex: number = 0
+  onTabOpen(event) {
+    
+    this.accordionIndex = event.index;
   }
 }

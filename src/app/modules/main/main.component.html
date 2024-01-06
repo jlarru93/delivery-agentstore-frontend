@@ -679,7 +679,7 @@
       <h4>Seleccione una opción</h4>
    </ng-template>
    <div style="padding: 10px;">
-      <p-accordion>
+      <p-accordion (onOpen)="onTabOpen($event)">
          <p-accordionTab header="Producto agotado temporalmente" [selected]="selectedTab">
             <div class="p-grid">
                <div class="p-col-12">
