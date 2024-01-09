@@ -31,6 +31,7 @@ import { ToastModule } from "primeng/toast";
 import { PrintTemplateModule } from "src/app/print-template/print-template.module";
 import { TagModule } from "primeng/tag";
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { ChipModule } from "primeng/chip";
 
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
@@ -44,6 +45,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
       ReactiveFormsModule,
       MainRoutingModule,
       ChatModule,
+      ChipModule,
       PrintTemplateModule,
       DialogModule,
       ButtonModule,

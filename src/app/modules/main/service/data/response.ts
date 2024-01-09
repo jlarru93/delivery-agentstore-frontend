@@ -1,5 +1,5 @@
 import { Store } from "src/app/models"
-import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, MethodBean, OptionBean, OrderBean, PaymentBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UserBean } from "../../data"
+import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, MethodBean, OptionBean, OrderBean, PaymentBean, PictureBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UserBean } from "../../data"
 import { AddressResponseLoadingOrder } from "src/app/modules/request-trip/data/response"
 
 export class StatusOpenStoreResponse {
@@ -225,6 +225,7 @@ export class DeliveryManResponse {
     name: string
     phone: string
     status: string
+    picture?: PictureResponse
     static toBean(self?: DeliveryManResponse): DeliveryManBean | null {
         if (!self) {
             return null
@@ -234,9 +235,25 @@ export class DeliveryManResponse {
         bean.name = self!.name
         bean.phone = self!.phone
         bean.status = self!.status
+        bean.picture = PictureResponse.toBean(self.picture)
         return bean
     }
 }
+
+export class PictureResponse{
+    profile?: string   
+    document?: string
+    static toBean(self?: PictureResponse) : PictureBean | null {
+        if(!self) {
+            return null
+        }
+        const bean = new PictureBean()
+              bean.profile = self.profile
+              bean.document = self.document
+        return bean
+    }
+}
+
 
 export class Point {
     type: string;

@@ -100,6 +100,7 @@ export class DeliveryManBean {
 
 export class PictureBean{
     profile?: string   
+    document?: string
 }
 
 export class Point {
