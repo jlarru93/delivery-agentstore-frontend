@@ -376,7 +376,7 @@ import { AlertServices } from "../service/alert.service";
       orderRequest.readyToDmAt=this.readyToDmAt
       this.loadingButtonAcept=true
 
-      if(orderRequest.payment.method.type == 'CASH' || orderRequest.payment.method.type == 'CARD' || orderRequest.payment.method.type == 'PAYMENT-BUTTON'){
+      if(['CARD','CASH','PAY_IN_STORE','PAYMENT-BUTTON'].includes(orderRequest.payment.method.type)){
         this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
           this.displayOrder=false
           this.loadingButtonAcept=false
