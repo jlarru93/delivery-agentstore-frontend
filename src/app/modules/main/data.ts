@@ -168,6 +168,7 @@ export class OrderBean {
     statusForAgentStore:string
     isApprovedSelfManaged:boolean
     isSelfManaged:boolean
+    isPickUpStore:boolean
     constructor(){
         this.messagesNoReadTotal=0
         this.messagesChat=[]

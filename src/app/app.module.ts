@@ -164,7 +164,6 @@ import { OrderHandler } from './modules/service/handlers/order.handler';
 import { MqttRoutingService } from './modules/service/mqtt.routing.service';
 import { MqttService } from './modules/service/mqtt.service';
 import { ModalComponent } from './modal/modal.component';
-import { OrderCourseComponent } from './modules/order-course/order-course.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { AlertModule } from './directives/alert/alert.module';

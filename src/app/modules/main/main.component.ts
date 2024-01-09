@@ -26,6 +26,7 @@ import { dataSharedService } from "../service/data-shared.service";
 import { StoreBean } from "../product/data";
 import { setHours, setMinutes, setSeconds } from "ngx-bootstrap/chronos/utils/date-setters";
 import { AlertServices } from "../service/alert.service";
+import { AceptOrderRequest } from "./service/data/request";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -376,7 +377,7 @@ import { AlertServices } from "../service/alert.service";
       orderRequest.readyToDmAt=this.readyToDmAt
       this.loadingButtonAcept=true
 
-      if(orderRequest.payment.method.type == 'CASH' || orderRequest.payment.method.type == 'CARD' || orderRequest.payment.method.type == 'PAYMENT-BUTTON'){
+      if(['CARD','CASH','PAY_IN_STORE','PAYMENT-BUTTON'].includes(orderRequest.payment.method.type)){
         this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
           this.displayOrder=false
           this.loadingButtonAcept=false
@@ -405,7 +406,13 @@ import { AlertServices } from "../service/alert.service";
     readyOrder(){
       const order=this.orderSelected
       this.loadingButtonAcept=true
-      this.orderService.readyOder(order.id.toString()).subscribe((resp)=>{
+      var body:any
+      if(order.isPickUpStore){
+        body={status:CONSTANTES.DONE_ORDER_STATUS} as AceptOrderRequest
+      }else{
+        body={status:CONSTANTES.READY_ORDER_STATUS} as AceptOrderRequest
+      }
+      this.orderService.readyOder(order.id.toString(),body).subscribe((resp)=>{
         this.displayOrder=false
         this.loadingButtonAcept=false
       },()=>{

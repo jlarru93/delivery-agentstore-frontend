@@ -52,9 +52,12 @@
                                  <p style="color: #ffffff;">{{order?.user?.fullName}}</p>                              
                                  <p style="color: #ffffff;">{{order?.user?.address?.addressStreet}}</p>
                               </div>
-                              <div class="p-col-12">
+                              <div class="p-col-6">
                                  <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
 
+                              </div>
+                              <div *ngIf="order.isPickUpStore" class="p-col-6">
+                                 <p-tag  value="Recojo en tienda" severity="warning" [rounded]="true"></p-tag>
                               </div>
                            </div>
                         </div>
@@ -132,9 +135,12 @@
                               <div class="p-col-11">
                                  <p >{{order?.user?.address?.addressStreet}}</p>
                               </div>
-                              <div class="p-col-12">
+                              <div class="p-col-6">
                                  <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
 
+                              </div>
+                              <div *ngIf="order.isPickUpStore" class="p-col-6">
+                                 <p-tag  value="Recojo en tienda" severity="warning" [rounded]="true"></p-tag>
                               </div>
                            </div>
                         </div>
@@ -234,11 +240,8 @@
                               <p>{{order?.user?.fullName}}</p>
                               <p >{{order?.user?.address?.addressStreet}}</p>
                            </div>
-                           <div class="p-col-6">
+                           <div class="p-col-12">
                               <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
-                           </div>
-                           <div *ngIf="order.isApprovedSelfManaged" class="p-col-6">
-                              <p-tag value="Aprobado Autogestión" severity="warning" [rounded]="true"></p-tag>
                            </div>
                         </div>
                   </div>
@@ -343,12 +346,9 @@
                                  <p>{{order?.user?.fullName}}</p>                              
                                  <p >{{order?.user?.address?.addressStreet}}</p>
                               </div>
-                              <div class="p-col-6">
+                              <div class="p-col-12">
                                  <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
 
-                              </div>
-                              <div *ngIf="order.isSelfManaged" class="p-col-6">
-                                 <p-tag value="autogetionando" severity="warning" [rounded]="true"></p-tag>
                               </div>
                            </div>
                         </div>
@@ -406,10 +406,11 @@
                                     <p >{{order?.user?.address?.addressStreet}}</p>
                                  </div>
                                  <div class="p-col-6">
-                                    <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>   
+                                    <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
+   
                                  </div>
-                                 <div *ngIf="order.isSelfManaged" class="p-col-6">
-                                    <p-tag value="autogetionado" severity="warning" [rounded]="true"></p-tag>
+                                 <div *ngIf="order.isPickUpStore" class="p-col-6">
+                                    <p-tag  value="Recojo en tienda" severity="warning" [rounded]="true"></p-tag>
                                  </div>
                               </div>
                            </div>
@@ -639,12 +640,10 @@
             </div>
 
           </div>
-          <div class="sidebar-bottom p-fluid" id="buttons">
+          <div class="sidebar-bottom" id="buttons">
              <div id="reject">
                <button class="btn-order "  *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" [loading]="loadingButtonAcept" (click)="readyOrder()"></button>
-               <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isApprovedSelfManaged &&!orderSelected.isSelfManaged" pButton type="button" label="Autogestionar Orden" [loading]="loadingButtonAcept" (click)="selfManagedOrder(orderSelected)" ></button>
-               <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isSelfManaged" pButton type="button" label="Terminar Orden" [loading]="loadingButtonAcept" (click)="finishOrder(orderSelected)" ></button>
                <button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()" [disabled]="!isButtonEnabled"></button>
                <button pButton type="button" *ngIf="orderSelected.status!='done'" label="Rechazar orden" class="p-button-danger btn-reject p-mt-2" (click)="openDialogDenyOrder()"></button>
             </div>
