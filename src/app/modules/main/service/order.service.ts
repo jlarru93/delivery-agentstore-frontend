@@ -25,10 +25,9 @@ export class OrderService {
     return this.http.put<ObjetResponse<any>>(env.url.backEnd + path,body)
   }
 
-  readyOder(orderId:string){
+  readyOder(orderId:string,body:any){
     let path="/order/:orderId/status"
-    path=path.replace(":orderId",orderId)
-    const body={status:READY_ORDER_STATUS} as AceptOrderRequest
+    path=path.replace(":orderId",orderId)    
     return this.http.put<ObjetResponse<any>>(env.url.backEnd + path,body)
   }
 

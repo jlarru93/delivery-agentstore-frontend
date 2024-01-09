@@ -52,9 +52,12 @@
                                  <p style="color: #ffffff;">{{order?.user?.fullName}}</p>                              
                                  <p style="color: #ffffff;">{{order?.user?.address?.addressStreet}}</p>
                               </div>
-                              <div class="p-col-12">
+                              <div class="p-col-6">
                                  <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
 
+                              </div>
+                              <div *ngIf="order.isPickUpStore" class="p-col-6">
+                                 <p-tag  value="Recojo en tienda" severity="warning" [rounded]="true"></p-tag>
                               </div>
                            </div>
                         </div>
@@ -132,9 +135,12 @@
                               <div class="p-col-11">
                                  <p >{{order?.user?.address?.addressStreet}}</p>
                               </div>
-                              <div class="p-col-12">
+                              <div class="p-col-6">
                                  <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
 
+                              </div>
+                              <div *ngIf="order.isPickUpStore" class="p-col-6">
+                                 <p-tag  value="Recojo en tienda" severity="warning" [rounded]="true"></p-tag>
                               </div>
                            </div>
                         </div>
@@ -393,9 +399,12 @@
                                     <p>{{order?.user?.fullName}}</p>                                 
                                     <p >{{order?.user?.address?.addressStreet}}</p>
                                  </div>
-                                 <div class="p-col-12">
+                                 <div class="p-col-6">
                                     <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
    
+                                 </div>
+                                 <div *ngIf="order.isPickUpStore" class="p-col-6">
+                                    <p-tag  value="Recojo en tienda" severity="warning" [rounded]="true"></p-tag>
                                  </div>
                               </div>
                            </div>
