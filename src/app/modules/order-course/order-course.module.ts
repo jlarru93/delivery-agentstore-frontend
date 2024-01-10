@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { OrderCourseRoutingModule } from './order-course-routing.module';
-import { OrderCourseComponent } from './order-course.component';
 
 // modulos prime 
 import { AccordionModule } from 'primeng/accordion';
@@ -14,6 +13,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { TagModule } from 'primeng/tag';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
+import { OrderCourseComponent } from './order-course.component';
 
 @NgModule({
   declarations: [OrderCourseComponent],

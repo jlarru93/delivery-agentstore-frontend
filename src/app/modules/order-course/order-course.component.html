@@ -14,12 +14,7 @@
         (onOpen)="onTapOpen($event, flagAccordion)"
       >
         <!-- [(selected)]="activeState[i]" -->
-        <p-accordionTab
-          transitionOptions="400ms cubic-bezier(0.86, 0, 0.07, 1)"
-
-          *ngFor="let item of list_order; index as i"
-          [(selected)]="selectedTabs[item.uuid]"
-        >
+        <p-accordionTab transitionOptions="400ms cubic-bezier(0.86, 0, 0.07, 1)" *ngFor="let item of list_order; index as i" [(selected)]="selectedTabs[item.uuid]" >
         <ng-template pTemplate="header">
           <div>
             Orden  N.°: {{ item.id + ' - ' }} <b [ngStyle]="{ color: item.status_order_color }">
@@ -34,7 +29,7 @@
               <div class="grid flex">
                 <p class="etiqueta-lista col-5">Cliente</p>
                 <p class="contenido-lista col-7">
-                  {{ item.addresses[1].receptorName ? item.addresses[1].receptorName : '' }}
+                  {{ item.addresses[1]?.receptorName ? item.addresses[1].receptorName : '' }}
                 </p>
               </div>
               <div class="grid flex">
@@ -46,7 +41,7 @@
               <div class="grid flex">
                 <p class="etiqueta-lista col-5">Destino</p>
                 <p class="contenido-lista col-7">
-                  {{ item.addresses[1].addressStreet }}
+                  {{ item.addresses[1]?.addressStreet??'' }}
                 </p>
               </div>
               <!-- <div class="grid flex">
