@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { AsyncData } from "../data/response";
 import { OrderResponse } from "../../main/service/data/response";
+import { dataSharedService } from "../data-shared.service";
 
 @Injectable({
     providedIn: 'root'
@@ -52,6 +53,10 @@ export class StoreHandler{
         return storedValue ? JSON.parse(storedValue) : null;
     }
     storeAudioEnabledStateInLocalStorage() {
+        console.log(this.audioEnabled)
         localStorage.setItem('audioEnabled', JSON.stringify(this.audioEnabled));
+        if(!this.audioEnabled){
+            this.stopAudio()
+        }
     }
 }
