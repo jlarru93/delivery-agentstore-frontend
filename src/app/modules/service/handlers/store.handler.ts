@@ -34,8 +34,11 @@ export class StoreHandler{
         if (!this.isPlaying && this.audioEnabled !== null) {
             this.loopAudio = this.audioEnabled;
             this.audio.loop = this.audioEnabled;
-      
-            this.audio.play();
+            var isPlaying = this.audio.currentTime > 0 && !this.audio.paused && !this.audio.ended 
+            && this.audio.readyState > this.audio.HAVE_CURRENT_DATA;
+            if(!isPlaying){
+                this.audio.play();
+            }
             this.isPlaying = true;
 
             this.storeAudioEnabledStateInLocalStorage();
