@@ -404,23 +404,28 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   updatePosition(select_service: ResponseLoadingOrder) {
 
     this.markers = []
-    const newMarkersOrigin: Marker = {
-      lat: select_service.addresses[0].location.coordinates[1],
-      lng: select_service.addresses[0].location.coordinates[0],
-      iconUrl: this.globalIconOrigin,
-      label: 'Origen',
-      isDraggable: false,
-    }
-    this.markers[0] = newMarkersOrigin
-
-    const newMarkersDestination: Marker = {
-      lat: select_service.addresses[1].location.coordinates[1],
-      lng: select_service.addresses[1].location.coordinates[0],
-      iconUrl: this.globalIconDestination,
-      label: 'Destino',
-      isDraggable: false,
-    }
-    this.markers[1] = newMarkersDestination
+    var newMarkers: Marker
+    select_service.addresses.forEach((element,i) => {
+      if(i==0){
+         newMarkers = {
+          lat: element.location.coordinates[1],
+          lng: element.location.coordinates[0],
+          iconUrl: this.globalIconOrigin,
+          label: 'Origen',
+          isDraggable: false,
+        }
+        this.markers.push(newMarkers)
+      }else{
+        newMarkers = {
+          lat: element.location.coordinates[1],
+          lng: element.location.coordinates[0],
+          iconUrl: this.globalIconDestination,
+          label: 'Destino',
+          isDraggable: false,
+        }
+        this.markers.push(newMarkers)
+      }
+    });    
     this.centrarMapa()
 
     // var lstPosiciones: PersonalisationMarker[] = [];
@@ -551,9 +556,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   filteredOrders: any
   async onSearchMotorizedOrderSubscription() {
-    await this.requestTripService
-      .onLoadingMotorizedService()
-      .subscribe((data) => {
+    await this.requestTripService.onLoadingMotorizedService().subscribe((data) => {
         this.list_order = [];
         data.data.forEach((element) => {
           let order = new ResponseLoadingOrder();

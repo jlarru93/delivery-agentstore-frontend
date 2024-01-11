@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { AsyncData } from "../data/response";
 import { OrderResponse } from "../../main/service/data/response";
+import { dataSharedService } from "../data-shared.service";
 
 @Injectable({
     providedIn: 'root'
@@ -33,8 +34,11 @@ export class StoreHandler{
         if (!this.isPlaying && this.audioEnabled !== null) {
             this.loopAudio = this.audioEnabled;
             this.audio.loop = this.audioEnabled;
-      
-            this.audio.play();
+            var isPlaying = this.audio.currentTime > 0 && !this.audio.paused && !this.audio.ended 
+            && this.audio.readyState > this.audio.HAVE_CURRENT_DATA;
+            if(!isPlaying){
+                this.audio.play();
+            }
             this.isPlaying = true;
 
             this.storeAudioEnabledStateInLocalStorage();
@@ -52,6 +56,10 @@ export class StoreHandler{
         return storedValue ? JSON.parse(storedValue) : null;
     }
     storeAudioEnabledStateInLocalStorage() {
+        console.log(this.audioEnabled)
         localStorage.setItem('audioEnabled', JSON.stringify(this.audioEnabled));
+        if(!this.audioEnabled){
+            this.stopAudio()
+        }
     }
 }

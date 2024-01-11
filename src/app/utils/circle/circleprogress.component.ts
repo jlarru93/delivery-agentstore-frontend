@@ -58,6 +58,6 @@ export class CircleProgress implements OnInit, AfterViewInit {
   }
 
   ringAlert(){
-    this.alert.handle(JSON.stringify(this.Order))
+    this.alert.handle(JSON.stringify({}))
   }
 }
