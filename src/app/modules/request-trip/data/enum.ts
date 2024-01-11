@@ -1,5 +1,5 @@
 export enum enumStatusOrder {
-    preparingOrder = 'preparingOrder ',
+    preparingOrder = 'preparingOrder',
     orderReady = 'orderReady',
     toStore = 'toStore',
     inStore = 'inStore',
@@ -8,7 +8,10 @@ export enum enumStatusOrder {
     nearHome = 'nearHome',
     inHome = 'inHome',
     reciveOrderDeliveryMan = 'reciveOrderDeliveryMan',
-    done = 'done'
+    done = 'done',
+    open = 'open',
+    rejectPayment = 'rejectPayment',
+    pendingPayment = 'pendingPayment'
 } 
 export enum enumTypePayment{
     CASH = 'CASH',

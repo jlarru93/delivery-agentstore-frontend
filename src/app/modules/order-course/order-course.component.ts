@@ -506,7 +506,6 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedTabs: { [key: string]: boolean } = {};
   async onSearchMotorizedOrder() {
     await this.requestTripService.onLoadingMotorizedService().subscribe((data) => {
-      debugger
         const selectedTabsBackup = { ...this.selectedTabs };
         this.list_order = [];
         data.data.forEach((element) => {
@@ -537,15 +536,20 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.payment = element.payment;
           order.id = element.id 
           order.uuid = element.uuid
+          order.type = element.type
           // order.showButton = false
 
           this.selectedTabs[order.uuid] = selectedTabsBackup[order.uuid];
 
           this.list_order.push(order);
+          this.filteredOrders = this.list_order
+          this.filteredOrders = this.list_order.filter(order => order.type === this.filterOrder);
         });
         this.isDoneGetOrders = true;
       });
   }
+
+  filteredOrders: any
   async onSearchMotorizedOrderSubscription() {
     await this.requestTripService
       .onLoadingMotorizedService()
@@ -587,7 +591,10 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.isOrderCalendar = element.isOrderCalendar
           order.store=element.store
           order.isCheckedStore=element.isCheckedStore??false
+          order.type = element.type
           this.list_order.push(order);
+          this.filteredOrders = this.list_order
+          this.filteredOrders = this.list_order.filter(order => order.type === this.filterOrder);
         });
         this.isDoneGetOrders = true;
         this.validOrdersSubscribe();
@@ -618,40 +625,50 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     switch (status) {
       case enumStatusOrder.preparingOrder://verde
         order = "El local está preparando tu orden";
-        this.statusColor = '#689f38'
+        //this.statusColor = '#689f38'
         break;
       case enumStatusOrder.toStore://amarillo
         order = "Te estás dirigiendo al local";
-        this.statusColor = '#fbc02d'
+        //this.statusColor = '#fbc02d'
         break;
       case enumStatusOrder.inStore://amarillo
         order = "Llegué al local";
-        this.statusColor = '#fbc02d'
+        //this.statusColor = '#fbc02d'
         break;
       case enumStatusOrder.reciveDelivery://amarillo
         order = "Recibí el pedido";
-        this.statusColor = '#fbc02d'
+        //this.statusColor = '#fbc02d'
         break;
       case enumStatusOrder.toHome://amarillo
         order = "Estás en camino a entregar el pedido";
-        this.statusColor = '#fbc02d'
+        //this.statusColor = '#fbc02d'
         break;
       case enumStatusOrder.nearHome://amarillo
         order = "Estás cerca del destino";
-        this.statusColor = '#fbc02d'
+        //this.statusColor = '#fbc02d'
         break;
       case enumStatusOrder.inHome://verde
         order = "Has llegado a la puerta del cliente";
-        this.statusColor = '#689f38'
+        //this.statusColor = '#689f38'
         break;
       case enumStatusOrder.orderReady://azul
+      
         order = "El pedido está listo para recoger";
-        this.statusColor = '#0747A6'
+        //this.statusColor = '#0747A6'
         break;
-        case enumStatusOrder.reciveOrderDeliveryMan://amarillo
-          order = "El repartidor tiene el pedido";
-          this.statusColor = '#fbc02d'
-          break;
+      case enumStatusOrder.reciveOrderDeliveryMan://amarillo
+        order = "El repartidor tiene el pedido";
+        //this.statusColor = '#fbc02d'
+        break;
+      case enumStatusOrder.open:
+        order = "Orden abierta";
+        break;
+      case enumStatusOrder.rejectPayment:
+        order = "Orden rechazada";
+        break;
+      case enumStatusOrder.pendingPayment:
+        order = "Pago pendiente";
+        break;
       default:
         break;
     }
@@ -685,9 +702,18 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
       case enumStatusOrder.orderReady://azul
         orderStatusColor = '#0747A6'
         break;
-        case enumStatusOrder.reciveOrderDeliveryMan://amarillo
-          orderStatusColor = '#fbc02d'
-          break;
+      case enumStatusOrder.reciveOrderDeliveryMan://amarillo
+        orderStatusColor = '#fbc02d'
+        break;
+      case enumStatusOrder.open:
+        orderStatusColor = '#689f38';
+        break;
+      case enumStatusOrder.rejectPayment:
+        orderStatusColor = "#dd1f26";
+        break;
+      case enumStatusOrder.pendingPayment:
+        orderStatusColor = "#A80DA3";
+        break;
       default:
         break;
     }
@@ -895,10 +921,19 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['/request-trip'])
   }
 
-  filterOrder: any
+  filterOrder: any = 'SendAndReciveStore'
 
   orderCourseOptions: any[] = [
-    { name: 'Regular', value: false },
-    { name: 'Express', value: true }
-];
+    { name: 'Express', value: 'SendAndReciveStore' },
+    { name: 'Marca Blanca', value: 'traditional' },
+    { name: 'Todos', value: 'all'}
+  ];
+
+  onFilterChange() {
+    if(this.filterOrder == 'all'){
+      this.filteredOrders = this.list_order
+    } else {
+      this.filteredOrders = this.list_order.filter(order => order.type === this.filterOrder);
+    }
+  }
 }
