@@ -256,12 +256,12 @@
                                  <div class="p-col-1">
                                     <img src="assets/images/icon-bike.svg" alt="" width="25">
                                  </div>
-                                 <div class="p-col-11" style="margin-top: 3px;">
-                                    <span style="padding-left: 10px;">Repartidor en camino</span>
+                                 <div class="p-col-11 pl-4" style="margin-top: 3px;">
+                                    <p-chip style="padding-left: 10px;" label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="p-mr-2"></p-chip>
+                                    <!-- <span style="padding-left: 10px;">Repartidor en camino</span> -->
                                  </div>
-                                 <div class="p-d-flex p-ai-center">
-                                    <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="p-mr-2"></p-chip>
-                                 </div>
+                                 <!-- <div class="p-d-flex p-ai-center">
+                                 </div> -->
                               </div>
                            </div>
                            <div *ngIf="order?.deliveryMan?.status == 'inStore'">
