@@ -32,6 +32,7 @@ import { PrintTemplateModule } from "src/app/print-template/print-template.modul
 import { TagModule } from "primeng/tag";
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ChipModule } from "primeng/chip";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
@@ -52,6 +53,7 @@ import { ChipModule } from "primeng/chip";
       ToastModule,
       AccordionModule,
       TableModule,
+      ProgressSpinnerModule,
       TreeTableModule,
       // AgmCoreModule.forRoot({
       //   apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",

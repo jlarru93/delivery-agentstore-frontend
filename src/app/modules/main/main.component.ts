@@ -27,6 +27,7 @@ import { StoreBean } from "../product/data";
 import { setHours, setMinutes, setSeconds } from "ngx-bootstrap/chronos/utils/date-setters";
 import { AlertServices } from "../service/alert.service";
 import { AceptOrderRequest } from "./service/data/request";
+import { interval } from "rxjs";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -85,6 +86,9 @@ import { AceptOrderRequest } from "./service/data/request";
     isIconUp: boolean = false
     otherReasonOrder: string = ""
 
+    activoColor: boolean = true
+    interval_active_color?: any
+
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
@@ -106,6 +110,8 @@ import { AceptOrderRequest } from "./service/data/request";
           this.getOrders()
         })
       }
+    
+
     ngOnInit(): void { 
       this.idStore= JSON.parse(localStorage.getItem('lstIdStore'))
       this.messageService.showSuccess( 'Success',  'Message Content');
@@ -130,6 +136,10 @@ import { AceptOrderRequest } from "./service/data/request";
           this.styleString = styleSheet
         }
       )
+
+      this.interval_active_color = setInterval(() => {
+        this.cambiarColor()
+      }, 1000)
     }
     ngOnDestroy(): void {
         clearInterval(this.set_interval)
@@ -155,9 +165,12 @@ import { AceptOrderRequest } from "./service/data/request";
       // dialogRef.afterClosed().subscribe(result => {
       //   console.log('Diálogo cerrado');
       // });
+
     }
 
-    
+    cambiarColor() {
+      this.activoColor = !this.activoColor;
+    }
 
     ngAfterViewInit(){
       const accordionContent = document.querySelectorAll(".accordion-item");
@@ -287,6 +300,7 @@ import { AceptOrderRequest } from "./service/data/request";
     stopAudio(){
       this.storeHandler.stopAudio();
       this.isIconUp = false
+      clearInterval(this.interval_active_color)
     }
     priceValueFormat: string[] = []
     totalPriceValueFormat : string

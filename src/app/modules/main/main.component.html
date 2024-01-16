@@ -1,356 +1,243 @@
 <p-toast [baseZIndex]="1000"></p-toast>
 <div class="p-grid">
     <div class="p-col-12 p-lg-2 p-md-6">
-       <div class="card widget-support-request">
-          <div class="card-header">
-             <div class="title">
-                <h5>{{title}}</h5>
-             </div>
-             <i *ngIf="isIconUp" class="pi pi-volume-up" (click)="stopAudio()"></i>
-             <i *ngIf="!isIconUp" class="pi pi-volume-off"></i>
-             <!-- <div class=" task-info">
-                <span>You have</span><span class="highlighted"> 2 tasks</span><span> today</span>
-             </div> -->
-          </div>
-          <div *ngFor="let order of ordersOpen; let i = index">
-             <div class="p-col-12">
-                <div class="p-grid p-nogutter widget-overview-box p-shadow-3 wave-background">
-                  <div class="p-col-12" >
-                     <div class="p-grid">
-                        <div class="p-col-9" (click)=" openOrderDialog(order)" >
-                           <div class="p-grid">
-                              <div class="p-col-6">
-                                 <h5 style="color: #ffffff;">{{order.id}}</h5>
-                              </div>
-                              <div class="p-col-6">
-                                 <p style="color: #ffffff;">{{calculateTime(order?.createdAt)}} min</p>                                 
-                              </div>
-                              
-                           </div>
-                        </div>
-                        <div class="p-col-3">
-                           <div class="overlay-container">
-                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right; background: linear-gradient(225deg, #f2c260 0%, #ebcb8b 100%);"></button>
-                              <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
-                                 <app-chat 
-                                    [isLoading]="order.isLoadingChat"
-                                    [messages]="order.messagesChat" 
-                                    [orderId]="order.id"
-                                    [orderUuid]="order.uuid"
-                                    [usuarioLogueado]="userName"
-                                    [userId]="userId"
-                                    [flagMainComponent]="true"
-                                    (hideChat)="hideChatComponent(order)"
-                                    (emitMessage)="sendMessage($event)"
-                                    ></app-chat>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="p-col-12">
-                           <div class="p-grid">   
-                              <div class="p-col-12">
-                                 <p style="color: #ffffff;">{{order?.user?.fullName}}</p>                              
-                                 <p style="color: #ffffff;">{{order?.user?.address?.addressStreet}}</p>
-                              </div>
-                              <div class="p-col-6">
-                                 <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
-
-                              </div>
-                              <div *ngIf="order.isPickUpStore" class="p-col-6">
-                                 <p-tag  value="Recojo en tienda" severity="warning" [rounded]="true"></p-tag>
-                              </div>
-                           </div>
-                        </div>
-                        
-                     </div>
+      <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
+         <div class="p-text-center main-title">
+            <p class="order-ready-main-title">{{title}}</p>
+            <div class="p-m-0 p-pt-2 p-pl-1">
+               <i *ngIf="isIconUp" class="pi pi-volume-up" style="color:#000; font-size: 1.25rem; font-weight: bold;" (click)="stopAudio()"></i>
+               <i *ngIf="!isIconUp" class="pi pi-volume-off" style="color:#000; font-size: 1.25rem; font-weight: bold;"></i>
+            </div>
+         </div>
+   
+         <div *ngFor="let order of ordersOpen; let i = index">
+            <div class="p-p-2">
+               <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
+                  <div class="card-order-header">
+                     <p class="order-ready-id">{{order.id}}</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23" fill="none">
+                        <circle cx="11.6694" cy="11.6406" r="10.8354" [attr.fill]="activoColor ? '#255FB1' : '#FFD700'"/>
+                     </svg>
                   </div>
-                  <div class="p-col-12" (click)=" openOrderDialog(order)">
-                     <hr style="border-color: #ffffff;">  
-                    </div>
-                    <div class="p-col-12" (click)=" openOrderDialog(order)">
-                     <div class="p-grid">
-                        <div class="p-col-12">
-                           <button class="p-button-warning" pButton pRipple type="button" style="float: right; background: linear-gradient(225deg, #f2c260 0%, #ebcb8b 100%); color: #ffffff;">Aceptar Orden</button>
-                        </div>
-                     </div>
-                    </div>
-                </div>
-             </div>
-          </div>
-       </div>
-    </div>
-    <div class="p-col-12 p-lg-3 p-md-6">
-       <div class="card widget-support-request">
-          <div class="p-grid p-nogutter">
-             <div class="p-col-6 title">
-                <h5>En preparación</h5>
-             </div>
-             <!-- <div class="p-col-6 support-info">
-                <p>⏰ Estimated wait time</p>
-                <span class="highlighted">21 minutes</span>
-             </div> -->
-          </div>
-          <div *ngFor="let order of ordersPreparing; let i = index">
-            <div class="p-col-12" id="btn-order">
-               <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
-                 <div class="p-col-12">
-                     <div class="p-grid" >
-                        <div class="p-col-9" (click)=" openOrderDialog(order)">
-                           <div class="p-grid">
-                              <div class="p-col-6"  >
-                                 <h5>{{order.id}}</h5>
-                              </div>
-                              <div class="p-col-5">
-                                 <p>{{calculateTime(order?.createdAt)}} min</p>                                 
-                              </div>
-                              <div class="p-col-10">
-                                 <p >{{order?.user?.fullName}}</p>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="p-col-3">
-                           <div class="overlay-container">
-                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
-                              <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
-                                 <app-chat 
-                                    [isLoading]="order.isLoadingChat"
-                                    [messages]="order.messagesChat" 
-                                    [orderId]="order.id"
-                                    [orderUuid]="order.uuid"
-                                    [usuarioLogueado]="userName"
-                                    [userId]="userId"
-                                    [flagMainComponent]="true"
-                                    (hideChat)="hideChatComponent(order)"
-                                    (emitMessage)="sendMessage($event)"
-                                    ></app-chat>
-                              </div>
-                           </div>
-                           <circle-progress [startTime]="order.acceptAgentStoreAt" [endTime]="order.readyToDmAt"  style="padding-right: 10px; float: right;"></circle-progress>
-                        </div>
-                        
-                     </div>
-                     <div class="p-grid">
-                        <div class="p-col-12">
-                           <div class="p-grid">                              
-                              <div class="p-col-11">
-                                 <p >{{order?.user?.address?.addressStreet}}</p>
-                              </div>
-                              <div class="p-col-6">
-                                 <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
-
-                              </div>
-                              <div *ngIf="order.isPickUpStore" class="p-col-6">
-                                 <p-tag  value="Recojo en tienda" severity="warning" [rounded]="true"></p-tag>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                 </div>
-                 <div class="p-col-12"  (click)=" openOrderDialog(order)">
-                  <hr>  
-                 </div>
-                 <div class="p-col-12"  (click)=" openOrderDialog(order)">
-                  <div class="p-grid">
-                     <div class="p-col-6">
-                        <div *ngIf="order?.deliveryMan?.status == 'toStore'">
-                           <div class="p-grid">
-                              <div class="p-col-1">
-                                 <img src="assets/images/icon-bike.svg" alt="" width="25">
-                              </div>
-                              <div class="p-col-11" style="margin-top: 3px;">
-                                 <span style="padding-left: 10px;">Repartidor en camino</span>
-                              </div>
-                           </div>
-                        </div>
-                        <div *ngIf="order?.deliveryMan?.status == 'inStore'">
-                           <div class="p-grid">
-                              <div class="p-col-1">
-                                 <img src="assets/images/icon-store.svg" alt="" width="25">
-                              </div>
-                              <div class="p-col-11" style="margin-top: 3px;">
-                                 <span style="padding-left: 10px;">Repartidor está en la tienda</span>
-                              </div>
-                           </div>
-                        </div>
-                        <div *ngIf="order?.deliveryMan == null">
-                           <div class="p-grid">
-                              <div class="p-col-1">
-                                 <img src="assets/images/icon-target.svg" alt="" width="25">
-                              </div>
-                              <div class="p-col-11" style="margin-top: 3px;">
-                                 <span style="padding-left: 10px;">Buscando repartidor</span>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="p-col-6">
-                        <button class="p-button-primary" pButton pRipple type="button" style="float: right;">Pedido listo</button>
-                     </div>
+                  <div class="card-order-ready-time">
+                     <div class="calculated-time-subtitle">Order Time</div>
+                     <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
                   </div>
-                 </div>
+                  <div class="p-pt-3 p-pb-3">
+                     <div *ngIf="order.isPickUpStore">
+                        <div class="order-isPickUpStore">Recojo en tienda</div>
+                     </div>
+   
+                     <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
+                     <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
+                  </div>
+                  <div>
+                     <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
+                  </div>
+                  <hr style="background-color: #DDDDDD; height: 1px;">
+                  <div class="card-order-ready-bottom">
+                     <div class="">
+                        <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" 
+                        class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
+                        <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                           <app-chat 
+                              [isLoading]="order.isLoadingChat"
+                              [messages]="order.messagesChat" 
+                              [orderId]="order.id"
+                              [orderUuid]="order.uuid"
+                              [usuarioLogueado]="userName"
+                              [userId]="userId"
+                              [flagMainComponent]="true"
+                              (hideChat)="hideChatComponent(order)"
+                              (emitMessage)="sendMessage($event)"
+                              ></app-chat>
+                        </div>
+                     </div>
+                     <p-button label="Aceptar Orden" styleClass="p-button-sm p-button-rounded" (click)="openOrderDialog(order)"
+                      [style]="{background: '#DD1F26'}"></p-button>
+                  </div>
                </div>
             </div>
          </div>
-       </div>
+
+      </div>
+
     </div>
     <div class="p-col-12 p-lg-3 p-md-6">
-       <div class="card widget-support-request">
-            <div class="p-grid p-nogutter">
-               <div class="p-col-6 title">
-                  <h5>Por Entregar</h5>
-               </div>
-            </div>
-            <div *ngFor="let order of ordersReady; let i = index">
-               <div class="p-col-12">
-                  <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
-                     <div class="p-col-12" >
-                        <div class="p-grid">
-                           <div class="p-col-10"(click)=" openOrderDialog(order)" >
-                              <div class="p-grid">
-                                 <div class="p-col-6">
-                                    <h5>{{order.id}}</h5>
-                                 </div>
-                                 <div class="p-col-5">
-                                    <p>{{calculateTime(order?.createdAt)}} min</p>                                 
-                                 </div>
-                                 
-                              </div>                             
-                           </div>
-                           <div class="p-col-2">
-                              <div class="overlay-container">
-                                 <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
-                                 <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
-                                    <app-chat 
-                                       [isLoading]="order.isLoadingChat"
-                                       [messages]="order.messagesChat" 
-                                       [orderId]="order.id"
-                                       [orderUuid]="order.uuid"
-                                       [usuarioLogueado]="userName"
-                                       [userId]="userId"
-                                       [flagMainComponent]="true"
-                                       (hideChat)="hideChatComponent(order)"
-                                       (emitMessage)="sendMessage($event)"
-                                       ></app-chat>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="p-grid">
-                           <div class="p-col-12">
-                              <p>{{order?.user?.fullName}}</p>
-                              <p >{{order?.user?.address?.addressStreet}}</p>
-                           </div>
-                           <div class="p-col-12">
-                              <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
-                           </div>
-                        </div>
+      <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
+         <div class="p-text-center main-title">
+            <p class="order-ready-main-title">En preparación</p>
+         </div>
+         <div *ngFor="let order of ordersPreparing; let i = index">
+            <div class="p-p-2">
+               <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
+                  <div class="card-order-header">
+                     <p class="order-ready-id">{{order.id}}</p>
+                     <circle-progress [startTime]="order.acceptAgentStoreAt" [endTime]="order.readyToDmAt"  style="padding-right: 10px; float: right;"></circle-progress>
                   </div>
-                  <div class="p-col-12" (click)=" openOrderDialog(order)">
-                     <hr>  
+                  <div class="card-order-ready-time">
+                     <div class="calculated-time-subtitle">Order Time</div>
+                     <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
                   </div>
-                  <div class="p-col-12" (click)=" openOrderDialog(order)">
-                     <div class="p-grid">
-                        <div class="p-col-6">
-                           <div *ngIf="order?.deliveryMan?.status == 'toStore'">
-                              <div class="p-grid">
-                                 <div class="p-col-1">
-                                    <img src="assets/images/icon-bike.svg" alt="" width="25">
-                                 </div>
-                                 <div class="p-col-11" style="margin-top: 3px;">
-                                    <span style="padding-left: 10px;">Repartidor en camino</span>
-                                 </div>
-                                 <div class="p-d-flex p-ai-center">
-                                    <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="p-mr-2"></p-chip>
-                                 </div>
-                              </div>
-                           </div>
-                           <div *ngIf="order?.deliveryMan?.status == 'inStore'">
-                              <div class="p-grid">
-                                 <div class="p-col-1">
-                                    <img src="assets/images/icon-store.svg" alt="" width="25">
-                                 </div>
-                                 <div class="p-col-11" style="margin-top: 3px;">
-                                    <span style="padding-left: 10px;">Repartidor está en la tienda</span>
-                                 </div>
-                                 <div class="p-d-flex p-ai-center">
-                                    <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="p-mr-2"></p-chip>
-                                 </div>
-                              </div>
-                           </div>
-                           <div *ngIf="order?.deliveryMan == null">
-                              <div class="p-grid">
-                                 <div class="p-col-1">
-                                    <img src="assets/images/icon-target.svg" alt="" width="25">
-                                 </div>
-                                 <div class="p-col-11" style="margin-top: 3px;">
-                                    <span style="padding-left: 10px;">Buscando repartidor</span>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="p-col-6">
-                           <button class="p-button-primary" pButton pRipple type="button" style="float: right;">Entregar pedido</button>
-                        </div>
+                  <div class="p-pt-3 p-pb-3">
+                     <div *ngIf="order.isPickUpStore">
+                        <div class="order-isPickUpStore">Recojo en tienda</div>
+                     </div>
+   
+                     <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
+                     <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
+                  </div>
+                  <div class="order-store-status">
+                     <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
+                     <div *ngIf="order?.deliveryMan == null" style="display: flex;">
+                        <p-progressSpinner [style]="{width: '20px', height: '20px'}" strokeWidth="5" styleClass="custom-spinner"></p-progressSpinner>
+                        <span>Buscando repartidor...</span>
+                     </div>
+                     <div *ngIf="order?.deliveryMan?.status == 'toStore'">
+                        <div>Repartidor en camino</div>
+                     </div>
+                     <div *ngIf="order?.deliveryMan?.status == 'inStore'">
+                        <div>Repartidor está en la tienda</div>         
                      </div>
                   </div>
+                  <hr style="background-color: #DDDDDD; height: 1px;">
+                  <div class="card-order-ready-bottom">
+                     <div>
+                        <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
+                        class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
+                           <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                              <app-chat 
+                                 [isLoading]="order.isLoadingChat"
+                                 [messages]="order.messagesChat" 
+                                 [orderId]="order.id"
+                                 [orderUuid]="order.uuid"
+                                 [usuarioLogueado]="userName"
+                                 [userId]="userId"
+                                 [flagMainComponent]="true"
+                                 (hideChat)="hideChatComponent(order)"
+                                 (emitMessage)="sendMessage($event)"
+                                 ></app-chat>
+                           </div>
+                     </div>
+                     <p-button label="Pedido Listo" styleClass="p-button-sm p-button-rounded"
+                      [style]="{background: '#DD1F26'}" (click)="openOrderDialog(order)"></p-button>
                   </div>
                </div>
             </div>
-       </div>
+         </div>
+         
+      </div>
+    </div>
+    <div class="p-col-12 p-lg-3 p-md-6">
+      <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
+         <div class="p-text-center main-title">
+            <p class="order-ready-main-title">Por Entregar</p>
+         </div>
+         <div *ngFor="let order of ordersReady; let i = index">
+            <div class="p-p-2">
+               <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
+                  <div class="card-order-header">
+                     <p class="order-ready-id">{{order.id}}</p>
+                  </div>
+                  <div class="card-order-ready-time">
+                     <div class="calculated-time-subtitle">Order Time</div>
+                     <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
+                  </div>
+                  <div class="p-pt-3 p-pb-3">
+                     <div *ngIf="order.isPickUpStore">
+                        <div class="order-isPickUpStore">Recojo en tienda</div>
+                     </div>
+   
+                     <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
+                     <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
+                  </div>
+                  <div class="order-store-status">
+                     <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
+                     <div *ngIf="order?.deliveryMan?.status == 'toStore'">
+                        <div>Repartidor en camino</div>
+                        <div class="p-d-flex p-ai-center">
+                           <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="custom-chip-dm p-mr-2"></p-chip>
+                        </div>
+                     </div>
+                     <div *ngIf="order?.deliveryMan?.status == 'inStore'">
+                        <div>Repartidor está en la tienda</div>
+                        <div class="p-d-flex p-ai-center">
+                           <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="custom-chip-dm p-mr-2"></p-chip>
+                        </div>
+                     </div>
+                     <div *ngIf="order?.deliveryMan == null" style="display: flex;">
+                        <p-progressSpinner [style]="{width: '20px', height: '20px'}" strokeWidth="5" styleClass="custom-spinner"></p-progressSpinner>
+                        <span>Buscando repartidor...</span>
+                     </div>
+                  </div>
+                  <hr style="background-color: #DDDDDD; height: 1px;">
+                  <div class="card-order-ready-bottom">
+                     <div>
+                        <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
+                        class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
+                           <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                              <app-chat 
+                                 [isLoading]="order.isLoadingChat"
+                                 [messages]="order.messagesChat" 
+                                 [orderId]="order.id"
+                                 [orderUuid]="order.uuid"
+                                 [usuarioLogueado]="userName"
+                                 [userId]="userId"
+                                 [flagMainComponent]="true"
+                                 (hideChat)="hideChatComponent(order)"
+                                 (emitMessage)="sendMessage($event)"
+                                 ></app-chat>
+                           </div>
+                     </div>
+                     <p-button label="Entregar pedido" styleClass="p-button-sm p-button-rounded" 
+                      [style]="{background: '#DD1F26'}"></p-button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
     </div>
    <div class="p-col-12 p-lg-2 p-md-6">
-      <div class="card widget-support-request">
-         <div class="p-grid p-nogutter">
-            <div class="p-col-6 title">
-               <h5>En reparto</h5>
-            </div>
+      <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
+         <div class="p-text-center main-title">
+            <p class="order-ready-main-title">En Reparto</p>
          </div>
          <div *ngFor="let order of ordersInRoute; let i = index">
-            <div class="p-col-12">
-               <div class="p-grid p-nogutter widget-overview-box p-shadow-3">
-                  <div class="p-col-12">
-                     <div class="p-grid">
-                        <div class="p-col-9" (click)=" openOrderDialog(order)">
-                           <div class="p-grid">
-                              <div class="p-col-6"  >
-                                 <h5>{{order.id}}</h5>
-                              </div>
-                              <div class="p-col-5">
-                                 <p>{{calculateTime(order?.createdAt)}} min</p>                                 
-                              </div>
-                              
-                           </div>
-                           
-                        </div>
-                        <div class="p-col-3">
-                           <div class="overlay-container">
-                              <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="order.messagesNoReadTotal" style="float: right;"></button>
-                              <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
-                                 <app-chat 
-                                    [isLoading]="order.isLoadingChat"
-                                    [messages]="order.messagesChat" 
-                                    [orderId]="order.id"
-                                    [orderUuid]="order.uuid"
-                                    [usuarioLogueado]="userName"
-                                    [userId]="userId"
-                                    (emitMessage)="sendMessage($event)"
-                                    ></app-chat>
-                              </div>
-                           </div>
-                        </div>
+            <div class="p-p-2">
+               <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
+                  <div class="card-order-header">
+                     <p class="order-ready-id">{{order.id}}</p>
+                  </div>
+                  <div class="card-order-ready-time">
+                     <div class="calculated-time-subtitle">Order Time</div>
+                     <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
+                  </div>
+                  <div class="p-pt-3 p-pb-3">
+                     <div *ngIf="order.isPickUpStore">
+                        <div class="order-isPickUpStore">Recojo en tienda</div>
                      </div>
-                     <div class="p-grid">
-                        <div class="p-col-12">
-                           <div class="p-grid">    
-                              <div class="p-col-12">
-                                 <p>{{order?.user?.fullName}}</p>                              
-                                 <p >{{order?.user?.address?.addressStreet}}</p>
-                              </div>
-                              <div class="p-col-12">
-                                 <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
-
-                              </div>
-                           </div>
+   
+                     <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
+                     <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
+                  </div>
+                  <div class="order-store-status">
+                     <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
+                  </div>
+                  <hr style="background-color: #DDDDDD; height: 1px;">
+                  <div class="card-order-ready-bottom">
+                     <div>
+                        <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
+                        class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
+                        <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                           <app-chat 
+                              [isLoading]="order.isLoadingChat"
+                              [messages]="order.messagesChat" 
+                              [orderId]="order.id"
+                              [orderUuid]="order.uuid"
+                              [usuarioLogueado]="userName"
+                              [userId]="userId"
+                              (emitMessage)="sendMessage($event)"
+                              ></app-chat>
                         </div>
                      </div>
                   </div>
@@ -360,7 +247,54 @@
       </div>
    </div>
    <div class="p-col-12 p-lg-2 p-md-6">
-      <div class="card widget-support-request">
+      <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
+         <div class="p-text-center main-title">
+            <p class="order-ready-main-title">Culminado</p>
+         </div>
+         <div *ngFor="let order of ordersFinis; let i = index">
+            <div class="p-p-2">
+               <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
+                  <div class="card-order-header">
+                     <p class="order-ready-id">{{order.id}}</p>
+                  </div>
+                  <div class="card-order-ready-time">
+                     <div class="calculated-time-subtitle">Order Time</div>
+                     <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
+                  </div>
+                  <div class="p-pt-3 p-pb-3">
+                     <div *ngIf="order.isPickUpStore">
+                        <div class="order-isPickUpStore">Recojo en tienda</div>
+                     </div>
+   
+                     <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
+                     <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
+                  </div>
+                  <div class="order-store-status">
+                     <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
+                  </div>
+                  <hr style="background-color: #DDDDDD; height: 1px;">
+                  <div class="card-order-ready-bottom">
+                     <div>
+                        <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
+                        class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
+                        <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                           <app-chat 
+                              [isLoading]="order.isLoadingChat"
+                              [messages]="order.messagesChat" 
+                              [orderId]="order.id"
+                              [orderUuid]="order.uuid"
+                              [usuarioLogueado]="userName"
+                              [userId]="userId"
+                              (emitMessage)="sendMessage($event)"
+                              ></app-chat>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- <div class="card widget-support-request">
          <div class="p-grid p-nogutter">
             <div class="p-col-6 title">
                <h5>Culminado</h5>
@@ -420,9 +354,13 @@
                </div>
             </div>
          </div>
-      </div>
+      </div> -->
    </div>
  </div>
+
+
+
+
  <p-dialog [(visible)]="displayOrder" [modal]="true">
    <p-toast position="top-center" key="tc"></p-toast>
  <ng-template pTemplate="header">
