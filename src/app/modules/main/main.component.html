@@ -13,7 +13,7 @@
          <div *ngFor="let order of ordersOpen; let i = index">
             <div class="p-p-2">
                <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
-                  <div class="card-order-header">
+                  <div class="card-order-header" (click)="openOrderDialog(order)">
                      <p class="order-ready-id">{{order.id}}</p>
                      <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23" fill="none">
                         <circle cx="11.6694" cy="11.6406" r="10.8354" [attr.fill]="activoColor ? '#255FB1' : '#FFD700'"/>
@@ -36,7 +36,7 @@
                   </div>
                   <hr style="background-color: #DDDDDD; height: 1px;">
                   <div class="card-order-ready-bottom">
-                     <div class="">
+                     <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" 
                         class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
                         <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
@@ -71,7 +71,7 @@
          <div *ngFor="let order of ordersPreparing; let i = index">
             <div class="p-p-2">
                <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
-                  <div class="card-order-header">
+                  <div class="card-order-header" (click)="openOrderDialog(order)">
                      <p class="order-ready-id">{{order.id}}</p>
                      <circle-progress [startTime]="order.acceptAgentStoreAt" [endTime]="order.readyToDmAt"  style="padding-right: 10px; float: right;"></circle-progress>
                   </div>
@@ -84,7 +84,7 @@
                         <div class="order-isPickUpStore">Recojo en tienda</div>
                      </div>
 
-                     <div *ngIf="order.isApprovedSelfManaged" class="p-col-6">  
+                     <div *ngIf="order.isApprovedSelfManaged">  
                         <div class="order-isPickUpStore">Aprobado Autogestión</div>                   
                      </div>
    
@@ -106,7 +106,7 @@
                   </div>
                   <hr style="background-color: #DDDDDD; height: 1px;">
                   <div class="card-order-ready-bottom">
-                     <div>
+                     <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
                         class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
                            <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
@@ -140,7 +140,7 @@
          <div *ngFor="let order of ordersReady; let i = index">
             <div class="p-p-2">
                <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
-                  <div class="card-order-header">
+                  <div class="card-order-header" (click)="openOrderDialog(order)">
                      <p class="order-ready-id">{{order.id}}</p>
                   </div>
                   <div class="card-order-ready-time">
@@ -151,7 +151,9 @@
                      <div *ngIf="order.isPickUpStore">
                         <div class="order-isPickUpStore">Recojo en tienda</div>
                      </div>
-   
+                     <div *ngIf="order.isApprovedSelfManaged">
+                        <div class="order-isPickUpStore">Aprobado Autogestión</div>                      
+                     </div>
                      <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
                      <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
                   </div>
@@ -176,7 +178,7 @@
                   </div>
                   <hr style="background-color: #DDDDDD; height: 1px;">
                   <div class="card-order-ready-bottom">
-                     <div>
+                     <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
                         class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
                            <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
@@ -209,7 +211,7 @@
          <div *ngFor="let order of ordersInRoute; let i = index">
             <div class="p-p-2">
                <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
-                  <div class="card-order-header">
+                  <div class="card-order-header" (click)="openOrderDialog(order)">
                      <p class="order-ready-id">{{order.id}}</p>
                   </div>
                   <div class="card-order-ready-time">
@@ -217,10 +219,10 @@
                      <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
                   </div>
                   <div class="p-pt-3 p-pb-3">
-                     <div *ngIf="order.isPickUpStore">
-                        <div class="order-isPickUpStore">Recojo en tienda</div>
+
+                     <div *ngIf="order.isSelfManaged">
+                        <div class="order-isPickUpStore">Autogestionado</div>                             
                      </div>
-<<<<<<< HEAD
    
                      <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
                      <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
@@ -230,7 +232,7 @@
                   </div>
                   <hr style="background-color: #DDDDDD; height: 1px;">
                   <div class="card-order-ready-bottom">
-                     <div>
+                     <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
                         class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
                         <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
@@ -243,23 +245,6 @@
                               [userId]="userId"
                               (emitMessage)="sendMessage($event)"
                               ></app-chat>
-=======
-                     <div class="p-grid">
-                        <div class="p-col-12">
-                           <div class="p-grid">    
-                              <div class="p-col-12">
-                                 <p>{{order?.user?.fullName}}</p>                              
-                                 <p >{{order?.user?.address?.addressStreet}}</p>
-                              </div>
-                              <div class="p-col-6">
-                                 <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
-
-                              </div>
-                              <div *ngIf="order.isSelfManaged" class="p-col-6">
-                                 <p-tag value="autogetionando" severity="warning" [rounded]="true"></p-tag>                              
-                              </div>
-                           </div>
->>>>>>> d9b8227a802b2fd7dad2bdc5077d8f48f3e7cf86
                         </div>
                      </div>
                   </div>
@@ -276,7 +261,7 @@
          <div *ngFor="let order of ordersFinis; let i = index">
             <div class="p-p-2">
                <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
-                  <div class="card-order-header">
+                  <div class="card-order-header" (click)="openOrderDialog(order)">
                      <p class="order-ready-id">{{order.id}}</p>
                   </div>
                   <div class="card-order-ready-time">
@@ -296,7 +281,7 @@
                   </div>
                   <hr style="background-color: #DDDDDD; height: 1px;">
                   <div class="card-order-ready-bottom">
-                     <div>
+                     <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
                         class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
                         <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>

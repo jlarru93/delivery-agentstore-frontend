@@ -231,7 +231,7 @@ export class ChatComponent implements OnInit {
     //let id=this.auth.getParameterToken('id')
     //this.usuarioLogueado=userName
     //this.userId=id
-    this.scrollToBottom()
+    //this.scrollToBottom()
   }
 
   // ngOnChanges(changes: SimpleChanges){
@@ -239,6 +239,10 @@ export class ChatComponent implements OnInit {
   //     this.scrollToBottom()
   //   }
   // }
+
+  onChatScroll(event: Event): void {
+    event.stopPropagation();
+  }
 
   sendMessage(){
     const message:string = this.messageControl.value.toString();

@@ -547,7 +547,7 @@ import { interval } from "rxjs";
         (resp)=>{
           order.isLoadingChat=false
           order.messagesChat= resp.data.map((message)=>ChatResponse.toBean(message))
-          this.chatComponent.scrollToBottom()
+          //this.chatComponent.scrollToBottom()
         },
         (error)=>{
           order.isLoadingChat=false
