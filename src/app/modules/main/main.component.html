@@ -83,6 +83,10 @@
                      <div *ngIf="order.isPickUpStore">
                         <div class="order-isPickUpStore">Recojo en tienda</div>
                      </div>
+
+                     <div *ngIf="order.isApprovedSelfManaged" class="p-col-6">  
+                        <div class="order-isPickUpStore">Aprobado Autogestión</div>                   
+                     </div>
    
                      <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
                      <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
@@ -216,6 +220,7 @@
                      <div *ngIf="order.isPickUpStore">
                         <div class="order-isPickUpStore">Recojo en tienda</div>
                      </div>
+<<<<<<< HEAD
    
                      <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
                      <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
@@ -238,6 +243,23 @@
                               [userId]="userId"
                               (emitMessage)="sendMessage($event)"
                               ></app-chat>
+=======
+                     <div class="p-grid">
+                        <div class="p-col-12">
+                           <div class="p-grid">    
+                              <div class="p-col-12">
+                                 <p>{{order?.user?.fullName}}</p>                              
+                                 <p >{{order?.user?.address?.addressStreet}}</p>
+                              </div>
+                              <div class="p-col-6">
+                                 <p-tag value="{{order?.store?.name}}" severity="success" [rounded]="true"></p-tag>
+
+                              </div>
+                              <div *ngIf="order.isSelfManaged" class="p-col-6">
+                                 <p-tag value="autogetionando" severity="warning" [rounded]="true"></p-tag>                              
+                              </div>
+                           </div>
+>>>>>>> d9b8227a802b2fd7dad2bdc5077d8f48f3e7cf86
                         </div>
                      </div>
                   </div>
@@ -345,6 +367,9 @@
                                  </div>
                                  <div *ngIf="order.isPickUpStore" class="p-col-6">
                                     <p-tag  value="Recojo en tienda" severity="warning" [rounded]="true"></p-tag>
+                                 </div>
+                                 <div *ngIf="order.isSelfManaged" class="p-col-6">
+                                    <p-tag value="autogetionado" severity="warning" [rounded]="true"></p-tag>                              
                                  </div>
                               </div>
                            </div>
@@ -578,8 +603,10 @@
             </div>
 
           </div>
-          <div class="sidebar-bottom" id="buttons">
+          <div class="sidebar-bottom p-fluid" id="buttons">
              <div id="reject">
+               <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isSelfManaged" pButton type="button" label="Terminar Orden" [loading]="loadingButtonAcept" (click)="finishOrder(orderSelected)" ></button>
+               <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isApprovedSelfManaged &&!orderSelected.isSelfManaged" pButton type="button" label="Autogestionar Orden" [loading]="loadingButtonAcept" (click)="selfManagedOrder(orderSelected)" ></button>
                <button class="btn-order "  *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" [loading]="loadingButtonAcept" (click)="readyOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()" [disabled]="!isButtonEnabled"></button>
