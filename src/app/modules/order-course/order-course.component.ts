@@ -927,8 +927,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   filterOrder: any = 'SendAndReciveStore'
 
   orderCourseOptions: any[] = [
-    { name: 'Express', value: 'SendAndReciveStore' },
-    { name: 'Marca Blanca', value: 'traditional' },
+    { name: 'Manual', value: 'SendAndReciveStore' },
+    { name: 'App', value: 'traditional' },
     { name: 'Todos', value: 'all'}
   ];
 

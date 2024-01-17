@@ -27,7 +27,7 @@
                      <div *ngIf="order.isPickUpStore">
                         <div class="order-isPickUpStore">Recojo en tienda</div>
                      </div>
-   
+                     
                      <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
                      <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
                   </div>
@@ -272,7 +272,9 @@
                      <div *ngIf="order.isPickUpStore">
                         <div class="order-isPickUpStore">Recojo en tienda</div>
                      </div>
-   
+                     <div *ngIf="order.isApprovedSelfManaged">  
+                        <div class="order-isPickUpStore">Autogestionado</div>                   
+                     </div>
                      <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
                      <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
                   </div>
