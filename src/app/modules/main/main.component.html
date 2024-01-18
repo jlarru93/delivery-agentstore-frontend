@@ -99,9 +99,15 @@
                      </div>
                      <div *ngIf="order?.deliveryMan?.status == 'toStore'">
                         <div>Repartidor en camino</div>
+                        <div class="p-d-flex p-ai-center">
+                           <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="custom-chip-dm p-mr-2"></p-chip>
+                        </div>
                      </div>
                      <div *ngIf="order?.deliveryMan?.status == 'inStore'">
-                        <div>Repartidor está en la tienda</div>         
+                        <div>Repartidor está en la tienda</div>
+                        <div class="p-d-flex p-ai-center">
+                           <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="custom-chip-dm p-mr-2"></p-chip>
+                        </div>         
                      </div>
                   </div>
                   <hr style="background-color: #DDDDDD; height: 1px;">
@@ -242,6 +248,8 @@
                               [orderId]="order.id"
                               [orderUuid]="order.uuid"
                               [usuarioLogueado]="userName"
+                              [flagMainComponent]="true"
+                              (hideChat)="hideChatComponent(order)"
                               [userId]="userId"
                               (emitMessage)="sendMessage($event)"
                               ></app-chat>
@@ -293,6 +301,8 @@
                               [orderId]="order.id"
                               [orderUuid]="order.uuid"
                               [usuarioLogueado]="userName"
+                              [flagMainComponent]="true"
+                              (hideChat)="hideChatComponent(order)"
                               [userId]="userId"
                               (emitMessage)="sendMessage($event)"
                               ></app-chat>
