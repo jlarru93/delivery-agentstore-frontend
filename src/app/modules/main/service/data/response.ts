@@ -359,6 +359,7 @@ export class OrderResponse {
     isApprovedSelfManaged:boolean
     isSelfManaged:boolean
     isPickUpStore:boolean
+    readyToDmMinutesAt?: number
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
         bean.id = self?.id
@@ -384,6 +385,7 @@ export class OrderResponse {
         bean.isApprovedSelfManaged=self.isApprovedSelfManaged??false
         bean.isSelfManaged = self.isSelfManaged??false
         bean.isPickUpStore = self.isPickUpStore??false
+        bean.readyToDmMinutesAt = self.readyToDmMinutesAt
         return bean
     }
 }

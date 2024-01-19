@@ -543,23 +543,36 @@
                      <!-- <div class="p-col-6">
                         <p class="float-right">{{formatearTiempo(orderSelected?.readyToDmAt)}}</p>
                      </div> -->
-                     <div class="p-col-6 p-fluid">
+                     <!-- <div class="p-col-6 p-fluid">
                         <input type="time" value="{{formatearTiempo(orderSelected?.readyToDmAt)}}" [(ngModel)]="ReadyToDmAt" pInputText min="{{tiempoReadyToDmAt}}" max="23:59:59" class="p-inputtext-sm">
                      </div>
                      <div class=" p-col-6 ">
                         <button class="p-button-outlined float-right" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Actulazar hora" [loading]="loadingButtonAcept" (click)="updateTimes(orderSelected)"></button>
+                     </div> -->
+                  </div>
+               </div>
+               <div class="card-time">
+                  <div class="p-grid">
+                     <div class="p-col-4">
+                        <button pButton pRipple type="button" icon="pi pi-minus" 
+                        class="p-button-rounded p-button-text" (click)="onDecrement()"></button>
+                     </div>
+                     <div class="p-col-4" id="counter-value">
+                        {{readyToDmMinutesAt}} <br>
+                        <div class="counter-min">min</div>
+                     </div>
+                     <div class="p-col-4">
+                        <button pButton pRipple type="button" icon="pi pi-plus" style="float: right;"
+                        class="p-button-rounded p-button-text" (click)="onIncrement()"></button>
+                     </div>
+                  </div>
+                  <div class="p-grid p-fluid">
+                     <div class="p-col-12">
+                        <button class="p-button-outlined float-right" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Actulazar hora" [loading]="loadingButtonAcept" (click)="updateTimes(orderSelected)"></button>
                      </div>
                   </div>
                </div>
-               <!-- <div class="card-time">
-                  <div class="card-repartidor">
-                     <div class="p-grid">
-                        <div class="p-col-12" style="text-align: center;">
-                           <span>{{formatearTiempo(orderSelected?.readyToDmAt)}}</span>
-                        </div>                        
-                     </div>           
-                  </div>
-               </div> -->
+
                <div class="p-mb-2"></div>
                <div class="card-time">
                   <div *ngIf="orderSelected.deliveryMan">

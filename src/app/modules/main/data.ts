@@ -169,6 +169,7 @@ export class OrderBean {
     isApprovedSelfManaged:boolean
     isSelfManaged:boolean
     isPickUpStore:boolean
+    readyToDmMinutesAt?: number
     constructor(){
         this.messagesNoReadTotal=0
         this.messagesChat=[]

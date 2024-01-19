@@ -61,7 +61,7 @@ import { interval } from "rxjs";
     orderSelected:OrderBean
     readyToDmAt:number=10
     count: number = 10
-
+    readyToDmMinutesAt: number=0
     displayOrderReject: boolean = false
 
     title:string="Aceptar"
@@ -273,6 +273,9 @@ import { interval } from "rxjs";
           this.subscribeOrder(orderMqtt.uuid)
           this.subscribeChat(orderMqtt.uuid)
           this.isIconUp = true
+          this.interval_active_color = setInterval(() => {
+            this.cambiarColor()
+          }, 1000)
         }
       })
       this.chatHandler._data.subscribe((asyncData)=>{
@@ -314,6 +317,12 @@ import { interval } from "rxjs";
         this.readyToDmAt=this.orderSelected.readyToDmAt
       }else{
         this.readyToDmAt=10
+      }
+      
+      if(this.orderSelected.readyToDmMinutesAt){
+        this.readyToDmMinutesAt = this.orderSelected.readyToDmMinutesAt
+      } else {
+        this.readyToDmMinutesAt = 0
       }
       
       this.displayOrder=true
@@ -475,10 +484,13 @@ import { interval } from "rxjs";
 
     onIncrement(){
       this.readyToDmAt += 5;
+      this.readyToDmMinutesAt +=5;
     }
     onDecrement() {
       this.readyToDmAt -= 5;
+      this.readyToDmMinutesAt -=5;
     }
+    
     accordionContent: any
     accordionFunction(){
       
@@ -617,15 +629,18 @@ import { interval } from "rxjs";
     }
 
   updateTimes(item: OrderBean) {
-    var [hora, minuto, segundo] = this.ReadyToDmAt.split(':');
-    var newDate = new Date()
-    newDate.setHours(+hora);
-    newDate.setMinutes(+minuto);
-    newDate.setSeconds(+segundo);
+    // var [hora, minuto, segundo] = this.ReadyToDmAt.split(':');
+    // var newDate = new Date()
+    // newDate.setHours(+hora);
+    // newDate.setMinutes(+minuto);
+    // newDate.setSeconds(+segundo);
+
     var json = {
       uuid: item.uuid,
-      readyToDmAt: Number(newDate.getTime().toString().substring(0, 10))
+      readyToDmAt: this.orderSelected.createdAt + (this.readyToDmMinutesAt * 60),
+      readyToDmMinutesAt: this.readyToDmMinutesAt
     }
+
     this.orderService.UpdateReadyToDm(json).subscribe((response) => {
       setTimeout(() => {
         this.displayOrder = false
