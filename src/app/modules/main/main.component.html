@@ -383,7 +383,7 @@
 
 
 
- <p-dialog [(visible)]="displayOrder" [modal]="true">
+ <p-dialog [(visible)]="displayOrder" [modal]="true" (onHide)="onCloseOrderDetail()">
    <p-toast position="top-center" key="tc"></p-toast>
  <ng-template pTemplate="header">
    <div class="p-toolbar-group-left">

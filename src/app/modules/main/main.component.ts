@@ -358,6 +358,11 @@ import { interval } from "rxjs";
       }, 500)
     }
 
+    onCloseOrderDetail(){
+      this.displayOrder = false
+      this.flagOpenReceiptDialog = false
+    }
+
     onGetMethodType(method: string){
       let methodConverted: string
       switch(method){
