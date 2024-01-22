@@ -634,11 +634,6 @@ import { interval } from "rxjs";
     }
 
   updateTimes(item: OrderBean) {
-    // var [hora, minuto, segundo] = this.ReadyToDmAt.split(':');
-    // var newDate = new Date()
-    // newDate.setHours(+hora);
-    // newDate.setMinutes(+minuto);
-    // newDate.setSeconds(+segundo);
 
     var json = {
       uuid: item.uuid,
@@ -650,13 +645,26 @@ import { interval } from "rxjs";
       setTimeout(() => {
         this.displayOrder = false
       }, 1500);
+     
+      const indexOrderPreparing = this.ordersPreparing.findIndex(order => order.id == item.id)
+      const indexOrderReady = this.ordersReady.findIndex(order => order.id == item.id)
+
+      if(indexOrderPreparing && indexOrderPreparing !== -1){
+        this.ordersPreparing[indexOrderPreparing].readyToDmMinutesAt = this.readyToDmMinutesAt;
+      } else {
+        this.ordersReady[indexOrderReady].readyToDmMinutesAt = this.readyToDmMinutesAt;
+      }
+
       console.log(response)
       this.messageService.showSuccess('', 'El tiempo estimada modificado')
     }, (error: HttpErrorResponse) => {
       this.messageService.showSuccess('Error', error.message)
     })
   }
+  isSelfManagedOrderLoading: boolean = false
+
   selfManagedOrder(item: OrderBean){
+    this.isSelfManagedOrderLoading = true
     this.orderService.selfManagedOrder(item.uuid).subscribe((respons)=>{
       console.log(respons)
       setTimeout(() => {
@@ -664,6 +672,7 @@ import { interval } from "rxjs";
       }, 1500);
       this.getOrders()
       this.messageService.showSuccess('', 'Orden Autogestionado')
+      this.isSelfManagedOrderLoading = false
     },(error:HttpErrorResponse)=>{
       if(error.status==400){
         error.error.messages.forEach(element => {
@@ -673,11 +682,14 @@ import { interval } from "rxjs";
         this.messageService.showError('Error',error.message)
       }
       console.log(error)
+      this.isSelfManagedOrderLoading = false
     })
   }
 
+  isFinishOrderLoading: boolean = false
   
   finishOrder(item: OrderBean){
+    this.isFinishOrderLoading = true
     var json={
       status:"done"
     }
@@ -688,6 +700,7 @@ import { interval } from "rxjs";
       }, 1500);
       this.getOrders()
       this.messageService.showSuccess('', 'Orden Terminado')
+      this.isFinishOrderLoading = false
     },(error:HttpErrorResponse)=>{
       if(error.status==400){
         error.error.messages.forEach(element => {
@@ -696,6 +709,7 @@ import { interval } from "rxjs";
       }else{
         this.messageService.showError('Error',error.message)
       }
+      this.isFinishOrderLoading = false
       console.log(error)
     })
   }

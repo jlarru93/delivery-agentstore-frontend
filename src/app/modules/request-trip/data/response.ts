@@ -96,7 +96,9 @@ export class ResponseLoadingOrder{
     order_name ?: string
     store:StoreResponse
     isCheckedStore:boolean
+    isSpinnerVisible:boolean
     constructor(){
+        this.isSpinnerVisible = false
         this.messagesNoReadTotal=0
         this.messagesChat=[]
         this.isLoadingChat=false

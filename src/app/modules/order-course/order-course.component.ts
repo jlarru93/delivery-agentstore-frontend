@@ -382,7 +382,14 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     clearInterval(this.set_interval_driver);
   }
   flagAccordion: boolean = false;
+
+  openedOrder: any = null
+
   async onTapOpen(envios: any, flagAccordion: boolean) {
+
+    const openedTabIndex = envios.index;
+    this.openedOrder = this.filteredOrders[openedTabIndex];
+    this.openedOrder.isSpinnerVisible = true;
     
     this.polyLines=[]
     clearInterval(this.set_interval_driver);
@@ -392,7 +399,9 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     // this.onUpdatePosicion(select_service)
     // this.getServiceRouteAssigned(select_service.id)
     //clearInterval(this.interval_motorized_order);
+
     this.onViewOrder(envios.index);
+    
   }
   onViewOrder(index: number) {
     let select_service: ResponseLoadingOrder = this.list_order[index];
@@ -741,10 +750,11 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     );
     // this.cancelViaje.emit(item)
   }
+  
   async onUpdateDriver(item: ResponseLoadingOrder) {
+  
     let lstPosiciones: PersonalisationMarker[] = [];
     await this.requestTripService.onViewTrackingMotorizedService(item.uuid).subscribe((viaje) => {
-      
         if (viaje.data) {
           if(viaje.data.position){
             let tittle = viaje.data.deliveryMan.name;
@@ -756,6 +766,10 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           this.onClearMap();
           this.updatePosition(item);
         }
+
+        setTimeout(() => {
+          this.openedOrder.isSpinnerVisible = false;
+        }, 1500)
       });
 
     // let lstPosiciones = cloneDeep(

@@ -518,12 +518,9 @@
                   </div>
                </div>
             </div>
-            <div *ngIf="orderSelected.status== 'orderReady' && !orderSelected.deliveryMan">
+            <div *ngIf="orderSelected.status== 'orderReady' || !orderSelected.deliveryMan">
                <div class="sidebar-container-title">Repartidor</div>
                <div class="card-time">
-                  <div style="padding: 15px 0;">
-                     <h5>Buscando Repartidor</h5>
-                  </div>
                   <div class="card-repartidor">
                      <div class="p-grid">
                         <div class="p-col-12" style="text-align: center;">
@@ -533,50 +530,38 @@
                   </div>
                </div>
             </div>
-            <div *ngIf="orderSelected.status=='preparingOrder'">
-               <div class="sidebar-container-title">Repartidor</div>
-               <div class="card-client">
-                  <div class="p-grid">
-                     <div class="p-col-12">
-                        <b>Hora de llegada del DM</b>
+            <div *ngIf="orderSelected.status=='preparingOrder' || orderSelected.status=='orderReady'">
+               <div *ngIf="!orderSelected.deliveryMan">
+                  <div class="sidebar-container-title">Tiempo de preparación</div>
+                  <div class="card-time">
+                     <div class="p-grid">
+                        <div class="p-col-4">
+                           <button pButton pRipple type="button" icon="pi pi-minus" 
+                           class="p-button-rounded p-button-text" (click)="onDecrement()"></button>
+                        </div>
+                        <div class="p-col-4" id="counter-value">
+                           {{readyToDmMinutesAt}} <br>
+                           <div class="counter-min">min</div>
+                        </div>
+                        <div class="p-col-4">
+                           <button pButton pRipple type="button" icon="pi pi-plus" style="float: right;"
+                           class="p-button-rounded p-button-text" (click)="onIncrement()"></button>
+                        </div>
                      </div>
-                     <!-- <div class="p-col-6">
-                        <p class="float-right">{{formatearTiempo(orderSelected?.readyToDmAt)}}</p>
-                     </div> -->
-                     <!-- <div class="p-col-6 p-fluid">
-                        <input type="time" value="{{formatearTiempo(orderSelected?.readyToDmAt)}}" [(ngModel)]="ReadyToDmAt" pInputText min="{{tiempoReadyToDmAt}}" max="23:59:59" class="p-inputtext-sm">
-                     </div>
-                     <div class=" p-col-6 ">
-                        <button class="p-button-outlined float-right" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Actulazar hora" [loading]="loadingButtonAcept" (click)="updateTimes(orderSelected)"></button>
-                     </div> -->
-                  </div>
-               </div>
-               <div class="card-time">
-                  <div class="p-grid">
-                     <div class="p-col-4">
-                        <button pButton pRipple type="button" icon="pi pi-minus" 
-                        class="p-button-rounded p-button-text" (click)="onDecrement()"></button>
-                     </div>
-                     <div class="p-col-4" id="counter-value">
-                        {{readyToDmMinutesAt}} <br>
-                        <div class="counter-min">min</div>
-                     </div>
-                     <div class="p-col-4">
-                        <button pButton pRipple type="button" icon="pi pi-plus" style="float: right;"
-                        class="p-button-rounded p-button-text" (click)="onIncrement()"></button>
+                     <div class="p-grid p-fluid">
+                        <div class="p-col-12">
+                           <button class="p-button-outlined float-right" *ngIf="orderSelected.status=='preparingOrder' || orderSelected.status=='orderReady'" pButton type="button" 
+                           label="Actualizar hora" [loading]="loadingButtonAcept" (click)="updateTimes(orderSelected)"></button>
+                        </div>
                      </div>
                   </div>
-                  <div class="p-grid p-fluid">
-                     <div class="p-col-12">
-                        <button class="p-button-outlined float-right" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Actualizar hora" [loading]="loadingButtonAcept" (click)="updateTimes(orderSelected)"></button>
-                     </div>
-                  </div>
+
                </div>
 
+               <div *ngIf="orderSelected.deliveryMan">
                <div class="p-mb-2"></div>
                <div class="card-time">
-                  <div *ngIf="orderSelected.deliveryMan">
-                     <div class="delivery-content">
+                     <!-- <div class="delivery-content">
                         <div class="deliveryman">
                            <b>{{orderSelected?.deliveryMan?.name}}</b><br>
                            <p>Tel: {{orderSelected?.deliveryMan?.phone}}</p>
@@ -584,7 +569,7 @@
                         <div class="deliveryman-img">
                            <img src="" alt=""  onError="this.src='assets/images/user.png'" width="40">
                         </div>
-                     </div>
+                     </div> -->
                      <div class="deliveryman-content">
                         <div *ngIf="orderSelected?.deliveryMan?.status == 'toStore'">
                            <div class="delivery-status">
@@ -599,8 +584,8 @@
                            </div>
                         </div>
                      </div>
-                  </div>
-                  <div *ngIf="orderSelected.deliveryMan == null">
+                  
+                  <!-- <div *ngIf="orderSelected.deliveryMan == null">
                      <div class="card-repartidor">
                         <div class="p-grid">
                            <div class="p-col-12" style="text-align: center;">
@@ -608,15 +593,16 @@
                            </div>                        
                         </div>           
                      </div>
-                  </div>
+                  </div> -->
                </div>
             </div>
+         </div>
 
           </div>
           <div class="sidebar-bottom p-fluid" id="buttons">
              <div id="reject">
-               <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isSelfManaged" pButton type="button" label="Terminar Orden" [loading]="loadingButtonAcept" (click)="finishOrder(orderSelected)" ></button>
-               <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isApprovedSelfManaged &&!orderSelected.isSelfManaged" pButton type="button" label="Autogestionar Orden" [loading]="loadingButtonAcept" (click)="selfManagedOrder(orderSelected)" ></button>
+               <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isSelfManaged" pButton type="button" label="Terminar Orden" [loading]="isFinishOrderLoading" (click)="finishOrder(orderSelected)" ></button>
+               <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isApprovedSelfManaged &&!orderSelected.isSelfManaged" pButton type="button" label="Autogestionar Orden" [loading]="isSelfManagedOrderLoading" (click)="selfManagedOrder(orderSelected)" ></button>
                <button class="btn-order "  *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" [loading]="loadingButtonAcept" (click)="readyOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()" [disabled]="!isButtonEnabled"></button>
