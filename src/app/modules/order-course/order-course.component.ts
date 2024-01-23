@@ -382,7 +382,13 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     clearInterval(this.set_interval_driver);
   }
   flagAccordion: boolean = false;
+
+  openedOrder: any = null
+
   async onTapOpen(envios: any, flagAccordion: boolean) {
+    const openedTabIndex = envios.index;
+    this.openedOrder = this.filteredOrders[openedTabIndex];
+    this.openedOrder.isSpinnerVisible = true;
     
     this.polyLines=[]
     clearInterval(this.set_interval_driver);
@@ -392,10 +398,12 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     // this.onUpdatePosicion(select_service)
     // this.getServiceRouteAssigned(select_service.id)
     //clearInterval(this.interval_motorized_order);
+
     this.onViewOrder(envios.index);
+    
   }
   onViewOrder(index: number) {
-    let select_service: ResponseLoadingOrder = this.list_order[index];
+    let select_service: ResponseLoadingOrder = this.filteredOrders[index];
     this.onChangePolyline(select_service);
     this.onUpdateDriver(select_service);
   }
@@ -404,23 +412,28 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   updatePosition(select_service: ResponseLoadingOrder) {
 
     this.markers = []
-    const newMarkersOrigin: Marker = {
-      lat: select_service.addresses[0].location.coordinates[1],
-      lng: select_service.addresses[0].location.coordinates[0],
-      iconUrl: this.globalIconOrigin,
-      label: 'Origen',
-      isDraggable: false,
-    }
-    this.markers[0] = newMarkersOrigin
-
-    const newMarkersDestination: Marker = {
-      lat: select_service.addresses[1].location.coordinates[1],
-      lng: select_service.addresses[1].location.coordinates[0],
-      iconUrl: this.globalIconDestination,
-      label: 'Destino',
-      isDraggable: false,
-    }
-    this.markers[1] = newMarkersDestination
+    var newMarkers: Marker
+    select_service.addresses.forEach((element,i) => {
+      if(i==0){
+         newMarkers = {
+          lat: element.location.coordinates[1],
+          lng: element.location.coordinates[0],
+          iconUrl: this.globalIconOrigin,
+          label: 'Origen',
+          isDraggable: false,
+        }
+        this.markers.push(newMarkers)
+      }else{
+        newMarkers = {
+          lat: element.location.coordinates[1],
+          lng: element.location.coordinates[0],
+          iconUrl: this.globalIconDestination,
+          label: 'Destino',
+          isDraggable: false,
+        }
+        this.markers.push(newMarkers)
+      }
+    });    
     this.centrarMapa()
 
     // var lstPosiciones: PersonalisationMarker[] = [];
@@ -506,7 +519,6 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedTabs: { [key: string]: boolean } = {};
   async onSearchMotorizedOrder() {
     await this.requestTripService.onLoadingMotorizedService().subscribe((data) => {
-      debugger
         const selectedTabsBackup = { ...this.selectedTabs };
         this.list_order = [];
         data.data.forEach((element) => {
@@ -537,19 +549,22 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.payment = element.payment;
           order.id = element.id 
           order.uuid = element.uuid
+          order.type = element.type
           // order.showButton = false
 
           this.selectedTabs[order.uuid] = selectedTabsBackup[order.uuid];
 
           this.list_order.push(order);
+          this.filteredOrders = this.list_order
+          this.filteredOrders = this.list_order.filter(order => order.type === this.filterOrder);
         });
         this.isDoneGetOrders = true;
       });
   }
+
+  filteredOrders: any
   async onSearchMotorizedOrderSubscription() {
-    await this.requestTripService
-      .onLoadingMotorizedService()
-      .subscribe((data) => {
+    await this.requestTripService.onLoadingMotorizedService().subscribe((data) => {
         this.list_order = [];
         data.data.forEach((element) => {
           let order = new ResponseLoadingOrder();
@@ -587,7 +602,10 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.isOrderCalendar = element.isOrderCalendar
           order.store=element.store
           order.isCheckedStore=element.isCheckedStore??false
+          order.type = element.type
           this.list_order.push(order);
+          this.filteredOrders = this.list_order
+          this.filteredOrders = this.list_order.filter(order => order.type === this.filterOrder);
         });
         this.isDoneGetOrders = true;
         this.validOrdersSubscribe();
@@ -618,40 +636,50 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     switch (status) {
       case enumStatusOrder.preparingOrder://verde
         order = "El local está preparando tu orden";
-        this.statusColor = '#689f38'
+        //this.statusColor = '#689f38'
         break;
       case enumStatusOrder.toStore://amarillo
         order = "Te estás dirigiendo al local";
-        this.statusColor = '#fbc02d'
+        //this.statusColor = '#fbc02d'
         break;
       case enumStatusOrder.inStore://amarillo
         order = "Llegué al local";
-        this.statusColor = '#fbc02d'
+        //this.statusColor = '#fbc02d'
         break;
       case enumStatusOrder.reciveDelivery://amarillo
         order = "Recibí el pedido";
-        this.statusColor = '#fbc02d'
+        //this.statusColor = '#fbc02d'
         break;
       case enumStatusOrder.toHome://amarillo
         order = "Estás en camino a entregar el pedido";
-        this.statusColor = '#fbc02d'
+        //this.statusColor = '#fbc02d'
         break;
       case enumStatusOrder.nearHome://amarillo
         order = "Estás cerca del destino";
-        this.statusColor = '#fbc02d'
+        //this.statusColor = '#fbc02d'
         break;
       case enumStatusOrder.inHome://verde
         order = "Has llegado a la puerta del cliente";
-        this.statusColor = '#689f38'
+        //this.statusColor = '#689f38'
         break;
       case enumStatusOrder.orderReady://azul
+      
         order = "El pedido está listo para recoger";
-        this.statusColor = '#0747A6'
+        //this.statusColor = '#0747A6'
         break;
-        case enumStatusOrder.reciveOrderDeliveryMan://amarillo
-          order = "El repartidor tiene el pedido";
-          this.statusColor = '#fbc02d'
-          break;
+      case enumStatusOrder.reciveOrderDeliveryMan://amarillo
+        order = "El repartidor tiene el pedido";
+        //this.statusColor = '#fbc02d'
+        break;
+      case enumStatusOrder.open:
+        order = "Orden abierta";
+        break;
+      case enumStatusOrder.rejectPayment:
+        order = "Orden rechazada";
+        break;
+      case enumStatusOrder.pendingPayment:
+        order = "Pago pendiente";
+        break;
       default:
         break;
     }
@@ -685,9 +713,18 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
       case enumStatusOrder.orderReady://azul
         orderStatusColor = '#0747A6'
         break;
-        case enumStatusOrder.reciveOrderDeliveryMan://amarillo
-          orderStatusColor = '#fbc02d'
-          break;
+      case enumStatusOrder.reciveOrderDeliveryMan://amarillo
+        orderStatusColor = '#fbc02d'
+        break;
+      case enumStatusOrder.open:
+        orderStatusColor = '#689f38';
+        break;
+      case enumStatusOrder.rejectPayment:
+        orderStatusColor = "#dd1f26";
+        break;
+      case enumStatusOrder.pendingPayment:
+        orderStatusColor = "#A80DA3";
+        break;
       default:
         break;
     }
@@ -712,10 +749,11 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     );
     // this.cancelViaje.emit(item)
   }
+  
   async onUpdateDriver(item: ResponseLoadingOrder) {
+  
     let lstPosiciones: PersonalisationMarker[] = [];
     await this.requestTripService.onViewTrackingMotorizedService(item.uuid).subscribe((viaje) => {
-      
         if (viaje.data) {
           if(viaje.data.position){
             let tittle = viaje.data.deliveryMan.name;
@@ -727,6 +765,10 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           this.onClearMap();
           this.updatePosition(item);
         }
+
+        setTimeout(() => {
+          this.openedOrder.isSpinnerVisible = false;
+        }, 1500)
       });
 
     // let lstPosiciones = cloneDeep(
@@ -893,5 +935,21 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   redirectOrderTrip(order: any){
     localStorage.setItem('edit-trip', JSON.stringify(order))
     this.router.navigate(['/request-trip'])
+  }
+
+  filterOrder: any = 'SendAndReciveStore'
+
+  orderCourseOptions: any[] = [
+    { name: 'Manual', value: 'SendAndReciveStore' },
+    { name: 'App', value: 'traditional' },
+    { name: 'Todos', value: 'all'}
+  ];
+
+  onFilterChange() {
+    if(this.filterOrder == 'all'){
+      this.filteredOrders = this.list_order
+    } else {
+      this.filteredOrders = this.list_order.filter(order => order.type === this.filterOrder);
+    }
   }
 }

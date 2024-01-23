@@ -23,7 +23,16 @@
         padding: 0.1rem;
         height: 29rem;
      }
-    
+     .p-chip.custom-chip{
+        font-style: normal;
+        font-weight: 600;
+        color: #212322;
+        line-height: normal;
+      }
+      .p-chip.custom-chip-dm{
+        background-color: #DD1F26;
+        color: #FFF;
+      }
 
   }
 
@@ -418,7 +427,7 @@ section{
     flex: auto;
 }
 .overlay-chat{
-    top: 20px;
+    top: 0;
     left: 1%;
     position: absolute;
     z-index: 1001;
@@ -508,3 +517,136 @@ h5{
     justify-content: space-between;
   }
   //p{margin:0 0 -14px !important }
+
+  .wave-background {
+    background: linear-gradient(to right, #b92b27, #1565c0);
+    background-size: 300% 300%;
+    animation: colorwave 12s ease-in-out infinite;
+  }
+
+  @keyframes colorwave {
+    0% {
+        background-position: 0 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100%{
+        background-position: 0 50%;
+    }
+  }
+
+  .card-repartidor-asignado{
+    display: flex;
+    align-items: center;
+  }
+
+  .card-order-ready{
+    border-radius: 3px;
+    background: #EDEDED;
+    box-shadow: 0px 4px 7px 0px rgba(0, 0, 0, 0.25);
+  }
+
+  .order-ready-id{
+    color: #212322;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .card-order-ready-time{
+    margin-bottom: 5px;
+  }
+  .calculated-time-subtitle{
+    color: #212322;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .card-order-header{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .calculated-time{
+    color: #DD1F26;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .order-isPickUpStore{
+    display: inline-flex;
+    padding: 3px 9px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 11px;
+    background: #000;
+    color: #FFF;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .card-order-ready-bottom{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .order-ready-fullname{
+    color: #212322;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .order-ready-address{
+    width: 50%;
+    color: #212322;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+  }
+.main-title{
+    display: flex;
+    justify-content: center;
+}
+.order-ready-main-title{
+    color: #000;
+    text-align: center;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+}
+.order-store-status{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+:host ::ng-deep .custom-spinner .p-progress-spinner-circle {
+    animation: custom-progress-spinner-dash 1.5s ease-in-out infinite, custom-progress-spinner-color 5s ease-in-out infinite;
+}
+
+@keyframes custom-progress-spinner-color {
+    100%,
+    0% {
+        stroke: #DD1F26;
+    }
+    40% {
+        stroke: #DD1F26;
+    }
+    66% {
+        stroke: #DD1F26;
+    }
+    80%,
+    90% {
+        stroke: #DD1F26;
+    }
+}

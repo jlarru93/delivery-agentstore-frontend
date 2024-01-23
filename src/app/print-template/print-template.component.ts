@@ -10,12 +10,20 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class PrintTemplateComponent implements OnInit, AfterViewInit {
 
   @Input() orderSelected: any
+  @Input() storeData: any
 
   constructor(
     public sanitization: DomSanitizer,
   ) { }
 
+  isPriceForEachFroduct: boolean = false
+
   ngOnInit(): void {
+    this.storeData.ticketKitchen.forEach(element => {
+      if(element.key == 'priceForEachProduct'){
+        this.isPriceForEachFroduct = element.value
+      }
+    })
   }
 
   ngAfterViewInit(): void {

@@ -21,8 +21,13 @@ import { AuthService } from "src/app/utils/auth.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
 import { ChatComponent } from "src/app/chat/chat.component";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { dataSharedService } from "../service/data-shared.service";
+import { StoreBean } from "../product/data";
+import { setHours, setMinutes, setSeconds } from "ngx-bootstrap/chronos/utils/date-setters";
+import { AlertServices } from "../service/alert.service";
+import { AceptOrderRequest } from "./service/data/request";
+import { interval } from "rxjs";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -56,7 +61,7 @@ import { dataSharedService } from "../service/data-shared.service";
     orderSelected:OrderBean
     readyToDmAt:number=10
     count: number = 10
-
+    readyToDmMinutesAt: number=0
     displayOrderReject: boolean = false
 
     title:string="Aceptar"
@@ -77,6 +82,13 @@ import { dataSharedService } from "../service/data-shared.service";
 
     ref: DynamicDialogRef | undefined;
     idStore:any[]=[]
+
+    isIconUp: boolean = false
+    otherReasonOrder: string = ""
+
+    activoColor: boolean = true
+    interval_active_color?: any
+
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
@@ -86,7 +98,7 @@ import { dataSharedService } from "../service/data-shared.service";
       private storeHandler:StoreHandler,
       private chatHandler:ChatHandler,
       private chatService:ChatService ,
-      private messageService: MessageService,
+      private messageService:AlertServices,
       private confirmationService: ConfirmationService,
       private dialog: MatDialog,
       private http: HttpClient,
@@ -98,9 +110,11 @@ import { dataSharedService } from "../service/data-shared.service";
           this.getOrders()
         })
       }
+    
+
     ngOnInit(): void { 
       this.idStore= JSON.parse(localStorage.getItem('lstIdStore'))
-      this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
+      this.messageService.showSuccess( 'Success',  'Message Content');
       console.log("MAIN")
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
       if(this.idStore)
@@ -122,6 +136,10 @@ import { dataSharedService } from "../service/data-shared.service";
           this.styleString = styleSheet
         }
       )
+
+      this.interval_active_color = setInterval(() => {
+        this.cambiarColor()
+      }, 1000)
     }
     ngOnDestroy(): void {
         clearInterval(this.set_interval)
@@ -147,9 +165,12 @@ import { dataSharedService } from "../service/data-shared.service";
       // dialogRef.afterClosed().subscribe(result => {
       //   console.log('Diálogo cerrado');
       // });
+
     }
 
-    
+    cambiarColor() {
+      this.activoColor = !this.activoColor;
+    }
 
     ngAfterViewInit(){
       const accordionContent = document.querySelectorAll(".accordion-item");
@@ -251,6 +272,10 @@ import { dataSharedService } from "../service/data-shared.service";
           this.sortOrders()
           this.subscribeOrder(orderMqtt.uuid)
           this.subscribeChat(orderMqtt.uuid)
+          this.isIconUp = true
+          this.interval_active_color = setInterval(() => {
+            this.cambiarColor()
+          }, 1000)
         }
       })
       this.chatHandler._data.subscribe((asyncData)=>{
@@ -274,10 +299,17 @@ import { dataSharedService } from "../service/data-shared.service";
         }
       })
     }
+
+    stopAudio(){
+      this.storeHandler.stopAudio();
+      this.isIconUp = false
+      clearInterval(this.interval_active_color)
+    }
     priceValueFormat: string[] = []
     totalPriceValueFormat : string
     payment: PaymentBean
     paymentName: string
+    storeDataStorage: StoreBean
 
     openOrderDialog(order:OrderBean){
       this.orderSelected=order
@@ -287,7 +319,15 @@ import { dataSharedService } from "../service/data-shared.service";
         this.readyToDmAt=10
       }
       
+      if(this.orderSelected.readyToDmMinutesAt){
+        this.readyToDmMinutesAt = this.orderSelected.readyToDmMinutesAt
+      } else {
+        this.readyToDmMinutesAt = 0
+      }
+      
       this.displayOrder=true
+
+      this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
 
       // this.orderService.getOrders().subscribe((resp)=>{
       //   if(this.orderSelected.status == 'inStore'){
@@ -316,6 +356,11 @@ import { dataSharedService } from "../service/data-shared.service";
         var button2 = document.getElementById('btnOnClicked')
         button2.click()
       }, 500)
+    }
+
+    onCloseOrderDetail(){
+      this.displayOrder = false
+      this.flagOpenReceiptDialog = false
     }
 
     onGetMethodType(method: string){
@@ -360,7 +405,7 @@ import { dataSharedService } from "../service/data-shared.service";
       orderRequest.readyToDmAt=this.readyToDmAt
       this.loadingButtonAcept=true
 
-      if(orderRequest.payment.method.type == 'CASH' || orderRequest.payment.method.type == 'CARD' || orderRequest.payment.method.type == 'PAYMENT-BUTTON'){
+      if(['CARD','CASH','PAY_IN_STORE','PAYMENT-BUTTON'].includes(orderRequest.payment.method.type)){
         this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
           this.displayOrder=false
           this.loadingButtonAcept=false
@@ -371,7 +416,7 @@ import { dataSharedService } from "../service/data-shared.service";
         })
       } else {
         if(!this.flagOpenReceiptDialog){
-          this.messageService.add({key: 'tc', severity: 'warn', summary: '', detail: 'Por favor revise el comprobante de pago primero'})
+          this.messageService.showWarning('', 'Por favor revise el comprobante de pago primero')
           this.loadingButtonAcept = false
         } else {
           this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
@@ -389,7 +434,13 @@ import { dataSharedService } from "../service/data-shared.service";
     readyOrder(){
       const order=this.orderSelected
       this.loadingButtonAcept=true
-      this.orderService.readyOder(order.id.toString()).subscribe((resp)=>{
+      var body:any
+      if(order.isPickUpStore){
+        body={status:CONSTANTES.DONE_ORDER_STATUS} as AceptOrderRequest
+      }else{
+        body={status:CONSTANTES.READY_ORDER_STATUS} as AceptOrderRequest
+      }
+      this.orderService.readyOder(order.id.toString(),body).subscribe((resp)=>{
         this.displayOrder=false
         this.loadingButtonAcept=false
       },()=>{
@@ -401,20 +452,27 @@ import { dataSharedService } from "../service/data-shared.service";
 
     loadingButtonCancel: boolean = false
     cancelOrder(comment: string){
-      let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
-      this.loadingButtonCancel=true
-      this.orderService.cancelOrder(orderRequest.id.toString(),comment).subscribe((resp) => {
-        this.orders=this.orders.filter((order)=>order.id!=orderRequest.id)
-        this.sortOrders()
-        this.displayOrderReject = false
-        this.loadingButtonCancel = false
-        this.displayOrder = false
-        this.messageService.add({severity:'success', summary: 'Exito', detail: 'Orden cancelado', life: 3000 });
-      }, (error) => {
-        this.displayOrderReject = false
-        this.loadingButtonCancel = false
-        this.messageService.add({severity:'error', summary: 'Error', detail: error, life: 3000});
-      })
+
+      if(this.accordionIndex == 6 && this.otherReasonOrder == ''){
+        this.messageService.showError('', 'Por favor llene la casilla con el motivo del rechazo de orden')
+      } else {
+
+        let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
+        this.loadingButtonCancel=true
+        this.orderService.cancelOrder(orderRequest.id.toString(),comment).subscribe((resp) => {
+          this.orders=this.orders.filter((order)=>order.id!=orderRequest.id)
+          this.sortOrders()
+          this.displayOrderReject = false
+          this.loadingButtonCancel = false
+          this.displayOrder = false
+          this.messageService.showSuccess('Exito',  'Orden cancelado' );
+        }, (error:HttpErrorResponse) => {
+          this.displayOrderReject = false
+          this.loadingButtonCancel = false
+          this.messageService.showError( 'Error' , error.message );
+        })
+      }
+
     }
 
     giveOrderToDriver(){
@@ -431,10 +489,13 @@ import { dataSharedService } from "../service/data-shared.service";
 
     onIncrement(){
       this.readyToDmAt += 5;
+      this.readyToDmMinutesAt +=5;
     }
     onDecrement() {
       this.readyToDmAt -= 5;
+      this.readyToDmMinutesAt -=5;
     }
+    
     accordionContent: any
     accordionFunction(){
       
@@ -470,6 +531,7 @@ import { dataSharedService } from "../service/data-shared.service";
 
     openDialogDenyOrder(){
       this.displayOrderReject = true
+      this.otherReasonOrder
       this.selectedTab = false
     }
 
@@ -502,7 +564,7 @@ import { dataSharedService } from "../service/data-shared.service";
         (resp)=>{
           order.isLoadingChat=false
           order.messagesChat= resp.data.map((message)=>ChatResponse.toBean(message))
-          this.chatComponent.scrollToBottom()
+          //this.chatComponent.scrollToBottom()
         },
         (error)=>{
           order.isLoadingChat=false
@@ -515,15 +577,18 @@ import { dataSharedService } from "../service/data-shared.service";
       },
       (error)=>{})
     }
-
+     tiempoReadyToDmAt:string
+     ReadyToDmAt:string
     formatearTiempo(timestamp: number): string {
       const fecha = new Date(timestamp * 1000);
       const horas = fecha.getHours();
       const minutos = fecha.getMinutes();
       const segundos = fecha.getSeconds();
-    
       let tiempoFormateado = `${this.agregarCeros(horas)}:${this.agregarCeros(minutos)}:${this.agregarCeros(segundos)}`;
-    
+      this.tiempoReadyToDmAt=`${this.agregarCeros(horas)}:${this.agregarCeros(minutos)}:${this.agregarCeros(segundos)}`
+      if(!this.ReadyToDmAt){
+        this.ReadyToDmAt=this.tiempoReadyToDmAt
+      }
       // Agregar designación AM/PM
       if (horas >= 12) {
         tiempoFormateado += ' PM';
@@ -567,4 +632,91 @@ import { dataSharedService } from "../service/data-shared.service";
       var res = (day+' '+hoursDifference+'h '+minutesDifference).toString()
       return res;
     }
+
+  updateTimes(item: OrderBean) {
+
+    var json = {
+      uuid: item.uuid,
+      readyToDmAt: this.orderSelected.createdAt + (this.readyToDmMinutesAt * 60),
+      readyToDmMinutesAt: this.readyToDmMinutesAt
+    }
+
+    this.orderService.UpdateReadyToDm(json).subscribe((response) => {
+      setTimeout(() => {
+        this.displayOrder = false
+      }, 1500);
+     
+      const indexOrderPreparing = this.ordersPreparing.findIndex(order => order.id == item.id)
+      const indexOrderReady = this.ordersReady.findIndex(order => order.id == item.id)
+
+      if(indexOrderPreparing && indexOrderPreparing !== -1){
+        this.ordersPreparing[indexOrderPreparing].readyToDmMinutesAt = this.readyToDmMinutesAt;
+      } else {
+        this.ordersReady[indexOrderReady].readyToDmMinutesAt = this.readyToDmMinutesAt;
+      }
+
+      console.log(response)
+      this.messageService.showSuccess('', 'El tiempo estimada modificado')
+    }, (error: HttpErrorResponse) => {
+      this.messageService.showSuccess('Error', error.message)
+    })
+  }
+  isSelfManagedOrderLoading: boolean = false
+
+  selfManagedOrder(item: OrderBean){
+    this.isSelfManagedOrderLoading = true
+    this.orderService.selfManagedOrder(item.uuid).subscribe((respons)=>{
+      console.log(respons)
+      setTimeout(() => {
+        this.displayOrder = false
+      }, 1500);
+      this.getOrders()
+      this.messageService.showSuccess('', 'Orden Autogestionado')
+      this.isSelfManagedOrderLoading = false
+    },(error:HttpErrorResponse)=>{
+      if(error.status==400){
+        error.error.messages.forEach(element => {
+          this.messageService.showError('Error',element.message)
+        });
+      }else{
+        this.messageService.showError('Error',error.message)
+      }
+      console.log(error)
+      this.isSelfManagedOrderLoading = false
+    })
+  }
+
+  isFinishOrderLoading: boolean = false
+  
+  finishOrder(item: OrderBean){
+    this.isFinishOrderLoading = true
+    var json={
+      status:"done"
+    }
+    this.orderService.UpdateStatus(item.id,json).subscribe((respons)=>{
+      console.log(respons)
+      setTimeout(() => {
+        this.displayOrder = false
+      }, 1500);
+      this.getOrders()
+      this.messageService.showSuccess('', 'Orden Terminado')
+      this.isFinishOrderLoading = false
+    },(error:HttpErrorResponse)=>{
+      if(error.status==400){
+        error.error.messages.forEach(element => {
+          this.messageService.showError('Error',element.message)
+        });
+      }else{
+        this.messageService.showError('Error',error.message)
+      }
+      this.isFinishOrderLoading = false
+      console.log(error)
+    })
+  }
+
+  accordionIndex: number = 0
+  onTabOpen(event) {
+    
+    this.accordionIndex = event.index;
+  }
 }

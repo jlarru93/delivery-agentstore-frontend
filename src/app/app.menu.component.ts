@@ -48,6 +48,7 @@ export class AppMenuComponent implements OnInit {
         this.productService.getProducts(store_id).subscribe((resp) => { 
             let storeBean=StoreResponse.toBean(resp.data)
             //this.storeFullName = storeBean.fullName
+            localStorage.setItem('storeBean', JSON.stringify(storeBean))
             this.store.setStoreBean(storeBean)
         })
     }

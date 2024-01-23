@@ -100,6 +100,7 @@ export class DeliveryManBean {
 
 export class PictureBean{
     profile?: string   
+    document?: string
 }
 
 export class Point {
@@ -165,6 +166,10 @@ export class OrderBean {
     isLoadingChat:boolean
     showButton:boolean
     statusForAgentStore:string
+    isApprovedSelfManaged:boolean
+    isSelfManaged:boolean
+    isPickUpStore:boolean
+    readyToDmMinutesAt?: number
     constructor(){
         this.messagesNoReadTotal=0
         this.messagesChat=[]

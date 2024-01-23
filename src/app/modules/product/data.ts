@@ -30,4 +30,11 @@ export class StoreBean {
     products ?: ProductBean[];
     isOpen: boolean;
     tripSetting:any[]
+    ticketKitchen: TiketKitchenBean[]
+}
+
+export class TiketKitchenBean {
+    key?: string
+    value?: boolean
+    tag?: string
 }

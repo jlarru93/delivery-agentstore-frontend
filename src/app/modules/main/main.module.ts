@@ -30,6 +30,10 @@ import { ChatModule } from "src/app/chat/chat.module";
 import { ToastModule } from "primeng/toast";
 import { PrintTemplateModule } from "src/app/print-template/print-template.module";
 import { TagModule } from "primeng/tag";
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { ChipModule } from "primeng/chip";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
+
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
     imports: [
@@ -42,12 +46,14 @@ import { TagModule } from "primeng/tag";
       ReactiveFormsModule,
       MainRoutingModule,
       ChatModule,
+      ChipModule,
       PrintTemplateModule,
       DialogModule,
       ButtonModule,
       ToastModule,
       AccordionModule,
       TableModule,
+      ProgressSpinnerModule,
       TreeTableModule,
       // AgmCoreModule.forRoot({
       //   apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
@@ -62,7 +68,8 @@ import { TagModule } from "primeng/tag";
       MatButtonModule,
       MatIconModule,
       InputTextModule,
-      TagModule
+      TagModule,
+      InputSwitchModule
     ],
     providers:[OrderService]
   })

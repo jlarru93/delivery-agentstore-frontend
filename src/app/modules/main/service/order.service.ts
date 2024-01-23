@@ -10,7 +10,7 @@ import { CANCEL_ORDER_STATUS, PREPARING_ORDER_STATUS, READY_ORDER_STATUS } from 
 })
 export class OrderService {
   constructor(private http: HttpClient) { }
-
+  
   getOrders(id:any) {
     let headers: HttpHeaders = new HttpHeaders({
       store_ids:id
@@ -25,10 +25,9 @@ export class OrderService {
     return this.http.put<ObjetResponse<any>>(env.url.backEnd + path,body)
   }
 
-  readyOder(orderId:string){
+  readyOder(orderId:string,body:any){
     let path="/order/:orderId/status"
-    path=path.replace(":orderId",orderId)
-    const body={status:READY_ORDER_STATUS} as AceptOrderRequest
+    path=path.replace(":orderId",orderId)    
     return this.http.put<ObjetResponse<any>>(env.url.backEnd + path,body)
   }
 
@@ -38,4 +37,19 @@ export class OrderService {
     const body = {status: CANCEL_ORDER_STATUS, comment: cancellation} as CancelOrderRequest
     return this.http.put<ObjetResponse<any>>(env.url.backEnd + path,body)
   }
+  UpdateReadyToDm(data:any){
+    var url = env.url.backEnd+'/order/readyToDm'
+    return this.http.put<ObjetResponse<any>>(url,data)
+  }
+
+  selfManagedOrder(uuid:any){
+    var url = env.url.backEnd+`/order/${uuid}/selfManaged`
+    return this.http.put<ObjetResponse<any>>(url,{})
+  }
+
+  UpdateStatus(id:any,json:any){
+    var url = env.url.backEnd+`/order/${id}/status`
+    return this.http.put<ObjetResponse<any>>(url,json)
+  }
+
 }

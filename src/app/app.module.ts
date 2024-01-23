@@ -85,6 +85,7 @@ import {ToolbarModule} from 'primeng/toolbar';
 import {TooltipModule} from 'primeng/tooltip';
 import {TreeModule} from 'primeng/tree';
 import {TreeTableModule} from 'primeng/treetable';
+import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
 
 // Application Components
@@ -163,7 +164,6 @@ import { OrderHandler } from './modules/service/handlers/order.handler';
 import { MqttRoutingService } from './modules/service/mqtt.routing.service';
 import { MqttService } from './modules/service/mqtt.service';
 import { ModalComponent } from './modal/modal.component';
-import { OrderCourseComponent } from './modules/order-course/order-course.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { AlertModule } from './directives/alert/alert.module';
@@ -261,6 +261,7 @@ FullCalendarModule.registerPlugins([
         TooltipModule,
         TreeModule,
         TreeTableModule,
+        TriStateCheckboxModule,
         VirtualScrollerModule,
 
 
