@@ -471,6 +471,7 @@
             <div class="sidebar-container-title">Método de pago</div>
             <div class="method-payment-container">
                <b>{{paymentName}}</b>
+               <b *ngIf="payment.method.type == 'PAY_IN_STORE'">Pago en tienda</b>
                <i *ngIf="payment.method.type == 'E-WALLET' || payment.method.type == 'BANK'" class="pi pi-eye" style="float: right; font-size: 1.5rem;" (click)="openDialogScreenShoot()"></i>
                <!-- <button  pButton pRipple type="button" icon="pi pi-eye" style="float: right;"
                class="p-button p-button-rounded p-button-text" (click)="openDialog()"></button> -->

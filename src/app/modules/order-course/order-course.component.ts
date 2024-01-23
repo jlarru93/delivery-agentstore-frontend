@@ -386,7 +386,6 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   openedOrder: any = null
 
   async onTapOpen(envios: any, flagAccordion: boolean) {
-
     const openedTabIndex = envios.index;
     this.openedOrder = this.filteredOrders[openedTabIndex];
     this.openedOrder.isSpinnerVisible = true;
@@ -404,7 +403,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     
   }
   onViewOrder(index: number) {
-    let select_service: ResponseLoadingOrder = this.list_order[index];
+    let select_service: ResponseLoadingOrder = this.filteredOrders[index];
     this.onChangePolyline(select_service);
     this.onUpdateDriver(select_service);
   }
