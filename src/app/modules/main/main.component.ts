@@ -648,7 +648,6 @@ import { interval } from "rxjs";
         this.displayOrder = false
       }, 1500);
      
-      debugger
       const indexOrderPreparing = this.ordersPreparing.findIndex(order => order.id == item.id)
       const indexOrderReady = this.ordersReady.findIndex(order => order.id == item.id)
 
