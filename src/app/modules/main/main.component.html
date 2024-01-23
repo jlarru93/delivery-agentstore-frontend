@@ -235,6 +235,17 @@
                   </div>
                   <div class="order-store-status">
                      <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
+                     <!-- <div *ngIf="order?.deliveryMan == null" style="display: flex;">
+                        <p-progressSpinner [style]="{width: '20px', height: '20px'}" strokeWidth="5" styleClass="custom-spinner"></p-progressSpinner>
+                        <span>Buscando repartidor...</span>
+                     </div> -->
+                     <div *ngIf="order?.statusForAgentStore == 'inRoute'">
+                        
+                        <div class="p-d-flex p-ai-center">
+                           <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="custom-chip-dm p-mr-2"></p-chip>
+                        </div>
+                     </div>
+
                   </div>
                   <hr style="background-color: #DDDDDD; height: 1px;">
                   <div class="card-order-ready-bottom">
