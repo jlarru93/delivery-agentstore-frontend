@@ -633,8 +633,10 @@ import { interval } from "rxjs";
       return res;
     }
 
-  updateTimes(item: OrderBean) {
+  loadingButtonUpdateTime : boolean = false
 
+  updateTimes(item: OrderBean) {
+    this.loadingButtonUpdateTime = true
     var json = {
       uuid: item.uuid,
       readyToDmAt: this.orderSelected.createdAt + (this.readyToDmMinutesAt * 60),
@@ -646,19 +648,21 @@ import { interval } from "rxjs";
         this.displayOrder = false
       }, 1500);
      
+      debugger
       const indexOrderPreparing = this.ordersPreparing.findIndex(order => order.id == item.id)
       const indexOrderReady = this.ordersReady.findIndex(order => order.id == item.id)
 
-      if(indexOrderPreparing && indexOrderPreparing !== -1){
+      if(indexOrderPreparing !== -1){
         this.ordersPreparing[indexOrderPreparing].readyToDmMinutesAt = this.readyToDmMinutesAt;
       } else {
         this.ordersReady[indexOrderReady].readyToDmMinutesAt = this.readyToDmMinutesAt;
       }
-
+      this.loadingButtonUpdateTime = false
       console.log(response)
       this.messageService.showSuccess('', 'El tiempo estimada modificado')
     }, (error: HttpErrorResponse) => {
       this.messageService.showSuccess('Error', error.message)
+      this.loadingButtonUpdateTime = false
     })
   }
   isSelfManagedOrderLoading: boolean = false
