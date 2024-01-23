@@ -202,7 +202,7 @@
                            </div>
                      </div>
                      <p-button label="Entregar pedido" styleClass="p-button-sm p-button-rounded" 
-                      [style]="{background: '#DD1F26'}"></p-button>
+                      [style]="{background: '#DD1F26'}" (click)="openOrderDialog(order)"></p-button>
                   </div>
                </div>
             </div>
@@ -552,7 +552,7 @@
                      <div class="p-grid p-fluid">
                         <div class="p-col-12">
                            <button class="p-button-outlined float-right" *ngIf="orderSelected.status=='preparingOrder' || orderSelected.status=='orderReady'" pButton type="button" 
-                           label="Actualizar hora" [loading]="loadingButtonAcept" (click)="updateTimes(orderSelected)"></button>
+                           label="Actualizar hora" [loading]="loadingButtonUpdateTime" (click)="updateTimes(orderSelected)"></button>
                         </div>
                      </div>
                   </div>
