@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 import { dataSharedService } from './modules/service/data-shared.service';
 import { StatusOpenStoreBean } from './modules/main/data';
 import { StoreHandler } from './modules/service/handlers/store.handler';
+import { AudioService } from './modules/service/audio.service';
 
 @Component({
     selector: 'app-topbar',
@@ -46,7 +47,7 @@ export class AppTopBarComponent implements OnInit{
         private mqtt:MqttService,
         private service: MenuService,
         private dataShared:dataSharedService,
-        private storeHandler: StoreHandler
+        private audioService:AudioService
     ) {}
     
     ngOnInit(): void {
@@ -156,9 +157,9 @@ export class AppTopBarComponent implements OnInit{
 
     onChangeFlagAudio(){
          // Actualiza el estado en el servicio StoreHandler
-    this.storeHandler.audioEnabled = this.audioEnabled;
+    this.audioService.audioEnabled = this.audioEnabled;
 
     // Almacena el estado en el localStorage
-    this.storeHandler.storeAudioEnabledStateInLocalStorage();
+    this.audioService.storeAudioEnabledStateInLocalStorage();
     }
 }
