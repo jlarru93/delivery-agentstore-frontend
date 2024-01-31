@@ -44,6 +44,10 @@ const routes: Routes = [
                 path: "complaint-report",
                 loadChildren: () => import('./modules/complaint-report/complaint-report.module').then(m => m.ComplaintReportModule), canActivate: [IsAuthenticated]
             },
+            {
+                path: "user-report",
+                loadChildren: () => import('./modules/user-report/user-report.module').then(m => m.UserReportModule), canActivate: [IsAuthenticated]
+            }
             //THEME
             /*{ path: '', component: DashboardDemoComponent },
             { path: 'uikit/formlayout', component: FormLayoutDemoComponent },

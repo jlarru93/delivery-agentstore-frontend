@@ -1,0 +1,90 @@
+<p-toast baseZIndex="10000"></p-toast>
+<p-toolbar styleClass="custom-toolbar">
+    <div class="p-toolbar-group-left">
+        <h5 class="p-mr-4 p-p-0">Lista de usuarios</h5>
+        <div class="p-grid p-fluid">
+            <div class="p-col-5">
+                <label for="firstname">Nombre</label>
+                <input type="text" [(ngModel)]="keyWord" pInputText />
+            </div>
+            <div class="p-col-5">
+                <label for="firstname">Celular</label>
+                <p-inputNumber [(ngModel)]="cellphone"></p-inputNumber>
+            </div>
+        </div>
+    </div>
+    <div class="p-toolbar-group-right">
+        <p-button icon="pi pi-search" type="button" (click)="onGetUsersReport()"
+        label="Buscar" styleClass="p-button-danger"></p-button>
+    </div>
+</p-toolbar>
+
+<div class="p-mt-4"></div>
+
+<p-table [value]="userReportList" 
+        [resizableColumns]="true" 
+        styleClass="p-datatable-gridlines" 
+        [loading]="loadingResults">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pResizableColumn>ID</th>
+                <th pResizableColumn>Nombre completo</th>
+                <th pResizableColumn>Email</th>
+                <th pResizableColumn>Coteo de ordenes</th>
+                <th pResizableColumn>Última orden</th>
+                <th pResizableColumn>Direcciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td>{{user.id}}</td>
+                <td>{{user.fullName}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.countOrder}}</td>
+                <td>{{user.lastOrder}}</td>
+                <td>
+                    <i class="pi pi-eye" (click)="openDialogDirection(user)" style="color: #17a2b8; font-size: 2rem; cursor: pointer;"></i>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <p-paginator [rows]="10" [totalRecords]="pagination.totalRecords" 
+            (onPageChange)="onPageChangeUserReport($event)"></p-paginator>
+
+        </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="userDirectionDialog" [modal]="true" header="Direcciones">
+    <p-table [value]="userDirections" 
+        [resizableColumns]="true" 
+        styleClass="p-datatable-gridlines" 
+        [loading]="loadingResults">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pResizableColumn>ID</th>
+                <th pResizableColumn>Dirección</th>
+                <th pResizableColumn>Default</th>
+                <th pResizableColumn>Alias</th>
+                <th pResizableColumn>Referencia</th>
+                <th pResizableColumn>Piso</th>
+                <th pResizableColumn>Estado</th>
+                <th pResizableColumn>Zona</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-address>
+            <tr>
+                <td>{{address.id}}</td>
+                <td>{{address.addressStreet}}</td>
+                <td>{{address.default}}</td>
+                <td>{{address.alias}}</td>
+                <td>{{address.reference}}</td>
+                <td>{{address.floor}}</td>
+                <td>
+                    <i *ngIf="address.enable" class="pi pi-check-circle" style="color: #689f38; font-size: 1.5rem;"></i>
+                    <i *ngIf="!address.enable" class="pi pi-times-circle" style="color: #d32f2f; font-size: 1.5rem;"></i>
+                </td>
+                <td>{{address.zone.name}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
