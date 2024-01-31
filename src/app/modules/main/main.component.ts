@@ -18,7 +18,7 @@ import { ChatResponse } from "./service/data/chat.response";
 import { ChatService } from "./service/chat.service";
 import { ChatBean } from "src/app/chat/data.chat";
 import { AuthService } from "src/app/utils/auth.service";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
 import { ChatComponent } from "src/app/chat/chat.component";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
@@ -29,6 +29,7 @@ import { AlertServices } from "../service/alert.service";
 import { AceptOrderRequest } from "./service/data/request";
 import { interval } from "rxjs";
 import { AudioService } from "../service/audio.service";
+//import { NgxPrinterService } from "ngx-printer";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',

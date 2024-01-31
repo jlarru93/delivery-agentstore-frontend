@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AuthService } from '../utils/auth.service';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ChatBean } from './data.chat';
 import { USER_TYPE_AGENT_STORE } from '../utils/constant';
 import { v4 as uuidv4 } from 'uuid';
@@ -24,7 +24,7 @@ export class ChatComponent implements OnInit {
   @Output() emitMessage = new EventEmitter<ChatBean>();
   @Output() hideChat = new EventEmitter<void>();
 
-  messageControl: FormControl = new FormControl('');
+  messageControl: UntypedFormControl = new UntypedFormControl('');
 
   colorback: string = 'blue'
 

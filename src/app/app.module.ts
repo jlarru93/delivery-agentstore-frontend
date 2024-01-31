@@ -32,7 +32,7 @@ import {DividerModule} from 'primeng/divider';
 import {DropdownModule} from 'primeng/dropdown';
 import {FieldsetModule} from 'primeng/fieldset';
 import {FileUploadModule} from 'primeng/fileupload';
-import {FullCalendarModule} from '@fullcalendar/angular';
+//import {FullCalendarModule} from '@fullcalendar/angular';
 import {GalleriaModule} from 'primeng/galleria';
 import {ImageModule} from 'primeng/image';
 import {InplaceModule} from 'primeng/inplace';
@@ -151,7 +151,7 @@ import {BreadcrumbService} from './breadcrumb.service';
 import {MenuService} from './app.menu.service';
 import {AppCodeModule} from './app.code.component';
 
-import dayGridPlugin from '@fullcalendar/daygrid';
+//import dayGridPlugin from '@fullcalendar/daygrid';
 //import timeGridPlugin from '@fullcalendar/timegrid';
 //import interactionPlugin from '@fullcalendar/interaction';
 import { JWTInterceptor } from './utils/jwt-interceptor';
@@ -168,11 +168,11 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { AlertModule } from './directives/alert/alert.module';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
-FullCalendarModule.registerPlugins([
+/*FullCalendarModule.registerPlugins([
     dayGridPlugin,
     //timeGridPlugin,
     //interactionPlugin
-]);
+]);*/
 
 @NgModule({
     imports: [
@@ -208,7 +208,7 @@ FullCalendarModule.registerPlugins([
         DropdownModule,
         FieldsetModule,
         FileUploadModule,
-        FullCalendarModule,
+        //FullCalendarModule,
         GalleriaModule,
         ImageModule,
         InplaceModule,
@@ -263,8 +263,6 @@ FullCalendarModule.registerPlugins([
         TreeTableModule,
         TriStateCheckboxModule,
         VirtualScrollerModule,
-
-
         MainModule,
         ProductModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
@@ -323,15 +321,14 @@ FullCalendarModule.registerPlugins([
         TextComponent,
         WidgetsComponent,
         SignInComponent
-        ],
+    ],
     providers: [
-        {provide: LocationStrategy, useClass: HashLocationStrategy},
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
         { provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, BreadcrumbService,
-        MqttService,MqttRoutingService,OrderHandler,StoreHandler
+        MqttService, MqttRoutingService, OrderHandler, StoreHandler
     ],
-    entryComponents: [ModalComponent],
     bootstrap: [AppComponent]
 })
 export class AppModule {

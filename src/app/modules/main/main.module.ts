@@ -16,9 +16,9 @@ import { TreeTableModule } from "primeng/treetable";
 import { OverlayPanelModule } from "primeng/overlaypanel";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatDividerModule } from "@angular/material/divider";
-import { MatInputModule } from "@angular/material/input";
-import { MatButtonModule } from "@angular/material/button";
-import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatLegacyInputModule as MatInputModule } from "@angular/material/legacy-input";
+import { MatLegacyButtonModule as MatButtonModule } from "@angular/material/legacy-button";
+import { MatLegacyFormFieldModule as MatFormFieldModule } from "@angular/material/legacy-form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { AvatarModule } from "primeng/avatar";
 import { AvatarGroupModule } from "primeng/avatargroup";
@@ -55,10 +55,6 @@ import { ProgressSpinnerModule } from "primeng/progressspinner";
       TableModule,
       ProgressSpinnerModule,
       TreeTableModule,
-      // AgmCoreModule.forRoot({
-      //   apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
-      //   libraries: ['drawing']
-      // }),
       CardModule,
       DynamicDialogModule,
       OverlayPanelModule,
