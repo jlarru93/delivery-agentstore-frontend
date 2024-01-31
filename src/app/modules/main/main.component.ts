@@ -28,6 +28,7 @@ import { setHours, setMinutes, setSeconds } from "ngx-bootstrap/chronos/utils/da
 import { AlertServices } from "../service/alert.service";
 import { AceptOrderRequest } from "./service/data/request";
 import { interval } from "rxjs";
+import { AudioService } from "../service/audio.service";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -89,6 +90,8 @@ import { interval } from "rxjs";
     activoColor: boolean = true
     interval_active_color?: any
 
+    isInitRequest:boolean=true
+
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
@@ -103,7 +106,8 @@ import { interval } from "rxjs";
       private dialog: MatDialog,
       private http: HttpClient,
       private auth: AuthService,
-      private dataShared:dataSharedService
+      private dataShared:dataSharedService,
+      private audioService:AudioService
       ){
         this.dataShared.listStore$.subscribe((data:any)=>{          
           this.idStore=data
@@ -205,7 +209,7 @@ import { interval } from "rxjs";
   getOrders() {
     var item = this.idStore.map(i => Number(i))
     this.orderService.getOrders(this.idStore).subscribe((resp) => {
-     var ord =  resp.data.map((it) => {
+      var ord =  resp.data.map((it) => {
         let order = OrderResponse.toBean(it)
         let currentOrden = this.orders.find((or) => or.id == it.id)
         if (currentOrden) {
@@ -215,14 +219,22 @@ import { interval } from "rxjs";
 
         return order
       })
+      let soundIt=false
       ord.forEach((order) => {        
         let indexOrderExists = this.orders.findIndex(o => o.id == order.id)
         if (indexOrderExists != -1) {
           this.orders[indexOrderExists] = order
+          if(!this.isInitRequest && order.status===CONSTANTES.OPEN_ORDER_STATUS){
+            soundIt=true
+          }
         } else {
           this.orders.push(order)
         }
       })
+      if(soundIt){
+        this.audioService.onPlayAudio()
+      }
+      this.isInitRequest=false
       this.orders=this.orders.filter((da) => item.includes(da.store.id))
       console.log(ord)
       this.sortOrders()
@@ -248,7 +260,11 @@ import { interval } from "rxjs";
             let orderMqtt=OrderResponse.toBean(asyncData.data)
             let orderIndex=this.orders.findIndex((order)=>order.id === orderMqtt.id)
             if(orderIndex==-1){
+              
               this.orders.push(orderMqtt)
+              if(!this.isInitRequest && orderMqtt.status===CONSTANTES.OPEN_ORDER_STATUS){
+                this.audioService.onPlayAudio()
+              }
             }else{
               this.orders[orderIndex]=orderMqtt
             }
@@ -265,6 +281,9 @@ import { interval } from "rxjs";
           let indexOrder=this.orders.findIndex(o=>o.id==orderMqtt.id)
           if(indexOrder==-1){
             this.orders.push(orderMqtt)
+            if(!this.isInitRequest && orderMqtt.status===CONSTANTES.OPEN_ORDER_STATUS){
+              this.audioService.onPlayAudio()
+            }
           }else{
             this.orders[indexOrder]=orderMqtt
           }
@@ -301,7 +320,7 @@ import { interval } from "rxjs";
     }
 
     stopAudio(){
-      this.storeHandler.stopAudio();
+      this.audioService.stopAudio();
       this.isIconUp = false
       clearInterval(this.interval_active_color)
     }
