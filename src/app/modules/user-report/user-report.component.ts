@@ -3,6 +3,7 @@ import { MessageService } from 'primeng/api';
 import { UserReportService } from './service/user-report.service';
 import { Pagination } from 'src/app/models';
 import { UserDirectionsBean, UserReportBean } from './service/data';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user-report',
@@ -13,6 +14,8 @@ import { UserDirectionsBean, UserReportBean } from './service/data';
 export class UserReportComponent implements OnInit {
 
   pagination: Pagination = { page: 1, size: 10, totalRecords: 0, totalNumberPages: 0 }
+
+  countryCode: any = environment.dialCode
 
   constructor(
     private messageServie: MessageService,
@@ -33,7 +36,7 @@ export class UserReportComponent implements OnInit {
     this.loadingResults = true
     let bodyRequest = {
       keyWord: this.keyWord,
-      cellphone: this.cellphone
+      cellphone: this.countryCode+this.cellphone
     }
     this.userReportService.getUserReportList(bodyRequest, this.pagination).subscribe(
       (resp) => {
@@ -64,14 +67,17 @@ export class UserReportComponent implements OnInit {
 
 
   userDirections: UserDirectionsBean[]
-
+  loadingResults2: boolean = false
   onGetUserDirection(numberId: number){
+    this.loadingResults2 = true
     this.userReportService.getUsersDirection(numberId).subscribe(
       (resp) => {
         this.userDirections = resp.data
+        this.loadingResults2 = false
       }, 
       (error) => {
         this.messageServie.add({severity: 'error', summary: '', detail: 'Ocurrio un error'})
+        this.loadingResults2 = false
       }
     )
   }

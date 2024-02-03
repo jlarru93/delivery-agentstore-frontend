@@ -98,6 +98,7 @@ export const environment = {
   },
   NAME_COMPANY: 'tres22',
   conuntryCode:'CO',
+  dialCode: '+57',
   centermap:{
     lat: 10.96854,
     lng: -74.78132

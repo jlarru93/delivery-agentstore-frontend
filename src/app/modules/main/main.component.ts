@@ -401,10 +401,10 @@ import { AudioService } from "../service/audio.service";
     }
 
     sortOrders(){
-      this.ordersOpen=this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.OPEN_ORDER_STATUS &&  this.dmStatusOkay(order)).reverse()
-      this.ordersPreparing=this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.PREPARING_ORDER_STATUS &&  this.dmStatusOkay(order)).reverse()
-      this.ordersReady=this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.READY_ORDER_STATUS &&  this.dmStatusOkay(order)).reverse()
-      this.ordersInRoute=this.orders.filter((order)=>(order.statusForAgentStore==CONSTANTES.IN_ROUTE_ORDER_STATUS)).reverse()
+      this.ordersOpen=this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.OPEN_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersPreparing=this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.PREPARING_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersReady=this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.READY_ORDER_STATUS &&  this.dmStatusOkay(order))
+      this.ordersInRoute=this.orders.filter((order)=>(order.statusForAgentStore==CONSTANTES.IN_ROUTE_ORDER_STATUS))
       this.ordersFinis = this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.DONE_ORDER_STATUS).reverse()
     }
 
