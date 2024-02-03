@@ -1,7 +1,7 @@
 export class UserReportBean{
     fullName?: string
     email?: string
-    cellphone?: string
+    cellPhone?: string
     countOrder?: number
     lastOrder?: number
 }

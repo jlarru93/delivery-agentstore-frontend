@@ -36,7 +36,7 @@ export class UserReportComponent implements OnInit {
     this.loadingResults = true
     let bodyRequest = {
       keyWord: this.keyWord,
-      cellphone: this.countryCode+this.cellphone
+      cellphone: this.cellphone ? this.countryCode+this.cellphone : null
     }
     this.userReportService.getUserReportList(bodyRequest, this.pagination).subscribe(
       (resp) => {
