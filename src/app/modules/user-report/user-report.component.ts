@@ -4,6 +4,8 @@ import { UserReportService } from './service/user-report.service';
 import { Pagination } from 'src/app/models';
 import { UserDirectionsBean, UserReportBean } from './service/data';
 import { environment } from 'src/environments/environment';
+import { COUNTRYCODE, NUMBERPHONELENGTH } from 'src/app/utils/constant';
+import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 
 @Component({
   selector: 'app-user-report',
@@ -15,7 +17,8 @@ export class UserReportComponent implements OnInit {
 
   pagination: Pagination = { page: 1, size: 10, totalRecords: 0, totalNumberPages: 0 }
 
-  countryCode: any = environment.dialCode
+  countryCodes: CountryCode[] = CountryCodes;
+  selectCountryCode: CountryCode = CountryCodes.find(country => country.dial_code == COUNTRYCODE);
 
   constructor(
     private messageServie: MessageService,
@@ -36,7 +39,7 @@ export class UserReportComponent implements OnInit {
     this.loadingResults = true
     let bodyRequest = {
       keyWord: this.keyWord,
-      cellphone: this.cellphone ? this.countryCode+this.cellphone : null
+      cellphone: this.cellphone ? this.selectCountryCode.dial_code + this.cellphone : null
     }
     this.userReportService.getUserReportList(bodyRequest, this.pagination).subscribe(
       (resp) => {

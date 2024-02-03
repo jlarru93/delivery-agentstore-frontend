@@ -30,6 +30,7 @@ import { DialogModule } from 'primeng/dialog';
     ToastModule,
     ToolbarModule,
     UserReportRoutingModule
-  ]
+  ],
+  providers: []
 })
 export class UserReportModule { }
