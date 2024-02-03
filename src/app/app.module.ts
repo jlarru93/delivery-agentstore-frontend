@@ -21,7 +21,7 @@ import {ChartModule} from 'primeng/chart';
 import {CheckboxModule} from 'primeng/checkbox';
 import {ChipModule} from 'primeng/chip';
 import {ChipsModule} from 'primeng/chips';
-import {CodeHighlighterModule} from 'primeng/codehighlighter';
+//import {CodeHighlighterModule} from 'primeng/codehighlighter';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {ColorPickerModule} from 'primeng/colorpicker';
@@ -42,7 +42,7 @@ import {InputSwitchModule} from 'primeng/inputswitch';
 import {InputTextModule} from 'primeng/inputtext';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {KnobModule} from 'primeng/knob';
-import {LightboxModule} from 'primeng/lightbox';
+//import {LightboxModule} from 'primeng/lightbox';
 import {ListboxModule} from 'primeng/listbox';
 import {MegaMenuModule} from 'primeng/megamenu';
 import {MenuModule} from 'primeng/menu';
@@ -197,7 +197,7 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
         CheckboxModule,
         ChipModule,
         ChipsModule,
-        CodeHighlighterModule,
+        //CodeHighlighterModule,
         ConfirmDialogModule,
         ConfirmPopupModule,
         ColorPickerModule,
@@ -218,7 +218,7 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
         InputTextModule,
         InputTextareaModule,
         KnobModule,
-        LightboxModule,
+        //LightboxModule,
         ListboxModule,
         MegaMenuModule,
         MenuModule,
