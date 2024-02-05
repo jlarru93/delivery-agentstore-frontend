@@ -97,6 +97,7 @@ export const environment = {
   },
   NAME_COMPANY: 'tres22',
   conuntryCode:'PE',
+  countryDial: '+51',
   cityCenterPoint: {
     lat: -12.0621065,
     lng: -77.0365256

@@ -17,6 +17,8 @@ import { dataSharedService } from "../service/data-shared.service";
 import { MenuService } from "src/app/app.menu.service";
 import { AppMainComponent } from "src/app/app.main.component";
 import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
+import { COUNTRYCODE, NUMBERPHONELENGTH } from 'src/app/utils/constant';
+import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 
 interface PolyLine{
   routePoints:RoutePoint[]
@@ -147,6 +149,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   isDraggabled: boolean
   data_driver: ResponseMotorizedOrigin[] = [];
   isHiddenInput: boolean = false
+
+  countryCodes: CountryCode[] = CountryCodes;
+  selectCountryCode: CountryCode = CountryCodes.find(country => country.dial_code == environment.countryDial);
+
+
   constructor(
     private storeService: StoreService,
     private requestTripService: RequestTripService,
@@ -710,7 +717,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     });
   }
   onGetAmountOrder() {
-    debugger
+    
     let request: RequestOrderPayment = {
       origin: {
         lat: this.request_trip.addresses[0].point.coordinates[1],
@@ -844,7 +851,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.request_trip.addresses.forEach((item, index) => {
       if (item.sort == 1) {
         order.addresses[0].addressStreet = item.addressStreet;
-        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone?.toString()??'';
+        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
@@ -852,7 +859,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         order.addresses[0].point = item.point;
         order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup ? this.input_receptorNameOrigin_pickup : '';
       } else {
-        order.addresses[1].phone = this.destinationMobilePhone?.toString();
+        order.addresses[1].phone = this.selectCountryCode.dial_code + this.destinationMobilePhone?.toString();
         order.addresses[1].marker = item.marker;
         order.addresses[1].alias = item.alias;
         order.addresses[1].reference = this.input_reference_destination ? this.input_reference_destination : '';
@@ -899,7 +906,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 
   onUpdateOrder() {
-    debugger
+    
     let order: RequestTrip = new RequestTrip();
 
 
@@ -980,9 +987,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
     this.request_trip.addresses.forEach((item, index) => {
       if (item.sort == 1) {
+        debugger
         order.addresses[0].id = this.editTripData.addresses[0].id
         order.addresses[0].addressStreet = item.addressStreet;
-        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone?.toString()??'';
+        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
@@ -992,7 +1000,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     
       } else {
         order.addresses[1].id = this.editTripData.addresses[1].id
-        order.addresses[1].phone = this.destinationMobilePhone?.toString();
+        order.addresses[1].phone = this.selectCountryCode.dial_code + this.destinationMobilePhone?.toString();
         order.addresses[1].marker = item.marker;
         order.addresses[1].alias = item.alias;
         order.addresses[1].reference = this.input_reference_destination ? this.input_reference_destination : '';

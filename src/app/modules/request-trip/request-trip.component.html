@@ -118,6 +118,25 @@
                 style="font-size: 1.5rem; color: #212222"
               ></i>
             </div>
+            <p-dropdown id="countrycode_adminStore" appendTo="body" [options]="countryCodes" 
+              [(ngModel)]="selectCountryCode" optionLabel="name"
+                [filter]="true" filterBy="name" [showClear]="true" placeholder="País">
+                <ng-template pTemplate="selectedItem">
+                    <div class="country-item country-item-value" *ngIf="selectCountryCode">
+                        <img src="assets/country-flags/flag_placeholder.png"
+                            [class]="'flag flag-' + selectCountryCode.code.toLowerCase()" />
+                        <div>&nbsp;{{selectCountryCode.dial_code}}</div>
+                    </div>
+                </ng-template>
+                <ng-template let-country pTemplate="item">
+                    <div class="country-item">
+                        <img src="assets/country-flags/flag_placeholder.png"
+                            [class]="'flag flag-' + country.code.toLowerCase()" />&nbsp;
+                        <div>{{country.name}} {{country.dial_code}} </div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <div class="p-mr-1"></div>
             <p-inputNumber mode="decimal" inputId="withoutgrouping" placeholder="Número de teléfono" 
             [useGrouping]="false" [(ngModel)]="originMobilePhone"></p-inputNumber>
           </div>
@@ -193,6 +212,25 @@
                 style="font-size: 1.5rem; color: #212222"
               ></i>
             </div>
+            <p-dropdown id="countrycode_adminStore" appendTo="body" [options]="countryCodes" 
+              [(ngModel)]="selectCountryCode" optionLabel="name"
+                [filter]="true" filterBy="name" [showClear]="true" placeholder="País">
+                <ng-template pTemplate="selectedItem">
+                    <div class="country-item country-item-value" *ngIf="selectCountryCode">
+                        <img src="assets/country-flags/flag_placeholder.png"
+                            [class]="'flag flag-' + selectCountryCode.code.toLowerCase()" />
+                        <div>&nbsp;{{selectCountryCode.dial_code}}</div>
+                    </div>
+                </ng-template>
+                <ng-template let-country pTemplate="item">
+                    <div class="country-item">
+                        <img src="assets/country-flags/flag_placeholder.png"
+                            [class]="'flag flag-' + country.code.toLowerCase()" />&nbsp;
+                        <div>{{country.name}} {{country.dial_code}} </div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <div class="p-mr-1"></div>
             <p-inputNumber inputId="withoutgrouping" placeholder="Número de teléfono" 
             [useGrouping]="false" [(ngModel)]="destinationMobilePhone"></p-inputNumber>
           </div>
