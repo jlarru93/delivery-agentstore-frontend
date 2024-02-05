@@ -97,6 +97,10 @@ export const environment = {
   },
   NAME_COMPANY: 'tres22',//'<<your name>>',
   conuntryCode:'PE',
+  cityCenterPoint: {
+    lat: -12.0621065,
+    lng: -77.0365256
+  },
   centermap:{
     lat: -12.1251109,
     lng: -76.9928316

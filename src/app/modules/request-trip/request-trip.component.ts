@@ -241,7 +241,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.destinationMobilePhone = this.editTripData.addresses[1].phone
       this.destinationReceptorName = this.editTripData.addresses[1].receptorName
       this.request_trip.description = this.editTripData.detail
-debugger
+
       this.method_payment = this.editTripData.payment.method.type
       this.cashAmount = this.editTripData.productPrice
       this.editTripData.addresses.forEach((element,i) => {
@@ -469,10 +469,14 @@ debugger
    autocompleteOri: google.maps.places.Autocomplete
   findAdressOrigin() {
     //  google.maps.
+    let cityBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
+    )
     const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
      this.autocompleteOri = new google.maps.places.Autocomplete(element, {
       types: [],
       fields: ["place_id"],
+      bounds: cityBounds,
       componentRestrictions: {
         country: environment.conuntryCode,
 
@@ -486,10 +490,14 @@ debugger
   }
   findAdress() {
     //  google.maps.
+    let cityBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
+    )
     const element = <HTMLInputElement>document.getElementById("txtUbicacion");
     const autocomplete = new google.maps.places.Autocomplete(element, {
       types: [],
       fields: ["place_id"],
+      bounds: cityBounds,
       componentRestrictions: {
         country: environment.conuntryCode,
       },
@@ -844,7 +852,7 @@ debugger
         order.addresses[0].point = item.point;
         order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup ? this.input_receptorNameOrigin_pickup : '';
       } else {
-        order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
+        order.addresses[1].phone = this.destinationMobilePhone?.toString();
         order.addresses[1].marker = item.marker;
         order.addresses[1].alias = item.alias;
         order.addresses[1].reference = this.input_reference_destination ? this.input_reference_destination : '';
@@ -984,7 +992,7 @@ debugger
     
       } else {
         order.addresses[1].id = this.editTripData.addresses[1].id
-        order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
+        order.addresses[1].phone = this.destinationMobilePhone?.toString();
         order.addresses[1].marker = item.marker;
         order.addresses[1].alias = item.alias;
         order.addresses[1].reference = this.input_reference_destination ? this.input_reference_destination : '';
