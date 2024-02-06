@@ -653,8 +653,14 @@
          </div>
       </footer>
     </div>
-    <p-dialog id="imageDialog" header="Screenshoot" [(visible)]="dialogScreenshoot" [draggable]="false" [resizable]="false" 
+    <p-dialog id="imageDialog"  [(visible)]="dialogScreenshoot" [draggable]="false" [resizable]="false" 
     [style]="{ width: '800px' }" (onHide)="dialogScreenshoot = false">
+    <ng-template pTemplate="header">
+      Screenshoot
+      <button pButton pRipple type="button" label="Descargar" icon="pi pi-download" (click)="onDownloadScrenshoot(imagenURL)"
+      class="p-button-rounded p-button-raised p-button-text" [loading]="onDownloadLoading"></button>
+      
+   </ng-template>
     <div style="display: grid;
     place-items: center;"> 
       <img [src]="imagenURL" width="90%" >

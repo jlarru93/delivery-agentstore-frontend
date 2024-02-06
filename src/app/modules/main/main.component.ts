@@ -18,7 +18,7 @@ import { ChatResponse } from "./service/data/chat.response";
 import { ChatService } from "./service/chat.service";
 import { ChatBean } from "src/app/chat/data.chat";
 import { AuthService } from "src/app/utils/auth.service";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
 import { ChatComponent } from "src/app/chat/chat.component";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
@@ -741,5 +741,23 @@ import { AudioService } from "../service/audio.service";
   onTabOpen(event) {
     
     this.accordionIndex = event.index;
+  }
+
+  onDownloadLoading: boolean = false
+  onDownloadScrenshoot(imagenURL){
+    this.onDownloadLoading = true
+    this.onSaveScreenShoot(imagenURL)
+    
+  }
+  onSaveScreenShoot(imagenURL){
+    const urlImagen = imagenURL;
+    const nombreArchivo = 'screen_shoot.jpg';
+    const link = document.createElement('a');
+    link.href = urlImagen;
+    link.download = nombreArchivo;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    this.onDownloadLoading = false
   }
 }
