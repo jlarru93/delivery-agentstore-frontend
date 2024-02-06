@@ -784,6 +784,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.request_trip.isOrderCalendar=true
     }
   }
+
+  onSaveLoading: boolean = false
+
   onSaveOrder() {
     let order: RequestTrip = new RequestTrip();
 
@@ -806,6 +809,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     if ("CASH" === this.method_payment) {
       order.productPrice = this.cashAmount
     }
+
+    this.onSaveLoading = true
 
     order.payment = {
       method: {
@@ -885,6 +890,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             isUpdated: false
           }
         });
+        this.onSaveLoading = false
         // alert("Se guardó correctamente");
       },
       (error:HttpErrorResponse) => {
@@ -894,6 +900,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
           this.alert.showError('',"Ocurrió un error");
         }
+        this.onSaveLoading = false
       }
     );
     
@@ -929,6 +936,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     if ("CASH" === this.method_payment) {
       order.productPrice = this.cashAmount
     }
+
+
+    this.onSaveLoading = true
 
     order.payment = {
       method: {
@@ -1022,6 +1032,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             isUpdated: true
           }
         });
+        this.onSaveLoading = false
         // alert("Se guardó correctamente");
       },
       (error:HttpErrorResponse) => {
@@ -1031,7 +1042,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
           this.alert.showError('',"Ocurrió un error");
         }
-        
+        this.onSaveLoading = false
       }
     );
     
