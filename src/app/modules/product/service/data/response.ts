@@ -3,11 +3,13 @@ import { PriceBean, StoreBean, ProductBean, TiketKitchenBean } from "../../data"
 export class PriceResponse{
     currency ?: string;
     value ?: number;
+    oldValue?: number;
     static toBean(self: PriceResponse) : PriceBean {
         try{
             const bean = new PriceBean
             bean.currency = self.currency;
             bean.value = self.value;
+            bean.oldValue = self.oldValue;
             return bean
         }catch(e){
             console.log("self",self)
