@@ -55,10 +55,6 @@ import { ProgressSpinnerModule } from "primeng/progressspinner";
       TableModule,
       ProgressSpinnerModule,
       TreeTableModule,
-      // AgmCoreModule.forRoot({
-      //   apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
-      //   libraries: ['drawing']
-      // }),
       CardModule,
       DynamicDialogModule,
       OverlayPanelModule,

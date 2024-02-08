@@ -1,0 +1,124 @@
+<p-toast baseZIndex="10000"></p-toast>
+<p-toolbar styleClass="custom-toolbar">
+    <div class="p-toolbar-group-left">
+        <h5 class="p-mr-4 p-p-0">Lista de usuarios</h5>
+        <div class="p-grid p-fluid">
+            <div class="p-col-4">
+                <label for="firstname">Nombre</label>
+                <input type="text" [(ngModel)]="keyWord" pInputText />
+            </div>
+            <div class="p-col-4">
+                <label for="countrycode_adminStore">Código</label>
+                <p-dropdown id="countrycode_adminStore" appendTo="body" [options]="countryCodes" 
+                [(ngModel)]="selectCountryCode" optionLabel="name"
+                    [filter]="true" filterBy="name" [showClear]="true" placeholder="País">
+                    <ng-template pTemplate="selectedItem">
+                        <div class="country-item country-item-value" *ngIf="selectCountryCode">
+                            <img src="assets/country-flags/flag_placeholder.png"
+                                [class]="'flag flag-' + selectCountryCode.code.toLowerCase()" />
+                            <div>&nbsp;{{selectCountryCode.dial_code}}</div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-country pTemplate="item">
+                        <div class="country-item">
+                            <img src="assets/country-flags/flag_placeholder.png"
+                                [class]="'flag flag-' + country.code.toLowerCase()" />&nbsp;
+                            <div>{{country.name}} {{country.dial_code}} </div>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+                
+            </div>
+            <div class="p-col-4">
+                <label for="">Número de celular</label>
+                <p-inputNumber [(ngModel)]="cellphone" [useGrouping]="false"></p-inputNumber>
+            </div>
+        </div>
+    </div>
+    <div class="p-toolbar-group-right">
+        <p-button icon="pi pi-search" type="button" (click)="onGetUsersReport()"
+        label="Buscar" styleClass="p-button-danger"></p-button>
+    </div>
+</p-toolbar>
+
+<div class="p-mt-4"></div>
+
+<p-table [value]="userReportList" 
+        [resizableColumns]="true" 
+        styleClass="p-datatable-gridlines" 
+        [loading]="loadingResults">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pResizableColumn>ID</th>
+                <th pResizableColumn>Nombre completo</th>
+                <th pResizableColumn>Email</th>
+                <th pResizableColumn>Celular</th>
+                <th pResizableColumn>Conteo de ordenes</th>
+                <th pResizableColumn>Última orden</th>
+                <th pResizableColumn>Direcciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td>{{user.id}}</td>
+                <td>{{user.fullName}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.cellPhone}}</td>
+                <td>{{user.countOrder}}</td>
+                <td>{{user.lastOrder}}</td>
+                <td>
+                    <i class="pi pi-eye" (click)="openDialogDirection(user)" style="color: #17a2b8; font-size: 2rem; cursor: pointer;"></i>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <p-paginator [rows]="10" [totalRecords]="pagination.totalRecords" 
+            (onPageChange)="onPageChangeUserReport($event)"></p-paginator>
+
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7" style="text-align: center;">No se encontró resultados</td>
+            </tr>
+        </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="userDirectionDialog" [modal]="true" header="Direcciones">
+    <p-table [value]="userDirections" 
+        [resizableColumns]="true" 
+        styleClass="p-datatable-gridlines" 
+        [loading]="loadingResults2">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pResizableColumn>ID</th>
+                <th pResizableColumn>Dirección</th>
+                <th pResizableColumn>Default</th>
+                <th pResizableColumn>Alias</th>
+                <th pResizableColumn>Referencia</th>
+                <th pResizableColumn>Piso</th>
+                <th pResizableColumn>Estado</th>
+                <th pResizableColumn>Zona</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-address>
+            <tr>
+                <td>{{address.id}}</td>
+                <td>{{address.addressStreet}}</td>
+                <td>{{address.default}}</td>
+                <td>{{address.alias}}</td>
+                <td>{{address.reference}}</td>
+                <td>{{address.floor}}</td>
+                <td>
+                    <i *ngIf="address.enable" class="pi pi-check-circle" style="color: #689f38; font-size: 1.5rem;"></i>
+                    <i *ngIf="!address.enable" class="pi pi-times-circle" style="color: #d32f2f; font-size: 1.5rem;"></i>
+                </td>
+                <td>{{address.zone.name}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="6" style="text-align: center;">No se encontró resultados</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>

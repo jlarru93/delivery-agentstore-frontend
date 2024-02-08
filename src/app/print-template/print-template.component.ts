@@ -79,6 +79,8 @@ export class PrintTemplateComponent implements OnInit, AfterViewInit {
       case 'CASH' : methodConverted = 'Efectivo'; break;
       case 'BANK' : methodConverted = 'Cuenta bancaria'; break;
       case 'E-WALLET' : methodConverted = 'Billetera electrónica'; break;
+      case 'PAYMENT-BUTTON' : methodConverted = 'PSE' ; break
+      default: methodConverted; break
     }
     return methodConverted 
   }

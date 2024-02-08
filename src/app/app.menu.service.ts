@@ -17,7 +17,7 @@ export class MenuService {
     }
 
     reset() {
-        this.resetSource.next();
+        this.resetSource.next(null);
     }
     
     getStoreByIdAgent(){

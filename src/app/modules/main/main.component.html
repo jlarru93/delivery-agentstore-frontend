@@ -3,7 +3,7 @@
     <div class="p-col-12 p-lg-2 p-md-6">
       <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
          <div class="p-text-center main-title">
-            <p class="order-ready-main-title">{{title}}</p>
+            <p class="order-ready-main-title">{{title}} ({{ordersOpen.length}})</p>
             <div class="p-m-0 p-pt-2 p-pl-1">
                <i *ngIf="isIconUp" class="pi pi-volume-up" style="color:#000; font-size: 1.25rem; font-weight: bold;" (click)="stopAudio()"></i>
                <i *ngIf="!isIconUp" class="pi pi-volume-off" style="color:#000; font-size: 1.25rem; font-weight: bold;"></i>
@@ -66,7 +66,7 @@
     <div class="p-col-12 p-lg-3 p-md-6">
       <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
          <div class="p-text-center main-title">
-            <p class="order-ready-main-title">En preparación</p>
+            <p class="order-ready-main-title">En preparación ({{ordersPreparing.length}})</p>
          </div>
          <div *ngFor="let order of ordersPreparing; let i = index">
             <div class="p-p-2">
@@ -141,7 +141,7 @@
     <div class="p-col-12 p-lg-3 p-md-6">
       <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
          <div class="p-text-center main-title">
-            <p class="order-ready-main-title">Por Entregar</p>
+            <p class="order-ready-main-title">Por Entregar ({{ordersReady.length}})</p>
          </div>
          <div *ngFor="let order of ordersReady; let i = index">
             <div class="p-p-2">
@@ -212,7 +212,7 @@
    <div class="p-col-12 p-lg-2 p-md-6">
       <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
          <div class="p-text-center main-title">
-            <p class="order-ready-main-title">En Reparto</p>
+            <p class="order-ready-main-title">En Reparto ({{ordersInRoute.length}})</p>
          </div>
          <div *ngFor="let order of ordersInRoute; let i = index">
             <div class="p-p-2">
@@ -275,7 +275,7 @@
    <div class="p-col-12 p-lg-2 p-md-6">
       <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
          <div class="p-text-center main-title">
-            <p class="order-ready-main-title">Culminado</p>
+            <p class="order-ready-main-title">Culminado ({{ordersFinis.length}})</p>
          </div>
          <div *ngFor="let order of ordersFinis; let i = index">
             <div class="p-p-2">
@@ -653,8 +653,14 @@
          </div>
       </footer>
     </div>
-    <p-dialog id="imageDialog" header="Screenshoot" [(visible)]="dialogScreenshoot" [draggable]="false" [resizable]="false" 
+    <p-dialog id="imageDialog"  [(visible)]="dialogScreenshoot" [draggable]="false" [resizable]="false" 
     [style]="{ width: '800px' }" (onHide)="dialogScreenshoot = false">
+    <ng-template pTemplate="header">
+      Screenshoot
+      <button pButton pRipple type="button" label="Descargar" icon="pi pi-download" (click)="onDownloadScrenshoot(imagenURL)"
+      class="p-button-rounded p-button-raised p-button-text" [loading]="onDownloadLoading"></button>
+      
+   </ng-template>
     <div style="display: grid;
     place-items: center;"> 
       <img [src]="imagenURL" width="90%" >

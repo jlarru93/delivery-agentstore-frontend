@@ -17,6 +17,8 @@ import { dataSharedService } from "../service/data-shared.service";
 import { MenuService } from "src/app/app.menu.service";
 import { AppMainComponent } from "src/app/app.main.component";
 import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
+import { COUNTRYCODE, NUMBERPHONELENGTH } from 'src/app/utils/constant';
+import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 
 interface PolyLine{
   routePoints:RoutePoint[]
@@ -147,6 +149,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   isDraggabled: boolean
   data_driver: ResponseMotorizedOrigin[] = [];
   isHiddenInput: boolean = false
+
+  countryCodes: CountryCode[] = CountryCodes;
+  selectCountryCode: CountryCode = CountryCodes.find(country => country.dial_code == environment.countryDial);
+
+
   constructor(
     private storeService: StoreService,
     private requestTripService: RequestTripService,
@@ -241,7 +248,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.destinationMobilePhone = this.editTripData.addresses[1].phone
       this.destinationReceptorName = this.editTripData.addresses[1].receptorName
       this.request_trip.description = this.editTripData.detail
-debugger
+
       this.method_payment = this.editTripData.payment.method.type
       this.cashAmount = this.editTripData.productPrice
       this.editTripData.addresses.forEach((element,i) => {
@@ -469,10 +476,14 @@ debugger
    autocompleteOri: google.maps.places.Autocomplete
   findAdressOrigin() {
     //  google.maps.
+    let cityBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
+    )
     const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
      this.autocompleteOri = new google.maps.places.Autocomplete(element, {
       types: [],
       fields: ["place_id"],
+      bounds: cityBounds,
       componentRestrictions: {
         country: environment.conuntryCode,
 
@@ -486,10 +497,14 @@ debugger
   }
   findAdress() {
     //  google.maps.
+    let cityBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
+    )
     const element = <HTMLInputElement>document.getElementById("txtUbicacion");
     const autocomplete = new google.maps.places.Autocomplete(element, {
       types: [],
       fields: ["place_id"],
+      bounds: cityBounds,
       componentRestrictions: {
         country: environment.conuntryCode,
       },
@@ -702,7 +717,7 @@ debugger
     });
   }
   onGetAmountOrder() {
-    debugger
+    
     let request: RequestOrderPayment = {
       origin: {
         lat: this.request_trip.addresses[0].point.coordinates[1],
@@ -769,6 +784,9 @@ debugger
       this.request_trip.isOrderCalendar=true
     }
   }
+
+  onSaveLoading: boolean = false
+
   onSaveOrder() {
     let order: RequestTrip = new RequestTrip();
 
@@ -791,6 +809,8 @@ debugger
     if ("CASH" === this.method_payment) {
       order.productPrice = this.cashAmount
     }
+
+    this.onSaveLoading = true
 
     order.payment = {
       method: {
@@ -836,7 +856,7 @@ debugger
     this.request_trip.addresses.forEach((item, index) => {
       if (item.sort == 1) {
         order.addresses[0].addressStreet = item.addressStreet;
-        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone?.toString()??'';
+        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
@@ -844,7 +864,7 @@ debugger
         order.addresses[0].point = item.point;
         order.addresses[0].receptorName=this.input_receptorNameOrigin_pickup ? this.input_receptorNameOrigin_pickup : '';
       } else {
-        order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
+        order.addresses[1].phone = this.selectCountryCode.dial_code + this.destinationMobilePhone?.toString();
         order.addresses[1].marker = item.marker;
         order.addresses[1].alias = item.alias;
         order.addresses[1].reference = this.input_reference_destination ? this.input_reference_destination : '';
@@ -870,6 +890,7 @@ debugger
             isUpdated: false
           }
         });
+        this.onSaveLoading = false
         // alert("Se guardó correctamente");
       },
       (error:HttpErrorResponse) => {
@@ -879,6 +900,7 @@ debugger
 
           this.alert.showError('',"Ocurrió un error");
         }
+        this.onSaveLoading = false
       }
     );
     
@@ -891,7 +913,7 @@ debugger
   }
 
   onUpdateOrder() {
-    debugger
+    
     let order: RequestTrip = new RequestTrip();
 
 
@@ -914,6 +936,9 @@ debugger
     if ("CASH" === this.method_payment) {
       order.productPrice = this.cashAmount
     }
+
+
+    this.onSaveLoading = true
 
     order.payment = {
       method: {
@@ -972,9 +997,10 @@ debugger
 
     this.request_trip.addresses.forEach((item, index) => {
       if (item.sort == 1) {
+        debugger
         order.addresses[0].id = this.editTripData.addresses[0].id
         order.addresses[0].addressStreet = item.addressStreet;
-        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : this.originMobilePhone?.toString()??'';
+        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
@@ -984,7 +1010,7 @@ debugger
     
       } else {
         order.addresses[1].id = this.editTripData.addresses[1].id
-        order.addresses[1].phone = this.destinationMobilePhone?.toString()??'';
+        order.addresses[1].phone = this.selectCountryCode.dial_code + this.destinationMobilePhone?.toString();
         order.addresses[1].marker = item.marker;
         order.addresses[1].alias = item.alias;
         order.addresses[1].reference = this.input_reference_destination ? this.input_reference_destination : '';
@@ -1006,6 +1032,7 @@ debugger
             isUpdated: true
           }
         });
+        this.onSaveLoading = false
         // alert("Se guardó correctamente");
       },
       (error:HttpErrorResponse) => {
@@ -1015,7 +1042,7 @@ debugger
 
           this.alert.showError('',"Ocurrió un error");
         }
-        
+        this.onSaveLoading = false
       }
     );
     

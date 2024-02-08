@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { AuthService } from 'src/app/utils/auth.service';
 import { OrderHistoryService } from './service/order-history.service';
 import { OrderHistoryRequest } from './service/data/request';
@@ -31,7 +31,7 @@ export class OrderHistoryComponent implements OnInit {
   ]
   isDialogDetailOpen: boolean = false
 
-  messageControl: FormControl = new FormControl('');
+  messageControl: UntypedFormControl = new UntypedFormControl('');
 
   images: Image[] = []
 

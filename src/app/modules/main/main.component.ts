@@ -29,6 +29,7 @@ import { AlertServices } from "../service/alert.service";
 import { AceptOrderRequest } from "./service/data/request";
 import { interval } from "rxjs";
 import { AudioService } from "../service/audio.service";
+//import { NgxPrinterService } from "ngx-printer";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
@@ -404,7 +405,7 @@ import { AudioService } from "../service/audio.service";
       this.ordersPreparing=this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.PREPARING_ORDER_STATUS &&  this.dmStatusOkay(order))
       this.ordersReady=this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.READY_ORDER_STATUS &&  this.dmStatusOkay(order))
       this.ordersInRoute=this.orders.filter((order)=>(order.statusForAgentStore==CONSTANTES.IN_ROUTE_ORDER_STATUS))
-      this.ordersFinis = this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.DONE_ORDER_STATUS)
+      this.ordersFinis = this.orders.filter((order)=>order.statusForAgentStore==CONSTANTES.DONE_ORDER_STATUS).reverse()
     }
 
     dmStatusOkay(order:OrderBean){
@@ -740,5 +741,23 @@ import { AudioService } from "../service/audio.service";
   onTabOpen(event) {
     
     this.accordionIndex = event.index;
+  }
+
+  onDownloadLoading: boolean = false
+  onDownloadScrenshoot(imagenURL){
+    this.onDownloadLoading = true
+    this.onSaveScreenShoot(imagenURL)
+    
+  }
+  onSaveScreenShoot(imagenURL){
+    const urlImagen = imagenURL;
+    const nombreArchivo = 'screen_shoot.jpg';
+    const link = document.createElement('a');
+    link.href = urlImagen;
+    link.download = nombreArchivo;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    this.onDownloadLoading = false
   }
 }

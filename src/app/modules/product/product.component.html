@@ -85,7 +85,14 @@
                             <div class="store-card-content">
                                 <h5>{{product.name}}</h5>
                                 <span>{{product.review}}</span>
-                                <p>{{product.price.currency + '. ' + product.price.value}}</p>
+                                <div class="product-card-price">
+                                    <ng-container *ngIf="product.price.oldValue">
+                                        <p style="text-decoration: line-through;">{{product.price.getCurrencyAndOldValue()}}</p>
+                                    </ng-container>
+                                    <p style="font-weight: bold;">{{product.price.currency + '. ' + product.price.value}}</p>
+
+                                </div>
+                                
                             </div>
                         </div>
                     </div>

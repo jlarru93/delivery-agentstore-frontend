@@ -2,9 +2,12 @@
 export class PriceBean{
     currency: String
     value: number
-
+    oldValue: number
     getCurrencyAndValue(): String {
         return this.currency + this.value.toString()
+    }
+    getCurrencyAndOldValue(): String {
+        return this.currency + this.oldValue.toString()
     }
 }
 
