@@ -4,7 +4,6 @@ import { UserReportService } from './service/user-report.service';
 import { Pagination } from 'src/app/models';
 import { UserDirectionsBean, UserReportBean } from './service/data';
 import { environment } from 'src/environments/environment';
-import { COUNTRYCODE, NUMBERPHONELENGTH } from 'src/app/utils/constant';
 import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 
 @Component({
@@ -18,7 +17,7 @@ export class UserReportComponent implements OnInit {
   pagination: Pagination = { page: 1, size: 10, totalRecords: 0, totalNumberPages: 0 }
 
   countryCodes: CountryCode[] = CountryCodes;
-  selectCountryCode: CountryCode = CountryCodes.find(country => country.dial_code == COUNTRYCODE);
+  selectCountryCode: CountryCode = CountryCodes.find(country => country.dial_code == environment.countryDial);
 
   constructor(
     private messageServie: MessageService,
