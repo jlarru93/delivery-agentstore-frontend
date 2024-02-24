@@ -11,6 +11,7 @@ import { dataSharedService } from './modules/service/data-shared.service';
 import { StatusOpenStoreBean } from './modules/main/data';
 import { StoreHandler } from './modules/service/handlers/store.handler';
 import { AudioService } from './modules/service/audio.service';
+import { OpenStoreHandler } from './modules/service/handlers/store.open.handler';
 
 @Component({
     selector: 'app-topbar',
@@ -47,7 +48,9 @@ export class AppTopBarComponent implements OnInit{
         private mqtt:MqttService,
         private service: MenuService,
         private dataShared:dataSharedService,
-        private audioService:AudioService
+        private audioService:AudioService,
+        private openStoreHanlder:OpenStoreHandler
+
     ) {}
     
     ngOnInit(): void {
@@ -56,7 +59,10 @@ export class AppTopBarComponent implements OnInit{
         if(flagAudio != undefined){
             this.audioEnabled = flagAudio
         }
-        this.getStatusOpenStore()
+        this.openStoreHanlder._data.subscribe((data)=>{
+            this.getStatusOpenStore()
+        })
+        
         this.mqtt._onConnect.subscribe((isConnect)=>{
             this.isConnectMqtt=isConnect
             this.validateConnectMqttAndGetStatus()
