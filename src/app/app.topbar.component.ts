@@ -9,7 +9,6 @@ import { AgentStoreStoreResponse, MenuService } from './app.menu.service';
 import { environment } from 'src/environments/environment';
 import { dataSharedService } from './modules/service/data-shared.service';
 import { StatusOpenStoreBean } from './modules/main/data';
-import { StoreHandler } from './modules/service/handlers/store.handler';
 import { AudioService } from './modules/service/audio.service';
 import { OpenStoreHandler } from './modules/service/handlers/store.open.handler';
 
@@ -59,8 +58,15 @@ export class AppTopBarComponent implements OnInit{
         if(flagAudio != undefined){
             this.audioEnabled = flagAudio
         }
-        this.openStoreHanlder._data.subscribe((data)=>{
-            this.getStatusOpenStore()
+        this.getStatusOpenStore()
+        this.openStoreHanlder._data.subscribe((resp)=>{
+            if(!resp){return}
+            console.log(resp)
+            const data=resp.data
+            const indexUpdate=this.storesOpen.findIndex(s=>s.id===data.id)
+            if(indexUpdate>=0){
+                this.storesOpen[indexUpdate].isOpen=data.isOpen
+            }
         })
         
         this.mqtt._onConnect.subscribe((isConnect)=>{
@@ -89,6 +95,7 @@ export class AppTopBarComponent implements OnInit{
         if(this.isConnectMqtt && this.isDoneGetStatusOpenStore){
             this.storesOpen.forEach(s=>{
                 this.processSubsCribeStore(s.id)
+                this.processSubsCribeOpenStore(s.id)
             })
         }
     }
@@ -101,6 +108,11 @@ export class AppTopBarComponent implements OnInit{
         }else{
             this.mqtt.unSubscribe(chanelStore)
         }
+    }
+    processSubsCribeOpenStore(id?:any){
+        var chanelStore = "open/store/"+id
+        this.mqtt.subscribe(chanelStore)
+       
     }
     
     mobileMegaMenuItemClick(index) {
