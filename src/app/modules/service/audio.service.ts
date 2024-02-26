@@ -1,16 +1,19 @@
 import { Injectable } from "@angular/core";
+import { Howl } from "howler";
 
 @Injectable({
     providedIn: "root"
 })
 export class AudioService{
-    audio=new Audio('assets/audio/audio.mp3');
+    audio: Howl
     isPlaying = false;
     loopAudio = true;
     audioEnabled: boolean;
     constructor(){
-        this.audio.loop = true;
-        this.audio.load();
+        this.audio = new Howl({
+            src: ['assets/audio/audio.mp3'],
+            loop: true
+        });
         this.audioEnabled = this.retrieveAudioEnabledStateFromLocalStorage();
     }
     stopAudio(){

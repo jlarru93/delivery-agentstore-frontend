@@ -110,15 +110,17 @@ import { AudioService } from "../service/audio.service";
       private dataShared:dataSharedService,
       private audioService:AudioService
       ){
+        //this.requestAudioPermission();
         this.dataShared.listStore$.subscribe((data:any)=>{          
           this.idStore=data
           this.getOrders()
         })
       }
     
-
+    flagAudio: boolean
     ngOnInit(): void { 
       this.idStore= JSON.parse(localStorage.getItem('lstIdStore'))
+      this.flagAudio = JSON.parse(localStorage.getItem('audioEnabled'))
       this.messageService.showSuccess( 'Success',  'Message Content');
       console.log("MAIN")
       this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
@@ -152,6 +154,18 @@ import { AudioService } from "../service/audio.service";
     getUserData(){
       this.userName=this.auth.getParameterToken('name')
       this.userId=Number(this.auth.getParameterToken('id'))
+    }
+
+    requestAudioPermission() {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          console.log('Permiso de audio concedido');
+          // Puedes continuar con la lógica de tu aplicación que involucre audio aquí
+        })
+        .catch(error => {
+          console.log('Error al obtener el permiso de audio:', error);
+          // Puedes manejar el error de alguna manera (por ejemplo, mostrando un mensaje al usuario)
+        });
     }
 
     imagenURL: string = ''
@@ -233,6 +247,11 @@ import { AudioService } from "../service/audio.service";
         }
       })
       if(soundIt){
+        if(this.flagAudio == null){
+          this.isIconUp = false
+        } else {
+          this.isIconUp = true
+        }
         this.audioService.onPlayAudio()
       }
       this.isInitRequest=false
@@ -264,6 +283,11 @@ import { AudioService } from "../service/audio.service";
               
               this.orders.push(orderMqtt)
               if(!this.isInitRequest && orderMqtt.status===CONSTANTES.OPEN_ORDER_STATUS){
+                if(this.flagAudio == null){
+                  this.isIconUp = false
+                } else {
+                  this.isIconUp = true
+                }
                 this.audioService.onPlayAudio()
               }
             }else{
@@ -283,6 +307,11 @@ import { AudioService } from "../service/audio.service";
           if(indexOrder==-1){
             this.orders.push(orderMqtt)
             if(!this.isInitRequest && orderMqtt.status===CONSTANTES.OPEN_ORDER_STATUS){
+              if(this.flagAudio == null){
+                this.isIconUp = false
+              } else {
+                this.isIconUp = true
+              }
               this.audioService.onPlayAudio()
             }
           }else{
