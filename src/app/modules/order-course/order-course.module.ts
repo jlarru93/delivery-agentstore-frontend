@@ -21,7 +21,7 @@ import { OrderCourseComponent } from './order-course.component';
     CommonModule,
     OrderCourseRoutingModule,
     AgmCoreModule.forRoot({
-      apiKey: "AIzaSyDl_VavzdtyqvdrsOy3Mnsg9hFusgMZ_SY",
+      apiKey: "AIzaSyCZ6eQag6IYrfU1QRxScX9NoiMhtTrKwRQ",
       libraries: ['drawing']
     }),
     AccordionModule,
