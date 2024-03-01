@@ -16,12 +16,16 @@ export class PrintTemplateComponent implements OnInit, AfterViewInit {
     public sanitization: DomSanitizer,
   ) { }
 
-  isPriceForEachFroduct: boolean = false
-
+  isPriceForEachProduct: boolean = false
+  isPriceForEachSubOption: boolean = false
   ngOnInit(): void {
     this.storeData.ticketKitchen.forEach(element => {
-      if(element.key == 'priceForEachProduct'){
-        this.isPriceForEachFroduct = element.value
+      // if(element.key == 'priceForEachProduct'){
+      //   this.isPriceForEachProduct = element.value
+      // }
+      switch (element.key) {
+        case 'priceForEachProduct' : this.isPriceForEachProduct = element.value; break;
+        case 'priceForEachSubOptions': this.isPriceForEachSubOption = element.value; break;
       }
     })
   }

@@ -43,7 +43,7 @@
             <div class="item producto">
                 <span>{{product.quantity}}X {{product.name}}</span>
                 <span style="display: flex; justify-content: space-between; gap: 5px; align-items: baseline;">
-                    <span *ngIf="isPriceForEachFroduct">{{product.getPriceMinimalCurrency()}} </span>
+                    <span *ngIf="isPriceForEachProduct">{{product.getPriceMinimalCurrency()}} </span>
                     <span class="checkbox">☐</span>
                 </span>
             </div>
@@ -57,7 +57,14 @@
                 <div *ngFor="let sub of option.subOptions">
                     <div class="item subopcion">
                         <span>{{sub.quantity > 0 ? 'X' + sub.quantity : '' }} {{sub.name}}</span>
-                        <span><span class="checkbox">☐</span></span>
+                        <span>
+                            <span *ngIf="isPriceForEachSubOption">
+                                <ng-container *ngIf="sub.getPrice() > 0">
+                                    {{sub.getPriceMinimalCurrency()}}
+                                </ng-container>
+                            </span>
+                            <span class="checkbox">☐</span>
+                        </span>
                     </div>
                 </div>
             </div>

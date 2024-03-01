@@ -8,7 +8,9 @@ export abstract class SubOptionBean {
     price?: PriceBean
     quantity? : number
     abstract getPrice(): number
-    
+    getPriceMinimalCurrency(): string {
+        return this.price.currency + formatCurrency(this.price.value)
+    }
     //abstract select(recipe: SubOptionBean,parent:OptionBean)
 }
 export class SubOptionAggregable extends SubOptionBean {
