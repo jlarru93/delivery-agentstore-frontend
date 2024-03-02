@@ -33,12 +33,15 @@
         background-color: #DD1F26;
         color: #FFF;
       }
-
+      .p-chip.custom-chip-detail{
+        background-color: #10BC66;
+        color: #FFF;
+      }
   }
 
 .container-dialog{
     display: grid;
-    height: calc(100vh - 50vh);
+    height: calc(100vh - 45vh);
     grid-template-columns: 1fr 1fr .7fr 1.3fr;
     grid-template-rows: repeat(6, 1.5fr);
     grid-template-areas: 
@@ -50,7 +53,7 @@
      "footer footer footer sidebar";
 
      @media (max-width: 1920px) {
-        height: calc(100vw - 60vw);
+        height: calc(100vw - 55vw);
     }
 
      @media (max-width: 1280px) {
@@ -633,7 +636,10 @@ h5{
 :host ::ng-deep .custom-spinner .p-progress-spinner-circle {
     animation: custom-progress-spinner-dash 1.5s ease-in-out infinite, custom-progress-spinner-color 5s ease-in-out infinite;
 }
-
+.total-amount-underline{
+    text-decoration: line-through;
+    color: #DD1F26;
+}
 @keyframes custom-progress-spinner-color {
     100%,
     0% {

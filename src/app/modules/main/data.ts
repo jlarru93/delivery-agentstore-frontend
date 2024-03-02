@@ -143,6 +143,14 @@ export class PaymentBean {
     card?: CardBean
 }
 
+export class CouponsBean{
+    id?: number
+    uuid?: string
+    code?: string
+    discount?: number
+    typeDiscount?: string
+}
+
 export class OrderBean {
     id?: number
     uuid?: string
@@ -172,6 +180,12 @@ export class OrderBean {
     isSelfManaged:boolean
     isPickUpStore:boolean
     readyToDmMinutesAt?: number
+
+    totalPayUser?:number
+    productPriceDiscount?:number
+    productPriceWithDiscount?:number
+    coupons?: CouponsBean[]
+
     constructor(){
         this.messagesNoReadTotal=0
         this.messagesChat=[]
@@ -207,16 +221,23 @@ export class OrderBean {
     getTotal():number{
         return this.getSubTotalPrice()+this.tip;
     }
+    getTotalProductsWithCoupon(){
+        return ""+this.getCurrency() + formatCurrency(this.productPriceWithDiscount??0)
+    }
     getTotalAndCurrency(){
         return ""+this.getCurrency()+formatCurrency(this.getTotal())
     }
     getTotalDiscountAndCurrency(){
         return ""+this.getCurrency() + formatCurrency((this.getTotal() - (this.deliveryPriceDiscount??0) ))
     }
+
+    getTotalDiscountAndCurrencyWithCoupon(){
+        return ""+this.getCurrency() + formatCurrency((this.totalPayUser - (this.deliveryPriceDiscount??0) ))
+    }
     getCountProducts(): string {
         return this.products.reduce((accumulation, current) => { return accumulation+current.quantity }, 0).toString() +" productos"//.sumOf { it.quantity }.toString() + " productos"
     }
-
+    
     getdeliveryPriceDiscountAndCurrency(): string{
         return ""+this.getCurrency() + formatCurrency(((this.deliveryPrice??0) - (this.deliveryPriceDiscount??0)))
     }
