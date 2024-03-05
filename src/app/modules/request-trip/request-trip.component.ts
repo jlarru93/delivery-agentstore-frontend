@@ -226,6 +226,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       console.log('edit')
       this.findAdress()
       this.findAdressOrigin()
+      
       this.onUpdateEditOrder(this.editTripData)
       this.input_visible_pickup = this.editTripData.addresses[0].addressStreet
 
@@ -240,12 +241,26 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       }
       this.request_trip.isOrderCalendar=this.editTripData.isOrderCalendar
       this.input_reference_pickup = this.editTripData.addresses[0].reference
-      this.originMobilePhone = this.editTripData.addresses[0].phone
+      
+      const matchedCountryOrigin = this.countryCodes.find(country => this.editTripData.addresses[0].phone.startsWith(country.dial_code))
+
+      if(matchedCountryOrigin) {
+        this.originMobilePhone = this.editTripData.addresses[0].phone.replace(matchedCountryOrigin.dial_code, '')
+      }
+
       this.input_receptorNameOrigin_pickup = this.editTripData.addresses[0].receptorName
 
       this.inputVisibleDestino = this.editTripData.addresses[1].addressStreet
       this.input_reference_destination = this.editTripData.addresses[1].reference
-      this.destinationMobilePhone = this.editTripData.addresses[1].phone
+      
+      const matchedCountry = this.countryCodes.find(country => this.editTripData.addresses[1].phone.startsWith(country.dial_code));
+      if (matchedCountry) {
+        this.destinationMobilePhone = this.editTripData.addresses[1].phone.replace(matchedCountry.dial_code, '')
+      }
+      
+      //this.destinationMobilePhone = this.editTripData.addresses[1].phone
+
+      
       this.destinationReceptorName = this.editTripData.addresses[1].receptorName
       this.request_trip.description = this.editTripData.detail
 
@@ -268,7 +283,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       } else {
         let differenceInSeconds = this.editTripData.readyToDmAt - this.editTripData.createdAt
         let differenceInMinutes = differenceInSeconds / 60
-        this.request_trip.readyToDmAt = Math.round(differenceInMinutes)
+        this.request_trip.readyToDmAt = differenceInMinutes > 0 ? Math.round(differenceInMinutes) : 0
       }
       
       this.onGetAmountOrder()
@@ -754,7 +769,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   onChangeOrder(event:any){
     if(event.index==0){
-      debugger
       this.request_trip.isOrderCalendar=false
       if(this.editTripData && this.editTripData.isOrderCalendar == true){
         if(this.editTripData){
@@ -817,6 +831,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         type: this.method_payment,
       },
     };
+    
     order.uuid_price=this.uuid_price
     let fechaActual = Date.now()
     order.readyToDmAt = Number((fechaActual += this.request_trip.readyToDmAt *60 *1000).toString().substring(0,10));
@@ -955,9 +970,13 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       
       order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10)) 
     } else {
-      let readyToDmAt =  this.minutesToReadyToDm(this.request_trip.readyToDmAt,this.editTripData.createdAt );
+      if(this.request_trip.readyToDmAt == 0){
+        order.readyToDmAt = this.editTripData.readyToDmAt
+      } else {
+        let readyToDmAt =  this.minutesToReadyToDm(this.request_trip.readyToDmAt,this.editTripData.createdAt );
       
-      order.readyToDmAt = this.request_trip.readyToDmAt ? readyToDmAt : 0;
+        order.readyToDmAt = this.request_trip.readyToDmAt ? readyToDmAt : 0;
+      }
     }
 
 
@@ -997,7 +1016,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
     this.request_trip.addresses.forEach((item, index) => {
       if (item.sort == 1) {
-        debugger
+        
         order.addresses[0].id = this.editTripData.addresses[0].id
         order.addresses[0].addressStreet = item.addressStreet;
         order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
