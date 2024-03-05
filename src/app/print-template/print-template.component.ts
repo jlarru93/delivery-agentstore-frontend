@@ -1,5 +1,6 @@
 import { ViewEncapsulation, AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: 'app-print-template',
@@ -28,11 +29,31 @@ export class PrintTemplateComponent implements OnInit, AfterViewInit {
         case 'priceForEachSubOptions': this.isPriceForEachSubOption = element.value; break;
       }
     })
+    console.log('orderSelected', this.orderSelected)
   }
 
   ngAfterViewInit(): void {
     
   }
+
+  formatCurrency(input:number):string{
+    const numberFormat=environment.numberFormat
+
+    const decimalPart=input.toString().split(".")[1]??""
+    const entryPart=input.toString().split(".")[0]
+    const decimalConfig=decimalPart.substring(0,numberFormat.decimalPlaces)
+    
+    const regex = /(\d)(?=(\d{3})+(?!\d))/g;
+    const entryConfig=entryPart.replace(regex, '$1'+numberFormat.thousandsSeparator);
+    
+    let resulNumber=''
+    if(decimalConfig!=''){
+        resulNumber=entryConfig+numberFormat.decimalSeparator+decimalConfig
+    }else{
+        resulNumber=entryConfig
+    }
+    return resulNumber
+}
 
 
   @ViewChild('printSection') printSection: ElementRef;

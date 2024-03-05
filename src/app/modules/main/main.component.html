@@ -440,7 +440,7 @@
                                                 <p style="font-size: 17px;">{{sub.name}}</p>
                                              </div>
                                              <div class="p-col-6">
-                                                <p style="float: right;">{{sub.quantity > 0 ? sub.quantity : '-' }}</p>
+                                                <p style="float: right;">{{sub.getPriceMinimalCurrency()}} {{sub.quantity > 0 ? sub.quantity : '-' }}</p>
                                              </div>
                                           </div>
                                        </div>
