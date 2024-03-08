@@ -440,7 +440,10 @@
                                                 <p style="font-size: 17px;">{{sub.name}}</p>
                                              </div>
                                              <div class="p-col-6">
-                                                <p style="float: right;">{{sub.getPriceMinimalCurrency()}} {{sub.quantity > 0 ? sub.quantity : '-' }}</p>
+                                                <p style="float: right;">
+                                                   <span *ngIf="sub.price.value > 0">{{sub.getPriceMinimalCurrency()}}</span>
+                                                   {{sub.quantity > 0 ? sub.quantity : '' }}
+                                                </p>
                                              </div>
                                           </div>
                                        </div>
@@ -656,8 +659,8 @@
             <div id="products-amount">
                <p>Productos</p>
                <span>
-                  <span [ngClass]="{'total-amount-underline' : orderSelected.productPriceWithDiscount && orderSelected.totalPayUser != orderSelected.total}">{{orderSelected.getProductPriceAndCurrency()}}</span>      
-                  <ng-container *ngIf="orderSelected.productPriceWithDiscount && orderSelected.totalPayUser != orderSelected.total">
+                  <span [ngClass]="{'total-amount-underline' : (orderSelected.totalPayUser) && orderSelected.totalPayUser != orderSelected.total}">{{orderSelected.getProductPriceAndCurrency()}}</span>      
+                  <ng-container *ngIf="(orderSelected.totalPayUser) && orderSelected.totalPayUser != orderSelected.total">
                      <span class="p-pl-1">{{orderSelected.getTotalProductsWithCoupon()}}</span>
                   </ng-container>
                </span>

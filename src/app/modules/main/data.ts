@@ -222,7 +222,7 @@ export class OrderBean {
         return this.getSubTotalPrice()+this.tip;
     }
     getTotalProductsWithCoupon(){
-        return ""+this.getCurrency() + formatCurrency(this.productPriceWithDiscount??0)
+        return ""+this.getCurrency() + formatCurrency(this.productPriceWithDiscount)
     }
     getTotalAndCurrency(){
         return ""+this.getCurrency()+formatCurrency(this.getTotal())
