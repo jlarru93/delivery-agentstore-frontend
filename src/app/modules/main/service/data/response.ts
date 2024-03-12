@@ -1,5 +1,5 @@
 import { Store } from "src/app/models"
-import { AddressBean, CardBean, DeliveryManBean, EstimationTimeBean, MethodBean, OptionBean, OrderBean, PaymentBean, PictureBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UserBean } from "../../data"
+import { AddressBean, CardBean, CouponsBean, DeliveryManBean, EstimationTimeBean, MethodBean, OptionBean, OrderBean, PaymentBean, PictureBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UserBean } from "../../data"
 import { AddressResponseLoadingOrder } from "src/app/modules/request-trip/data/response"
 
 export class StatusOpenStoreResponse {
@@ -334,6 +334,23 @@ export class PaymentResponse {
     }
 }
 
+export class CouponsResponse{
+    id?: number
+    uuid?: string
+    code?: string
+    discount?: number
+    typeDiscount?: string
+    static toBean(self?: CouponsResponse): CouponsBean {
+        const bean = new CouponsBean()
+        bean.id = self.id
+        bean.uuid = self.uuid
+        bean.code = self.code
+        bean.discount = self.discount
+        bean.typeDiscount = self.typeDiscount
+        return bean
+    }
+}
+
 export class OrderResponse {
     id?: number
     uuid?: string
@@ -360,6 +377,12 @@ export class OrderResponse {
     isSelfManaged:boolean
     isPickUpStore:boolean
     readyToDmMinutesAt?: number
+
+    totalPayUser :number
+    productPriceDiscount :number
+    productPriceWithDiscount:number
+    coupons: CouponsResponse[]
+
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
         bean.id = self?.id
@@ -386,6 +409,10 @@ export class OrderResponse {
         bean.isSelfManaged = self.isSelfManaged??false
         bean.isPickUpStore = self.isPickUpStore??false
         bean.readyToDmMinutesAt = self.readyToDmMinutesAt
+        bean.totalPayUser = self.totalPayUser
+        bean.productPriceDiscount = self.productPriceDiscount
+        bean.productPriceWithDiscount = self.productPriceWithDiscount
+        bean.coupons = self.coupons.map((it)=> CouponsResponse.toBean(it))
         return bean
     }
 }

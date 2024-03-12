@@ -31,7 +31,7 @@ import { CalendarModule } from 'primeng/calendar';
     AgmCoreModule.forRoot({
       // please get your own API key here:
       // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
-      apiKey: 'AIzaSyDl_Vavzdty qvdrsOy3Mnsg9hFusgMZ_SY',
+      apiKey: 'AIzaSyCZ6eQag6IYrfU1QRxScX9NoiMhtTrKwRQ',
     }),
     CommonModule,
     FormsModule,
