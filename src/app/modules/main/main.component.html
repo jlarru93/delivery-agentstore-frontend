@@ -484,7 +484,7 @@
           <div class="sidebar-info" id="info" style="overflow: auto;">
             <ng-container *ngIf="orderSelected.coupons && orderSelected.coupons.length > 0">
                <div class="sidebar-container-title">Cupones</div>
-               <div class="method-payment-container" style="display: flex; gap: 8px;">
+               <div class="method-payment-container" style="display: flex; gap: 8px; overflow: auto;">
                   <div *ngFor="let coupon of orderSelected.coupons">
                      <p-chip label="{{coupon.code}}" styleClass="mr-2 custom-chip-detail"></p-chip>
 

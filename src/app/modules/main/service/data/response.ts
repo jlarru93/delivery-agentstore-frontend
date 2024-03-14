@@ -378,10 +378,10 @@ export class OrderResponse {
     isPickUpStore:boolean
     readyToDmMinutesAt?: number
 
-    totalPayUser :number
-    productPriceDiscount :number
-    productPriceWithDiscount:number
-    coupons: CouponsResponse[]
+    totalPayUser ?:number
+    productPriceDiscount ?:number
+    productPriceWithDiscount?:number
+    coupons?: CouponsResponse[]
 
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
@@ -412,7 +412,7 @@ export class OrderResponse {
         bean.totalPayUser = self.totalPayUser
         bean.productPriceDiscount = self.productPriceDiscount
         bean.productPriceWithDiscount = self.productPriceWithDiscount
-        bean.coupons = self.coupons.map((it)=> CouponsResponse.toBean(it))
+        bean.coupons = self?.coupons?.map((it)=> CouponsResponse.toBean(it))
         return bean
     }
 }
