@@ -199,7 +199,7 @@ export class OrderBean {
         return this.products.reduce((accumulation, current) => { return accumulation + current.getTotalPrice() }, 0)//sumOf { it.getTotalPrice() }
     }
     getProductPriceAndCurrency(): string {
-        return this.getCurrency() + formatCurrency(this.getProductPrice());
+        return this.getCurrency() + formatCurrency(this.productPrice);
     }
     getServicePriceAndCurrency(): string {
         return this.getCurrency() + formatCurrency(this.servicePrice)
@@ -221,7 +221,7 @@ export class OrderBean {
     getTotal():number{
         return this.getSubTotalPrice()+this.tip;
     }
-    getTotalProductsWithCoupon(){
+    getTotalProductsWithDiscount(){
         return ""+this.getCurrency() + formatCurrency(this.productPriceWithDiscount)
     }
     getTotalAndCurrency(){
@@ -240,6 +240,14 @@ export class OrderBean {
     
     getdeliveryPriceDiscountAndCurrency(): string{
         return ""+this.getCurrency() + formatCurrency(((this.deliveryPrice??0) - (this.deliveryPriceDiscount??0)))
+    }
+
+    //comanda
+    getTotalPayUserAndCurrencyCommand(){
+        return ""+this.getCurrency()+formatCurrency(this.totalPayUser)
+    }
+    getTotalAndCurrencyCommand(){
+        return ""+this.getCurrency()+formatCurrency(this.total)
     }
 }
 export interface StatusOpenStoreBean{
