@@ -659,18 +659,18 @@
             <div id="products-amount">
                <p>Productos</p>
                <span>
-                  <span [ngClass]="{'total-amount-underline' : (orderSelected.totalPayUser) && orderSelected.totalPayUser != orderSelected.total}">{{orderSelected.getProductPriceAndCurrency()}}</span>      
-                  <ng-container *ngIf="(orderSelected.totalPayUser) && orderSelected.totalPayUser != orderSelected.total">
-                     <span class="p-pl-1">{{orderSelected.getTotalProductsWithCoupon()}}</span>
+                  <span [ngClass]="{'total-amount-underline' : orderSelected?.productPriceWithDiscount != orderSelected?.productPrice }">{{orderSelected.getProductPriceAndCurrency()}}</span>      
+                  <ng-container *ngIf="orderSelected?.productPriceWithDiscount != orderSelected?.productPrice">
+                     <span class="p-pl-1">{{orderSelected.getTotalProductsWithDiscount()}}</span>
                   </ng-container>
                </span>
             </div>
             <div id="total-amount">
                <p>Monto Total</p>
                <span>
-                  <span [ngClass]="{'total-amount-underline' : orderSelected.totalPayUser && orderSelected.totalPayUser != orderSelected.total}">{{orderSelected.getTotalDiscountAndCurrency()}}</span>
+                  <span [ngClass]="{'total-amount-underline' : orderSelected.totalPayUser != orderSelected.total}">{{orderSelected.getTotalAndCurrencyCommand()}}</span>
                   <ng-container *ngIf="orderSelected.totalPayUser && orderSelected.totalPayUser != orderSelected.total">
-                     <span class="p-pl-1">{{orderSelected.getTotalDiscountAndCurrencyWithCoupon()}}</span>
+                     <span class="p-pl-1">{{orderSelected.getTotalPayUserAndCurrencyCommand()}}</span>
                   </ng-container>
 
                </span>
