@@ -241,6 +241,14 @@ export class OrderBean {
     getdeliveryPriceDiscountAndCurrency(): string{
         return ""+this.getCurrency() + formatCurrency(((this.deliveryPrice??0) - (this.deliveryPriceDiscount??0)))
     }
+
+    //comanda
+    getTotalPayUserAndCurrencyCommand(){
+        return ""+this.getCurrency()+formatCurrency(this.totalPayUser)
+    }
+    getTotalAndCurrencyCommand(){
+        return ""+this.getCurrency()+formatCurrency(this.total)
+    }
 }
 export interface StatusOpenStoreBean{
     id:number

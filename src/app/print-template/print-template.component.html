@@ -109,21 +109,12 @@
             </div>
 
         </ng-container>
-        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == 0 || orderSelected.deliveryPriceDiscount == null">
+        <div class="item">
             <span>Total:</span>
             <span>
-                <strong [ngClass]="{'line-through' : orderSelected.totalPayUser != orderSelected.total}">{{orderSelected.getTotalAndCurrency()}}</strong>
+                <strong [ngClass]="{'line-through' : orderSelected.totalPayUser != orderSelected.total}">{{orderSelected.getTotalAndCurrencyCommand()}}</strong>
                 <ng-container *ngIf="orderSelected.totalPayUser != orderSelected.total">
-                    <strong> {{orderSelected.getTotalDiscountAndCurrencyWithCoupon()}}</strong>
-                  </ng-container>
-            </span>
-        </div>
-        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount > 0">
-            <span>Total:</span>
-            <span>
-                <strong [ngClass]="{'line-through' : orderSelected.totalPayUser != orderSelected.total}">{{orderSelected.getTotalDiscountAndCurrency()}}</strong>
-                <ng-container *ngIf="orderSelected.totalPayUser != orderSelected.total">
-                    <strong> {{orderSelected.getTotalDiscountAndCurrencyWithCoupon()}}</strong>
+                    <strong> {{orderSelected.getTotalPayUserAndCurrencyCommand()}}</strong>
                   </ng-container>
             </span>
         </div>
