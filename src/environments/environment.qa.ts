@@ -29,6 +29,9 @@ export const environment = {
     pwd:"socket",
     useSSL:true
   },
+  GOOGLE:{
+    APIKEY: 'AIzaSyCAYkeE_sYWOb9IfET_ZjRqqrAWRP1CDhI'
+  },
   MARKERS: {
     ORIGEN: {
       URL: '/img/markers/Comercio.png',
