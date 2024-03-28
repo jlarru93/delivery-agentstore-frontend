@@ -14,6 +14,7 @@ import { TagModule } from 'primeng/tag';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
 import { OrderCourseComponent } from './order-course.component';
+import { environment } from "src/environments/environment";
 
 @NgModule({
   declarations: [OrderCourseComponent],
@@ -21,7 +22,7 @@ import { OrderCourseComponent } from './order-course.component';
     CommonModule,
     OrderCourseRoutingModule,
     AgmCoreModule.forRoot({
-      apiKey: "AIzaSyCZ6eQag6IYrfU1QRxScX9NoiMhtTrKwRQ",
+      apiKey: environment.GOOGLE.APIKEY,
       libraries: ['drawing']
     }),
     AccordionModule,

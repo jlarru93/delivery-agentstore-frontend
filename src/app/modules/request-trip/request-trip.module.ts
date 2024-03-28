@@ -24,6 +24,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { DropdownModule } from 'primeng/dropdown';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { CalendarModule } from 'primeng/calendar';
+import { environment } from "src/environments/environment";
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
@@ -31,7 +32,8 @@ import { CalendarModule } from 'primeng/calendar';
     AgmCoreModule.forRoot({
       // please get your own API key here:
       // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
-      apiKey: 'AIzaSyCZ6eQag6IYrfU1QRxScX9NoiMhtTrKwRQ',
+      apiKey: environment.GOOGLE.APIKEY,
+      libraries: ['drawing']
     }),
     CommonModule,
     FormsModule,
