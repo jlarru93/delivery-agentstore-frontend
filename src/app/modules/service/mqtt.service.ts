@@ -11,7 +11,7 @@ import { environment } from "src/environments/environment";
 export class MqttService {
     public _onConnect: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
     onConnect$ = this._onConnect.asObservable();
-
+    isMqttConnect:boolean
     client: Client
     message: string = ""
     constructor(private routing: MqttRoutingService) {
@@ -48,9 +48,11 @@ export class MqttService {
             onSuccess: () => {
                 // Once a connection has been made, make a subscription and send a message.
                 console.log("onConnect");
+                this.isMqttConnect=true
                 this._onConnect.next(true)
             },
             onFailure: (message) => {
+                this.isMqttConnect=false
                 console.log("CONNECTION FAILURE - ", message);
                 this._onConnect.next(false)
             }

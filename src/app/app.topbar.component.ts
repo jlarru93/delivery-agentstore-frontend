@@ -7,7 +7,7 @@ import { MqttService } from './modules/service/mqtt.service';
 import { Store } from './models';
 import { AgentStoreStoreResponse, MenuService } from './app.menu.service';
 import { environment } from 'src/environments/environment';
-import { dataSharedService } from './modules/service/data-shared.service';
+import { DataSharedService } from './modules/service/data-shared.service';
 import { StatusOpenStoreBean } from './modules/main/data';
 import { AudioService } from './modules/service/audio.service';
 import { OpenStoreHandler } from './modules/service/handlers/store.open.handler';
@@ -35,7 +35,7 @@ export class AppTopBarComponent implements OnInit{
     isDoneGetStatusOpenStore:boolean=false
     stores: AgentStoreStoreResponse[]
     selectedStore: Store[]=[]
-    selectStore:Number[]=[]
+    selectStore:number[]=[]
     origenIcon: any ="assets/empresas/" + environment.NAME_COMPANY + environment.MARKERS.ORIGEN.URL;
 
      audioEnabled: boolean;
@@ -46,7 +46,7 @@ export class AppTopBarComponent implements OnInit{
         public appMain: AppMainComponent,
         private mqtt:MqttService,
         private service: MenuService,
-        private dataShared:dataSharedService,
+        private dataShared:DataSharedService,
         private audioService:AudioService,
         private openStoreHanlder:OpenStoreHandler
 

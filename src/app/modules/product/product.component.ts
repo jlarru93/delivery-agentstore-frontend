@@ -4,7 +4,7 @@ import { DialogService } from "primeng/dynamicdialog";
 import { ProductService } from "./service/product.service";
 import { ProductBean, StoreBean } from "./data";
 import { StoreResponse } from "./service/data/response";
-import { dataSharedService } from "../service/data-shared.service";
+import { DataSharedService } from "../service/data-shared.service";
 import { AgentStoreStoreResponse } from "src/app/app.menu.service";
 
 @Component({
@@ -41,7 +41,7 @@ export class ProductComponent implements OnInit {
     constructor(
         private productService: ProductService,
         private messageService: MessageService,
-        private dataShared:dataSharedService
+        private dataShared:DataSharedService
     ){
 
     }

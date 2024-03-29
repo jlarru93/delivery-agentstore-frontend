@@ -5,9 +5,10 @@ import { PrimeNGConfig } from 'primeng/api';
 import {AppComponent} from './app.component';
 import { StoreService } from './modules/main/service/store.service';
 import { OpenStoreRequest } from './modules/main/service/data/request';
-import { dataSharedService } from './modules/service/data-shared.service';
+import { DataSharedService } from './modules/service/data-shared.service';
 import { Subscription } from 'rxjs';
 import { StoreResponse } from './modules/main/service/data/response';
+import { MqttService } from './modules/service/mqtt.service';
 
 @Component({
     selector: 'app-main',
@@ -67,7 +68,8 @@ export class AppMainComponent implements AfterViewInit {
         private primengConfig: PrimeNGConfig, 
         public app: AppComponent,
         private storeService:StoreService,
-        private store:dataSharedService
+        private store:DataSharedService,
+        private _mqtt:MqttService,//en el constructor esta la logica de conexion
     ) {}
     ngAfterViewInit(): void {
         this.dataSubscription= this.store.storeBean$.subscribe((data)=>{

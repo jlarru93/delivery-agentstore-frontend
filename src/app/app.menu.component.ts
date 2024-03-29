@@ -3,7 +3,7 @@ import { AppMainComponent } from './app.main.component';
 import { ProductService } from './modules/product/service/product.service';
 import { StoreResponse } from './modules/product/service/data/response';
 import { Router } from '@angular/router';
-import { dataSharedService } from './modules/service/data-shared.service';
+import { DataSharedService } from './modules/service/data-shared.service';
 
 @Component({
     selector: 'app-menu',
@@ -17,7 +17,7 @@ export class AppMenuComponent implements OnInit {
         public appMain: AppMainComponent,
         private productService: ProductService,
         private router: Router,
-        private store:dataSharedService
+        private store:DataSharedService
     ) { }
 
     ngOnInit() {

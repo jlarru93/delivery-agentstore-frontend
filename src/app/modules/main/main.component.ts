@@ -22,13 +22,14 @@ import { MatDialog } from "@angular/material/dialog";
 import { ModalComponent } from "src/app/modal/modal.component";
 import { ChatComponent } from "src/app/chat/chat.component";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { dataSharedService } from "../service/data-shared.service";
+import { DataSharedService } from "../service/data-shared.service";
 import { StoreBean } from "../product/data";
 import { setHours, setMinutes, setSeconds } from "ngx-bootstrap/chronos/utils/date-setters";
 import { AlertServices } from "../service/alert.service";
 import { AceptOrderRequest } from "./service/data/request";
 import { interval } from "rxjs";
 import { AudioService } from "../service/audio.service";
+import { OrderRepository } from "./service/order.repository";
 //import { NgxPrinterService } from "ngx-printer";
 @Component({
     selector: 'app-stores',
@@ -53,7 +54,7 @@ import { AudioService } from "../service/audio.service";
   export class MainComponent implements OnInit,OnDestroy {
     minutes: number = 2;
     displayOrder:boolean=false
-    products: Product[];
+    //products: Product[];
     orders:OrderBean[]=[]
     ordersOpen:OrderBean[]=[]
     ordersPreparing:OrderBean[]=[]
@@ -96,10 +97,10 @@ import { AudioService } from "../service/audio.service";
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
-      private orderService:OrderService,
-      private mqtt:MqttService,
-      private orderHandler:OrderHandler,
-      private storeHandler:StoreHandler,
+      //private orderService:OrderService,
+      //private mqtt:MqttService,
+      //private orderHandler:OrderHandler,
+      //private storeHandler:StoreHandler,
       private chatHandler:ChatHandler,
       private chatService:ChatService ,
       private messageService:AlertServices,
@@ -107,14 +108,19 @@ import { AudioService } from "../service/audio.service";
       private dialog: MatDialog,
       private http: HttpClient,
       private auth: AuthService,
-      private dataShared:dataSharedService,
-      private audioService:AudioService
+      //private dataShared:DataSharedService,
+      private orderRepository:OrderRepository
+      //private audioService:AudioService
       ){
         //this.requestAudioPermission();
-        this.dataShared.listStore$.subscribe((data:any)=>{          
+        this.orderRepository.orders.subscribe((order)=>{
+          this.orders=order
+          this.sortOrders()
+        })
+        /*this.dataShared.listStore$.subscribe((data:any)=>{          
           this.idStore=data
           this.getOrders()
-        })
+        })*/
       }
     
     flagAudio: boolean
@@ -123,20 +129,20 @@ import { AudioService } from "../service/audio.service";
       this.flagAudio = JSON.parse(localStorage.getItem('audioEnabled'))
       this.messageService.showSuccess( 'Success',  'Message Content');
       console.log("MAIN")
-      this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
-      if(this.idStore)
-      this.getOrders()
-      this.set_interval = setInterval(()=>{
+      //this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
+      //if(this.idStore)
+      //this.getOrders()
+      /*this.set_interval = setInterval(()=>{
         if(this.idStore)
         this.getOrders()
-      },30000)
-      this.mqtt._onConnect.subscribe((isConnect)=>{
+      },30000)*/
+      /*this.mqtt._onConnect.subscribe((isConnect)=>{
         if(isConnect){
           this.isMqttConnect=isConnect
           this.mqttListener()
           this.validOrdersSubscribe()
         }
-      })
+      })*/
       this.getUserData()
       this.http.get('../../../assets/styles/print-template.component.scss', {responseType: 'text'}).subscribe(
         styleSheet => {
@@ -210,18 +216,18 @@ import { AudioService } from "../service/audio.service";
       })
     }
 
-    validOrdersSubscribe(){
+    /*validOrdersSubscribe(){
       if(this.isMqttConnect && this.isDoneGetOrders){
         this.orders.forEach((order)=>{
           this.subscribeOrder(order.uuid)
           this.subscribeChat(order.uuid)
         })
       }
-    }
+    }*/
 
     isButtonEnabled: boolean = false
     
-  getOrders() {
+  /*getOrders() {
     var item = this.idStore.map(i => Number(i))
     this.orderService.getOrders(this.idStore).subscribe((resp) => {
       var ord =  resp.data.map((it) => {
@@ -259,7 +265,7 @@ import { AudioService } from "../service/audio.service";
       console.log(ord)
       this.sortOrders()
       this.isDoneGetOrders = true
-      this.validOrdersSubscribe()
+      //this.validOrdersSubscribe()
 
       if (this.orderSelected?.status == 'inStore') {
         this.isButtonEnabled = true;
@@ -267,9 +273,9 @@ import { AudioService } from "../service/audio.service";
         this.isButtonEnabled = false;
       }
     })
-  }
+  }*/
     mqttListener(){
-      this.orderHandler._data.subscribe((asyncData)=>{
+      /*this.orderHandler._data.subscribe((asyncData)=>{
         if(asyncData){
           if(asyncData.data.status === CONSTANTES.CANCEL_ORDER_STATUS){
             let find_order :any = this.orders.findIndex(item => item.uuid === asyncData.data.uuid)
@@ -319,14 +325,14 @@ import { AudioService } from "../service/audio.service";
           }
           
           this.sortOrders()
-          this.subscribeOrder(orderMqtt.uuid)
-          this.subscribeChat(orderMqtt.uuid)
+          //this.subscribeOrder(orderMqtt.uuid)
+          //this.subscribeChat(orderMqtt.uuid)
           this.isIconUp = true
           this.interval_active_color = setInterval(() => {
             this.cambiarColor()
           }, 1000)
         }
-      })
+      })*/
       this.chatHandler._data.subscribe((asyncData)=>{
         if(asyncData && asyncData.data.uuid){
           let messageBean=ChatResponse.toBean(asyncData.data)
@@ -350,9 +356,9 @@ import { AudioService } from "../service/audio.service";
     }
 
     stopAudio(){
-      this.audioService.stopAudio();
+      /*this.audioService.stopAudio();
       this.isIconUp = false
-      clearInterval(this.interval_active_color)
+      clearInterval(this.interval_active_color)*/
     }
     priceValueFormat: string[] = []
     totalPriceValueFormat : string
@@ -455,7 +461,7 @@ import { AudioService } from "../service/audio.service";
       this.loadingButtonAcept=true
 
       if(['CARD','CASH','PAY_IN_STORE','PAYMENT-BUTTON'].includes(orderRequest.payment.method.type)){
-        this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
+        this.orderRepository.aceptOder(orderRequest.id,orderRequest.readyToDmAt).subscribe((resp)=>{
           this.displayOrder=false
           this.loadingButtonAcept=false
         },()=>{
@@ -468,7 +474,7 @@ import { AudioService } from "../service/audio.service";
           this.messageService.showWarning('', 'Por favor revise el comprobante de pago primero')
           this.loadingButtonAcept = false
         } else {
-          this.orderService.aceptOder(orderRequest.id.toString(),orderRequest.readyToDmAt).subscribe((resp)=>{
+          this.orderRepository.aceptOder(orderRequest.id,orderRequest.readyToDmAt).subscribe((resp)=>{
             this.displayOrder=false
             this.loadingButtonAcept=false
           },()=>{
@@ -483,13 +489,13 @@ import { AudioService } from "../service/audio.service";
     readyOrder(){
       const order=this.orderSelected
       this.loadingButtonAcept=true
-      var body:any
+      var body:AceptOrderRequest
       if(order.isPickUpStore){
         body={status:CONSTANTES.DONE_ORDER_STATUS} as AceptOrderRequest
       }else{
         body={status:CONSTANTES.READY_ORDER_STATUS} as AceptOrderRequest
       }
-      this.orderService.readyOder(order.id.toString(),body).subscribe((resp)=>{
+      this.orderRepository.readyOder(order.id,body).subscribe((resp)=>{
         this.displayOrder=false
         this.loadingButtonAcept=false
       },()=>{
@@ -508,13 +514,11 @@ import { AudioService } from "../service/audio.service";
 
         let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
         this.loadingButtonCancel=true
-        this.orderService.cancelOrder(orderRequest.id.toString(),comment).subscribe((resp) => {
-          this.orders=this.orders.filter((order)=>order.id!=orderRequest.id)
-          this.sortOrders()
+        this.orderRepository.cancelOrder(orderRequest.id,comment).subscribe((resp) => {
           this.displayOrderReject = false
           this.loadingButtonCancel = false
           this.displayOrder = false
-          this.messageService.showSuccess('Exito',  'Orden cancelado' );
+          this.messageService.showSuccess('Exito',  'Orden : '+resp.id+' cancelada' );
         }, (error:HttpErrorResponse) => {
           this.displayOrderReject = false
           this.loadingButtonCancel = false
@@ -529,12 +533,12 @@ import { AudioService } from "../service/audio.service";
     }
 
   
-    subscribeOrder(orderUuid:string){
+    /*subscribeOrder(orderUuid:string){
       this.mqtt.subscribe("order/"+orderUuid)
     }
     subscribeChat(orderUuid:string){
       this.mqtt.subscribe("chat/"+orderUuid)
-    }
+    }*/
 
     onIncrement(){
       this.readyToDmAt += 5;
@@ -692,7 +696,7 @@ import { AudioService } from "../service/audio.service";
       readyToDmMinutesAt: this.readyToDmMinutesAt
     }
 
-    this.orderService.UpdateReadyToDm(json).subscribe((response) => {
+    this.orderRepository.updateReadyToDm(json).subscribe((response) => {
       setTimeout(() => {
         this.displayOrder = false
       }, 1500);
@@ -717,12 +721,12 @@ import { AudioService } from "../service/audio.service";
 
   selfManagedOrder(item: OrderBean){
     this.isSelfManagedOrderLoading = true
-    this.orderService.selfManagedOrder(item.uuid).subscribe((respons)=>{
+    this.orderRepository.selfManagedOrder(item.uuid).subscribe((respons)=>{
       console.log(respons)
       setTimeout(() => {
         this.displayOrder = false
       }, 1500);
-      this.getOrders()
+      //this.getOrders()
       this.messageService.showSuccess('', 'Orden Autogestionado')
       this.isSelfManagedOrderLoading = false
     },(error:HttpErrorResponse)=>{
@@ -745,12 +749,12 @@ import { AudioService } from "../service/audio.service";
     var json={
       status:"done"
     }
-    this.orderService.UpdateStatus(item.id,json).subscribe((respons)=>{
+    this.orderRepository.updateStatus(item.id,json).subscribe((respons)=>{
       console.log(respons)
       setTimeout(() => {
         this.displayOrder = false
       }, 1500);
-      this.getOrders()
+      //this.getOrders()
       this.messageService.showSuccess('', 'Orden Terminado')
       this.isFinishOrderLoading = false
     },(error:HttpErrorResponse)=>{
