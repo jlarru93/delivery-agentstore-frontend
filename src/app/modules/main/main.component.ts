@@ -101,7 +101,7 @@ import { OrderRepository } from "./service/order.repository";
       //private mqtt:MqttService,
       //private orderHandler:OrderHandler,
       //private storeHandler:StoreHandler,
-      private chatHandler:ChatHandler,
+      //private chatHandler:ChatHandler,
       private chatService:ChatService ,
       private messageService:AlertServices,
       private confirmationService: ConfirmationService,
@@ -116,6 +116,11 @@ import { OrderRepository } from "./service/order.repository";
         this.orderRepository.orders.subscribe((order)=>{
           this.orders=order
           this.sortOrders()
+        })
+        this.orderRepository.orderChat.subscribe((order)=>{
+          console.log("this.orderRepository.orderChat.subscribe",order)
+          const indexOrder=this.orders.findIndex(o=>o.id===order.id)
+          this.orders[indexOrder]=order
         })
         /*this.dataShared.listStore$.subscribe((data:any)=>{          
           this.idStore=data
@@ -333,7 +338,7 @@ import { OrderRepository } from "./service/order.repository";
           }, 1000)
         }
       })*/
-      this.chatHandler._data.subscribe((asyncData)=>{
+      /*this.chatHandler._data.subscribe((asyncData)=>{
         if(asyncData && asyncData.data.uuid){
           let messageBean=ChatResponse.toBean(asyncData.data)
           
@@ -352,7 +357,7 @@ import { OrderRepository } from "./service/order.repository";
             this.orders[orderIndex].messagesChat.push(messageBean)
           }
         }
-      })
+      })*/
     }
 
     stopAudio(){

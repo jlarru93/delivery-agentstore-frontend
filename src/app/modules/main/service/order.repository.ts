@@ -6,10 +6,13 @@ import { AudioService } from "../../service/audio.service";
 import { MqttService } from "../../service/mqtt.service";
 import { OrderBean } from "../data";
 import { OrderResponse } from "./data/response";
-import { BehaviorSubject, map } from "rxjs";
+import { BehaviorSubject, Subject, map } from "rxjs";
 import * as CONSTANTES from "src/app/utils/constant";
 import { DataSharedService } from "../../service/data-shared.service";
 import { AceptOrderRequest } from "./data/request";
+import { ChatHandler } from "../../service/handlers/chat.handler";
+import { ChatService } from "./chat.service";
+import { ChatResponse } from "./data/chat.response";
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +20,7 @@ import { AceptOrderRequest } from "./data/request";
 export class OrderRepository{
 
     orders:BehaviorSubject<OrderBean[]>= new BehaviorSubject<OrderBean[]>([]);
-    //storesId:BehaviorSubject<number[]>= new BehaviorSubject<number[]>([]);
+    orderChat:Subject<OrderBean>=new Subject<OrderBean>()
     newOrder:BehaviorSubject<OrderBean> = new BehaviorSubject<OrderBean>(null);
     updatedOrder:BehaviorSubject<OrderBean> = new BehaviorSubject<OrderBean>(null);
 
@@ -35,11 +38,33 @@ export class OrderRepository{
         private storeHandler:StoreHandler,
         private audioService:AudioService,
         private dataSharedService:DataSharedService,
+        private chatHandler:ChatHandler,
+        private chatService:ChatService ,
         private mqtt:MqttService){
             this.setOrderFromOrderHanlder()
             this.setOrderFromStoreHanlder()
+            this.setOrderChatFromChatHanlder()
             this.pullRequest()
             this.uploadStoreSelected()
+    }
+    setOrderChatFromChatHanlder(){
+        this.chatHandler._data.subscribe((asyncData)=>{
+            if(asyncData && asyncData.data.uuid){
+              let messageBean=ChatResponse.toBean(asyncData.data)
+              const orders=this.orders.value
+              let orderIndex=orders.findIndex((order)=>order.uuid==messageBean.uuidOrder)
+              const order=orders[orderIndex]
+              order.messagesNoReadTotal++
+    
+              let indexMessage=order.messagesChat.findIndex((message)=>message.uuid==messageBean.uuid)
+              if(indexMessage>0){
+                order.messagesChat[indexMessage]=messageBean
+              }else{
+                order.messagesChat.push(messageBean)
+              }
+              this.orderChat.next(order)
+            }
+          })
     }
     
     cancelOrder(id:number,comment:string){
@@ -174,6 +199,7 @@ export class OrderRepository{
             console.log("UPDATE")
             newOrder.messagesChat=orders[indexOrder].messagesChat
             newOrder.showButton=orders[indexOrder].showButton
+            newOrder.messagesNoReadTotal=orders[indexOrder].messagesNoReadTotal
             orders[indexOrder]=newOrder
             this.updateOrder(newOrder)
         }       
