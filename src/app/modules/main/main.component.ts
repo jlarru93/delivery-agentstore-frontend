@@ -109,13 +109,19 @@ import { OrderRepository } from "./service/order.repository";
       private http: HttpClient,
       private auth: AuthService,
       //private dataShared:DataSharedService,
-      private orderRepository:OrderRepository
-      //private audioService:AudioService
+      private orderRepository:OrderRepository,
+      public audioService:AudioService
       ){
         //this.requestAudioPermission();
         this.orderRepository.orders.subscribe((order)=>{
           this.orders=order
           this.sortOrders()
+          if(this.orders.length > 0){
+            if (!this.audioService.audioAlreadyPlayed) {
+                this.audioService.audioAlreadyPlayed = true;
+                this.audioService.stopAudio()
+            }
+          }
         })
         this.orderRepository.orderChat.subscribe((order)=>{
           console.log("this.orderRepository.orderChat.subscribe",order)
@@ -361,9 +367,9 @@ import { OrderRepository } from "./service/order.repository";
     }
 
     stopAudio(){
-      /*this.audioService.stopAudio();
-      this.isIconUp = false
-      clearInterval(this.interval_active_color)*/
+      this.audioService.stopAudio();
+      //this.isIconUp = false
+      //clearInterval(this.interval_active_color)
     }
     priceValueFormat: string[] = []
     totalPriceValueFormat : string
@@ -372,6 +378,7 @@ import { OrderRepository } from "./service/order.repository";
     storeDataStorage: StoreBean
 
     openOrderDialog(order:OrderBean){
+      this.audioService.stopAudio()
       this.orderSelected=order
       if(this.orderSelected.readyToDmAt){
         this.readyToDmAt=this.orderSelected.readyToDmAt

@@ -5,8 +5,8 @@
          <div class="p-text-center main-title">
             <p class="order-ready-main-title">{{title}} ({{ordersOpen.length}})</p>
             <div class="p-m-0 p-pt-2 p-pl-1">
-               <i *ngIf="isIconUp" class="pi pi-volume-up" style="color:#000; font-size: 1.25rem; font-weight: bold;" (click)="stopAudio()"></i>
-               <i *ngIf="!isIconUp" class="pi pi-volume-off" style="color:#000; font-size: 1.25rem; font-weight: bold;"></i>
+               <i *ngIf="audioService.isPlaying" class="pi pi-volume-up" style="color:#000; font-size: 1.25rem; font-weight: bold;" (click)="stopAudio()"></i>
+               <i *ngIf="!audioService.isPlaying" class="pi pi-volume-off" style="color:#000; font-size: 1.25rem; font-weight: bold;"></i>
             </div>
          </div>
    

@@ -9,6 +9,7 @@ export class AudioService{
     isPlaying = false;
     loopAudio = true;
     audioEnabled: boolean;
+    audioAlreadyPlayed: boolean = false
     constructor(){
         this.audio = new Howl({
             src: ['assets/audio/audio.mp3'],
@@ -26,14 +27,17 @@ export class AudioService{
         if (!this.isPlaying && this.audioEnabled !== null) {
             this.loopAudio = this.audioEnabled;
             this.audio.loop = this.audioEnabled;
-            var isPlaying = this.audio.currentTime > 0 && !this.audio.paused && !this.audio.ended 
-            && this.audio.readyState > this.audio.HAVE_CURRENT_DATA;
-            if(!isPlaying){
-                this.audio.play();
-            }
-            this.isPlaying = true;
+            if(this.audioAlreadyPlayed || this.audioEnabled) {
 
-            this.storeAudioEnabledStateInLocalStorage();
+                var isPlaying = this.audio.currentTime > 0 && !this.audio.paused && !this.audio.ended 
+                && this.audio.readyState > this.audio.HAVE_CURRENT_DATA;
+                if(!isPlaying){
+                    this.audio.play();
+                }
+                this.isPlaying = true;
+    
+                this.storeAudioEnabledStateInLocalStorage();
+            }
         }
     }
     storeAudioEnabledStateInLocalStorage() {
