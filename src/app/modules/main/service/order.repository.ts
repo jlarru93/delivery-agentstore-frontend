@@ -195,6 +195,9 @@ export class OrderRepository{
             console.log("ADD")
             orders.push(newOrder)
             this.addNewOrder(newOrder)
+            if(newOrder.statusForAgentStore===CONSTANTES.OPEN_ORDER_STATUS){
+                this.playAudio()
+            }
         }else{
             console.log("UPDATE")
             newOrder.messagesChat=orders[indexOrder].messagesChat
