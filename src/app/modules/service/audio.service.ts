@@ -11,10 +11,7 @@ export class AudioService{
     audioEnabled: boolean;
     audioAlreadyPlayed: boolean = false
     constructor(){
-        this.audio = new Howl({
-            src: ['assets/audio/audio.mp3'],
-            loop: true
-        });
+        this.audio = new Audio('assets/audio/audio.mp3');
         this.audioEnabled = this.retrieveAudioEnabledStateFromLocalStorage();
     }
     stopAudio(){
@@ -24,19 +21,34 @@ export class AudioService{
     }
     onPlayAudio() {
 
-        if (!this.isPlaying && this.audioEnabled !== null) {
-            this.loopAudio = this.audioEnabled;
-            this.audio.loop = this.audioEnabled;
-            if(this.audioAlreadyPlayed || this.audioEnabled) {
+        if (!this.isPlaying) {
+            
+            if(this.audioEnabled === true){
+                this.audio.loop = true;
+                this.audio.load()
+                if(this.audioAlreadyPlayed) {
 
-                var isPlaying = this.audio.currentTime > 0 && !this.audio.paused && !this.audio.ended 
-                && this.audio.readyState > this.audio.HAVE_CURRENT_DATA;
-                if(!isPlaying){
-                    this.audio.play();
+                    var isPlaying = this.audio.currentTime > 0 && !this.audio.paused && !this.audio.ended 
+                    && this.audio.readyState > this.audio.HAVE_CURRENT_DATA;
+                    if(!isPlaying){
+                        this.audio.play();
+                    }
+                    this.isPlaying = true;
                 }
-                this.isPlaying = true;
-    
-                this.storeAudioEnabledStateInLocalStorage();
+            } else if (this.audioEnabled === false) {
+                this.audio.loop = false;
+                this.audio.load()
+                if(this.audioAlreadyPlayed) {
+
+                    var isPlaying = this.audio.currentTime > 0 && !this.audio.paused && !this.audio.ended 
+                    && this.audio.readyState > this.audio.HAVE_CURRENT_DATA;
+                    if(!isPlaying){
+                        this.audio.play();
+                    }
+                    //this.isPlaying = true;
+                }
+            } else {
+                this.isPlaying = false;
             }
         }
     }
