@@ -181,10 +181,17 @@ export class OrderRepository{
 
     private setOrderFromOrderHanlder(){
         this.orderHandler._data.subscribe((orderResponse)=>{
-            const newOrder=OrderResponse.toBean(orderResponse.data)
-            this.addProcess(newOrder)
-            //this.orders.complete()
-            this.orders.next(this.orders.value)
+            debugger
+            if(orderResponse.data.status === CONSTANTES.CANCEL_ORDER_STATUS){
+                const orders = this.orders.value.filter(order => order.uuid !== orderResponse.data.uuid)
+                this.orders.next(orders)
+            } else {
+                const newOrder=OrderResponse.toBean(orderResponse.data)
+                this.addProcess(newOrder)
+                //this.orders.complete()
+                this.orders.next(this.orders.value)
+
+            }
         })
     }
     private addProcess(newOrder: OrderBean){
