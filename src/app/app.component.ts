@@ -26,7 +26,7 @@ export class AppComponent implements OnInit{
     constructor(private primengConfig: PrimeNGConfig,private mqtt:MqttService) {}
 
     ngOnInit() {
-        console.log("appComponenete")
+        
         this.primengConfig.ripple = true;
     }
 }

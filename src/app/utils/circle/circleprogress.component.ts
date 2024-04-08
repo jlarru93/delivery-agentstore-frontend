@@ -32,7 +32,7 @@ export class CircleProgress implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.totalTimeInSeconds = (this.endTime - this.startTime);
     this.start();
-    console.log(this.totalTimeInSeconds)
+    
   }
 
   start() {

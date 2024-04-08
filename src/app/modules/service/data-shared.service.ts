@@ -19,7 +19,7 @@ export class DataSharedService{
 
     setStoreAviliable(storeAviliable:AgentStoreStoreResponse[]){
         if(storeAviliable?.length>0){
-            console.log(storeAviliable)
+            //console.log(storeAviliable)
             this.storeAviliable.next(storeAviliable)
         }
         

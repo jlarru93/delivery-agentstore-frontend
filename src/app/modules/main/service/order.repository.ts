@@ -145,12 +145,12 @@ export class OrderRepository{
                 return
             }
             if(!this.asyncronousIsConnect){
-                console.log("pullRequest")
+                //console.log("pullRequest")
                 const storeIds=this.dataSharedService.listStore.value
-                console.log("storeIds",storeIds)
+                //console.log("storeIds",storeIds)
                 this.getOrder(storeIds)
             }else{
-                console.log("pullRequest no ejecutado")
+                //console.log("pullRequest no ejecutado")
             }
             if(this.counter>this.timePullRequest){
                 this.counter=0
@@ -164,14 +164,14 @@ export class OrderRepository{
                 this.addProcess(o)
             })
             //this.orders.complete()
-            console.log("this.orders.value",this.orders.value)
+            //console.log("this.orders.value",this.orders.value)
             this.orders.next(this.orders.value)
         })
     }
 
     private setOrderFromStoreHanlder(){
         this.storeHandler._data.subscribe((orderResponse)=>{
-            console.log("setOrderFromStoreHanlder",orderResponse)
+            //console.log("setOrderFromStoreHanlder",orderResponse)
             const newOrder=OrderResponse.toBean(orderResponse.data)
             this.addProcess(newOrder)
             this.orders.next(this.orders.value)
@@ -181,7 +181,6 @@ export class OrderRepository{
 
     private setOrderFromOrderHanlder(){
         this.orderHandler._data.subscribe((orderResponse)=>{
-            debugger
             if(orderResponse.data.status === CONSTANTES.CANCEL_ORDER_STATUS){
                 const orders = this.orders.value.filter(order => order.uuid !== orderResponse.data.uuid)
                 this.orders.next(orders)
@@ -199,25 +198,25 @@ export class OrderRepository{
         const indexOrder=orders.findIndex(o=>o.id===newOrder.id)
         const isNewOrder=indexOrder==-1
         if(isNewOrder){
-            console.log("ADD")
+            //console.log("ADD")
             orders.push(newOrder)
             this.addNewOrder(newOrder)
             if(newOrder.statusForAgentStore===CONSTANTES.OPEN_ORDER_STATUS){
                 this.playAudio()
             }
         }else{
-            console.log("UPDATE")
+            //console.log("UPDATE")
             newOrder.messagesChat=orders[indexOrder].messagesChat
             newOrder.showButton=orders[indexOrder].showButton
             newOrder.messagesNoReadTotal=orders[indexOrder].messagesNoReadTotal
             orders[indexOrder]=newOrder
             this.updateOrder(newOrder)
         }       
-        console.log("addProcess.orders",orders) 
+        //console.log("addProcess.orders",orders) 
     }
     private updateOrder(newOrder:OrderBean){
         //this.updatedOrder.next(newOrder)
-        console.log("se acutlaizo ",newOrder.id)
+        //console.log("se acutlaizo ",newOrder.id)
     }
     private addNewOrder(newOrder:OrderBean){
         this.subscribeOrder(newOrder.uuid)

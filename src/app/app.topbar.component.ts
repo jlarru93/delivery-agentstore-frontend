@@ -61,7 +61,7 @@ export class AppTopBarComponent implements OnInit{
         this.getStatusOpenStore()
         this.openStoreHanlder._data.subscribe((resp)=>{
             if(!resp){return}
-            console.log(resp)
+            //console.log(resp)
             const data=resp.data
             const indexUpdate=this.storesOpen.findIndex(s=>s.id===data.id)
             if(indexUpdate>=0){
@@ -75,7 +75,7 @@ export class AppTopBarComponent implements OnInit{
         })
         this.auth.getUserDetails().then((data) => {
                 this.userDetails = data
-                console.log(this.userDetails)
+                //console.log(this.userDetails)
                 let username = this.userDetails.find(user => user.Name == 'name')
                 this.userName = username.Value
                 this.IdAgent=this.userDetails.find(user=>user.Name=='custom:_idStore')
@@ -157,10 +157,10 @@ export class AppTopBarComponent implements OnInit{
     }
     lstAgentStore(){
         
-        console.log(this.IdAgent)
+        //console.log(this.IdAgent)
         this.service.getStoreByIdAgent().subscribe((data:any)=>{
             this.stores=data.data
-            console.log(this.stores)
+            //console.log(this.stores)
             this.dataShared.setStoreAviliable(this.stores)
         })
     }

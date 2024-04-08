@@ -23,7 +23,7 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
   
     public async signIn(userName: string,password: string) {
       this.cognitoUser = await Auth.signIn(userName,password);
-      console.log(this.cognitoUser)
+      
     }
   
     public async signOut() {
@@ -31,7 +31,7 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
     }
   
     public async answerCustomChallenge(answer: string) {
-      console.log(this.cognitoUser)
+      
       this.cognitoUser = await Auth.sendCustomChallengeAnswer(this.cognitoUser, answer,this.cognitoUser.challengeParam);
       return this.isAuthenticated();
     }
@@ -117,7 +117,7 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
     getParameterToken(parameter){
       const tokenId=this.getAutorizationToken()
       const decode = jwt_decode(tokenId) as any
-      console.log(decode[parameter])
+      
       return decode[parameter]
     }
   
@@ -128,7 +128,7 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
         const token = accessToken.getJwtToken();
         return token;
       } catch (error) {
-        console.log('Error al obtener el token:', error);
+        
         return null;
       }
     }
@@ -140,7 +140,7 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
           const cognitoUser = await Auth.currentAuthenticatedUser();
           const refreshedUser = cognitoUser.refreshSession(user.signInUserSession.refreshToken);
           const refreshedToken = refreshedUser.signInUserSession.accessToken.jwtToken;
-          console.log('Token actualizado:', refreshedToken);
+          
         } catch (error) {
           console.log('Error al actualizar el token:', error);
         }

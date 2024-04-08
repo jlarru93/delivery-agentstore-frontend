@@ -34,7 +34,7 @@ export class AppMenuComponent implements OnInit {
             if(storesAvilible?.length==0){
                 return
             }
-            console.log(storesAvilible)
+            //console.log(storesAvilible)
             const store_id=storesAvilible[0].store_id
             this.getProducts(store_id)
         })

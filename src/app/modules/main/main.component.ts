@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Product } from "src/app/demo/domain/product";
 import { ProductService } from "src/app/demo/service/productservice";
@@ -30,6 +30,7 @@ import { AceptOrderRequest } from "./service/data/request";
 import { interval } from "rxjs";
 import { AudioService } from "../service/audio.service";
 import { OrderRepository } from "./service/order.repository";
+import { Router } from "@angular/router";
 //import { NgxPrinterService } from "ngx-printer";
 @Component({
     selector: 'app-stores',
@@ -94,6 +95,8 @@ import { OrderRepository } from "./service/order.repository";
 
     isInitRequest:boolean=true
 
+    private visibilityChangeCallback: () => void;
+
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
@@ -110,9 +113,10 @@ import { OrderRepository } from "./service/order.repository";
       private auth: AuthService,
       //private dataShared:DataSharedService,
       private orderRepository:OrderRepository,
-      public audioService:AudioService
+      public audioService:AudioService,
+      private ngZone: NgZone,
+      private router: Router
       ){
-        //this.requestAudioPermission();
         this.orderRepository.orders.subscribe((order)=>{
           this.orders=order
           this.sortOrders()
@@ -120,6 +124,14 @@ import { OrderRepository } from "./service/order.repository";
             if (!this.audioService.audioAlreadyPlayed) {
                 this.audioService.audioAlreadyPlayed = true;
                 this.audioService.stopAudio()
+            } else {
+              
+              this.router.navigateByUrl('/')
+              // Maximizar la ventana del navegador
+              window.focus(); // Asegurarse de que la ventana esté enfocada
+              window.scrollTo(0, 0); // Desplazar hasta la parte superior de la página
+              window.innerWidth = screen.width; // Establecer el ancho de la ventana al ancho de la pantalla
+              window.innerHeight = screen.height;
             }
           }
         })
@@ -128,18 +140,18 @@ import { OrderRepository } from "./service/order.repository";
           const indexOrder=this.orders.findIndex(o=>o.id===order.id)
           this.orders[indexOrder]=order
         })
-        /*this.dataShared.listStore$.subscribe((data:any)=>{          
-          this.idStore=data
-          this.getOrders()
-        })*/
       }
     
     flagAudio: boolean
     ngOnInit(): void { 
+      
+      this.visibilityChangeCallback = this.handleVisibilityChange.bind(this);
+      document.addEventListener('visibilitychange', this.visibilityChangeCallback);
+
       this.idStore= JSON.parse(localStorage.getItem('lstIdStore'))
       this.flagAudio = JSON.parse(localStorage.getItem('audioEnabled'))
       this.messageService.showSuccess( 'Success',  'Message Content');
-      console.log("MAIN")
+      
       //this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
       //if(this.idStore)
       //this.getOrders()
@@ -165,7 +177,21 @@ import { OrderRepository } from "./service/order.repository";
         this.cambiarColor()
       }, 1000)
     }
+
+    handleVisibilityChange(): void {
+      if (!document.hidden) {
+        // Aquí colocarías la lógica para verificar si la acción que desencadena el enfoque ha ocurrido
+        // Por ejemplo, podrías verificar si hay nuevos mensajes o alguna otra condición relevante
+  
+        // Si se cumple la condición, intenta enfocar la ventana
+        this.ngZone.runOutsideAngular(() => {
+          window.focus();
+        });
+      }
+    }
+
     ngOnDestroy(): void {
+        document.removeEventListener('visibilitychange', this.visibilityChangeCallback);
         clearInterval(this.set_interval)
     }
     getUserData(){
@@ -210,7 +236,7 @@ import { OrderRepository } from "./service/order.repository";
 
     ngAfterViewInit(){
       const accordionContent = document.querySelectorAll(".accordion-item");
-      console.log('selector', accordionContent)
+      
       accordionContent.forEach((item, index) => {
         let header = item.querySelector(".header") as HTMLElement | null;
         header.addEventListener("click", ()=> {
