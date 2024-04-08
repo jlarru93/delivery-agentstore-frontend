@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { AuthService } from '../utils/auth.service';
 import { UntypedFormControl } from '@angular/forms';
 import { ChatBean } from './data.chat';
-import { USER_TYPE_AGENT_STORE } from '../utils/constant';
+import { USER_TYPE_AGENT_STORE,USER_TYPE_AGENT_STORE_CHAT } from '../utils/constant';
 import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-chat',
@@ -225,13 +225,14 @@ export class ChatComponent implements OnInit {
   ]*/
 
   constructor() { }
-
+  userType: string
   ngOnInit() {
     //let userName=this.auth.getParameterToken('name')
     //let id=this.auth.getParameterToken('id')
     //this.usuarioLogueado=userName
     //this.userId=id
     //this.scrollToBottom()
+    this.userType = USER_TYPE_AGENT_STORE_CHAT 
   }
 
   // ngOnChanges(changes: SimpleChanges){
