@@ -18,9 +18,7 @@ export const DEFAULT_TIME_WAIT_DM_IN_MINUTES = 10;
 export const DELIVERYMAN_RED_BACKGROUND:string='red'
 export const USER_RED_BACKGROUND:string='blue'
 export const COLOR_READ_USER={'delivery-man':DELIVERYMAN_RED_BACKGROUND,'user':USER_RED_BACKGROUND}
-export const USER_TYPE_AGENT_STORE:string='agent-store'
-
-export const USER_TYPE_AGENT_STORE_CHAT:string='agentStore'
+export const USER_TYPE_AGENT_STORE:string='agentStore'
 
 export const STATUS_COMPLAINT_OPEN = 'open' 
 export const STATUS_COMPLAINT_IN_PROCESS = 'inProcess' 

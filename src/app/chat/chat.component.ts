@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { AuthService } from '../utils/auth.service';
 import { UntypedFormControl } from '@angular/forms';
 import { ChatBean } from './data.chat';
-import { USER_TYPE_AGENT_STORE,USER_TYPE_AGENT_STORE_CHAT } from '../utils/constant';
+import { USER_TYPE_AGENT_STORE } from '../utils/constant';
 import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-chat',
@@ -232,7 +232,7 @@ export class ChatComponent implements OnInit {
     //this.usuarioLogueado=userName
     //this.userId=id
     //this.scrollToBottom()
-    this.userType = USER_TYPE_AGENT_STORE_CHAT 
+    this.userType = USER_TYPE_AGENT_STORE 
   }
 
   // ngOnChanges(changes: SimpleChanges){
@@ -263,7 +263,7 @@ export class ChatComponent implements OnInit {
         }, 
         body : message, 
         readUser : [], 
-        createdAt : Date.now()
+        createdAt : Number(Date.now().toString().substring(0,10))
       }
       this.messages.push(messageBody)
       console.log("this.messages",this.messages)
