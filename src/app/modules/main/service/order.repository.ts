@@ -202,6 +202,7 @@ export class OrderRepository{
             orders.push(newOrder)
             this.addNewOrder(newOrder)
             if(newOrder.statusForAgentStore===CONSTANTES.OPEN_ORDER_STATUS){
+                console.log("play Audio by:::: ",JSON.stringify(newOrder))
                 this.playAudio()
             }
         }else{
@@ -222,6 +223,7 @@ export class OrderRepository{
         this.subscribeOrder(newOrder.uuid)
         this.subscribeChat(newOrder.uuid)
         if(newOrder.status===CONSTANTES.OPEN_ORDER_STATUS){
+            console.log("play Audio by:::: ",JSON.stringify(newOrder))
             this.playAudio()
         }
         //this.newOrder.next(newOrder)
