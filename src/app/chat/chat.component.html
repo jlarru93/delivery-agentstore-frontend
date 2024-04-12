@@ -17,11 +17,11 @@
         <mat-divider></mat-divider>
         <div class="chat-area">
                 <div *ngFor="let message of messages" >
-                    <div class="sender-name" *ngIf="message.user.id != userId">
+                    <div class="sender-name" *ngIf="message.user.type != userType">
                         <span>{{message.user.type}}</span>
                     </div>
                     <div class="chat-bubble-container"
-                    [ngClass]="{'sender': message.user.id === userId}">
+                    [ngClass]="{'sender': message.user.type === userType}">
                         <div class="chat-bubble">
                             {{message.body}}
                             <span class="chat-date">
@@ -31,7 +31,7 @@
                     </div>
                     <ng-container *ngIf="message.readUser">
                         <div class="chat-avatar-container" style="margin-top: -10px;"
-                        [ngClass]="{'sender': message.user.id === userId}">
+                        [ngClass]="{'sender': message.user.type === userType}">
                             <div class="chat-avatar">
                                 <p-avatarGroup styleClass="p-mb-3">
                                     <div *ngFor="let reader of message.readUser">

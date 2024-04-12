@@ -13,7 +13,7 @@ import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { environment } from "src/environments/environment";
 import { AlertServices } from "../service/alert.service";
 import { StoreTripResponse } from "../main/service/data/response";
-import { dataSharedService } from "../service/data-shared.service";
+import { DataSharedService } from "../service/data-shared.service";
 import { MenuService } from "src/app/app.menu.service";
 import { AppMainComponent } from "src/app/app.main.component";
 import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
@@ -159,7 +159,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     private requestTripService: RequestTripService,
     private dialogService: DialogService,
     private alert:AlertServices,
-    private dataShared:dataSharedService,
+    private dataShared:DataSharedService,
     private appSer:MenuService,
     private main: AppMainComponent
   ) {}

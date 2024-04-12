@@ -225,13 +225,14 @@ export class ChatComponent implements OnInit {
   ]*/
 
   constructor() { }
-
+  userType: string
   ngOnInit() {
     //let userName=this.auth.getParameterToken('name')
     //let id=this.auth.getParameterToken('id')
     //this.usuarioLogueado=userName
     //this.userId=id
     //this.scrollToBottom()
+    this.userType = USER_TYPE_AGENT_STORE 
   }
 
   // ngOnChanges(changes: SimpleChanges){
@@ -262,7 +263,7 @@ export class ChatComponent implements OnInit {
         }, 
         body : message, 
         readUser : [], 
-        createdAt : Date.now()
+        createdAt : Number(Date.now().toString().substring(0,10))
       }
       this.messages.push(messageBody)
       console.log("this.messages",this.messages)

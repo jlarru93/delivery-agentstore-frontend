@@ -5,21 +5,21 @@ import { StoreResponse } from '../main/service/data/response';
 @Injectable({
     providedIn: "root"
 })
-export class dataSharedService{
-    public listStore = new Subject<any>();
+export class DataSharedService{
+    public listStore = new BehaviorSubject<number[]>([]);
     listStore$ = this.listStore.asObservable();
 
     public storeAviliable = new BehaviorSubject<AgentStoreStoreResponse[]>([]);
     storeAviliable$ = this.storeAviliable.asObservable()
     _storeBean=new Subject<StoreResponse>()
     storeBean$ = this._storeBean.asObservable()
-    updateListStore(lst:any){
+    updateListStore(lst:number[]){
         this.listStore.next(lst)
     }
 
     setStoreAviliable(storeAviliable:AgentStoreStoreResponse[]){
         if(storeAviliable?.length>0){
-            console.log(storeAviliable)
+            //console.log(storeAviliable)
             this.storeAviliable.next(storeAviliable)
         }
         

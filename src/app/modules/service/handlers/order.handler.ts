@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { Subject, Observable } from "rxjs";
 import { AsyncData } from "../data/response";
 import { OrderResponse } from "../../main/service/data/response";
 
@@ -7,7 +7,7 @@ import { OrderResponse } from "../../main/service/data/response";
     providedIn: 'root'
 })
 export class OrderHandler{
-    public _data: BehaviorSubject<AsyncData<OrderResponse>> = new BehaviorSubject<AsyncData<OrderResponse>>(null);
+    public _data: Subject<AsyncData<OrderResponse>> = new Subject<AsyncData<OrderResponse>>();
     data$ = this._data.asObservable();
 
     handle(payload: string) {

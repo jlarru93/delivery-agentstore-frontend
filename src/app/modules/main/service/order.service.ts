@@ -22,34 +22,34 @@ export class OrderService {
     let path="/order/:orderId/status"
     path=path.replace(":orderId",orderId)
     const body={status:PREPARING_ORDER_STATUS,readyToDmAt:readyToDmAt} as AceptOrderRequest
-    return this.http.put<ObjetResponse<any>>(env.url.backEnd + path,body)
+    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backEnd + path,body)
   }
 
   readyOder(orderId:string,body:any){
     let path="/order/:orderId/status"
     path=path.replace(":orderId",orderId)    
-    return this.http.put<ObjetResponse<any>>(env.url.backEnd + path,body)
+    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backEnd + path,body)
   }
 
-  cancelOrder(orderId: string, cancellation: string){
+  cancelOrder(orderId: number, cancellation: string){
     let path="/order/:orderId/status"
-    path=path.replace(":orderId",orderId)
+    path=path.replace(":orderId",""+orderId)
     const body = {status: CANCEL_ORDER_STATUS, comment: cancellation} as CancelOrderRequest
-    return this.http.put<ObjetResponse<any>>(env.url.backEnd + path,body)
+    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backEnd + path,body)
   }
-  UpdateReadyToDm(data:any){
+  updateReadyToDm(data:any){
     var url = env.url.backEnd+'/order/readyToDm'
-    return this.http.put<ObjetResponse<any>>(url,data)
+    return this.http.put<ObjetResponse<OrderResponse>>(url,data)
   }
 
   selfManagedOrder(uuid:any){
     var url = env.url.backEnd+`/order/${uuid}/selfManaged`
-    return this.http.put<ObjetResponse<any>>(url,{})
+    return this.http.put<ObjetResponse<OrderResponse>>(url,{})
   }
 
-  UpdateStatus(id:any,json:any){
+  updateStatus(id:any,json:any){
     var url = env.url.backEnd+`/order/${id}/status`
-    return this.http.put<ObjetResponse<any>>(url,json)
+    return this.http.put<ObjetResponse<OrderResponse>>(url,json)
   }
 
 }
