@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Product } from "src/app/demo/domain/product";
 import { ProductService } from "src/app/demo/service/productservice";
@@ -52,7 +52,7 @@ import { Router } from "@angular/router";
       )
     ],
   })
-  export class MainComponent implements OnInit,OnDestroy {
+  export class MainComponent implements OnInit,OnDestroy,AfterViewInit {
     minutes: number = 2;
     displayOrder:boolean=false
     //products: Product[];
@@ -144,7 +144,7 @@ import { Router } from "@angular/router";
     
     flagAudio: boolean
     ngOnInit(): void { 
-      
+      this.orderRepository.start()
       this.visibilityChangeCallback = this.handleVisibilityChange.bind(this);
       document.addEventListener('visibilitychange', this.visibilityChangeCallback);
 
@@ -192,8 +192,8 @@ import { Router } from "@angular/router";
 
     ngOnDestroy(): void {
         document.removeEventListener('visibilitychange', this.visibilityChangeCallback);
-        this.orderRepository.destroy()
-        clearInterval(this.set_interval)
+        //this.orderRepository.destroy()
+        this.orderRepository.stop()
     }
     getUserData(){
       this.userName=this.auth.getParameterToken('name')
@@ -236,6 +236,8 @@ import { Router } from "@angular/router";
     }
 
     ngAfterViewInit(){
+      //console.log("ngAfterViewInit")
+      //this.orderRepository.start()
       const accordionContent = document.querySelectorAll(".accordion-item");
       
       accordionContent.forEach((item, index) => {
