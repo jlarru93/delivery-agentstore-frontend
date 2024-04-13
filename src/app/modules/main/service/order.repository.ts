@@ -137,21 +137,24 @@ export class OrderRepository{
     }
     private pullRequest(){
         this.interval=setInterval(()=>{
-            console.log("pullRequest ::: ejecutado",this.isStop)
             if(this.isStop){
                 return
             }
-           
+            let executeOrder=false
             this.counter++
-            if(!this.asyncronousIsConnect){
-                const storeIds=this.dataSharedService.listStore.value
-                this.getOrder(storeIds)
-            }
-            if(this.counter>this.timePullRequest){
+            /*if(!this.asyncronousIsConnect){
+                console.log("asyncronousIsConnect",this.asyncronousIsConnect)
+                executeOrder=true
+            }*/
+            if(this.counter>=this.timePullRequest){
                 this.counter=0
+                executeOrder=true
+            }
+            if(executeOrder){
                 const storeIds=this.dataSharedService.listStore.value
                 this.getOrder(storeIds)
             }
+
         },this.intervalMs)
     }
     private getOrder(storeIds){
