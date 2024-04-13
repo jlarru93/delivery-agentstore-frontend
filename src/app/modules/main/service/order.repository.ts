@@ -27,7 +27,7 @@ export class OrderRepository{
     counter:number=0
     intervalMs:number=10000
     interval: NodeJS.Timeout
-    timePullRequest:number=30
+    timePullRequest:number=3
     isStop=false
     public asyncronousIsConnect:boolean=false
 
@@ -140,21 +140,21 @@ export class OrderRepository{
             if(this.isStop){
                 return
             }
+            let executeOrder=false
             this.counter++
-            if(this.counter!=this.timePullRequest){
-                return
-            }
-            if(!this.asyncronousIsConnect){
-                //console.log("pullRequest")
-                const storeIds=this.dataSharedService.listStore.value
-                //console.log("storeIds",storeIds)
-                this.getOrder(storeIds)
-            }else{
-                //console.log("pullRequest no ejecutado")
-            }
-            if(this.counter>this.timePullRequest){
+            /*if(!this.asyncronousIsConnect){
+                console.log("asyncronousIsConnect",this.asyncronousIsConnect)
+                executeOrder=true
+            }*/
+            if(this.counter>=this.timePullRequest){
                 this.counter=0
+                executeOrder=true
             }
+            if(executeOrder){
+                const storeIds=this.dataSharedService.listStore.value
+                this.getOrder(storeIds)
+            }
+
         },this.intervalMs)
     }
     private getOrder(storeIds){
