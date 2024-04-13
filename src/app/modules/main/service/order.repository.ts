@@ -172,9 +172,14 @@ export class OrderRepository{
     private setOrderFromStoreHanlder(){
         this.storeHandler._data.subscribe((orderResponse)=>{
             //console.log("setOrderFromStoreHanlder",orderResponse)
-            const newOrder=OrderResponse.toBean(orderResponse.data)
-            this.addProcess(newOrder)
-            this.orders.next(this.orders.value)
+            if(orderResponse?.data){
+                const newOrder=OrderResponse.toBean(orderResponse.data)
+                this.addProcess(newOrder)
+                if(!this.isStop){
+                    this.orders.next(this.orders.value)
+                }                
+            }
+
             //this.orders.complete()
         })
     }
@@ -183,12 +188,16 @@ export class OrderRepository{
         this.orderHandler._data.subscribe((orderResponse)=>{
             if(orderResponse.data.status === CONSTANTES.CANCEL_ORDER_STATUS){
                 const orders = this.orders.value.filter(order => order.uuid !== orderResponse.data.uuid)
-                this.orders.next(orders)
+                if(!this.isStop){
+                    this.orders.next(orders)
+                }                
             } else {
                 const newOrder=OrderResponse.toBean(orderResponse.data)
                 this.addProcess(newOrder)
                 //this.orders.complete()
-                this.orders.next(this.orders.value)
+                if(!this.isStop){
+                    this.orders.next(this.orders.value)
+                }              
 
             }
         })
