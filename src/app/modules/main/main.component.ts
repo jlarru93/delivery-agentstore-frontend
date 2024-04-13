@@ -192,6 +192,7 @@ import { Router } from "@angular/router";
 
     ngOnDestroy(): void {
         document.removeEventListener('visibilitychange', this.visibilityChangeCallback);
+        this.orderRepository.destroy()
         clearInterval(this.set_interval)
     }
     getUserData(){

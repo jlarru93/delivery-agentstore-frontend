@@ -8,7 +8,7 @@
     </div>
 
     <!-- <pre>{{list_marker | json}}</pre> -->
-    <ng-container *ngIf="filteredOrders.length > 0; else CursoTemplate">
+    <ng-container *ngIf="filteredOrders?.length > 0; else CursoTemplate">
       <p-accordion
         (onClose)="onTabClose($event)"
         (onOpen)="onTapOpen($event, flagAccordion)"
