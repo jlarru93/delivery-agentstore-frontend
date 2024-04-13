@@ -143,9 +143,6 @@ export class OrderRepository{
             }
            
             this.counter++
-            if(this.counter==this.timePullRequest){
-                return
-            }
             if(!this.asyncronousIsConnect){
                 const storeIds=this.dataSharedService.listStore.value
                 this.getOrder(storeIds)
