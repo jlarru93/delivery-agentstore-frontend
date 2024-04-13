@@ -172,9 +172,12 @@ export class OrderRepository{
     private setOrderFromStoreHanlder(){
         this.storeHandler._data.subscribe((orderResponse)=>{
             //console.log("setOrderFromStoreHanlder",orderResponse)
-            const newOrder=OrderResponse.toBean(orderResponse.data)
-            this.addProcess(newOrder)
-            this.orders.next(this.orders.value)
+            if(orderResponse?.data){
+                const newOrder=OrderResponse.toBean(orderResponse.data)
+                this.addProcess(newOrder)
+                this.orders.next(this.orders.value)
+            }
+
             //this.orders.complete()
         })
     }
