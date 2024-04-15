@@ -27,7 +27,7 @@ export class OrderRepository{
     counter:number=0
     intervalMs:number=10000
     interval: NodeJS.Timeout
-    timePullRequest:number=30
+    timePullRequest:number=3
     isStop=false
     public asyncronousIsConnect:boolean=false
 
@@ -140,21 +140,21 @@ export class OrderRepository{
             if(this.isStop){
                 return
             }
+            let executeOrder=false
             this.counter++
-            if(this.counter!=this.timePullRequest){
-                return
-            }
-            if(!this.asyncronousIsConnect){
-                //console.log("pullRequest")
-                const storeIds=this.dataSharedService.listStore.value
-                //console.log("storeIds",storeIds)
-                this.getOrder(storeIds)
-            }else{
-                //console.log("pullRequest no ejecutado")
-            }
-            if(this.counter>this.timePullRequest){
+            /*if(!this.asyncronousIsConnect){
+                console.log("asyncronousIsConnect",this.asyncronousIsConnect)
+                executeOrder=true
+            }*/
+            if(this.counter>=this.timePullRequest){
                 this.counter=0
+                executeOrder=true
             }
+            if(executeOrder){
+                const storeIds=this.dataSharedService.listStore.value
+                this.getOrder(storeIds)
+            }
+
         },this.intervalMs)
     }
     private getOrder(storeIds){
@@ -172,9 +172,14 @@ export class OrderRepository{
     private setOrderFromStoreHanlder(){
         this.storeHandler._data.subscribe((orderResponse)=>{
             //console.log("setOrderFromStoreHanlder",orderResponse)
-            const newOrder=OrderResponse.toBean(orderResponse.data)
-            this.addProcess(newOrder)
-            this.orders.next(this.orders.value)
+            if(orderResponse?.data){
+                const newOrder=OrderResponse.toBean(orderResponse.data)
+                this.addProcess(newOrder)
+                if(!this.isStop){
+                    this.orders.next(this.orders.value)
+                }                
+            }
+
             //this.orders.complete()
         })
     }
@@ -183,12 +188,16 @@ export class OrderRepository{
         this.orderHandler._data.subscribe((orderResponse)=>{
             if(orderResponse.data.status === CONSTANTES.CANCEL_ORDER_STATUS){
                 const orders = this.orders.value.filter(order => order.uuid !== orderResponse.data.uuid)
-                this.orders.next(orders)
+                if(!this.isStop){
+                    this.orders.next(orders)
+                }                
             } else {
                 const newOrder=OrderResponse.toBean(orderResponse.data)
                 this.addProcess(newOrder)
                 //this.orders.complete()
-                this.orders.next(this.orders.value)
+                if(!this.isStop){
+                    this.orders.next(this.orders.value)
+                }              
 
             }
         })
