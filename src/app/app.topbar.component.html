@@ -129,3 +129,21 @@
         <p-button icon="pi pi-times" (click)="displayOpenStore=false" label="Cancelar"></p-button>
     </ng-template>
 </p-dialog>
+
+<p-dialog [(visible)]="isWelcomeDialogOpen" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" 
+[style]="{width: '30vw'}" [modal]="true">
+    <div style="text-align: center;">
+       <h2>¡Bienvenido a nuestra plataforma!</h2>
+
+       <div class="p-px-3 p-py-2">
+        <p style="font-size: larger;">Estamos encantados de tenerte aquí. En nuestro sitio, puedes gestionar pedidos. 
+            Revisar los reportes de usuarios, solicitar pedidos entre otras cosas más. 
+            Disfrute su estadía.</p>       
+        </div>
+
+       <div>
+        <button pButton pRipple label="Entendido" icon="pi pi-thumbs-up-fill" (click)="isWelcomeDialogOpen = false"
+        class="font-bold p-px-5 p-py-3 p-button-raised p-button-rounded white-space-nowrap"></button>
+       </div>
+    </div>
+  </p-dialog>

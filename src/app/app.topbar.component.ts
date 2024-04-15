@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
 import {AppMainComponent} from './app.main.component';
 import { AuthService } from './utils/auth.service';
@@ -11,13 +11,14 @@ import { DataSharedService } from './modules/service/data-shared.service';
 import { StatusOpenStoreBean } from './modules/main/data';
 import { AudioService } from './modules/service/audio.service';
 import { OpenStoreHandler } from './modules/service/handlers/store.open.handler';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Component({
     selector: 'app-topbar',
     templateUrl:'app.topbar.component.html',
     styleUrls: ['./app.topbar.component.scss']
 })
-export class AppTopBarComponent implements OnInit{
+export class AppTopBarComponent implements OnInit, AfterViewInit{
     displayOpenStore:boolean=false
     activeItem: number;
     storesOpen:StatusOpenStoreBean[]=[]
@@ -51,8 +52,11 @@ export class AppTopBarComponent implements OnInit{
         private openStoreHanlder:OpenStoreHandler
 
     ) {}
-    
+    isWelcomeDialogOpen: boolean = true
+    @ViewChild('op') overlayPanel: OverlayPanel;
     ngOnInit(): void {
+        this.getFirstLogin()
+        
         var flagAudio = JSON.parse(localStorage.getItem('audioEnabled'))
         var lstIdStore= JSON.parse(localStorage.getItem('lstIdStore'))
         if(flagAudio != undefined){
@@ -89,6 +93,25 @@ export class AppTopBarComponent implements OnInit{
                     this.dataShared.updateListStore(this.selectStore)
                 }
         })
+    }
+
+    ngAfterViewInit() {
+        setTimeout(() => {
+            var button2 = document.getElementById('btnHidden')
+            button2.click()
+          }, 500)
+      }
+
+    isFirstLogin: boolean = true
+    getFirstLogin(){
+        
+        let firstLogin = JSON.parse(localStorage.getItem('isFirstLogin'))
+        if(firstLogin) {
+            this.isWelcomeDialogOpen = false
+        } else {
+            localStorage.setItem('isFirstLogin',JSON.stringify(this.isFirstLogin))
+            this.isWelcomeDialogOpen = true
+        }
     }
 
     validateConnectMqttAndGetStatus(){

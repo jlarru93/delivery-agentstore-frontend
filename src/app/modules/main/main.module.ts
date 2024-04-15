@@ -33,6 +33,7 @@ import { TagModule } from "primeng/tag";
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ChipModule } from "primeng/chip";
 import { ProgressSpinnerModule } from "primeng/progressspinner";
+import { SidebarModule } from "primeng/sidebar";
 
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
@@ -56,6 +57,7 @@ import { ProgressSpinnerModule } from "primeng/progressspinner";
       ProgressSpinnerModule,
       TreeTableModule,
       CardModule,
+      SidebarModule,
       DynamicDialogModule,
       OverlayPanelModule,
       MatDividerModule,
