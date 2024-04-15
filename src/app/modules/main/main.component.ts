@@ -143,8 +143,11 @@ import { Router } from "@angular/router";
       }
     
     flagAudio: boolean
+    fullScreenSideBar: boolean = false
+    isWelcomeDialogOpen: boolean = true
     ngOnInit(): void { 
-      
+      //this.fullScreenSideBar = true
+      //this.isWelcomeDialogOpen = true
       this.visibilityChangeCallback = this.handleVisibilityChange.bind(this);
       document.addEventListener('visibilitychange', this.visibilityChangeCallback);
 
@@ -750,8 +753,8 @@ import { Router } from "@angular/router";
       this.loadingButtonUpdateTime = false
       console.log(response)
       this.messageService.showSuccess('', 'El tiempo estimada modificado')
-    }, (error: HttpErrorResponse) => {
-      this.messageService.showSuccess('Error', error.message)
+    }, (error) => {
+      this.messageService.showError('Error', error.error.messages[0].message)
       this.loadingButtonUpdateTime = false
     })
   }
