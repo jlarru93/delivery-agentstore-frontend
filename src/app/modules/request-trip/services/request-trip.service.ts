@@ -6,9 +6,11 @@ import {
 } from "../data/request";
 import { HttpClient } from "@angular/common/http";
 import {
+  PolygonResponse,
   ResponseLoadingOrder,
   ResponseOrderPayment,
   ResponseTrip,
+  ZoneResponse
 } from "../data/response";
 import { ObjetResponse } from "src/app/models";
 import { environment as env } from "../../../../environments/environment";
@@ -67,5 +69,12 @@ export class RequestTripService {
     return this.http.get<ObjetResponse<ResponseTrackingMotorized>>(
       env.url.url_back_tracking + path.replace(":uuid", uuid.toString())
     );
+  }
+  //http://dev-api.tres22.net/delivery-zone/zone/:zoneid/agent/store
+  onGetPolygonZone(){
+    let store = JSON.parse(localStorage.getItem('storeBean'))
+    let path = "/zone/:zoneid/agent/store"
+    path = path.replace(':zoneid',store.zoneId)
+    return this.http.get<ObjetResponse<ZoneResponse>>(env.url.backEnd_Zone + path)
   }
 }

@@ -9,11 +9,12 @@ export const environment = {
       'https://dev-api.tres22.net/agent-store',
       'https://dev-api.tres22.net/tracking',
       "https://dev-api.tres22.net/utils",
-
+      'https://dev-api.tres22.net/delivery-zone'
     ],
     backEnd: 'https://dev-api.tres22.net/agent-store',
     url_back_tracking : 'https://dev-api.tres22.net/tracking',
-    util_banckEnd:"https://dev-api.tres22.net/utils"
+    util_banckEnd:"https://dev-api.tres22.net/utils",
+    backEnd_Zone: 'https://dev-api.tres22.net/delivery-zone'
   },
   region: 'us-west-1',
   userPoolId: 'us-west-1_4xM3rA9gH',

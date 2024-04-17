@@ -4,6 +4,8 @@ import { ProductService } from './modules/product/service/product.service';
 import { StoreResponse } from './modules/product/service/data/response';
 import { Router } from '@angular/router';
 import { DataSharedService } from './modules/service/data-shared.service';
+import { RequestTripService } from './modules/request-trip/services/request-trip.service';
+import { ZoneResponse } from './modules/request-trip/data/response';
 
 @Component({
     selector: 'app-menu',
@@ -17,7 +19,8 @@ export class AppMenuComponent implements OnInit {
         public appMain: AppMainComponent,
         private productService: ProductService,
         private router: Router,
-        private store:DataSharedService
+        private store:DataSharedService,
+        private requestTripService: RequestTripService,
     ) { }
 
     ngOnInit() {
@@ -51,7 +54,21 @@ export class AppMenuComponent implements OnInit {
             //this.storeFullName = storeBean.fullName
             localStorage.setItem('storeBean', JSON.stringify(storeBean))
             this.store.setStoreBean(storeBean)
+            this.getPolygonByZone()
         })
+    }
+
+    zoneResponse: ZoneResponse
+    getPolygonByZone(){
+        this.requestTripService.onGetPolygonZone().subscribe(
+        (resp) => {
+            this.zoneResponse = resp.data
+            localStorage.setItem('zoneResponse', JSON.stringify(this.zoneResponse))
+        },
+        (error) => {
+            console.log('Ocurrio un error')
+        }
+        )
     }
 
     redirectRequestTrip(){

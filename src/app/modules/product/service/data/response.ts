@@ -7,9 +7,9 @@ export class PriceResponse{
     static toBean(self: PriceResponse) : PriceBean {
         try{
             const bean = new PriceBean
-            bean.currency = self.currency;
-            bean.value = self.value;
-            bean.oldValue = self.oldValue;
+            bean.currency = self?.currency;
+            bean.value = self?.value;
+            bean.oldValue = self?.oldValue;
             return bean
         }catch(e){
             console.log("self",self)
@@ -34,7 +34,7 @@ export class ProductsResponse{
             bean.id = self.id;
             bean.review = self.review;
             bean.name = self.name;
-            bean.price = PriceResponse.toBean(self.price);
+            bean.price = PriceResponse.toBean(self?.price);
             bean.menu = self.menu;
             bean.picture = self.picture;
             bean.isOutStock = self.isOutStock;
