@@ -7,7 +7,7 @@ import { RequestGeoAutocomplete } from "src/app/directives/informacion/data/serv
 import { RequestMotorizedOrigin, RequestOrderPayment, RequestTrip} from "./data/request";
 import * as UtilModalViaje from "./util-modal-viaje-corporate";
 import { RequestTripService } from "./services/request-trip.service";
-import { ResponseLoadingOrder, ResponseMotorizedOrigin } from "./data/response";
+import { ResponseLoadingOrder, ResponseMotorizedOrigin, ZoneResponse } from "./data/response";
 import { LoadingMotorizedComponent } from "./dialog/loading-motorized/loading-motorized.component";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { environment } from "src/environments/environment";
@@ -175,7 +175,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     //   lat: 10.96854,
     //   lng: -74.78132,
     // }
-    
     this.editTripData = JSON.parse(localStorage.getItem('edit-trip'))
     if(this.editTripData) {
       console.log()
@@ -485,24 +484,39 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         this.alert.showInfo('','Geocoder failed due to: ' + status);
        }
      });
-
-
   }
-   autocompleteOri: google.maps.places.Autocomplete
+
+
+  convertPolygonToLatLngLiteral(coordinates: number[][]): LatLngLiteral[] {
+    return coordinates.map(coord => {
+      return { lat: coord[1], lng: coord[0] };
+    });
+  }
+
+  autocompleteOri: google.maps.places.Autocomplete
   findAdressOrigin() {
-    //  google.maps.
-    let cityBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
-    )
+    const zoneResponse = JSON.parse(localStorage.getItem('zoneResponse'))
+    const polygonCoordinates: LatLngLiteral[] = this.convertPolygonToLatLngLiteral(zoneResponse.polygon.coordinates[0]);
+
+    const bounds = new google.maps.LatLngBounds();
+    for (const coord of polygonCoordinates) {
+      bounds.extend(coord);
+    }
+
+    // let cityBounds = new google.maps.LatLngBounds(
+    //   new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
+    // )
     const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
      this.autocompleteOri = new google.maps.places.Autocomplete(element, {
       types: [],
       fields: ["place_id"],
-      bounds: cityBounds,
+      bounds: bounds,
       componentRestrictions: {
         country: environment.conuntryCode,
 
       },
+      strictBounds: true
+      
     });
 
     this.autocompleteOri.addListener("place_changed", () => {
@@ -512,17 +526,25 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
   findAdress() {
     //  google.maps.
-    let cityBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
-    )
+    const zoneResponse = JSON.parse(localStorage.getItem('zoneResponse'))
+    const polygonCoordinates: LatLngLiteral[] = this.convertPolygonToLatLngLiteral(zoneResponse.polygon.coordinates[0]);
+
+    const bounds = new google.maps.LatLngBounds();
+    for (const coord of polygonCoordinates) {
+      bounds.extend(coord);
+    }
+    // let cityBounds = new google.maps.LatLngBounds(
+    //   new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
+    // )
     const element = <HTMLInputElement>document.getElementById("txtUbicacion");
     const autocomplete = new google.maps.places.Autocomplete(element, {
       types: [],
       fields: ["place_id"],
-      bounds: cityBounds,
+      bounds: bounds,
       componentRestrictions: {
         country: environment.conuntryCode,
       },
+      strictBounds: true
     });
 
     autocomplete.addListener("place_changed", () => {

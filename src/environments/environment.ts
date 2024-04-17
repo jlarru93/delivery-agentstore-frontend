@@ -1,19 +1,20 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-// import * as CONFIGURACION from '../assets/empresas/tres22/json/'
 
 export const environment = {
   production: false,
   url:{
     backEndInit : [
       'https://dev-api.tres22.net/agent-store',
+      'https://dev-api.tres22.net/tracking',
       "https://dev-api.tres22.net/utils",
-      'https://dev-api.tres22.net/tracking'
+      'https://dev-api.tres22.net/delivery-zone'
     ],
     backEnd: 'https://dev-api.tres22.net/agent-store',
     url_back_tracking : 'https://dev-api.tres22.net/tracking',
-    util_banckEnd:"https://dev-api.tres22.net/utils",   
+    util_banckEnd:"https://dev-api.tres22.net/utils",
+    backEnd_Zone: 'https://dev-api.tres22.net/delivery-zone'
   },
   region: 'us-west-1',
   userPoolId: 'us-west-1_4xM3rA9gH',
@@ -98,7 +99,7 @@ export const environment = {
       ICON_SIZE: new google.maps.Size(30, 35)
     }
   },
-  NAME_COMPANY: 'tres22',
+  NAME_COMPANY: 'tres22',//'<<your name>>',
   conuntryCode:'PE',
   countryDial: '+51',
   cityCenterPoint: {
@@ -114,9 +115,6 @@ export const environment = {
     thousandsSeparator: '.',
     decimalPlaces: 0
   },
-  //'<<your name>>',
-  // CONFIGURATION: CONFIGURACION,
-
 };
 
 /*
