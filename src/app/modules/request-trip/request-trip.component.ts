@@ -503,6 +503,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         country: environment.conuntryCode,
 
       },
+      strictBounds: true
     });
 
     this.autocompleteOri.addListener("place_changed", () => {
@@ -523,6 +524,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       componentRestrictions: {
         country: environment.conuntryCode,
       },
+      strictBounds: true
     });
 
     autocomplete.addListener("place_changed", () => {
