@@ -128,4 +128,15 @@ export class AddressResponseLoadingOrder {
   uuidRoutePrice ?: string;
 }
 
+
+export class ZoneResponse {
+  id:number;
+  name:string;
+  polygon: { type: 'Polygon', coordinates: number[][][] };
+  polygonLngLong?: PolygonResponse[]
+}
+export class PolygonResponse {
+  lat: number
+  lng: number
+}
   

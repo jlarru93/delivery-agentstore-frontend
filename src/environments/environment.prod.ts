@@ -5,10 +5,12 @@ export const environment = {
       'https://api.tres22.net/agent-store',
       'https://api.tres22.net/tracking',
       "https://api.tres22.net/utils",
+      'https://api.tres22.net/delivery-zone',
     ],
     backEnd: 'https://api.tres22.net/agent-store',
     url_back_tracking : 'https://api.tres22.net/tracking',
     util_banckEnd:"https://api.tres22.net/utils",
+    backEnd_Zone: 'https://api.tres22.net/delivery-zone'
   },
   region: 'us-east-1',
   userPoolId: 'us-east-1_GNlrPkzvB',
