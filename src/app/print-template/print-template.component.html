@@ -80,7 +80,14 @@
 
     <hr style="border-top: dashed 1px;" />
     <div class="detalle">
-        <div class="item"> 
+        <div class="item" *ngIf="orderSelected.productPriceWithDiscount != orderSelected.productPrice"> 
+            <span>Productos:</span>
+            <span class="span-item">
+                <del>{{orderSelected?.getTotalProductsWithDiscount()}}</del>
+                <strong>{{orderSelected?.getProductPriceAndCurrency()}}</strong>
+            </span>
+        </div>
+        <div class="item" *ngIf="orderSelected.productPriceWithDiscount == orderSelected.productPrice"> 
             <span>Productos:</span>
             <span>
                 <strong>{{orderSelected?.getProductPriceAndCurrency()}}</strong>
@@ -90,11 +97,14 @@
             <span>Propina: </span>
             <span><strong>{{orderSelected.getTipAndCurrency()}}</strong></span>
         </div>
-        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount > 0">
-            <span>Domicilio: <del>{{orderSelected.getdeliveryPriceAndCurrency()}}</del></span>
-            <span><strong>{{orderSelected.getdeliveryPriceDiscountAndCurrency()}}</strong></span>
+        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount != orderSelected.deliveryPrice">
+            <span>Domicilio:</span>
+            <span class="span-item">
+                <del>{{orderSelected.getdeliveryPriceAndCurrency()}}</del>
+                <strong>{{orderSelected.getdeliveryPriceDiscountAndCurrency()}}</strong>
+            </span>
         </div>
-        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == 0 || orderSelected.deliveryPriceDiscount == null">
+        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == orderSelected.deliveryPrice">
             <span>Domicilio:</span>
             <span><strong>{{orderSelected.getdeliveryPriceAndCurrency()}}</strong></span>
         </div>
@@ -111,8 +121,8 @@
         </ng-container>
         <div class="item">
             <span>Total:</span>
-            <span>
-                <strong [ngClass]="{'line-through' : orderSelected.totalPayUser != orderSelected.total}">{{orderSelected.getTotalAndCurrencyCommand()}}</strong>
+            <span class="span-item">
+                <strong [ngClass]="{'line-through' : orderSelected.totalPayUser != orderSelected.total}">{{orderSelected.getTotalAndCurrencyCommand()}} </strong>
                 <ng-container *ngIf="orderSelected.totalPayUser != orderSelected.total">
                     <strong> {{orderSelected.getTotalPayUserAndCurrencyCommand()}}</strong>
                   </ng-container>
