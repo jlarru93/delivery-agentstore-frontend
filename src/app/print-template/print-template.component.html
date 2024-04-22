@@ -97,14 +97,14 @@
             <span>Propina: </span>
             <span><strong>{{orderSelected.getTipAndCurrency()}}</strong></span>
         </div>
-        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount != orderSelected.deliveryPrice">
+        <div class="item" *ngIf="orderSelected.deliveryPriceWithDiscount != orderSelected.deliveryPrice">
             <span>Domicilio:</span>
             <span class="span-item">
                 <del>{{orderSelected.getdeliveryPriceAndCurrency()}}</del>
                 <strong>{{orderSelected.getdeliveryPriceDiscountAndCurrency()}}</strong>
             </span>
         </div>
-        <div class="item" *ngIf="orderSelected.deliveryPriceDiscount == orderSelected.deliveryPrice">
+        <div class="item" *ngIf="orderSelected.deliveryPriceWithDiscount == orderSelected.deliveryPrice">
             <span>Domicilio:</span>
             <span><strong>{{orderSelected.getdeliveryPriceAndCurrency()}}</strong></span>
         </div>
