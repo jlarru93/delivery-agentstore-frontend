@@ -159,6 +159,7 @@ export class OrderBean {
     servicePrice: number
     deliveryPrice: number
     deliveryPriceDiscount : number
+    deliveryPriceWithDiscount: number
     tip: number;
     total: number
     user?: UserBean
