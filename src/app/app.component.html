@@ -1,1 +1,16 @@
 <router-outlet></router-outlet>
+<p-dialog [(visible)]="isDialogConnectionShow" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" 
+[style]="{width: '30vw'}" [modal]="true">
+    <div style="text-align: center;">
+       <h2>¡Lo sentimos!</h2>
+
+       <div class="p-px-3 p-py-2">
+        <p style="font-size: larger;">No hay buena conexión de internet, verifique su conexión a internet. Reintente. Si el problema persiste contacte a su área de soporte</p>       
+        </div>
+
+       <div>
+        <button pButton pRipple label="Entendido" icon="pi pi-thumbs-up-fill" (click)="isDialogConnectionShow = false"
+        class="font-bold p-px-5 p-py-3 p-button-raised p-button-rounded white-space-nowrap"></button>
+       </div>
+    </div>
+</p-dialog>
