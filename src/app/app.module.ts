@@ -325,6 +325,8 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
     providers: [
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         { provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+        
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, BreadcrumbService,
         MqttService, MqttRoutingService, OrderHandler, StoreHandler
