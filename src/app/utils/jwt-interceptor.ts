@@ -1,17 +1,16 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, from, throwError } from "rxjs";
 import { environment } from "src/environments/environment";
 import { AuthService } from "./auth.service";
-import { catchError, map, mergeMap } from 'rxjs/operators';
-//import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { catchError, mergeMap, tap } from 'rxjs/operators';
+import { ConnectionService } from "../modules/service/connection.service";
 
 
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
 
-  //@BlockUI() blockUI: NgBlockUI;
-  constructor(private authenticationService: AuthService) { }
+  constructor(private authenticationService: AuthService,private readonly connectionService:ConnectionService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let isApiUrl = false
@@ -21,19 +20,19 @@ export class JWTInterceptor implements HttpInterceptor {
       }
     })
     if(!isApiUrl){
-      return next.handle(request);
+      return next.handle(request).pipe(tap(()=>this.attachResponse(request.url)));;
     }
     const isLoggedIn = this.authenticationService.isAllAuthenticated();
 
     if (isLoggedIn) {
       const clonedRequest = this.attachTokenToRequest(request, this.authenticationService.getAutorizationToken());
-      return next.handle(clonedRequest);
+      return next.handle(clonedRequest).pipe(tap(()=>this.attachResponse(request.url)));
     }else{
       return from(this.authenticationService.refreshToken()).pipe(
         mergeMap(() => {
           const newToken = this.authenticationService.getAutorizationToken();
           const clonedRequest = this.attachTokenToRequest(request, newToken);
-          return next.handle(clonedRequest);
+          return next.handle(clonedRequest).pipe(tap(()=>this.attachResponse(request.url)));;
         }),
         catchError((error: any) => {
           // Error al refrescar el token, manejarlo según tus necesidades
@@ -41,7 +40,6 @@ export class JWTInterceptor implements HttpInterceptor {
         })
       );
     }
-    
   }
   private attachTokenToRequest(request: HttpRequest<any>, token: string): HttpRequest<any> {
     return request.clone({
@@ -51,6 +49,10 @@ export class JWTInterceptor implements HttpInterceptor {
     });
   }
 
-
+  private attachResponse(url:string){
+    if(url.includes("api.tres22.net")){
+      this.connectionService.setValue(true)
+    }
+  }
 
 }
