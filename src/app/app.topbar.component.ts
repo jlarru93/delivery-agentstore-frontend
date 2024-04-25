@@ -96,10 +96,10 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     }
 
     ngAfterViewInit() {
-        setTimeout(() => {
-            var button2 = document.getElementById('btnHidden')
-            button2.click()
-          }, 500)
+        // setTimeout(() => {
+        //     var button2 = document.getElementById('btnHidden')
+        //     button2.click()
+        //   }, 500)
       }
 
     isFirstLogin: boolean = true
@@ -202,5 +202,10 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
 
     // Almacena el estado en el localStorage
     this.audioService.storeAudioEnabledStateInLocalStorage();
+    }
+
+    onPlayAudioOnDialog(){
+        this.audioService.onPlayAudioFirstLoad()
+        this.isWelcomeDialogOpen = false
     }
 }

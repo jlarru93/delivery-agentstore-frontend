@@ -52,6 +52,11 @@ export class AudioService{
             }
         }
     }
+
+    onPlayAudioFirstLoad(){
+        this.audio.play();
+    }
+
     storeAudioEnabledStateInLocalStorage() {
         console.log(this.audioEnabled)
         localStorage.setItem('audioEnabled', JSON.stringify(this.audioEnabled));
