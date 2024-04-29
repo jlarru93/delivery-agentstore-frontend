@@ -1042,7 +1042,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         
         order.addresses[0].id = this.editTripData.addresses[0].id
         order.addresses[0].addressStreet = item.addressStreet;
-        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
+        order.addresses[0].phone = !this.request_trip?.isCheckedStore ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
