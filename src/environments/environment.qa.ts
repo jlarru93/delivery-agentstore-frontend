@@ -9,12 +9,14 @@ export const environment = {
       'https://qa-api.tres22.net/agent-store',
       'https://qa-api.tres22.net/tracking',
       "https://qa-api.tres22.net/utils",
-      'https://dev-api.tres22.net/delivery-zone'
+      'https://qa-api.tres22.net/delivery-zone',
+      'https://qa-api.tres22.net/delivery-store'
     ],
     backEnd: 'https://qa-api.tres22.net/agent-store',
     url_back_tracking : 'https://qa-api.tres22.net/tracking',
     util_banckEnd:"https://qa-api.tres22.net/utils",
-    backEnd_Zone: 'https://dev-api.tres22.net/delivery-zone'
+    backEnd_Zone: 'https://qa-api.tres22.net/delivery-zone',
+    store_banckEnd:"https://qa-api.tres22.net/delivery-store",
     //util_dev : "https://nkdqe8xd51.execute-api.us-east-1.amazonaws.com/dev"
    
   },
