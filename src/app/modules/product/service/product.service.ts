@@ -15,7 +15,7 @@ import { ProductStockRequest } from "./data/request";
     ){}
 
     getProducts(storeId:number) {
-      return this.http.get<ObjetResponse<StoreResponse>>(env.url.backEnd + "/store/"+storeId+"/items")
+      return this.http.get<ObjetResponse<StoreResponse>>(env.url.store_banckEnd + "/store/"+storeId+"/items/agent-store")
     }
 
     deleteProduct(bodyRequest){
