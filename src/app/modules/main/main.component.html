@@ -40,17 +40,20 @@
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" 
                         class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
                         <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
-                           <app-chat 
-                              [isLoading]="order.isLoadingChat"
-                              [messages]="order.messagesChat" 
-                              [orderId]="order.id"
-                              [orderUuid]="order.uuid"
-                              [usuarioLogueado]="userName"
-                              [userId]="userId"
-                              [flagMainComponent]="true"
-                              (hideChat)="hideChatComponent(order)"
-                              (emitMessage)="sendMessage($event)"
-                              ></app-chat>
+                           <ng-container *ngIf="order.showChat">
+
+                              <app-chat 
+                                 [isLoading]="order.isLoadingChat"
+                                 [messages]="order.messagesChat" 
+                                 [orderId]="order.id"
+                                 [orderUuid]="order.uuid"
+                                 [usuarioLogueado]="userName"
+                                 [userId]="userId"
+                                 [flagMainComponent]="true"
+                                 (hideChat)="hideChatComponent(order)"
+                                 (emitMessage)="sendMessage($event)"
+                                 ></app-chat>
+                           </ng-container>
                         </div>
                      </div>
                      <p-button label="Aceptar Orden" styleClass="p-button-sm p-button-rounded" (click)="openOrderDialog(order)"

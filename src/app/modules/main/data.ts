@@ -176,6 +176,7 @@ export class OrderBean {
     messagesChat:ChatBean[]
     isLoadingChat:boolean
     showButton:boolean
+    showChat:boolean
     statusForAgentStore:string
     isApprovedSelfManaged:boolean
     isSelfManaged:boolean
@@ -192,6 +193,7 @@ export class OrderBean {
         this.messagesChat=[]
         this.isLoadingChat=false
         this.showButton=false
+        this.showChat = true
     }
     getCurrency(): string {
         return ""+this.products[0]?.price.currency??'0'

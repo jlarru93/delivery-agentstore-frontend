@@ -519,6 +519,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       
     });
 
+    //@ts-ignore
     this.autocompleteOri.addListener("place_changed", () => {
       let place: any = this.autocompleteOri.getPlace().place_id;
       this.geocodePlaceIdOrigin(place);
@@ -547,6 +548,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       strictBounds: true
     });
 
+    //@ts-ignore
     autocomplete.addListener("place_changed", () => {
       let place: any = autocomplete.getPlace().place_id;
       this.geocodePlaceIdMultidestino(place);
@@ -893,7 +895,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.request_trip.addresses.forEach((item, index) => {
       if (item.sort == 1) {
         order.addresses[0].addressStreet = item.addressStreet;
-        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
+        order.addresses[0].phone = !this.request_trip?.isCheckedStore ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
@@ -909,7 +911,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         order.addresses[1].addressStreet = item.addressStreet;
         order.addresses[1].point = item.point;
         order.addresses[1].receptorName = this.destinationReceptorName ? this.destinationReceptorName : '';
-        //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
       }
     });
     order.isOrderCalendar=this.request_trip.isOrderCalendar
@@ -1041,7 +1042,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         
         order.addresses[0].id = this.editTripData.addresses[0].id
         order.addresses[0].addressStreet = item.addressStreet;
-        order.addresses[0].phone = this.request_trip.isCheckedStore == false ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
+        order.addresses[0].phone = !this.request_trip?.isCheckedStore ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
         order.addresses[0].reference = this.input_reference_pickup ? this.input_reference_pickup : '';
