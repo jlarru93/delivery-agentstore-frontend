@@ -11,16 +11,16 @@ import { OpenStoreRequest } from "./data/request";
     constructor(private http:HttpClient) { }
 
     getStatusOpen(){
-        return this.http.get<ObjetResponse<StatusOpenStoreResponse[]>>(env.url.backEnd+"/store/status/open")
+        return this.http.get<ObjetResponse<StatusOpenStoreResponse[]>>(env.url.store_banckEnd+"/store/status/open/agent-store")
     }
 
     changeStatusOpen(request:OpenStoreRequest){
-        return this.http.put<ObjetResponse<StatusOpenStoreResponse>>(env.url.backEnd+"/store/open",request)
+        return this.http.put<ObjetResponse<StatusOpenStoreResponse>>(env.url.store_banckEnd+"/store/open/agent-store",request)
     }
   //   onGetLocationStoreService(){
   //     return this.http.get<ObjetResponse<StoreResponse>>(env.url.backEnd+"/store/just-deliveryMan")
   // }
-  onGetLocationStoreService(store_ids:string){
-    return this.http.get<ObjetResponse<StoreTripResponse[]>>(env.url.backEnd+"/store/setting",{headers:{store_ids:store_ids}})
-  }
+    onGetLocationStoreService(store_ids:string){
+      return this.http.get<ObjetResponse<StoreTripResponse[]>>(env.url.store_banckEnd+"/store/setting/agent-store",{headers:{store_ids:store_ids}})
+    }
   }
