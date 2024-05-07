@@ -495,22 +495,22 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   autocompleteOri: google.maps.places.Autocomplete
   findAdressOrigin() {
-    const zoneResponse = JSON.parse(localStorage.getItem('zoneResponse'))
-    const polygonCoordinates: LatLngLiteral[] = this.convertPolygonToLatLngLiteral(zoneResponse.polygon.coordinates[0]);
+    // const zoneResponse = JSON.parse(localStorage.getItem('zoneResponse'))
+    // const polygonCoordinates: LatLngLiteral[] = this.convertPolygonToLatLngLiteral(zoneResponse.polygon.coordinates[0]);
 
-    const bounds = new google.maps.LatLngBounds();
-    for (const coord of polygonCoordinates) {
-      bounds.extend(coord);
-    }
+    // const bounds = new google.maps.LatLngBounds();
+    // for (const coord of polygonCoordinates) {
+    //   bounds.extend(coord);
+    // }
 
-    // let cityBounds = new google.maps.LatLngBounds(
-    //   new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
-    // )
+    let cityBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
+    )
     const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
      this.autocompleteOri = new google.maps.places.Autocomplete(element, {
       types: [],
       fields: ["place_id"],
-      bounds: bounds,
+      bounds: cityBounds,
       componentRestrictions: {
         country: environment.conuntryCode,
 
@@ -527,21 +527,21 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
   findAdress() {
     //  google.maps.
-    const zoneResponse = JSON.parse(localStorage.getItem('zoneResponse'))
-    const polygonCoordinates: LatLngLiteral[] = this.convertPolygonToLatLngLiteral(zoneResponse.polygon.coordinates[0]);
+    // const zoneResponse = JSON.parse(localStorage.getItem('zoneResponse'))
+    // const polygonCoordinates: LatLngLiteral[] = this.convertPolygonToLatLngLiteral(zoneResponse.polygon.coordinates[0]);
 
-    const bounds = new google.maps.LatLngBounds();
-    for (const coord of polygonCoordinates) {
-      bounds.extend(coord);
-    }
-    // let cityBounds = new google.maps.LatLngBounds(
-    //   new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
-    // )
+    // const bounds = new google.maps.LatLngBounds();
+    // for (const coord of polygonCoordinates) {
+    //   bounds.extend(coord);
+    // }
+    let cityBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
+    )
     const element = <HTMLInputElement>document.getElementById("txtUbicacion");
     const autocomplete = new google.maps.places.Autocomplete(element, {
       types: [],
       fields: ["place_id"],
-      bounds: bounds,
+      bounds: cityBounds,
       componentRestrictions: {
         country: environment.conuntryCode,
       },
