@@ -54,7 +54,7 @@ export class AppMenuComponent implements OnInit {
             //this.storeFullName = storeBean.fullName
             localStorage.setItem('storeBean', JSON.stringify(storeBean))
             this.store.setStoreBean(storeBean)
-            //this.getPolygonByZone()
+            this.getPolygonByZone()
         })
     }
 
