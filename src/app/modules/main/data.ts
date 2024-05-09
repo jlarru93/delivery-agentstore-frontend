@@ -124,6 +124,9 @@ export class UserBean {
     fullName?: string
     address?: AddressBean
     phone?: string
+    email?: string
+    documentType?: string
+    documentValue?: string
 }
 
 export class CardBean {

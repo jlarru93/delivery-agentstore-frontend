@@ -285,12 +285,18 @@ export class UserResponse {
     fullName?: string
     address?: AddressResponse
     phone? : string
+    email?: string
+    documentType?: string
+    documentValue?: string
     static toBean(self: UserResponse): UserBean {
         const bean = new UserBean()
         bean.id = self.id,
             bean.fullName = self.fullName,
             bean.address = AddressResponse.toBean(self.address)
             bean.phone = self.phone
+            bean.email = self.email
+            bean.documentType = self.documentType
+            bean.documentValue = self.documentValue
         return bean
     }
 }
