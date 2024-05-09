@@ -25,6 +25,14 @@
             <span><strong>{{orderSelected.user.fullName}}</strong></span>
         </div>
         <div class="item">
+            <span>Tipo de documento:</span>
+            <span><strong>{{onGetDocumentType(orderSelected.user.documentType)}}</strong></span>
+        </div>
+        <div class="item">
+            <span>Número de documento:</span>
+            <span><strong>{{orderSelected.user.documentValue}}</strong></span>
+        </div>
+        <div class="item">
             <span>Teléfono:</span>
             <span><strong>{{orderSelected.user.phone}}</strong></span>
         </div>

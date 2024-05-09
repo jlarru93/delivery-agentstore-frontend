@@ -111,4 +111,12 @@ export class PrintTemplateComponent implements OnInit, AfterViewInit {
     return methodConverted 
   }
 
+  onGetDocumentType(type){
+    let documentType: string
+    switch (type) {
+      case 'CC' : documentType = 'Cédula'; break;
+      case 'CE' : documentType = 'Carnet de extranjería'; break;
+    }
+    return documentType
+  }
 }

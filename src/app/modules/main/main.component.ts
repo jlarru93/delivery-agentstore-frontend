@@ -836,4 +836,12 @@ import { Router } from "@angular/router";
     document.body.removeChild(link);
     this.onDownloadLoading = false
   }
+  onGetDocumentType(type){
+    let documentType: string
+    switch (type) {
+      case 'CC' : documentType = 'Cédula'; break;
+      case 'CE' : documentType = 'Carnet de extranjería'; break;
+    }
+    return documentType
+  }
 }

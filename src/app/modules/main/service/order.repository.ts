@@ -159,6 +159,7 @@ export class OrderRepository{
     }
     private getOrder(storeIds){
         this.orderService.getOrders(storeIds).subscribe((resp)=>{
+            
             const orders=resp.data.map((o)=>OrderResponse.toBean(o))
             orders.forEach((o)=>{
                 this.addProcess(o)

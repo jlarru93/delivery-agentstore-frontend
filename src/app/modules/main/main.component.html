@@ -507,7 +507,13 @@
             <div class="sidebar-container-title">Cliente</div>
             <div class="card-client">
                <b>{{orderSelected?.user?.fullName}}</b>
-               <p>{{orderSelected?.user?.phone}}  <i class="pi pi-whatsapp" (click)="sendMessageWhatsApp(orderSelected.user.phone)"></i></p>
+               <div style="display: flex; gap: 10px;">
+                  <p>{{orderSelected?.user?.phone}}  <i class="pi pi-whatsapp" (click)="sendMessageWhatsApp(orderSelected.user.phone)"></i></p> |
+                  <span>
+                     <span style="font-weight: 700;">{{onGetDocumentType(orderSelected.user.documentType)}}:</span>
+                     <span> {{orderSelected?.user?.documentValue}}</span>
+                  </span>
+               </div>
             </div>
             <div *ngIf="orderSelected.status=='open'">
                <div class="sidebar-container-title">Tiempo de preparación</div>
