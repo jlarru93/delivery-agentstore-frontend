@@ -32,7 +32,7 @@ export const environment = {
     useSSL:true
   },
   GOOGLE:{
-    APIKEY: 'AIzaSyCpLgMY1dm8Cg2z8nPnZeqkqPo0lz5RElo'
+    APIKEY: 'AIzaSyDjv5HAoqzn8-kMHLFAdCF2XbHZ2vUmI8Y'
   },
   MARKERS: {
     ORIGEN: {
