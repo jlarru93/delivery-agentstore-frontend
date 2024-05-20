@@ -1,3 +1,5 @@
+import { AddressSuggestionBean } from "../data";
+
 export class ResponseOrderCourse {
     id: number;
     uuid: string;
@@ -69,4 +71,21 @@ export class ResponseOrderCourse {
 export class DeliveryManRouteResponse extends RouterResponse{
   deliveryMan:DeliveryMan
 
+}
+
+export class AddressSuggestionResponse {
+  city?: string
+  country?: string
+  mainText?: string
+  placeId?: string
+  secondText?: string
+  static toBean(response: AddressSuggestionResponse){
+      let bean = new AddressSuggestionBean()
+      bean.city = response.city
+      bean.country = response.country
+      bean.mainText = response.mainText
+      bean.secondText = response.secondText
+      bean.placeId = response.placeId
+      return bean
+  } 
 }

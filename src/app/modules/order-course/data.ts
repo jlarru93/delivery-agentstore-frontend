@@ -167,3 +167,12 @@ export class Destination {
     zoneId?: number;
     reference?: string;
 };
+
+
+export class AddressSuggestionBean {
+    city?: string
+    country?: string
+    mainText?: string
+    placeId?: string
+    secondText?: string
+}
