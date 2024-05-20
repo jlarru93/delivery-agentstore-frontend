@@ -399,7 +399,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.request_trip.addresses[0].floor = "";
       this.request_trip.addresses[0].alias = "";
       this.request_trip.addresses[0].marker = "store";
-      this.request_trip.addresses[0].addressStreet = this.input_visible_pickup;
+      this.request_trip.addresses[0].addressStreet = this.address.mainText;
       this.request_trip.addresses[0].point.coordinates = [
         store.location.coordinates[0],
         store.location.coordinates[1]
