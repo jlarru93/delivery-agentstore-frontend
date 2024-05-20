@@ -17,7 +17,24 @@
 .input-origin-content{
     display: flex;
     align-items: center;
+    width: 100%;
 }
+.address-mainText{
+    margin: 0;
+    font-size: 12px;
+    font-weight: bold;
+}
+.address-secondText{
+    margin: 0;
+    font-size: 12px;
+}
+.autocomplet-items{
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    flex-wrap: wrap;
+}
+
 .search-img-origin{
     height: 32px;
     width: 32px;

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild} from "@angular
 import { LatLngLiteral, MouseEvent } from "src/agm/core";
 import { StoreService } from "../main/service/store.service";
 import { PersonalisationMarker, PersonalisationPolyline, TypeMarkers} from "src/app/directives/informacion/data/enumMapa";
-import { Viaje } from "../order-course/data";
+import { AddressSuggestionBean, Viaje } from "../order-course/data";
 import { RequestGeoAutocomplete } from "src/app/directives/informacion/data/serviceGeo";
 import { RequestMotorizedOrigin, RequestOrderPayment, RequestTrip} from "./data/request";
 import * as UtilModalViaje from "./util-modal-viaje-corporate";
@@ -19,6 +19,7 @@ import { AppMainComponent } from "src/app/app.main.component";
 import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { COUNTRYCODE, NUMBERPHONELENGTH } from 'src/app/utils/constant';
 import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
+import { AddressSuggestionResponse } from "../order-course/data/response";
 
 interface PolyLine{
   routePoints:RoutePoint[]
@@ -223,12 +224,12 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     
     setTimeout( () => {
       console.log('edit')
-      this.findAdress()
-      this.findAdressOrigin()
+      // this.findAdress()
+      // this.findAdressOrigin()
       
       this.onUpdateEditOrder(this.editTripData)
-      this.input_visible_pickup = this.editTripData.addresses[0].addressStreet
-
+      //this.input_visible_pickup = this.editTripData.addresses[0].addressStreet
+      this.address.mainText = this.editTripData.addresses[0].addressStreet
       if(!this.editTripData.isCheckedStore){
         this.is_disabled_pickup = true
         this.isHiddenInput = false
@@ -363,6 +364,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       const storeId=store.data.map((sA)=>sA.store_id).join(",")
       this.storeService.onGetLocationStoreService(storeId).subscribe((resp)=>{
         this.storesAvailable=resp.data
+        debugger
         if(this.storesAvailable.length>0){
           if(!this.editTripData){
             this.request_trip.store=this.storesAvailable[0]
@@ -374,6 +376,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     })
   }
   selectStore(event:any, flagInit : any,Defauliten:boolean=false){
+    
     if(!this.request_trip.isCheckedStore){
 
       if(!Defauliten)
@@ -387,7 +390,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       console.log("resp.data.store",store.phone)
       
       this.validationPhoneStore = store.phone
-      this.input_visible_pickup = store.addressStreet+' ('+store.fullName+')';
+      //this.input_visible_pickup = store.addressStreet+' ('+store.fullName+')';
+      this.address = {
+        mainText: store.addressStreet+' ('+store.fullName+')'
+      }
       this.dataStorePhone = store.phone;
       this.request_trip.addresses[0].point.type = "Point";
       this.request_trip.addresses[0].floor = "";
@@ -429,61 +435,107 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
   onChangeMapMarkers($event: any, marker: any) {
     this.flagInitMap = false;
-    console.log('event--', $event)
-    const elementOrigin = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
+    // console.log('event--', $event)
+    // const elementOrigin = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
 
-    const element = <HTMLInputElement>document.getElementById("txtUbicacion");
-     var geocoder = new google.maps.Geocoder;
+    // const element = <HTMLInputElement>document.getElementById("txtUbicacion");
+    //  var geocoder = new google.maps.Geocoder;
      var latlng = {
       lat: $event.coords?.lat,
-      lng: $event.coords?.lng
+      lng: $event.coords?.lng,
+      storeId: this.request_trip.store.id
     };
-     geocoder.geocode({
-       'location': latlng
-     }, (results, status)=> {
-       if (status === 'OK') {
-         if(marker.label == "Destino"){
-           if (results[0]) {
-            element.value = results[0].formatted_address;
-            this.request_trip.addresses[1].point.type = "Point";
-            this.request_trip.addresses[1].floor = "";
-            this.request_trip.addresses[1].alias = "";
-            this.request_trip.addresses[1].marker = "store";
-            this.request_trip.addresses[1].addressStreet = results[0].formatted_address;
-            this.request_trip.addresses[1].point.coordinates = [
-              $event.coords?.lng,
-              $event.coords?.lat,
-            ]
-            //this.updatePosition();
-            this.onGetAmountOrder();
-            
-           } else {
-            this.alert.showError('','No results found');
-           }
-           
-        } 
-        if(marker.label == "Origen"){
-          if (results[0]) {
-            elementOrigin.value = results[0].formatted_address;
-            this.request_trip.addresses[0].point.type = "Point";
-            this.request_trip.addresses[0].floor = "";
-            this.request_trip.addresses[0].alias = "";
-            this.request_trip.addresses[0].marker = "store";
-            this.request_trip.addresses[0].addressStreet = results[0].formatted_address;
-            this.request_trip.addresses[0].point.coordinates = [
-              $event.coords?.lng,
-              $event.coords?.lat,
-            ]
-            //this.updatePosition();
-            this.onGetAmountOrder();
-           } else {
-            this.alert.showInfo('','No results found');
-           }
+
+    this.requestTripService.onGeoCodeInverseUser(latlng).subscribe(
+      (resp) => {
+
+        if(marker.label == "Destino"){
+          this.addressDestination = {mainText: resp.data.address}
+
+          this.request_trip.addresses[1].point.type = "Point";
+          this.request_trip.addresses[1].floor = "";
+          this.request_trip.addresses[1].alias = "";
+          this.request_trip.addresses[1].marker = "store";
+          this.request_trip.addresses[1].addressStreet = resp.data.address;
+          this.request_trip.addresses[1].point.coordinates = [
+            $event.coords?.lng,
+            $event.coords?.lat,
+          ]
+          //this.updatePosition();
+          this.onGetAmountOrder();
         }
-       } else {
-        this.alert.showInfo('','Geocoder failed due to: ' + status);
-       }
-     });
+
+        if(marker.label == "Origen"){
+          this.address = {
+            mainText: resp.data.address
+          }
+
+          this.request_trip.addresses[0].point.type = "Point";
+          this.request_trip.addresses[0].floor = "";
+          this.request_trip.addresses[0].alias = "";
+          this.request_trip.addresses[0].marker = "store";
+          this.request_trip.addresses[0].addressStreet = resp.data.address;
+          this.request_trip.addresses[0].point.coordinates = [
+            $event.coords?.lng,
+            $event.coords?.lat,
+          ]
+          //this.updatePosition();
+          this.onGetAmountOrder();
+
+        }
+
+      },
+      (error) => {
+        this.alert.showInfo('','Geocoder failed');
+      }
+    )
+
+    //  geocoder.geocode({
+    //    'location': latlng
+    //  }, (results, status)=> {
+    //    if (status === 'OK') {
+    //      if(marker.label == "Destino"){
+    //        if (results[0]) {
+    //         element.value = results[0].formatted_address;
+    //         this.request_trip.addresses[1].point.type = "Point";
+    //         this.request_trip.addresses[1].floor = "";
+    //         this.request_trip.addresses[1].alias = "";
+    //         this.request_trip.addresses[1].marker = "store";
+    //         this.request_trip.addresses[1].addressStreet = results[0].formatted_address;
+    //         this.request_trip.addresses[1].point.coordinates = [
+    //           $event.coords?.lng,
+    //           $event.coords?.lat,
+    //         ]
+    //         //this.updatePosition();
+    //         this.onGetAmountOrder();
+            
+    //        } else {
+    //         this.alert.showError('','No results found');
+    //        }
+           
+    //     } 
+    //     if(marker.label == "Origen"){
+    //       if (results[0]) {
+    //         elementOrigin.value = results[0].formatted_address;
+    //         this.request_trip.addresses[0].point.type = "Point";
+    //         this.request_trip.addresses[0].floor = "";
+    //         this.request_trip.addresses[0].alias = "";
+    //         this.request_trip.addresses[0].marker = "store";
+    //         this.request_trip.addresses[0].addressStreet = results[0].formatted_address;
+    //         this.request_trip.addresses[0].point.coordinates = [
+    //           $event.coords?.lng,
+    //           $event.coords?.lat,
+    //         ]
+    //         //this.updatePosition();
+    //         this.onGetAmountOrder();
+    //        } else {
+    //         this.alert.showInfo('','No results found');
+    //        }
+    //     }
+    //    } else {
+    //     this.alert.showInfo('','Geocoder failed due to: ' + status);
+    //    }
+    //  });
   }
 
 
@@ -494,7 +546,137 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 
   autocompleteOri: google.maps.places.Autocomplete
+
+  address: AddressSuggestionBean
+  addresses: AddressSuggestionBean[]
+
+  addressDestination: AddressSuggestionBean
+  addressesDestination: AddressSuggestionBean[]
+
+  searchAddress(e){
+    this.requestTripService.onGetSuggestionAddress(e.query, this.request_trip.store.id).subscribe(
+      (resp) => {
+        this.addresses = resp.data.map((as) => AddressSuggestionResponse.toBean(as))
+        if (resp.data.length == 0) {
+          this.addresses = [{mainText: "No se encontro coincidencias"}]
+        }
+      }, (error) => {
+        this.addresses = [{mainText: "Ocurrio un error en la busqueda"}]
+      }
+    )
+  }
+
+  selectPrediction(prediction: any) {
+    //this.autocompleteInput = prediction.mainText;
+    this.addresses = []; // Limpia las predicciones una vez seleccionada
+
+    this.requestTripService.onGeoCodeUser({placeId: prediction.placeId, storeId: this.request_trip.store.id}).subscribe(
+      (resp) => {
+        console.log(resp.data)
+
+        this.request_trip.addresses[0].addressStreet = this.address.mainText;
+          this.request_trip.addresses[0].point.type = "Point";
+          this.request_trip.addresses[0].floor = "";
+          this.request_trip.addresses[0].alias = "";
+          this.request_trip.addresses[0].marker = "store";
+          this.request_trip.addresses[0].point.coordinates = [
+            resp.data.lng,
+            resp.data.lat,
+          ];
+
+          const newMarkers: Marker = {
+            lat: resp.data.lat,
+            lng: resp.data.lng,
+            iconUrl: this.globalIconOrigin,
+            label: 'Origen',
+            isDraggable: true,
+            onDragEnd: (e)=>{
+              console.log(e.coords)
+            }
+          }
+
+          this.center = {
+            lat: resp.data.lat,
+            lng: resp.data.lng,
+          }
+
+          this.markers[0] = newMarkers
+
+          // this.geocodePlaceId(place);
+          this.onGetMotorizedPosiitonOrigin();
+          this.updatePosition();
+
+          if(this.request_trip.addresses[1].point.coordinates[1] && this.request_trip.addresses[1].point.coordinates[0]){
+            this.onGetAmountOrder()
+          }
+
+      }
+    )
+  }
+
+  searchAddressDestination(e){
+    this.requestTripService.onGetSuggestionAddress(e.query, this.request_trip.store.id).subscribe(
+      (resp) => {
+        this.addressesDestination = resp.data.map((as) => AddressSuggestionResponse.toBean(as))
+        if (resp.data.length == 0) {
+          this.addressesDestination = [{mainText: "No se encontro coincidencias"}]
+        }
+      }, (error) => {
+        this.addressesDestination = [{mainText: "Ocurrio un error en la busqueda"}]
+      }
+    )
+  }
+
+  selectPredictionDestination(prediction: any) {
+    //this.autocompleteInput = prediction.mainText;
+    this.addressesDestination = []; // Limpia las predicciones una vez seleccionada
+
+    this.requestTripService.onGeoCodeUser({placeId: prediction.placeId, storeId: this.request_trip.store.id}).subscribe(
+      (resp) => {
+        console.log(resp.data)
+
+        this.request_trip.addresses[1].point.type = "Point";
+          this.request_trip.addresses[1].floor = "";
+          this.request_trip.addresses[1].alias = "";
+          this.request_trip.addresses[1].marker = "store";
+          this.request_trip.addresses[1].addressStreet = this.addressDestination.mainText;
+          this.request_trip.addresses[1].point.coordinates = [
+            resp.data.lng,
+            resp.data.lat
+          ];
+          // this.geocodePlaceId(place);
+
+
+          const newMarkers: Marker = {
+            lat: resp.data.lat,
+            lng: resp.data.lng,
+            iconUrl: this.globalIconDestination,
+            label: 'Destino',
+            isDraggable: true,
+            onDragEnd: (e)=>{
+              console.log(e.coords)
+            }
+          }
+
+          // this.center = {
+          //   lat: results[0].geometry.location.lat(),
+          //   lng: results[0].geometry.location.lng(),
+          // }
+
+          this.markers[1] = newMarkers
+
+          //this.drawPolyline()
+
+          this.updatePosition();
+          this.onGetAmountOrder();
+          this.centrarMapa()
+
+      }
+    )
+  }
+
   findAdressOrigin() {
+    
     const zoneResponse = JSON.parse(localStorage.getItem('zoneResponse'))
     const polygonCoordinates: LatLngLiteral[] = this.convertPolygonToLatLngLiteral(zoneResponse.polygon.coordinates[0]);
 
@@ -503,9 +685,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       bounds.extend(coord);
     }
 
-    // let cityBounds = new google.maps.LatLngBounds(
-    //   new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
-    // )
     const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
      this.autocompleteOri = new google.maps.places.Autocomplete(element, {
       types: [],
@@ -521,12 +700,14 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
     //@ts-ignore
     this.autocompleteOri.addListener("place_changed", () => {
+      
       let place: any = this.autocompleteOri.getPlace().place_id;
       this.geocodePlaceIdOrigin(place);
     });
   }
   findAdress() {
     //  google.maps.
+    
     const zoneResponse = JSON.parse(localStorage.getItem('zoneResponse'))
     const polygonCoordinates: LatLngLiteral[] = this.convertPolygonToLatLngLiteral(zoneResponse.polygon.coordinates[0]);
 
@@ -550,11 +731,15 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
     //@ts-ignore
     autocomplete.addListener("place_changed", () => {
+      debugger
       let place: any = autocomplete.getPlace().place_id;
       this.geocodePlaceIdMultidestino(place);
       this.onPlaceSelected();
     });
   }
+
+
+
   geocodePlaceIdOrigin(placeId) {
     
     this.geocoder.geocode({ placeId: placeId }, (results, status) => {
@@ -1100,10 +1285,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 
   enablePickUpInput(){
-    const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");    
+    //const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");    
     if(this.request_trip.isCheckedStore == true){
       this.isDraggabled = true
-      this.findAdressOrigin()
+      //this.findAdressOrigin()
       this.updatePosition()
       //this.onGetLocationStore(false)
       this.is_disabled_pickup = !this.is_disabled_pickup
@@ -1124,6 +1309,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   isButtonDisabled: boolean = true;
 
   onInputChange(value: any) {
+    
     if(value === ''){
       this.isButtonDisabled = !this.isButtonDisabled
     }

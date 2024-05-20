@@ -59,37 +59,50 @@
             <label for="">Tienda factura</label>
           </div>     
           <div class="p-col-11 float-right">
-            <p-dropdown [options]="storesAvailable"  [(ngModel)]="request_trip.store.id" optionLabel="store.fullName" optionValue="store.id" (onChange)="selectStore($event,input_visible_pickup)"   placeholder="Tienda factura"></p-dropdown> 
+            <p-dropdown [options]="storesAvailable"  [(ngModel)]="request_trip.store.id" 
+            optionLabel="store.fullName" optionValue="store.id" 
+            (onChange)="selectStore($event,input_visible_pickup)"   placeholder="Tienda factura"></p-dropdown> 
           </div>     
         </div>
         <div class="p-col-12">
           <div class="p-ml-5">
             <label for="">Tienda</label>
           </div>
-          <div class="input-origin-content">
+          <div class="input-origin-content" >
             <img src="{{origenIcon}}" class="search-img-origin marker" alt=""/>
-              <!-- <input #search type="text" class="p-inputtext-lg" pInputText id="txtUbicacion_origin"
-                placeholder="¿Dónde lo recogemos?" [(ngModel)]="input_visible_pickup" [disabled]="is_disabled_pickup" required autofocus/> -->
-            
-              <!-- <p-dropdown 
-                class="p-inputtext-lg"
-                [options]="storesAvailable" 
-                [(ngModel)]="selectedStore" 
-                optionLabel="store.fullName"
-                placeholder="¿Dónde lo recogemos?"
-                (onChange)="selectStore()"></p-dropdown> -->
-                <input type="text" pInputText id="txtUbicacion_origin" [disabled]="!request_trip.isCheckedStore" [(ngModel)]="input_visible_pickup"  placeholder="¿Dónde lo recogemos?">
 
-                <!-- <input type="text" pInputText id="txtUbicacion_origin" [(ngModel)]="input_visible_pickup"  placeholder="¿Dónde lo recogemos?"
-                 [typeaheadMinLength]="0" [typeahead]="storesAvailable" [disabled]="!isCheckedStore"
-                typeaheadOptionField="store.fullName"  (typeaheadOnSelect)="selectStore($event,input_visible_pickup)"
-                > -->
+            <!-- <input type="text" pInputText id="txtUbicacion_origin" 
+              [disabled]="!request_trip.isCheckedStore" 
+              [(ngModel)]="input_visible_pickup"  placeholder="¿Dónde lo recogemos?"> -->
             
+            <p-autoComplete 
+            placeholder="¿Dónde lo recogemos?"
+            [(ngModel)]="address" [delay]="1000" 
+            [suggestions]="addresses" (completeMethod)="searchAddress($event)" 
+            (onSelect)="selectPrediction($event)"
+            field="mainText" 
+            [ngStyle]="{'flex-grow': '1', 'width': '100%'}"
+            [forceSelection]="true"
+            [disabled]="!request_trip.isCheckedStore" 
+            >
+    
+            <ng-template let-address pTemplate="item">
+                <div class="autocomplet-items">
+                  <div>
+                    <p class="address-mainText" style="text-wrap: balance;">{{ address.mainText }}</p>
+                    <p class="address-secondText">{{ address.secondText }}</p>
+                  </div>
+                </div>
+            </ng-template>
+    
+            </p-autoComplete>
+
             <div style="padding-left: 5px;">
               <p-checkbox [(ngModel)]="request_trip.isCheckedStore" [binary]="true" inputId="binary" (onChange)="enablePickUpInput()" >                
               </p-checkbox>
             </div>
           </div>
+
         </div>
         <div class="p-col-12" *ngIf="isHiddenInput">
           <div class="input-origin-content">
@@ -170,7 +183,7 @@
               class="search-img-origin marker"
               alt=""
             />
-            <input
+            <!-- <input
               #search
               autocorrect="off" autocapitalize="off" spellcheck="off" 
               type="text"
@@ -182,7 +195,28 @@
               (input)="onInputChange($event.target.value)"
               required
               autofocus
-            />
+            /> -->
+
+            <p-autoComplete 
+            placeholder="¿A dónde lo llevamos?"
+            [(ngModel)]="addressDestination" [delay]="1000" 
+            [suggestions]="addressesDestination" (completeMethod)="searchAddressDestination($event)" 
+            (onSelect)="selectPredictionDestination($event)"
+            field="mainText" 
+            [ngStyle]="{'flex-grow': '1', 'width': '100%'}"
+            [forceSelection]="true"
+            >
+    
+            <ng-template let-address pTemplate="item">
+                <div class="autocomplet-items">
+                  <div>
+                    <p class="address-mainText" style="text-wrap: balance;">{{ address.mainText }}</p>
+                    <p class="address-secondText">{{ address.secondText }}</p>
+                  </div>
+                </div>
+            </ng-template>
+    
+            </p-autoComplete>
           </div>
         </div>
         <div class="p-col-12">
