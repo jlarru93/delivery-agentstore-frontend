@@ -25,10 +25,12 @@ import { DropdownModule } from 'primeng/dropdown';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { CalendarModule } from 'primeng/calendar';
 import { environment } from "src/environments/environment";
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
   imports: [
+    AutoCompleteModule,
     AgmCoreModule.forRoot({
       // please get your own API key here:
       // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en

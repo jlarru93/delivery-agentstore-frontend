@@ -15,7 +15,7 @@ import {
 import { ObjetResponse } from "src/app/models";
 import { environment as env } from "../../../../environments/environment";
 import { ResponseMotorizedOrigin } from "../data/response";
-import { ResponseTrackingMotorized } from "../../order-course/data/response";
+import { AddressSuggestionResponse, ResponseTrackingMotorized } from "../../order-course/data/response";
 @Injectable({
   providedIn: "root",
 })
@@ -76,5 +76,24 @@ export class RequestTripService {
     let path = "/zone/:zoneid/agent/store"
     path = path.replace(':zoneid',store.zoneId)
     return this.http.get<ObjetResponse<ZoneResponse>>(env.url.backEnd_Zone + path)
+  }
+
+  onGetSuggestionAddress(word,storeId){
+    let zone = JSON.parse(localStorage.getItem('zoneResponse'))
+    let request = {
+      word: word,
+      zoneId: zone.id,
+      storeId: storeId
+    }
+    return this.http.post<ObjetResponse<AddressSuggestionResponse[]>>(env.url.util_banckEnd + '/gmap/autoComplete/agent-store',request)
+  }
+
+  onGeoCodeUser(request){
+    return this.http.post<ObjetResponse<any>>(env.url.util_banckEnd + '/gmap/geoCode/agent-store', request)
+  }
+
+  ///gmap/geoCodeInverse/user
+  onGeoCodeInverseUser(request){
+    return this.http.post<ObjetResponse<any>>(env.url.util_banckEnd + '/gmap/geoCodeInverse/agent-store', request)
   }
 }
