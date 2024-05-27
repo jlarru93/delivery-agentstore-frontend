@@ -82,7 +82,7 @@
             (onSelect)="selectPrediction($event)"
             field="mainText" 
             [ngStyle]="{'flex-grow': '1', 'width': '100%'}"
-            [forceSelection]="true"
+        
             [disabled]="!request_trip.isCheckedStore" 
             >
     
@@ -204,7 +204,7 @@
             (onSelect)="selectPredictionDestination($event)"
             field="mainText" 
             [ngStyle]="{'flex-grow': '1', 'width': '100%'}"
-            [forceSelection]="true"
+            
             >
     
             <ng-template let-address pTemplate="item">
