@@ -229,7 +229,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       
       this.onUpdateEditOrder(this.editTripData)
       //this.input_visible_pickup = this.editTripData.addresses[0].addressStreet
-      this.address.mainText = this.editTripData.addresses[0].addressStreet
+      this.address = {
+        mainText: this.editTripData.addresses[0].addressStreet
+      }
       if(!this.editTripData.isCheckedStore){
         this.is_disabled_pickup = true
         this.isHiddenInput = false
@@ -252,6 +254,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
       this.inputVisibleDestino = this.editTripData.addresses[1].addressStreet
       this.input_reference_destination = this.editTripData.addresses[1].reference
+      this.addressDestination = {
+        mainText: this.editTripData.addresses[1].addressStreet
+      }
       
       const matchedCountry = this.countryCodes.find(country => this.editTripData.addresses[1].phone.startsWith(country.dial_code));
       if (matchedCountry) {
@@ -364,7 +369,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       const storeId=store.data.map((sA)=>sA.store_id).join(",")
       this.storeService.onGetLocationStoreService(storeId).subscribe((resp)=>{
         this.storesAvailable=resp.data
-        debugger
+        
         if(this.storesAvailable.length>0){
           if(!this.editTripData){
             this.request_trip.store=this.storesAvailable[0]
