@@ -394,3 +394,8 @@ export interface S3Data {
      */
     Key?: string;
 }
+
+export interface FileWindowsResponse{
+    success:boolean
+    error?:string
+}
