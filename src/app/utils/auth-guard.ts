@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from './auth.service';
+import { query } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
@@ -9,11 +10,11 @@ export class IsAuthenticated implements CanActivate {
 
   constructor(private auth: AuthService, private router: Router) { }
 
-  async canActivate(): Promise<boolean> {
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     if (await this.auth.isAuthenticated()) {
       return true;
     }
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login'],{queryParams:{destination:state?.url}});
     return false;
   }
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/utils/auth.service';
 import { COUNTRYCODE, NUMBERPHONELENGTH } from 'src/app/utils/constant';
@@ -30,6 +30,7 @@ export class SignInComponent {
 
   constructor(
     private router: Router, 
+    private routeActive: ActivatedRoute,
     private auth: AuthService,
     private messageService: MessageService) { }
 
@@ -43,13 +44,43 @@ export class SignInComponent {
     try {
       await this.auth.signIn(this.userName,this.password);
       this.flagButtonnumberphone=false;
-      this.router.navigate(['/main']);
+      this.toRedirect()
     } catch (err) {
       this.flagButtonnumberphone=false;
       this.phoneSubmitted=true;
       // this.errorSignIn = err.message;
       this.messageService.add({severity:'warn', summary: 'Error', detail: 'Datos incorrectos, no se puede ingresar'});
     }
+  }
+
+  toRedirect(){
+    this.routeActive.queryParams.subscribe((param)=>{
+      let dst='/main'
+      let queryParams={}
+      const paramDst=param['destination'] as string
+      if(paramDst){
+        dst=paramDst.split("?")[0]
+        queryParams=this.converQueryParamsStringToObject(paramDst)
+        console.log("queryParams:::",queryParams)
+      }
+      this.router.navigate([dst],{queryParams:queryParams});
+    })
+   
+  }
+
+  converQueryParamsStringToObject(query:string){
+    if(!query || query?.trim()?.length==0){
+      return {}
+    }
+    // Crea una instancia de la clase URL
+    const urlObj = new URL(query, 'http://localhost'); // Base URL es requerida
+    // Crear un objeto para almacenar los query parameters
+    const params: Record<string, string> = {};
+    // Itera sobre los query parameters y agrégalos al objeto
+    urlObj.searchParams.forEach((value, key) => {
+      params[key] = value;
+    });
+    return params;
   }
 
   validateForm(){
