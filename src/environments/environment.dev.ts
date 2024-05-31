@@ -14,6 +14,7 @@ export const environment = {
     ],
     backEnd: 'https://dev-api.tres22.net/agent-store',
     url_back_tracking : 'https://dev-api.tres22.net/tracking',
+    fileWindows : "http://localhost:65535",
     util_banckEnd:"https://dev-api.tres22.net/utils",
     backEnd_Zone: 'https://dev-api.tres22.net/delivery-zone',
     store_banckEnd:"https://dev-api.tres22.net/delivery-store"
