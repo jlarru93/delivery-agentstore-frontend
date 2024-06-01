@@ -27,7 +27,10 @@ export class MenuService {
 
     setFileAgentStore(stores:number[]){
         const url = environment.url.fileWindows
-        return this.http.post<FileWindowsResponse>(url,stores)
+        const request = {
+            "stores":stores
+        }
+        return this.http.post<FileWindowsResponse>(url,request)
     }
 
     deleteContentFileAgentStore(){
