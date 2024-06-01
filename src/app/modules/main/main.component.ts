@@ -30,7 +30,7 @@ import { AceptOrderRequest } from "./service/data/request";
 import { interval } from "rxjs";
 import { AudioService } from "../service/audio.service";
 import { OrderRepository } from "./service/order.repository";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 //import { NgxPrinterService } from "ngx-printer";
 @Component({
     selector: 'app-stores',
@@ -115,7 +115,8 @@ import { Router } from "@angular/router";
       private orderRepository:OrderRepository,
       public audioService:AudioService,
       private ngZone: NgZone,
-      private router: Router
+      private router: Router,
+      private route: ActivatedRoute
       ){
         this.orderRepository.orders.subscribe((order)=>{
           this.orders=order
@@ -149,6 +150,15 @@ import { Router } from "@angular/router";
       this.orderRepository.start()
       this.visibilityChangeCallback = this.handleVisibilityChange.bind(this);
       document.addEventListener('visibilitychange', this.visibilityChangeCallback);
+
+      this.route.queryParams.subscribe(params => {
+        const orderId = +params['order'] || 0; 
+        if (orderId) {
+            this.orderRepository.getOrderById(orderId).subscribe((order: OrderBean) => {
+                this.openOrderDialog(order);
+            });
+        }
+    });
 
       this.idStore= JSON.parse(localStorage.getItem('lstIdStore'))
       this.flagAudio = JSON.parse(localStorage.getItem('audioEnabled'))
@@ -426,7 +436,7 @@ import { Router } from "@angular/router";
       this.displayOrder=true
 
       this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
-
+      this.router.navigate([], { queryParams: { order: this.orderSelected.id }, queryParamsHandling: 'merge' });
       // this.orderService.getOrders().subscribe((resp)=>{
       //   if(this.orderSelected.status == 'inStore'){
       //     this.isButtonEnabled = true;
@@ -459,6 +469,7 @@ import { Router } from "@angular/router";
     onCloseOrderDetail(){
       this.displayOrder = false
       this.flagOpenReceiptDialog = false
+      this.router.navigate([], { queryParams: { order: null }, queryParamsHandling: 'merge' });
     }
 
     onGetMethodType(method: string){

@@ -6,7 +6,7 @@ import { AudioService } from "../../service/audio.service";
 import { MqttService } from "../../service/mqtt.service";
 import { OrderBean } from "../data";
 import { OrderResponse } from "./data/response";
-import { BehaviorSubject, Subject, map } from "rxjs";
+import { BehaviorSubject, Observable, Subject, map } from "rxjs";
 import * as CONSTANTES from "src/app/utils/constant";
 import { DataSharedService } from "../../service/data-shared.service";
 import { AceptOrderRequest } from "./data/request";
@@ -168,6 +168,12 @@ export class OrderRepository{
             //console.log("this.orders.value",this.orders.value)
             this.orders.next(this.orders.value)
         })
+    }
+
+    getOrderById(orderId: number): Observable<OrderBean> {
+        return this.orderService.getOrderById(orderId).pipe(
+            map((resp) => OrderResponse.toBean(resp))
+        );
     }
 
     private setOrderFromStoreHanlder(){
