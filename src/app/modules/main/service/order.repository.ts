@@ -91,7 +91,7 @@ export class OrderRepository{
     }
     uploadStoreSelected(){
         this.dataSharedService.listStore$.subscribe((storeIds)=>{
-            this.getOrder(storeIds)
+            this.getOrder(storeIds+"")
         })
     }
 
@@ -152,21 +152,27 @@ export class OrderRepository{
             }
             if(executeOrder){
                 const storeIds=this.dataSharedService.listStore.value
-                this.getOrder(storeIds)
+                this.getOrder(storeIds+"")
             }
 
         },this.intervalMs)
     }
-    private getOrder(storeIds){
+    private getOrder(storeIds: string){
+        console.log('data type?', storeIds)
         this.orderService.getOrders(storeIds).subscribe((resp)=>{
-            
+            const storeID = storeIds.split(",")
             const orders=resp.data.map((o)=>OrderResponse.toBean(o))
+            
             orders.forEach((o)=>{
                 this.addProcess(o)
             })
             //this.orders.complete()
-            //console.log("this.orders.value",this.orders.value)
-            this.orders.next(this.orders.value)
+
+            //console.log("Puente",this.orders.value)
+            
+            this.orders.next(this.orders.value.filter((o)=> storeID.includes(o.store.id+"")))
+
+            //console.log("Puente y Mega",this.orders.value)
         })
     }
 
