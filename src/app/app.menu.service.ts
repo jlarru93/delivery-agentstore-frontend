@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { ObjetResponse } from './models';
+import { FileWindowsResponse, ObjetResponse } from './models';
 @Injectable()
 export class MenuService {
 
@@ -23,6 +23,19 @@ export class MenuService {
     getStoreByIdAgent(){
        var url=environment.url.backEnd+'/agentStore-store'
        return this.http.get<ObjetResponse<AgentStoreStoreResponse>>(url)
+    }
+
+    setFileAgentStore(stores:number[]){
+        const url = environment.url.fileWindows
+        const request = {
+            "stores":stores
+        }
+        return this.http.post<FileWindowsResponse>(url,request)
+    }
+
+    deleteContentFileAgentStore(){
+        const url = environment.url.fileWindows
+        return this.http.delete<FileWindowsResponse>(url)
     }
 }
 

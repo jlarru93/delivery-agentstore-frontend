@@ -145,6 +145,13 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
 	async logout(){
 		await this.auth.signOut();
         localStorage.clear()
+        try{
+            this.service.deleteContentFileAgentStore().subscribe((resp)=>{
+                if(!resp.success){
+                    console.log("Error en la limpieza del archivo",resp.error)
+                }
+            })
+        }catch(error){}
 		this.router.navigate(['/login']);
 	}
 
@@ -192,6 +199,16 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         /*if(this.selectStore.findIndex((eve)=>eve==id)==-1){
             this.isOpenStore=false
         }*/
+        console.log("ID",id)
+        try{
+            this.service.setFileAgentStore(this.selectStore).subscribe(resp=>{
+                if(!resp.success){
+                    console.log("No se pudo registrar en el archivo",resp.error)
+                }
+            })
+        }
+        catch(error){}
+
         localStorage.setItem('lstIdStore',JSON.stringify(this.selectStore))       
         this.processSubsCribeStore(id) 
     }

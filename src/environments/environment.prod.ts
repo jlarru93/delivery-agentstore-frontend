@@ -17,6 +17,7 @@ export const environment = {
   region: 'us-east-1',
   userPoolId: 'us-east-1_GNlrPkzvB',
   userPoolWebClientId: '4ml3aebd21313gkto8j0ra7clu',
+  fileWindows : "http://127.0.0.1:65535/",
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/prod',
   mqttServer:{

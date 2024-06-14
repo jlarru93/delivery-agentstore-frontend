@@ -5,6 +5,7 @@ import { OrderResponse } from "./data/response";
 import { environment as env } from '../../../../environments/environment'
 import { AceptOrderRequest, CancelOrderRequest } from "./data/request";
 import { CANCEL_ORDER_STATUS, PREPARING_ORDER_STATUS, READY_ORDER_STATUS } from "src/app/utils/constant";
+import { OrderBean } from "../data";
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +17,10 @@ export class OrderService {
       store_ids:id
     });
     return this.http.get<ObjetResponse<OrderResponse[]>>(env.url.backEnd + "/order",{headers:headers})
+  }
+
+  getOrderById(orderId:number){
+    return this.http.get<OrderResponse>(env.url.backEnd + "/order/"+orderId)
   }
 
   aceptOder(orderId:string,readyToDmAt:number){

@@ -13,6 +13,7 @@ export const environment = {
       "https://dev-api.tres22.net/delivery-store"
     ],
     backEnd: 'https://dev-api.tres22.net/agent-store',
+    fileWindows : "http://127.0.0.1:65535/",
     url_back_tracking : 'https://dev-api.tres22.net/tracking',
     util_banckEnd:"https://dev-api.tres22.net/utils",
     store_banckEnd:"https://dev-api.tres22.net/delivery-store",
