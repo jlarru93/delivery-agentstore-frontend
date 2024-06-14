@@ -51,7 +51,8 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         private audioService:AudioService,
         private openStoreHanlder:OpenStoreHandler
 
-    ) {}
+    ) {
+    }
     isWelcomeDialogOpen: boolean = true
     @ViewChild('op') overlayPanel: OverlayPanel;
     ngOnInit(): void {
@@ -86,11 +87,20 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
                 if(this.IdAgent){
                     this.lstAgentStore()
                     if(lstIdStore!=null&&lstIdStore!=undefined&&lstIdStore.length>0){
+                        console.log("AXAXA",lstIdStore)
                         this.selectStore=lstIdStore
                     }else{
                         this.selectStore .push(this.IdAgent.Value)
                     }
                     this.dataShared.updateListStore(this.selectStore)
+                    try{
+                        this.service.setFileAgentStore(this.selectStore).subscribe(resp=>{
+                            if(!resp.success){
+                                console.log("No se pudo registrar en el archivo",resp.error)
+                            }
+                        })
+                    }
+                    catch(error){}
                 }
         })
     }
