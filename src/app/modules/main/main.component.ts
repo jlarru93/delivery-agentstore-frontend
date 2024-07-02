@@ -518,10 +518,10 @@ import { ActivatedRoute, Router } from "@angular/router";
         this.orderRepository.aceptOder(orderRequest.id,orderRequest.readyToDmAt).subscribe((resp)=>{
           this.displayOrder=false
           this.loadingButtonAcept=false
-        },()=>{
-  
+          this.messageService.showSuccess('', 'Operación realizado con exito')
+        },(error)=>{
+          this.messageService.showError('Error', error.error.messages[0].message)
           this.loadingButtonAcept=false
-        },()=>{
         })
       } else {
         if(!this.flagOpenReceiptDialog){
@@ -531,10 +531,10 @@ import { ActivatedRoute, Router } from "@angular/router";
           this.orderRepository.aceptOder(orderRequest.id,orderRequest.readyToDmAt).subscribe((resp)=>{
             this.displayOrder=false
             this.loadingButtonAcept=false
-          },()=>{
-    
+            this.messageService.showSuccess('', 'Operación realizado con exito')
+          },(error)=>{
+            this.messageService.showError('Error', error.error.messages[0].message)
             this.loadingButtonAcept=false
-          },()=>{
           })
         }
       }
@@ -552,10 +552,10 @@ import { ActivatedRoute, Router } from "@angular/router";
       this.orderRepository.readyOder(order.id,body).subscribe((resp)=>{
         this.displayOrder=false
         this.loadingButtonAcept=false
-      },()=>{
-
+        this.messageService.showSuccess('', 'Operación realizado con exito')
+      },(error)=>{
+        this.messageService.showError('Error', error.error.messages[0].message)
         this.loadingButtonAcept=false
-      },()=>{
       })
     }
 
@@ -675,6 +675,7 @@ import { ActivatedRoute, Router } from "@angular/router";
         },
         (error)=>{
           order.isLoadingChat=false
+          this.messageService.showError('Error', error.error.messages[0].message)
         })
     }
     sendMessage(message:ChatBean){
@@ -682,7 +683,9 @@ import { ActivatedRoute, Router } from "@angular/router";
       this.chatService.sendMessage(ChatBean.toRequest(message)).subscribe((resp)=>{
         
       },
-      (error)=>{})
+      (error)=>{
+        this.messageService.showError('Error', error.error.messages[0].message)
+      })
     }
      tiempoReadyToDmAt:string
      ReadyToDmAt:string
