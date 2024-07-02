@@ -334,6 +334,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         this.onClearMap();
         this.updatePositionOrderEdit(item);
       }
+    }, (error) => {
+      this.alert.showError('Error', error.error.messages[0].message)
     });
   }
   updatePositionOrderEdit(select_service: ResponseLoadingOrder) {
@@ -378,6 +380,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         }
         //console.log('resp',resp)
       })
+    },(error) => {
+      this.alert.showError('Error', error.error.messages[0].message)
     })
   }
   selectStore(event:any, flagInit : any,Defauliten:boolean=false){
