@@ -1,5 +1,5 @@
 import { Store } from "src/app/models"
-import { AddressBean, CardBean, CouponsBean, DeliveryManBean, EstimationTimeBean, MethodBean, OptionBean, OrderBean, PaymentBean, PictureBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UserBean } from "../../data"
+import { AddressBean, CardBean, CouponsBean, DeliveryManBean, EstimationTimeBean, MethodBean, OptionBean, OrderBean, PaymentBean, PictureBean, PriceBean, ProductBean, StoreBean, SubOptionAggregable, SubOptionBean, SubOptionMultiple, SubOptionUnique, UnreadMessagesBean, UserBean } from "../../data"
 import { AddressResponseLoadingOrder } from "src/app/modules/request-trip/data/response"
 
 export class StatusOpenStoreResponse {
@@ -353,6 +353,17 @@ export class CouponsResponse{
         bean.code = self.code
         bean.discount = self.discount
         bean.typeDiscount = self.typeDiscount
+        return bean
+    }
+}
+
+export class UnreadMessagesResponse {
+    uuid?: string
+    messagesNoReadTotal?: number
+    static toBean(self?: UnreadMessagesResponse): UnreadMessagesBean {
+        const bean = new UnreadMessagesBean()
+        bean.uuid = self.uuid
+        bean.messagesNoReadTotal = self.messagesNoReadTotal
         return bean
     }
 }

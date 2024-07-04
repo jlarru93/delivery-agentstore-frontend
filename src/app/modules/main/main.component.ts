@@ -5,7 +5,7 @@ import { ProductService } from "src/app/demo/service/productservice";
 import { OrderHandler } from "../service/handlers/order.handler";
 //import { MqttService } from "../service/mqtt.service";
 import { OrderService } from "./service/order.service";
-import { OrderResponse } from "./service/data/response";
+import { OrderResponse, UnreadMessagesResponse } from "./service/data/response";
 import { OrderBean, PaymentBean } from "./data";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { OrderDialogComponent } from "./dialog/orderDialog.component";
@@ -94,13 +94,13 @@ import { ActivatedRoute, Router } from "@angular/router";
     interval_active_color?: any
 
     isInitRequest:boolean=true
-
+    ordersWithUnreadMessages: any
     private visibilityChangeCallback: () => void;
 
     constructor(
       public dialogService: DialogService,
       private productService: ProductService,
-      //private orderService:OrderService,
+      private orderService:OrderService,
       //private mqtt:MqttService,
       //private orderHandler:OrderHandler,
       //private storeHandler:StoreHandler,
@@ -125,6 +125,25 @@ import { ActivatedRoute, Router } from "@angular/router";
             if (!this.audioService.audioAlreadyPlayed) {
                 this.audioService.audioAlreadyPlayed = true;
                 this.audioService.stopAudio()
+                if(this.orders){
+                  
+                  let requestBody = {
+                    orderUuids: this.orders.map(order => order.uuid)
+                  }
+                  this.orderService.onGetUnreadMessages(requestBody).subscribe(
+                    (resp) => {
+                      this.ordersWithUnreadMessages = resp.data.map((um) => UnreadMessagesResponse.toBean(um))
+                      this.onUpdateUnreadMessages(this.ordersOpen);
+                      this.onUpdateUnreadMessages(this.ordersPreparing);
+                      this.onUpdateUnreadMessages(this.ordersReady);
+                      this.onUpdateUnreadMessages(this.ordersInRoute);
+                      this.onUpdateUnreadMessages(this.ordersFinis);
+                    },
+                    (error) => {
+                      this.messageService.showError('Error', error.error.messages[0].message)
+                    }
+                  )
+                }
             } else {
               
               this.router.navigateByUrl('/')
@@ -162,7 +181,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 
       this.idStore= JSON.parse(localStorage.getItem('lstIdStore'))
       this.flagAudio = JSON.parse(localStorage.getItem('audioEnabled'))
-      this.messageService.showSuccess( 'Success',  'Message Content');
+      //this.messageService.showSuccess( 'Success',  'Message Content');
       
       //this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
       //if(this.idStore)
@@ -188,6 +207,18 @@ import { ActivatedRoute, Router } from "@angular/router";
       this.interval_active_color = setInterval(() => {
         this.cambiarColor()
       }, 1000)
+
+      
+      
+    }
+
+    onUpdateUnreadMessages(orders: any[]){
+      for (let order of orders) {
+        let matchingResponse = this.ordersWithUnreadMessages.find((item) => item.uuid === order.uuid);
+        if (matchingResponse) {
+          order.messagesNoReadTotal = matchingResponse.messagesNoReadTotal;
+        }
+      }
     }
 
     handleVisibilityChange(): void {

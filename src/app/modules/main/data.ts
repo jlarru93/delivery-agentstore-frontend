@@ -154,6 +154,11 @@ export class CouponsBean{
     typeDiscount?: string
 }
 
+export class UnreadMessagesBean{
+    uuid?: string
+    messagesNoReadTotal?: number
+}
+
 export class OrderBean {
     id?: number
     uuid?: string

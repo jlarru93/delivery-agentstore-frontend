@@ -1,11 +1,12 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ObjetResponse } from "../../../models";
-import { OrderResponse } from "./data/response";
+import { OrderResponse, UnreadMessagesResponse } from "./data/response";
 import { environment as env } from '../../../../environments/environment'
 import { AceptOrderRequest, CancelOrderRequest } from "./data/request";
 import { CANCEL_ORDER_STATUS, PREPARING_ORDER_STATUS, READY_ORDER_STATUS } from "src/app/utils/constant";
 import { OrderBean } from "../data";
+import { url } from "inspector";
 @Injectable({
   providedIn: 'root'
 })
@@ -57,4 +58,9 @@ export class OrderService {
     return this.http.put<ObjetResponse<OrderResponse>>(url,json)
   }
 
+  // /chat/message/NoReadTotal/agentstore
+  onGetUnreadMessages(request){
+    let path = '/chat/message/NoReadTotal/agentstore'
+    return this.http.post<ObjetResponse<UnreadMessagesResponse[]>>(env.url.util_banckEnd + path, request)
+  }
 }
