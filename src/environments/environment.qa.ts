@@ -22,8 +22,27 @@ export const environment = {
    
   },
   region: 'us-east-2',
-  userPoolId: 'us-east-2_bq5gZkIZ7',
+  //userPoolId: 'us-east-2_bq5gZkIZ7',
   userPoolWebClientId: '2l4qjgigviuct4drm88ev16r3o',
+  awsConfig:{
+    region: 'us-east-2',
+    cognito:{
+      userPoolId: 'us-east-2_bq5gZkIZ7', //process.env.USERPOOLID_ADMIN_STORE
+      cookieStorage:{
+        // - Cookie domain (only required if cookieStorage is provided)
+        domain: '.tres22.net',
+        // (optional) - Cookie path
+        path: '/',
+        // (optional) - Cookie expiration in days
+        expires: 365,
+        // (optional) - See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+        sameSite: 'strict',
+        // (optional) - Cookie secure flag
+        // Either true or false, indicating if the cookie transmission requires a secure protocol (https).
+        secure: true
+      }
+    }
+  },
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/dev',
   mqttServer:{
