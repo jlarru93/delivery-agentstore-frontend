@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-dynamic-report',
@@ -14,7 +15,7 @@ export class DynamicReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.url = this.sanitizer.bypassSecurityTrustResourceUrl(
-      "http://localhost:4202/"
+      `http://localhost:4202/#?userPoolId=${environment.awsConfig.cognito.userPoolId}&userPoolWebClientId=${environment.userPoolWebClientId}`
     )
   }
 
