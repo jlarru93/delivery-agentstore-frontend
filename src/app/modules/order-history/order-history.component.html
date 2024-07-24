@@ -7,7 +7,7 @@
             <div class="p-col-12 p-md-6 p-lg-6">
                 <label for="">Número de orden</label>
                  <!-- <input type="number" pInputText [(ngModel)]="orderHistoryId"> -->
-                 <p-inputNumber [(ngModel)]="orderHistoryId" [min]="0" (keyup.enter)="GetOrderHistories(orderHistoryId, statusOrder)"></p-inputNumber>
+                 <p-inputNumber [(ngModel)]="orderHistoryId" [min]="0" [useGrouping]="false" (keyup.enter)="GetOrderHistories(orderHistoryId, statusOrder)"></p-inputNumber>
             </div>
             <div class="p-col-12 p-md-6 p-lg-6">
                 <label for="">Estado</label>
