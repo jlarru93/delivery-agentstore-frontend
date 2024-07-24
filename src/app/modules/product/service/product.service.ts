@@ -19,11 +19,11 @@ import { ProductStockRequest } from "./data/request";
     }
 
     deleteProduct(bodyRequest){
-      let path = "/store/:storeId/product/:productId/outStock"
+      let path = "/store/:storeId/product/:productId/outStock/agent-store"
       path = path.replace(":storeId", bodyRequest.storeId)
       path = path.replace(":productId", bodyRequest.productId)
       const body={isOutStock: bodyRequest.status} as ProductStockRequest
-      return this.http.put<ObjetResponse<any>>(env.url.backEnd + path, body)
+      return this.http.put<ObjetResponse<any>>(env.url.store_banckEnd + path, body)
     }
 
     
