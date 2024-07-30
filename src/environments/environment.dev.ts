@@ -19,9 +19,29 @@ export const environment = {
     backEnd_Zone: 'https://dev-api.tres22.net/delivery-zone',
     store_banckEnd:"https://dev-api.tres22.net/delivery-store"
   },
+  microFronted:'https://dev-micro-report.tres22.net/#/',
   region: 'us-west-1',
-  userPoolId: 'us-west-1_4xM3rA9gH',
+  //userPoolId: 'us-west-1_4xM3rA9gH',
   userPoolWebClientId: '2ai45jc047fbj9gbo9apju2e6l',
+  awsConfig:{
+    region: 'us-west-1',
+    cognito:{
+      userPoolId: 'uus-west-1_4xM3rA9gH',
+      cookieStorage:{
+        // - Cookie domain (only required if cookieStorage is provided)
+        domain: '.tres22.net',
+        // (optional) - Cookie path
+        path: '/',
+        // (optional) - Cookie expiration in days
+        expires: 365,
+        // (optional) - See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+        sameSite: 'strict',
+        // (optional) - Cookie secure flag
+        // Either true or false, indicating if the cookie transmission requires a secure protocol (https).
+        secure: true
+      }
+    }
+  },
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/dev',
   mqttServer:{

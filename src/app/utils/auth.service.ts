@@ -74,14 +74,14 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
     public isAllAuthenticated():boolean{
       this.dataToken="";
       const nameToken = this.initNameToken + this.getNameTokenId() + '.idToken';
-      this.dataToken = localStorage.getItem(nameToken);
+      this.dataToken = this.getCookieValue(nameToken) || '';
 
 
       if(this.dataToken != null){
-        const decode = jwt_decode(this.dataToken) as any
-        const tokenExpire=Number(decode.exp as string)
-        const now=Number(new Date().getTime().toString().substring(0,10))
-        return tokenExpire>now
+        const decode = jwt_decode(this.dataToken) as any;
+        const tokenExpire=Number(decode.exp as string);
+        const now=Number(new Date().getTime().toString().substring(0,10));
+        return tokenExpire>now;
       }else{
         return false;
       }
@@ -97,16 +97,20 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
     getAutorizationToken(){
       this.dataToken="";
       const nameToken = this.initNameToken + this.getNameTokenId() + '.idToken';
-      this.dataToken = localStorage.getItem(nameToken);
-       //console.log("TOKEN" , this.dataToken)
-      return localStorage.getItem(nameToken);
+      this.dataToken = this.getCookieValue(nameToken);
+      return this.getCookieValue(nameToken);
+    }
+
+    getUserDataToken(){const nameToken = this.initNameToken + this.getNameTokenId() + '.userData';
+      return nameToken
     }
 
     getNameTokenId(){
 
       let nameTokenid = this.initNameToken + 'LastAuthUser';
 
-     return localStorage.getItem(nameTokenid);
+      const nameTokenId=this.getCookieValue(nameTokenid)
+      return nameTokenId
 
     }
 
@@ -145,6 +149,10 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
           console.log('Error al actualizar el token:', error);
         }
       }
+    }
+
+    getCookieValue(name:string) {
+      return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
     }
   }
   

@@ -11,8 +11,9 @@ if (environment.production) {
 Amplify.configure({
   Auth: {
     region: environment.region,
-    userPoolId: environment.userPoolId,
+    userPoolId: environment.awsConfig.cognito.userPoolId,
     userPoolWebClientId: environment.userPoolWebClientId,
+    cookieStorage: environment.awsConfig.cognito.cookieStorage
   }
 });
 platformBrowserDynamic().bootstrapModule(AppModule)
