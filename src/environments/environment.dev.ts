@@ -26,7 +26,7 @@ export const environment = {
   awsConfig:{
     region: 'us-west-1',
     cognito:{
-      userPoolId: 'uus-west-1_4xM3rA9gH',
+      userPoolId: 'us-west-1_4xM3rA9gH',
       cookieStorage:{
         // - Cookie domain (only required if cookieStorage is provided)
         domain: '.tres22.net',
