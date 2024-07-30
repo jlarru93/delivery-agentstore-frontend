@@ -23,7 +23,7 @@ export class RequestTripService {
   constructor(private http: HttpClient) {}
 
   onSaveOrderService(request: RequestTrip) {
-    let path = "/order-trip";
+    let path = "/order-trip/agent-store";
     return this.http.post<ObjetResponse<ResponseTrip>>(
       env.url.backEnd + path,
       request
@@ -31,7 +31,7 @@ export class RequestTripService {
   }
 
   onUpdateOrderService(request: RequestTrip){
-    let path = "/order-trip/:uuid"
+    let path = "/order-trip/:uuid/agent-store"
     path = path.replace(':uuid', request.uuid)
     return this.http.put<ObjetResponse<ResponseTrip>>(
       env.url.backEnd + path, request
@@ -46,20 +46,20 @@ export class RequestTripService {
     );
   }
   onLoadingMotorizedService() {
-    let path = "/order-trip";
+    let path = "/order-trip/agent-store";
     return this.http.get<ObjetResponse<ResponseLoadingOrder[]>>(
       env.url.backEnd + path
     );
   }
   onGetPaymentOrderService(request: RequestOrderPayment) {
-    let path = "/order-trip/delivery/price";
+    let path = "/order-trip/delivery/price/agent-store";
     return this.http.post<ObjetResponse<ResponseOrderPayment>>(
       env.url.backEnd + path,
       request
     );
   }
   onCancelOrderService(id: string) {
-    let path = "/order-trip/:id/cancel";
+    let path = "/order-trip/:id/cancel/agent-store";
     return this.http.delete<ObjetResponse<ResponseOrderPayment>>(
       env.url.backEnd + path.replace(":id", id.toString())
     );
