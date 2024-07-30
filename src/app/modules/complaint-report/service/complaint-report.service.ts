@@ -14,7 +14,7 @@ export class ComplaintReportService {
   ) { }
 
   getOrderComplaints(){
-    return this.http.get<ObjetResponse<OrderResponse>>(env.url.backEnd+"/complaints")
+    return this.http.get<ObjetResponse<OrderResponse>>(env.url.backEnd+"/complaints/agent-store")
   }
 
   updateComplaintStatus(complaintUuid: string, bodyStatus: any){

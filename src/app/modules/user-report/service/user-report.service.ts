@@ -19,7 +19,7 @@ export class UserReportService {
       size:pagination.size.toString(),
       page:pagination.page.toString()
     });
-    return this.http.post<ObjetResponse<UserReportResponse[]>>(env.url.backEnd+"/user",request, {headers: headers});
+    return this.http.post<ObjetResponse<UserReportResponse[]>>(env.url.backEnd+"/user/agent-store",request, {headers: headers});
   }
 
   //https://dev-api.delivery-app.net/agent-store/user/{user_id}/address
