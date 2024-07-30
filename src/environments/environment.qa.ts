@@ -21,6 +21,7 @@ export const environment = {
     //util_dev : "https://nkdqe8xd51.execute-api.us-east-1.amazonaws.com/dev"
    
   },
+  microFronted:'https://dev-micro-report.tres22.net/#/',
   region: 'us-east-2',
   //userPoolId: 'us-east-2_bq5gZkIZ7',
   userPoolWebClientId: '2l4qjgigviuct4drm88ev16r3o',

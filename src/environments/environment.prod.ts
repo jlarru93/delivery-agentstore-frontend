@@ -15,6 +15,7 @@ export const environment = {
     backEnd_Zone: 'https://api.tres22.net/delivery-zone',
     store_banckEnd:"https://api.tres22.net/delivery-store"
   },
+  microFronted:'https://dev-micro-report.tres22.net/#/',
   region: 'us-east-1',
   //userPoolId: 'us-east-1_GNlrPkzvB',
   userPoolWebClientId: '4ml3aebd21313gkto8j0ra7clu',
