@@ -49,6 +49,7 @@ export class Point {
     productPrice?:number
     isOrderCalendar?:boolean = false
     isCheckedStore:boolean
+    type?:string
     store:StoreRequest = new StoreRequest()
     constructor(){
       this.addresses= [new Address,new Address]

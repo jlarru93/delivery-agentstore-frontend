@@ -10,8 +10,10 @@ export const environment = {
       'https://qa-api.tres22.net/tracking',
       "https://qa-api.tres22.net/utils",
       'https://qa-api.tres22.net/delivery-zone',
-      'https://qa-api.tres22.net/delivery-store'
+      'https://qa-api.tres22.net/delivery-store',
+      'https://dev-api.tres22.net/delivery-order'
     ],
+    backendOrder: 'https://dev-api.tres22.net/delivery-order',
     backEnd: 'https://qa-api.tres22.net/agent-store',
     url_back_tracking : 'https://qa-api.tres22.net/tracking',
     util_banckEnd:"https://qa-api.tres22.net/utils",
@@ -140,6 +142,30 @@ export const environment = {
     thousandsSeparator: '.',
     decimalPlaces: 0
   },
+  STATUS_COMPLAINT_OPEN : 'open',
+  STATUS_COMPLAINT_IN_PROCESS : 'inProcess',
+  STATUS_COMPLAINT_DONE : 'done',
+  STATUS_COMPLAINT_REJECT : 'reject',
+  STATUS_COMPLAINT_RE_OPEN : 'reOpen',
+  STATUS_COMPLAINT_RE_PROCESS : 'reProcess',
+  STATUS_COMPLAINT_RE_REJECT : 'reReject',
+// TYPE
+  STATUS_TYPE_ORDER : 'ORDER',
+  STATUS_TYPE_DELIVERYMAN : 'DELIVERYMAN',
+  STATUS_WORK_DM_DISABLED : 'disabled',
+  STATUS_WORK_DM_WAIT : 'waiting',
+  STATUS_WORK_DM_IN_ORDER : 'inOrder',
+  STATUS_WORK_DM_MINUTES_TO_BE_ACTIVE : 10,
+  TYPE_ORDER_SENDANDRECIVE : "SendAndReciveStore",
+//typeOrder
+  TYPE_ORDER_SEND_AND_RECIVE_ORDER : 'SendAndReciveStore',
+  TYPE_ORDER_TRADITIONAL : 'traditional',
+  TYPE_ORDER_SEND_AND_RECIVE_USER : 'SendAndReciveUser',
+  STATUSORDER_CANCEL : 'cancel',
+  STATUSORDER_OPEN : 'open',
+  STATUSORDER_DONE : 'done',
+  STATUSORDER_PENDING_PAYMENT : 'pendingPayment',
+  STATUSORDER_REJECT_PAYMENT : 'rejectPayment'
 };
 
 /*
