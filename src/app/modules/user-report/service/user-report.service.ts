@@ -24,6 +24,6 @@ export class UserReportService {
 
   //https://dev-api.delivery-app.net/agent-store/user/{user_id}/address
   getUsersDirection(user_id: number){
-    return this.http.get<ObjetResponse<any>>(env.url.backEnd + '/user/' + user_id + '/address')
+    return this.http.get<ObjetResponse<any>>(env.url.backEnd + '/user/' + user_id + '/address/agent-store')
   }
 }
