@@ -6,8 +6,12 @@ export const environment = {
       'https://api.tres22.net/tracking',
       "https://api.tres22.net/utils",
       'https://api.tres22.net/delivery-zone',
-      'https://api.tres22.net/delivery-store'
+      'https://api.tres22.net/delivery-store',
+      'https://api.tres22.net/delivery-order',
+      'https://api.tres22.net/user'
     ],
+    backEndUser: 'https://api.tres22.net/user',
+    backendOrder: 'https://api.tres22.net/delivery-order',
     backEnd: 'https://api.tres22.net/agent-store',
     url_back_tracking : 'https://api.tres22.net/tracking',
     fileWindows : "http://127.0.0.1:65535/",

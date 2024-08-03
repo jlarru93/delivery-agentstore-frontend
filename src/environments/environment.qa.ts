@@ -11,8 +11,10 @@ export const environment = {
       "https://qa-api.tres22.net/utils",
       'https://qa-api.tres22.net/delivery-zone',
       'https://qa-api.tres22.net/delivery-store',
-      'https://dev-api.tres22.net/delivery-order'
+      'https://dev-api.tres22.net/delivery-order',
+      'https://dev-api.tres22.net/user'
     ],
+    backEndUser: 'https://dev-api.tres22.net/user',
     backendOrder: 'https://dev-api.tres22.net/delivery-order',
     backEnd: 'https://qa-api.tres22.net/agent-store',
     url_back_tracking : 'https://qa-api.tres22.net/tracking',
