@@ -11,8 +11,10 @@ export const environment = {
       "https://dev-api.tres22.net/utils",
       'https://dev-api.tres22.net/delivery-zone',
       "https://dev-api.tres22.net/delivery-store",
-      'https://dev-api.tres22.net/delivery-order'
+      'https://dev-api.tres22.net/delivery-order',
+      'https://dev-api.tres22.net/user'
     ],
+    backEndUser: 'https://dev-api.tres22.net/user',
     backendOrder: 'https://dev-api.tres22.net/delivery-order',
     backEnd: 'https://dev-api.tres22.net/agent-store',
     fileWindows : "http://127.0.0.1:65535/",

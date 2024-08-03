@@ -15,7 +15,7 @@ import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 export class UserReportComponent implements OnInit {
 
   pagination: Pagination = { page: 1, size: 10, totalRecords: 0, totalNumberPages: 0 }
-
+  paginationDirection : Pagination = { page: 1, size: 200, totalRecords: 0, totalNumberPages: 0 }
   countryCodes: CountryCode[] = CountryCodes;
   selectCountryCode: CountryCode = CountryCodes.find(country => country.dial_code == environment.countryDial);
 
@@ -72,7 +72,7 @@ export class UserReportComponent implements OnInit {
   loadingResults2: boolean = false
   onGetUserDirection(numberId: number){
     this.loadingResults2 = true
-    this.userReportService.getUsersDirection(numberId).subscribe(
+    this.userReportService.getUsersDirection(numberId, this.paginationDirection).subscribe(
       (resp) => {
         this.userDirections = resp.data
         this.loadingResults2 = false
