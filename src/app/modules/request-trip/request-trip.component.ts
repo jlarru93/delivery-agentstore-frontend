@@ -1051,6 +1051,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     };
     
     order.uuid_price=this.uuid_price
+    order.type = "SendAndReciveStore"
     let fechaActual = Date.now()
     order.readyToDmAt = Number((fechaActual += this.request_trip.readyToDmAt *60 *1000).toString().substring(0,10));
     order.description = this.request_trip.description;
@@ -1115,7 +1116,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10))
       
     }
-    this.requestTripService.onSaveOrderService(order).subscribe((data) => {
+    this.requestTripService.onSaveOrderService(order,localStorage.getItem('zoneId')).subscribe((data) => {
         this.ref = this.dialogService.open(LoadingMotorizedComponent, {
           header: "Repartidor",
           data: {

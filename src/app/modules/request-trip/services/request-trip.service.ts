@@ -22,10 +22,9 @@ import { AddressSuggestionResponse, ResponseTrackingMotorized } from "../../orde
 export class RequestTripService {
   constructor(private http: HttpClient) {}
 
-  onSaveOrderService(request: RequestTrip) {
-    let path = "/order-trip/agent-store";
+  onSaveOrderService(request: RequestTrip,zoneId:string) {
     return this.http.post<ObjetResponse<ResponseTrip>>(
-      env.url.backEnd + path,
+      env.url.backendOrder + "/order/zone/"+Number(zoneId)+"/agent-store",
       request
     );
   }
@@ -46,9 +45,16 @@ export class RequestTripService {
     );
   }
   onLoadingMotorizedService() {
-    let path = "/order-trip/agent-store";
-    return this.http.get<ObjetResponse<ResponseLoadingOrder[]>>(
-      env.url.backEnd + path
+    const request = {
+      "filters":[
+          {"field":"type","value":[env.TYPE_ORDER_TRADITIONAL,env.TYPE_ORDER_SEND_AND_RECIVE_ORDER], "condition": "in"},
+          {"field":"status","value":[env.STATUS_COMPLAINT_OPEN,env.STATUS_COMPLAINT_DONE, env.STATUSORDER_CANCEL, env.STATUSORDER_PENDING_PAYMENT, env.STATUSORDER_REJECT_PAYMENT], "condition":"nin"},
+          {"field":"isSelfManaged","value":true,"condition":"nin"},
+          {"field":"isPickUpStore","value":true,"condition":"nin"}
+      ]
+  }
+    return this.http.post<ObjetResponse<ResponseLoadingOrder[]>>(
+      env.url.backendOrder + "/order/filterV2/agent-store",request
     );
   }
   onGetPaymentOrderService(request: RequestOrderPayment) {

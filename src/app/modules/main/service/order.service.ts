@@ -17,7 +17,7 @@ export class OrderService {
     let headers: HttpHeaders = new HttpHeaders({
       store_ids:id
     });
-    return this.http.get<ObjetResponse<OrderResponse[]>>(env.url.backEnd + "/order/agent-store",{headers:headers})
+    return this.http.get<ObjetResponse<OrderResponse[]>>(env.url.backendOrder + "/order/operation/store/agent-store",{headers:headers})
   }
 
   getOrderById(orderId:number){
