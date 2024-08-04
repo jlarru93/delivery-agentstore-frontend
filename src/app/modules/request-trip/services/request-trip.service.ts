@@ -48,12 +48,12 @@ export class RequestTripService {
     const request = {
       "filters":[
           {"field":"type","value":[env.TYPE_ORDER_TRADITIONAL,env.TYPE_ORDER_SEND_AND_RECIVE_ORDER], "condition": "in"},
-          {"field":"status","value":[env.STATUS_COMPLAINT_OPEN,env.STATUS_COMPLAINT_DONE, env.STATUSORDER_CANCEL, env.STATUSORDER_PENDING_PAYMENT, env.STATUSORDER_REJECT_PAYMENT], "condition":"nin"},
+          {"field":"status","value":[env.STATUS_COMPLAINT_DONE, env.STATUSORDER_CANCEL, env.STATUSORDER_PENDING_PAYMENT, env.STATUSORDER_REJECT_PAYMENT], "condition":"nin"},
           {"field":"isSelfManaged","value":true,"condition":"nin"},
           {"field":"isPickUpStore","value":true,"condition":"nin"}
       ]
   }
-    return this.http.post<ObjetResponse<ResponseLoadingOrder[]>>(
+  return this.http.post<ObjetResponse<ResponseLoadingOrder[]>>(
       env.url.backendOrder + "/order/filterV2/agent-store",request
     );
   }
@@ -65,9 +65,12 @@ export class RequestTripService {
     );
   }
   onCancelOrderService(id: string) {
-    let path = "/order-trip/:id/cancel/agent-store";
-    return this.http.delete<ObjetResponse<ResponseOrderPayment>>(
-      env.url.backEnd + path.replace(":id", id.toString())
+    let path = "/order/:id/cancel/agent-store";
+    const request = {
+      reason: "cancelada por el agente"
+    }
+    return this.http.put<ObjetResponse<ResponseOrderPayment>>(
+      env.url.backendOrder + path.replace(":id", id.toString()),request
     );
   }
   onViewTrackingMotorizedService(uuid: string) {
