@@ -58,9 +58,9 @@ export class RequestTripService {
     );
   }
   onGetPaymentOrderService(request: RequestOrderPayment) {
-    let path = "/order-trip/delivery/price/agent-store";
+    let path = "/order/delivery/price/agent-store";
     return this.http.post<ObjetResponse<ResponseOrderPayment>>(
-      env.url.backEnd + path,
+      env.url.backendOrder + path,
       request
     );
   }
