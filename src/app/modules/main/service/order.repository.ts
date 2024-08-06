@@ -111,7 +111,7 @@ export class OrderRepository{
         }))
     }
 
-    updateStatus(id: number, json: { status: string; }) {
+    updateStatus(id: string, json: { uuid:string,status: string; }) {
         return this.orderService.updateStatus(id,json).pipe(map((resp)=>{
             const order=OrderResponse.toBean(resp.data)
             this.addProcess(order)

@@ -54,7 +54,7 @@ export class OrderService {
   }
 
   updateStatus(id:any,json:any){
-    var url = env.url.backendOrder+`/order/${id}/status/agent-store`
+    var url = env.url.backendOrder+`/order/${id}/statusOrder/agent-store`
     return this.http.put<ObjetResponse<OrderResponse>>(url,json)
   }
 

@@ -837,9 +837,10 @@ import { ActivatedRoute, Router } from "@angular/router";
   finishOrder(item: OrderBean){
     this.isFinishOrderLoading = true
     var json={
-      status:"done"
+      status:"done",
+      uuid:item.uuid
     }
-    this.orderRepository.updateStatus(item.id,json).subscribe((respons)=>{
+    this.orderRepository.updateStatus(item.uuid,json).subscribe((respons)=>{
       console.log(respons)
       setTimeout(() => {
         this.displayOrder = false
