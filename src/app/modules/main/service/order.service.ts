@@ -27,7 +27,7 @@ export class OrderService {
   aceptOder(orderId:string,readyToDmAt:number){
     let path="/order/:orderId/statusOrder/agent-store"
     path=path.replace(":orderId",orderId)
-    const body={uuid:orderId,status:PREPARING_ORDER_STATUS,readyToDmAt:readyToDmAt} as AceptOrderRequest
+    const body={uuid:orderId,status:PREPARING_ORDER_STATUS,readyToDmMinutesAt:readyToDmAt} as AceptOrderRequest
     return this.http.put<ObjetResponse<OrderResponse>>(env.url.backendOrder + path,body)
   }
 
