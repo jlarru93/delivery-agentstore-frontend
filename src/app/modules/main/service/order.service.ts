@@ -21,26 +21,26 @@ export class OrderService {
   }
 
   getOrderById(orderId:number){
-    return this.http.get<OrderResponse>(env.url.backEnd + "/order/"+orderId)
+    //return this.http.get<OrderResponse>(env.url.backEnd + "/order/"+orderId)
   }
 
   aceptOder(orderId:string,readyToDmAt:number){
-    let path="/order/:orderId/status/agent-store"
+    let path="/order/:orderId/statusOrder/agent-store"
     path=path.replace(":orderId",orderId)
-    const body={status:PREPARING_ORDER_STATUS,readyToDmAt:readyToDmAt} as AceptOrderRequest
+    const body={uuid:orderId,status:PREPARING_ORDER_STATUS,readyToDmAt:readyToDmAt} as AceptOrderRequest
     return this.http.put<ObjetResponse<OrderResponse>>(env.url.backendOrder + path,body)
   }
 
   readyOder(orderId:string,body:any){
-    let path="/order/:orderId/status/agent-store"
+    let path="/order/:orderId/statusOrder/agent-store"
     path=path.replace(":orderId",orderId)    
-    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backEnd + path,body)
+    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backendOrder + path,body)
   }
 
-  cancelOrder(orderId: number, cancellation: string){
-    let path="/order/:orderId/status/agent-store"
+  cancelOrder(orderId: string, cancellation: string){
+    let path="/order/:orderId/statusOrder/agent-store"
     path=path.replace(":orderId",""+orderId)
-    const body = {status: CANCEL_ORDER_STATUS, comment: cancellation} as CancelOrderRequest
+    const body = {uuid:orderId,status: CANCEL_ORDER_STATUS, comment: cancellation} as CancelOrderRequest
     return this.http.put<ObjetResponse<OrderResponse>>(env.url.backendOrder + path,body)
   }
   updateReadyToDm(data:any){

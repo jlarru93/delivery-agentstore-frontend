@@ -67,7 +67,7 @@ export class OrderRepository{
           })
     }
     
-    cancelOrder(id:number,comment:string){
+    cancelOrder(id:string,comment:string){
         return this.orderService.cancelOrder(id,comment).pipe(map((resp)=>{
             const orderCancel=OrderResponse.toBean(resp.data)
             const orders=this.orders.value.filter(o=>o.id!=resp.data.id)
@@ -75,14 +75,14 @@ export class OrderRepository{
             return orderCancel
         }))
     }
-    aceptOder(id: number, readyToDmAt: number) {
+    aceptOder(id: string, readyToDmAt: number) {
         return this.orderService.aceptOder(id+"",readyToDmAt).pipe(map((resp)=>{
             const order=OrderResponse.toBean(resp.data)
             this.addProcess(order)
             this.orders.next(this.orders.value)
         }))
     }
-    readyOder(id: number, body: AceptOrderRequest) {
+    readyOder(id: string, body: AceptOrderRequest) {
         return this.orderService.readyOder(id+"",body).pipe(map((resp)=>{
             const order=OrderResponse.toBean(resp.data)
             this.addProcess(order)
@@ -177,10 +177,10 @@ export class OrderRepository{
         })
     }
 
-    getOrderById(orderId: number): Observable<OrderBean> {
-        return this.orderService.getOrderById(orderId).pipe(
-            map((resp) => OrderResponse.toBean(resp))
-        );
+    getOrderById(orderId: number) {
+        // return this.orderService.getOrderById(orderId).pipe(
+        //     map((resp) => OrderResponse.toBean(resp))
+        // );
     }
 
     private setOrderFromStoreHanlder(){
