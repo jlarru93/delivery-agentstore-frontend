@@ -30,10 +30,10 @@ export class RequestTripService {
   }
 
   onUpdateOrderService(request: RequestTrip){
-    let path = "/order-trip/:uuid/agent-store"
+    let path = "/order/:uuid/agent-store"
     path = path.replace(':uuid', request.uuid)
     return this.http.put<ObjetResponse<ResponseTrip>>(
-      env.url.backEnd + path, request
+      env.url.backendOrder + path, request
     )
   }
 
