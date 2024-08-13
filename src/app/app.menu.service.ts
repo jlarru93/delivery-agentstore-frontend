@@ -21,7 +21,7 @@ export class MenuService {
     }
     
     getStoreByIdAgent(){
-       var url=environment.url.backEnd+'/agentStore-store'
+       var url=environment.url.backEnd+'/agentStore-store/agent-store'
        return this.http.get<ObjetResponse<AgentStoreStoreResponse>>(url)
     }
 

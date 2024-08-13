@@ -3,9 +3,11 @@ export class OpenStoreRequest{
     status: boolean;
 }
 export class AceptOrderRequest{
+    uuid:string
     status:string
 }
 export class CancelOrderRequest{
     status:string
+    uuid:string
     comment:string
 }

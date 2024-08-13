@@ -17,44 +17,44 @@ export class OrderService {
     let headers: HttpHeaders = new HttpHeaders({
       store_ids:id
     });
-    return this.http.get<ObjetResponse<OrderResponse[]>>(env.url.backEnd + "/order",{headers:headers})
+    return this.http.get<ObjetResponse<OrderResponse[]>>(env.url.backendOrder + "/order/operation/store/agent-store",{headers:headers})
   }
 
   getOrderById(orderId:number){
-    return this.http.get<OrderResponse>(env.url.backEnd + "/order/"+orderId)
+    //return this.http.get<OrderResponse>(env.url.backEnd + "/order/"+orderId)
   }
 
   aceptOder(orderId:string,readyToDmAt:number){
-    let path="/order/:orderId/status"
+    let path="/order/:orderId/statusOrder/agent-store"
     path=path.replace(":orderId",orderId)
-    const body={status:PREPARING_ORDER_STATUS,readyToDmAt:readyToDmAt} as AceptOrderRequest
-    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backEnd + path,body)
+    const body={uuid:orderId,status:PREPARING_ORDER_STATUS,readyToDmMinutesAt:readyToDmAt} as AceptOrderRequest
+    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backendOrder + path,body)
   }
 
   readyOder(orderId:string,body:any){
-    let path="/order/:orderId/status"
+    let path="/order/:orderId/statusOrder/agent-store"
     path=path.replace(":orderId",orderId)    
-    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backEnd + path,body)
+    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backendOrder + path,body)
   }
 
-  cancelOrder(orderId: number, cancellation: string){
-    let path="/order/:orderId/status"
+  cancelOrder(orderId: string, cancellation: string){
+    let path="/order/:orderId/statusOrder/agent-store"
     path=path.replace(":orderId",""+orderId)
-    const body = {status: CANCEL_ORDER_STATUS, comment: cancellation} as CancelOrderRequest
-    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backEnd + path,body)
+    const body = {uuid:orderId,status: CANCEL_ORDER_STATUS, comment: cancellation} as CancelOrderRequest
+    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backendOrder + path,body)
   }
   updateReadyToDm(data:any){
-    var url = env.url.backEnd+'/order/readyToDm'
+    var url = env.url.backendOrder+'/order/readyToDm/agent-store'
     return this.http.put<ObjetResponse<OrderResponse>>(url,data)
   }
 
   selfManagedOrder(uuid:any){
-    var url = env.url.backEnd+`/order/${uuid}/selfManaged`
+    var url = env.url.backendOrder+`/order/${uuid}/selfManaged/agent-store`
     return this.http.put<ObjetResponse<OrderResponse>>(url,{})
   }
 
   updateStatus(id:any,json:any){
-    var url = env.url.backEnd+`/order/${id}/status`
+    var url = env.url.backendOrder+`/order/${id}/statusOrder/agent-store`
     return this.http.put<ObjetResponse<OrderResponse>>(url,json)
   }
 

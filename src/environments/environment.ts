@@ -10,8 +10,12 @@ export const environment = {
       'https://dev-api.tres22.net/tracking',
       "https://dev-api.tres22.net/utils",
       'https://dev-api.tres22.net/delivery-zone',
-      "https://dev-api.tres22.net/delivery-store"
+      "https://dev-api.tres22.net/delivery-store",
+      'https://dev-api.tres22.net/delivery-order',
+      'https://dev-api.tres22.net/user'
     ],
+    backEndUser: 'https://dev-api.tres22.net/user',
+    backendOrder: 'https://dev-api.tres22.net/delivery-order',
     backEnd: 'https://dev-api.tres22.net/agent-store',
     fileWindows : "http://127.0.0.1:65535/",
     url_back_tracking : 'https://dev-api.tres22.net/tracking',
@@ -19,9 +23,29 @@ export const environment = {
     store_banckEnd:"https://dev-api.tres22.net/delivery-store",
     backEnd_Zone: 'https://dev-api.tres22.net/delivery-zone'
   },
+  microFronted:'https://dev-micro-report.tres22.net/#/',
   region: 'us-west-1',
-  userPoolId: 'us-west-1_4xM3rA9gH',
+  //userPoolId: 'us-west-1_4xM3rA9gH',
   userPoolWebClientId: '2ai45jc047fbj9gbo9apju2e6l',
+  awsConfig:{
+    region: 'us-west-1',
+    cognito:{
+      userPoolId: 'us-west-1_4xM3rA9gH',
+      cookieStorage:{
+        // - Cookie domain (only required if cookieStorage is provided)
+        domain: 'localhost',
+        // (optional) - Cookie path
+        path: '/',
+        // (optional) - Cookie expiration in days
+        expires: 365,
+        // (optional) - See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+        sameSite: 'strict',
+        // (optional) - Cookie secure flag
+        // Either true or false, indicating if the cookie transmission requires a secure protocol (https).
+        secure: false
+      }
+    }
+  },
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/dev',
   mqttServer:{
@@ -118,6 +142,30 @@ export const environment = {
     thousandsSeparator: '.',
     decimalPlaces: 0
   },
+  STATUS_COMPLAINT_OPEN : 'open',
+  STATUS_COMPLAINT_IN_PROCESS : 'inProcess',
+  STATUS_COMPLAINT_DONE : 'done',
+  STATUS_COMPLAINT_REJECT : 'reject',
+  STATUS_COMPLAINT_RE_OPEN : 'reOpen',
+  STATUS_COMPLAINT_RE_PROCESS : 'reProcess',
+  STATUS_COMPLAINT_RE_REJECT : 'reReject',
+// TYPE
+  STATUS_TYPE_ORDER : 'ORDER',
+  STATUS_TYPE_DELIVERYMAN : 'DELIVERYMAN',
+  STATUS_WORK_DM_DISABLED : 'disabled',
+  STATUS_WORK_DM_WAIT : 'waiting',
+  STATUS_WORK_DM_IN_ORDER : 'inOrder',
+  STATUS_WORK_DM_MINUTES_TO_BE_ACTIVE : 10,
+  TYPE_ORDER_SENDANDRECIVE : "SendAndReciveStore",
+//typeOrder
+  TYPE_ORDER_SEND_AND_RECIVE_ORDER : 'SendAndReciveStore',
+  TYPE_ORDER_TRADITIONAL : 'traditional',
+  TYPE_ORDER_SEND_AND_RECIVE_USER : 'SendAndReciveUser',
+  STATUSORDER_CANCEL : 'cancel',
+  STATUSORDER_OPEN : 'open',
+  STATUSORDER_DONE : 'done',
+  STATUSORDER_PENDING_PAYMENT : 'pendingPayment',
+  STATUSORDER_REJECT_PAYMENT : 'rejectPayment'
 };
 
 /*

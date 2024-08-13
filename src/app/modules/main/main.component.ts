@@ -118,6 +118,7 @@ import { ActivatedRoute, Router } from "@angular/router";
       private router: Router,
       private route: ActivatedRoute
       ){
+        debugger
         this.orderRepository.orders.subscribe((order)=>{
           this.orders=order
           this.sortOrders()
@@ -167,16 +168,17 @@ import { ActivatedRoute, Router } from "@angular/router";
     isWelcomeDialogOpen: boolean = true
     ngOnInit(): void { 
       this.orderRepository.start()
+      debugger
       this.visibilityChangeCallback = this.handleVisibilityChange.bind(this);
       document.addEventListener('visibilitychange', this.visibilityChangeCallback);
 
       this.route.queryParams.subscribe(params => {
-        const orderId = +params['order'] || 0; 
-        if (orderId) {
-            this.orderRepository.getOrderById(orderId).subscribe((order: OrderBean) => {
-                this.openOrderDialog(order);
-            });
-        }
+        // const orderId = +params['order'] || 0; 
+        // if (orderId) {
+        //     this.orderRepository.getOrderById(orderId).subscribe((order: OrderBean) => {
+        //         this.openOrderDialog(order);
+        //     });
+        // }
     });
 
       this.idStore= JSON.parse(localStorage.getItem('lstIdStore'))
@@ -546,7 +548,7 @@ import { ActivatedRoute, Router } from "@angular/router";
       this.loadingButtonAcept=true
 
       if(['CARD','CASH','PAY_IN_STORE','PAYMENT-BUTTON'].includes(orderRequest.payment.method.type)){
-        this.orderRepository.aceptOder(orderRequest.id,orderRequest.readyToDmAt).subscribe((resp)=>{
+        this.orderRepository.aceptOder(orderRequest.uuid,orderRequest.readyToDmAt).subscribe((resp)=>{
           this.displayOrder=false
           this.loadingButtonAcept=false
           this.messageService.showSuccess('', 'Operación realizado con exito')
@@ -559,7 +561,7 @@ import { ActivatedRoute, Router } from "@angular/router";
           this.messageService.showWarning('', 'Por favor revise el comprobante de pago primero')
           this.loadingButtonAcept = false
         } else {
-          this.orderRepository.aceptOder(orderRequest.id,orderRequest.readyToDmAt).subscribe((resp)=>{
+          this.orderRepository.aceptOder(orderRequest.uuid,orderRequest.readyToDmAt).subscribe((resp)=>{
             this.displayOrder=false
             this.loadingButtonAcept=false
             this.messageService.showSuccess('', 'Operación realizado con exito')
@@ -576,11 +578,11 @@ import { ActivatedRoute, Router } from "@angular/router";
       this.loadingButtonAcept=true
       var body:AceptOrderRequest
       if(order.isPickUpStore){
-        body={status:CONSTANTES.DONE_ORDER_STATUS} as AceptOrderRequest
+        body={uuid:order.uuid,status:CONSTANTES.DONE_ORDER_STATUS} as AceptOrderRequest
       }else{
-        body={status:CONSTANTES.READY_ORDER_STATUS} as AceptOrderRequest
+        body={uuid:order.uuid,status:CONSTANTES.READY_ORDER_STATUS} as AceptOrderRequest
       }
-      this.orderRepository.readyOder(order.id,body).subscribe((resp)=>{
+      this.orderRepository.readyOder(order.uuid,body).subscribe((resp)=>{
         this.displayOrder=false
         this.loadingButtonAcept=false
         this.messageService.showSuccess('', 'Operación realizado con exito')
@@ -599,7 +601,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 
         let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
         this.loadingButtonCancel=true
-        this.orderRepository.cancelOrder(orderRequest.id,comment).subscribe((resp) => {
+        this.orderRepository.cancelOrder(orderRequest.uuid,comment).subscribe((resp) => {
           this.displayOrderReject = false
           this.loadingButtonCancel = false
           this.displayOrder = false
@@ -835,9 +837,10 @@ import { ActivatedRoute, Router } from "@angular/router";
   finishOrder(item: OrderBean){
     this.isFinishOrderLoading = true
     var json={
-      status:"done"
+      status:"done",
+      uuid:item.uuid
     }
-    this.orderRepository.updateStatus(item.id,json).subscribe((respons)=>{
+    this.orderRepository.updateStatus(item.uuid,json).subscribe((respons)=>{
       console.log(respons)
       setTimeout(() => {
         this.displayOrder = false

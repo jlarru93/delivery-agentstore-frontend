@@ -47,6 +47,10 @@ const routes: Routes = [
             {
                 path: "user-report",
                 loadChildren: () => import('./modules/user-report/user-report.module').then(m => m.UserReportModule), canActivate: [IsAuthenticated]
+            },
+            {
+                path: "dynamic-report",
+                loadChildren: () => import('./modules/dynamic-report/dynamic-report.module').then(m => m.DynamicReportModule)
             }
             //THEME
             /*{ path: '', component: DashboardDemoComponent },

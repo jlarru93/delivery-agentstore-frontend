@@ -31,7 +31,8 @@ export class AppMenuComponent implements OnInit {
             { label: 'Servicios en curso', icon: 'pi pi-fw pi-history', routerLink: ['/order-course']},
             { label: 'Historial de Órdenes', icon: 'pi pi-fw pi-history', routerLink: ['/order-history']},
             { label: 'Reporte de usuarios', icon: 'pi pi-fw pi-users', routerLink: ['/user-report']},
-            { label: 'Quejas', icon: 'pi pi-fw pi-box', routerLink: ['/complaint-report']}
+            { label: 'Quejas', icon: 'pi pi-fw pi-box', routerLink: ['/complaint-report']},
+            { label: 'Reporte dinamico', icon: 'pi pi-fw pi-file', routerLink: ['/dynamic-report']}
         ];
         this.store.storeAviliable.subscribe((storesAvilible)=>{
             if(storesAvilible?.length==0){

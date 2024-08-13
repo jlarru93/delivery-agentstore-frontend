@@ -22,19 +22,18 @@ import { AddressSuggestionResponse, ResponseTrackingMotorized } from "../../orde
 export class RequestTripService {
   constructor(private http: HttpClient) {}
 
-  onSaveOrderService(request: RequestTrip) {
-    let path = "/order-trip";
+  onSaveOrderService(request: RequestTrip,zoneId:string) {
     return this.http.post<ObjetResponse<ResponseTrip>>(
-      env.url.backEnd + path,
+      env.url.backendOrder + "/order/zone/"+Number(zoneId)+"/agent-store",
       request
     );
   }
 
   onUpdateOrderService(request: RequestTrip){
-    let path = "/order-trip/:uuid"
+    let path = "/order/:uuid/agent-store"
     path = path.replace(':uuid', request.uuid)
     return this.http.put<ObjetResponse<ResponseTrip>>(
-      env.url.backEnd + path, request
+      env.url.backendOrder + path, request
     )
   }
 
@@ -46,22 +45,32 @@ export class RequestTripService {
     );
   }
   onLoadingMotorizedService() {
-    let path = "/order-trip";
-    return this.http.get<ObjetResponse<ResponseLoadingOrder[]>>(
-      env.url.backEnd + path
+    const request = {
+      "filters":[
+          {"field":"type","value":[env.TYPE_ORDER_TRADITIONAL,env.TYPE_ORDER_SEND_AND_RECIVE_ORDER], "condition": "in"},
+          {"field":"status","value":[env.STATUS_COMPLAINT_DONE, env.STATUSORDER_CANCEL, env.STATUSORDER_PENDING_PAYMENT, env.STATUSORDER_REJECT_PAYMENT], "condition":"nin"},
+          {"field":"isSelfManaged","value":true,"condition":"nin"},
+          {"field":"isPickUpStore","value":true,"condition":"nin"}
+      ]
+  }
+  return this.http.post<ObjetResponse<ResponseLoadingOrder[]>>(
+      env.url.backendOrder + "/order/filterV2/agent-store",request
     );
   }
   onGetPaymentOrderService(request: RequestOrderPayment) {
-    let path = "/order-trip/delivery/price";
+    let path = "/order/delivery/price/agent-store";
     return this.http.post<ObjetResponse<ResponseOrderPayment>>(
-      env.url.backEnd + path,
+      env.url.backendOrder + path,
       request
     );
   }
   onCancelOrderService(id: string) {
-    let path = "/order-trip/:id/cancel";
-    return this.http.delete<ObjetResponse<ResponseOrderPayment>>(
-      env.url.backEnd + path.replace(":id", id.toString())
+    let path = "/order/:id/cancel/agent-store";
+    const request = {
+      reason: "cancelada por el agente"
+    }
+    return this.http.put<ObjetResponse<ResponseOrderPayment>>(
+      env.url.backendOrder + path.replace(":id", id.toString()),request
     );
   }
   onViewTrackingMotorizedService(uuid: string) {
