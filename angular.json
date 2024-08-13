@@ -140,8 +140,8 @@
                         "browserTarget": "mirage:build"
                     },
                     "configurations": {
-                        "production": {
-                            "browserTarget": "mirage:build:production"
+                        "prod": {
+                            "browserTarget": "mirage:build:prod"
                         },
                         "development": {
                             "browserTarget": "mirage:build:development"
