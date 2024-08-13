@@ -52,7 +52,6 @@ export class ProductComponent implements OnInit {
     }
     getStores(){
         this.dataShared.storeAviliable.subscribe((resp)=>{
-            debugger
             if(resp?.length==0){
                 return
             }

@@ -160,7 +160,6 @@ export class OrderRepository{
     private getOrder(storeIds: string){
         console.log('data type?', storeIds)
         this.orderService.getOrders(storeIds).subscribe((resp)=>{
-            debugger
             const storeID = storeIds.split(",")
             const orders=resp.data.map((o)=>OrderResponse.toBean(o))
             

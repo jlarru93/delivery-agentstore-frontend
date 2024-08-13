@@ -740,7 +740,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
     //@ts-ignore
     autocomplete.addListener("place_changed", () => {
-      debugger
       let place: any = autocomplete.getPlace().place_id;
       this.geocodePlaceIdMultidestino(place);
       this.onPlaceSelected();

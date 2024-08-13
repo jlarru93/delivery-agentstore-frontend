@@ -66,7 +66,7 @@ export class MqttService {
             if(this.client.isConnected()){
                 //console.log('this.client.isConnected()',this.client.isConnected())
             }else{
-                console.log('this.client.connect')
+                console.log('this.client.connect',this.client)
                 this.client.connect(connectionOptions);
             }
         },15000)

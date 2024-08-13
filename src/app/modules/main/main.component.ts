@@ -118,7 +118,6 @@ import { ActivatedRoute, Router } from "@angular/router";
       private router: Router,
       private route: ActivatedRoute
       ){
-        debugger
         this.orderRepository.orders.subscribe((order)=>{
           this.orders=order
           this.sortOrders()
@@ -168,7 +167,6 @@ import { ActivatedRoute, Router } from "@angular/router";
     isWelcomeDialogOpen: boolean = true
     ngOnInit(): void { 
       this.orderRepository.start()
-      debugger
       this.visibilityChangeCallback = this.handleVisibilityChange.bind(this);
       document.addEventListener('visibilitychange', this.visibilityChangeCallback);
 
