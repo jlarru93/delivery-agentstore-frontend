@@ -61,6 +61,10 @@ export class MqttService {
             connectionOptions.userName=mqttUser
             connectionOptions.password=mqttPwd
         }
+
+        console.log("environment.mqttServer",environment.mqttServer)
+        console.log("connectionOptions",connectionOptions)
+
         this.client.connect(connectionOptions);
         setInterval(()=>{
             if(this.client.isConnected()){
