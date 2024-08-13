@@ -162,15 +162,17 @@ export class OrderRepository{
         this.orderService.getOrders(storeIds).subscribe((resp)=>{
             const storeID = storeIds.split(",")
             const orders=resp.data.map((o)=>OrderResponse.toBean(o))
-            
+            const inputOrderId=orders.map(o=>o.id)
             orders.forEach((o)=>{
                 this.addProcess(o)
             })
+            
             //this.orders.complete()
 
             //console.log("Puente",this.orders.value)
-            
-            this.orders.next(this.orders.value.filter((o)=> storeID.includes(o.store.id+"")))
+            const ordesStoreSelected=this.orders.value.filter((o)=> storeID.includes(o.store.id+""))
+            const orderInProcess=ordesStoreSelected.filter((o=>inputOrderId.includes(o.id)))
+            this.orders.next(orderInProcess)
 
             //console.log("Puente y Mega",this.orders.value)
         })
