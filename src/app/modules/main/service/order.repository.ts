@@ -164,7 +164,11 @@ export class OrderRepository{
             const orders=resp.data.map((o)=>OrderResponse.toBean(o))
             const inputOrderId=orders.map(o=>o.id)
             orders.forEach((o)=>{
-                this.addProcess(o)
+                try {
+                    this.addProcess(o)
+                } catch (error) {
+                    console.log("error",error)
+                }
             })
             
             //this.orders.complete()
