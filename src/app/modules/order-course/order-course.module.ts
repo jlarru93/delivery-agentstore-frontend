@@ -15,6 +15,8 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
 import { OrderCourseComponent } from './order-course.component';
 import { environment } from "src/environments/environment";
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
   declarations: [OrderCourseComponent],
@@ -30,6 +32,8 @@ import { environment } from "src/environments/environment";
     FormsModule,
     AvatarModule,
     InformacionMapaModule,
+    DialogModule,
+    InputTextModule,
     SelectButtonModule,
     TagModule,
     ChatModule

@@ -143,6 +143,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   zoom = 17;
 
   list_order: ResponseLoadingOrder[] = [];
+  orderSelected: ResponseLoadingOrder;
+  reasonCancelOrder:string=""
   idClient?: string;
   // center: any = {
   //   lat: 10.96854,
@@ -730,15 +732,28 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     return orderStatusColor
   }
+  isDisplayOrderCancelModal:boolean=false
+  isLoadingButtonOrderCanceling:boolean=false
+  btnCancelViaje() {
+    if(!(this.reasonCancelOrder?.trim()?.length>0)){
+      return
+    }
 
-  btnCancelViaje(item: ResponseLoadingOrder) {
-    this.requestTripService.onCancelOrderService(item.uuid).subscribe(
+    const request = {
+      reason: this.reasonCancelOrder
+    }
+    this.isLoadingButtonOrderCanceling=true
+    this.requestTripService.onCancelOrderService(this.orderSelected.uuid,request).subscribe(
       (data) => {
+        this.isLoadingButtonOrderCanceling=false
+        this.isDisplayOrderCancelModal=false
+        this.reasonCancelOrder=""
         this.alert.showSuccess('',"Se canceló la orden");
         this.onSearchMotorizedOrder();
         this.onClearMap();
       },
       (error:HttpErrorResponse) => {
+        this.isLoadingButtonOrderCanceling=true
         console.log(error.message)
         if(error.status==400){
           this.alert.showError('',error.error.messages[0].message);

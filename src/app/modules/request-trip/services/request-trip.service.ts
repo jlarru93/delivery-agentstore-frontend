@@ -64,11 +64,9 @@ export class RequestTripService {
       request
     );
   }
-  onCancelOrderService(id: string) {
+  onCancelOrderService(id: string,request:any) {
     let path = "/order/:id/cancel/agent-store";
-    const request = {
-      reason: "cancelada por el agente"
-    }
+
     return this.http.put<ObjetResponse<ResponseOrderPayment>>(
       env.url.backendOrder + path.replace(":id", id.toString()),request
     );
