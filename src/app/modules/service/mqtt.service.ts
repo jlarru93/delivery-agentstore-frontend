@@ -23,7 +23,7 @@ export class MqttService {
         let mqttPwd = environment.mqttServer.pwd
         let idTransaccion = uuidv4();
         const clientId = "AgentStore-" + idTransaccion;
-
+        console.log("clientId",clientId)
         this.client = new Client(host, wsport, path, clientId);
         // set callback handlers
         // called when the client loses its connection
@@ -47,7 +47,7 @@ export class MqttService {
             keepAliveInterval: 30,
             onSuccess: () => {
                 // Once a connection has been made, make a subscription and send a message.
-                //console.log("onConnect");
+                console.log("Conecto Mqtt");
                 this.isMqttConnect=true
                 this._onConnect.next(true)
             },
@@ -64,7 +64,7 @@ export class MqttService {
 
         console.log("environment.mqttServer",environment.mqttServer)
         console.log("connectionOptions",connectionOptions)
-
+        console.log("this.client",this.client)
         this.client.connect(connectionOptions);
         setInterval(()=>{
             if(this.client.isConnected()){
