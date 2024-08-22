@@ -74,6 +74,9 @@ import { ActivatedRoute, Router } from "@angular/router";
     popup : any 
 
     loadingButtonAcept:boolean=false
+    isLoadingButtonOrderReady:boolean=false
+
+    isDisplayOrderReadyModalConfirm:boolean = false
     //valid that mqtt and ordes is ready to subscribe
     isMqttConnect:boolean=false
     isDoneGetOrders:boolean=false
@@ -574,6 +577,7 @@ import { ActivatedRoute, Router } from "@angular/router";
     readyOrder(){
       const order=this.orderSelected
       this.loadingButtonAcept=true
+      this.isLoadingButtonOrderReady=true
       var body:AceptOrderRequest
       if(order.isPickUpStore){
         body={uuid:order.uuid,status:CONSTANTES.DONE_ORDER_STATUS} as AceptOrderRequest
@@ -583,10 +587,13 @@ import { ActivatedRoute, Router } from "@angular/router";
       this.orderRepository.readyOder(order.uuid,body).subscribe((resp)=>{
         this.displayOrder=false
         this.loadingButtonAcept=false
+        this.isLoadingButtonOrderReady=false
+        this.isDisplayOrderReadyModalConfirm=false
         this.messageService.showSuccess('', 'Operación realizado con exito')
       },(error)=>{
         this.messageService.showError('Error', error.error.messages[0].message)
         this.loadingButtonAcept=false
+        this.isLoadingButtonOrderReady=false
       })
     }
 
@@ -603,6 +610,7 @@ import { ActivatedRoute, Router } from "@angular/router";
           this.displayOrderReject = false
           this.loadingButtonCancel = false
           this.displayOrder = false
+          this.isDisplayOrderReadyModalConfirm=false
           this.messageService.showSuccess('Exito',  'Orden : '+resp.id+' cancelada' );
         }, (error:HttpErrorResponse) => {
           this.displayOrderReject = false

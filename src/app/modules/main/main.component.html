@@ -639,7 +639,7 @@
                <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isSelfManaged" pButton type="button" label="Terminar Orden" [loading]="isFinishOrderLoading" (click)="finishOrder(orderSelected)" ></button>
                <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isApprovedSelfManaged &&!orderSelected.isSelfManaged" pButton type="button" label="Autogestionar Orden" [loading]="isSelfManagedOrderLoading" (click)="selfManagedOrder(orderSelected)" ></button>
                <button class="btn-order "  *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
-               <button class="btn-order" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" [loading]="loadingButtonAcept" (click)="readyOrder()"></button>
+               <button class="btn-order" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" [loading]="loadingButtonAcept" (click)="isDisplayOrderReadyModalConfirm=true"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()" [disabled]="!isButtonEnabled"></button>
                <button pButton type="button" *ngIf="!['done','inRoute','cancel'].includes(orderSelected.statusForAgentStore)" label="Rechazar orden" class="p-button-danger btn-reject p-mt-2" (click)="openDialogDenyOrder()"></button>
             </div>
@@ -780,3 +780,23 @@
 
 
  
+
+ <p-dialog [(visible)]="isDisplayOrderReadyModalConfirm" [modal]="true" [style]="{width: '500px'}">
+   <div class="surface-section px-2 py-4 md:px-2 lg:px-6">
+      <div class="text-700">
+         <div class="p-text-center font-bold mb-3">
+            <i class="pi pi-info-circle" style="color: #f96060; font-size: 5.5rem;"></i>
+         </div>
+         <div >
+            <div class="p-text-center text-900 font-bold text-3xl mb-3">¿Estas seguro que la orden esta lista ?</div>
+            <!--circle-progress [startTime]="orderSelected.acceptAgentStoreAt" [endTime]="orderSelected.readyToDmAt"  style="padding-right: 10px; float: right;"></circle-progress-->
+            <!--div class="text-700 text-xl mb-5">Hora de orden</div-->
+
+         </div>
+      </div>
+   </div>
+   <ng-template pTemplate="footer">
+      <p-button label="Cancelar" styleClass="p-button-primary p-button-outlined" [loading]="isLoadingButtonOrderReady" (click)="isDisplayOrderReadyModalConfirm = false"></p-button>
+      <p-button label="Sí, seguro" styleClass="p-button-secondary p-button-outlined" icon="pi pi-trash" [loading]="isLoadingButtonOrderReady" (click)="readyOrder()"></p-button>
+   </ng-template>
+ </p-dialog>
