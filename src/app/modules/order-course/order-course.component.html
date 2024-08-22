@@ -101,7 +101,7 @@
           <div class="p-grid">
             <div class="p-col" *ngIf="!item.deliveryMan">
               <button
-                (click)="btnCancelViaje(item)"
+                (click)="isDisplayOrderCancelModal=true;orderSelected=item"
                 pButton
                 pRipple
                 type="button"
@@ -176,3 +176,28 @@
     </agm-map>
   </div>
 </div>
+
+
+
+<p-dialog [(visible)]="isDisplayOrderCancelModal" [modal]="true" [style]="{width: '500px'}">
+  <div class="surface-section px-2 py-4 md:px-2 lg:px-6">
+    <div class="text-700">
+      <div class="p-text-center font-bold mb-3">
+        <i class="pi pi-info-circle" style="color: #f96060; font-size: 5.5rem;"></i>
+      </div>
+      <div class="p-text-center font-bold mb-3">
+        <label class="font-semibold w-6rem">Razon de cancelación</label>
+        <div class="flex align-items-center gap-3 mb-3">
+          <input pInputText [(ngModel)]="reasonCancelOrder" class="flex-auto" autocomplete="off" />
+        </div>
+        <small>
+          Es obligatorio indicar una razón
+        </small>
+    </div>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+     <p-button label="Cerrar" styleClass="p-button-primary p-button-outlined" [loading]="isLoadingButtonOrderCanceling" (click)="isDisplayOrderCancelModal = false"></p-button>
+     <p-button label="Sí, seguro de cancelar" styleClass="p-button-secondary p-button-outlined" icon="pi pi-trash" [loading]="isLoadingButtonOrderCanceling" (click)="btnCancelViaje()"></p-button>
+  </ng-template>
+</p-dialog>
