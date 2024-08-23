@@ -640,7 +640,7 @@
                <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isApprovedSelfManaged &&!orderSelected.isSelfManaged" pButton type="button" label="Autogestionar Orden" [loading]="isSelfManagedOrderLoading" (click)="selfManagedOrder(orderSelected)" ></button>
                <button class="btn-order "  *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" [loading]="loadingButtonAcept" (click)="isDisplayOrderReadyModalConfirm=true"></button>
-               <button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()" [disabled]="!isButtonEnabled"></button>
+               <!--button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()" [disabled]="!isButtonEnabled"></button-->
                <button pButton type="button" *ngIf="!['done','inRoute','cancel'].includes(orderSelected.statusForAgentStore)" label="Rechazar orden" class="p-button-danger btn-reject p-mt-2" (click)="openDialogDenyOrder()"></button>
             </div>
             <!-- <div id="reject">
