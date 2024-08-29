@@ -2,9 +2,9 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { AuthService } from 'src/app/utils/auth.service';
 import { OrderHistoryService } from './service/order-history.service';
-import { OrderHistoryRequest } from './service/data/request';
+import { FilterRequest } from './service/data/request';
 import { ComplaintBean, OrderHistorBean } from './data';
-import { Pagination } from 'src/app/models';
+import { ObjetResponse, Pagination } from 'src/app/models';
 import { Image } from 'src/app/demo/domain/image';
 import { MessageService } from 'primeng/api';
 import { ChatBean } from 'src/app/chat/data.chat';
@@ -14,6 +14,8 @@ import { MqttService } from '../service/mqtt.service';
 import { ChatHandler } from '../service/handlers/chat.handler';
 import { ChatComponent } from 'src/app/chat/chat.component';
 import * as CONSTANTS from 'src/app/utils/constant';
+import { OrderResponse } from '../main/service/data/response';
+import { OrderBean } from '../main/data';
 
 @Component({
   selector: 'app-order-history',
@@ -56,8 +58,7 @@ export class OrderHistoryComponent implements OnInit {
 
 
   items: any[]
-  orderHistoryRequest: OrderHistoryRequest
-  orderHistories: OrderHistorBean[]
+  orderHistories: OrderBean[]
   statusOrder: string
   orderHistoryId: number
 
@@ -106,7 +107,7 @@ export class OrderHistoryComponent implements OnInit {
     this.chatHandler._data.subscribe((asyncData)=>{
       if(asyncData){
         let messageBean=ChatResponse.toBean(asyncData.data)
-        
+        /*
         let orderHistory=this.orderHistories.filter((orderHistory)=>orderHistory.complaint).find((orderHistory)=>orderHistory.orderUuid==messageBean.uuidOrder)
         console.log("orderIndex",orderHistory)
         console.log("this.orders[orderIndex]",orderHistory)
@@ -121,7 +122,7 @@ export class OrderHistoryComponent implements OnInit {
           console.log("this.orders[orderIndex].messagesChat",orderHistory.complaint)
           orderHistory.complaint.messagesChat.push(messageBean)
           this.chatComponent.scrollToBottom()
-        }
+        }*/
       }
     })
   }
@@ -136,13 +137,24 @@ export class OrderHistoryComponent implements OnInit {
 
   GetOrderHistories(orderId: number = null, status: string = null){
     this.loadingResults = true
-    let body = {
-      orderId: orderId,
-      status: status
+    let request = {
+      filters: [],
+      status: status,
+      page:this.pagination.page,
+      size:this.pagination.size,
+      sorts:[{field:"id",order:"desc"}],
+    } as FilterRequest
+    if(orderId){
+      request.filters.push({field:"id", value:orderId})
     }
-    this.service.getOrderHistories(body,this.pagination).subscribe(
-      (resp: any) => {
-        this.orderHistories = resp.data
+    if(status){
+      request.filters.push({field:"status", value:status})
+    }
+    this.service.getOrderHistories(request).subscribe(
+      (resp: ObjetResponse<OrderResponse[]>) => {
+        
+        this.orderHistories = resp.data.map(OrderResponse.toBean)
+        this.orderHistories[0]?.deliveryMan?.name
         this.totalRecords = resp.meta.totalRecords
         this.loadingResults = false
         this.suscribeChat(this.orderHistories)
@@ -199,17 +211,26 @@ export class OrderHistoryComponent implements OnInit {
   loadingResults: boolean = false
   async Page(event : any){
     this.loadingResults = true
-    let req: any = {
-      status: this.statusOrder ? this.statusOrder : null,
-      orderId : this.orderHistoryId ? this.orderHistoryId : null
-      
-    };
-
     this.pagination.page = event.page + 1
+    let request = {
+      filters: [],
+      sorts:[{field:"id",order:"desc"}],
+      status: status,
+      page:this.pagination.page,
+      size:this.pagination.size
+    } as FilterRequest
+    if(this.orderHistoryId){
+      request.filters.push({field:"id", value:this.orderHistoryId})
+    }
+    if(this.statusOrder){
+      request.filters.push({field:"status", value:this.statusOrder})
+    }
 
-    await this.service.getOrderHistories(req, this.pagination).subscribe
-    ((resp: any) => {
-      this.orderHistories = resp.data
+    
+
+    await this.service.getOrderHistories(request).subscribe
+    ((resp: ObjetResponse<OrderResponse[]>) => {
+      this.orderHistories = resp.data.map(OrderResponse.toBean)
       this.totalRecords = resp.meta.totalRecords
       this.loadingResults = false
       this.suscribeChat(this.orderHistories)

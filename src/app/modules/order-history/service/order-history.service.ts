@@ -4,6 +4,7 @@ import { ObjetResponse, Pagination } from 'src/app/models';
 import { ComplaintResponse, OrderHistoryResponse } from './data/response';
 import {environment as env} from '../../../../environments/environment'
 import { Observable } from 'rxjs';
+import { OrderResponse } from '../../main/service/data/response';
 
 @Injectable({
   providedIn: 'root'
@@ -15,16 +16,10 @@ export class OrderHistoryService {
   ) { }
 
   //{{BaseUrl}}/order/complaints/filter
-  getOrderHistories(bodyRequest: any, pagination: Pagination) {
+  getOrderHistories(bodyRequest: any) {
     
-    let headers:HttpHeaders=new HttpHeaders({
-      size:pagination.size.toString(),
-      page:pagination.page.toString()
-    });
-
-    return this.http.post<OrderHistoryResponse>(
-      env.url.backendOrder + "/order/complaints/filter/agent-store",bodyRequest,{headers:headers}
-    );
+    return this.http.post<ObjetResponse<OrderResponse[]>>(
+      env.url.backendOrder + "/order/filterV2/agent-store",bodyRequest);
   }
 
   // {{BaseUrl}}/complaints/:complaintUuid/status

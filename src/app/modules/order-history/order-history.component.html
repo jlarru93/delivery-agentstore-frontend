@@ -43,10 +43,10 @@
     <ng-template pTemplate="body" let-order>
         <tr>
             <td>{{getStatus(order.status)}}</td>
-            <td>ID: {{order.orderId}}</td>
+            <td>ID: {{order.id}}</td>
             <td>{{getFormatDate(order.createdAt)}}</td>
-            <td>{{order.total}}</td>
-            <td>{{order.deliveryManName}}</td>
+            <td>{{order.totalPayUser}}</td>
+            <td>{{order?.deliveryMan?.name??''}}</td>
             <td>
                 <i *ngIf="order.complaint == null" class="pi pi-eye" 
                 style="color: #e1e1e1; font-size: 2rem;"></i>
