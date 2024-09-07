@@ -120,6 +120,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         
         setInterval(() => {
             this.listBrands();
+            this.listInvoice=[]
         }, 10000); 
     }
 
