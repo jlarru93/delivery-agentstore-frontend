@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { FileWindowsResponse, ObjetResponse } from './models';
+import { Brand, FileWindowsResponse, InvoiceResponse, ObjetResponse } from './models';
+import { AuthService } from './utils/auth.service';
 @Injectable()
 export class MenuService {
 
@@ -11,7 +12,7 @@ export class MenuService {
 
     menuSource$ = this.menuSource.asObservable();
     resetSource$ = this.resetSource.asObservable();
-    constructor(private http:HttpClient) { }
+    constructor(private http:HttpClient, private auth:AuthService) { }
     onMenuStateChange(key: string) {
         this.menuSource.next(key);
     }
@@ -37,6 +38,16 @@ export class MenuService {
         const url = environment.url.fileWindows
         return this.http.delete<FileWindowsResponse>(url)
     }
+
+    getBrandsInvoice(){
+        return this.http.post<ObjetResponse<Brand[]>>(environment.url.store_banckEnd+"/brand/filter/agent-store",null);
+    }
+
+    getLastInvoiceOfABrand(request:any){
+        const userToken=this.auth.getUserFromToken()
+        userToken.type
+        return this.http.post<ObjetResponse<InvoiceResponse[]>>(`${environment.url.backEndInvoice}/invoice/filter/${userToken.type}`,request)
+      }
 }
 
 export class AgentStoreStoreResponse{

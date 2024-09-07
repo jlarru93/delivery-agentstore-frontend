@@ -12,7 +12,8 @@ export const environment = {
       'https://dev-api.tres22.net/delivery-zone',
       'https://dev-api.tres22.net/delivery-store',
       'https://dev-api.tres22.net/delivery-order',
-      'https://dev-api.tres22.net/user'
+      'https://dev-api.tres22.net/user',
+      'https://dev-api.tres22.net/delivery-invoice'
     ],
     backEndUser: 'https://dev-api.tres22.net/user',
     backendOrder: 'https://dev-api.tres22.net/delivery-order',
@@ -21,7 +22,8 @@ export const environment = {
     fileWindows : "http://127.0.0.1:65535/",
     util_banckEnd:"https://dev-api.tres22.net/utils",
     backEnd_Zone: 'https://dev-api.tres22.net/delivery-zone',
-    store_banckEnd:"https://dev-api.tres22.net/delivery-store"
+    store_banckEnd:"https://dev-api.tres22.net/delivery-store",
+    backEndInvoice:'https://dev-api.tres22.net/delivery-invoice',
   },
   microFronted:'https://dev-micro-report.tres22.net/#/',
   region: 'us-west-1',

@@ -296,7 +296,7 @@ export interface Store {
 export interface Brand {
     id?: number,
     name?: string,
-    categories:Category[]
+    categories?:Category[]
     zone_id?: number
 }
 export interface Pagination {
@@ -398,4 +398,24 @@ export interface S3Data {
 export interface FileWindowsResponse{
     success:boolean
     error?:string
+}
+
+export interface InvoiceResponse{
+    id:number
+    number:number
+    brand_id:number
+    brandName:string
+    storeIds:string
+    fiscalInformation_id:number
+    fiscalInformationName:string
+    amount:number
+    balance:number
+    status:string
+    paymentLink:string
+    reportLink:string
+    createdAt:number
+    updatedAt:number
+    due_date:number
+    code_generate:string
+    paymentId:string
 }

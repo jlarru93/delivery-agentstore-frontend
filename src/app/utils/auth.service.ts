@@ -154,5 +154,17 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
     getCookieValue(name:string) {
       return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
     }
+
+    getUserFromToken(){
+      const token=this.getAutorizationToken()
+      const decode = jwt_decode(token) as any
+      const userToken={
+          id:decode?.id??-1,
+          name:decode?.name??"-",
+          type:decode?.userType??"-",
+          zoneIds : decode?.zoneIds??""
+      }
+      return userToken
+    }
   }
   

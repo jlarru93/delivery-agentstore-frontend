@@ -4,7 +4,7 @@ import {AppMainComponent} from './app.main.component';
 import { AuthService } from './utils/auth.service';
 import { OpenStoreRequest } from './modules/main/service/data/request';
 import { MqttService } from './modules/service/mqtt.service';
-import { Store } from './models';
+import { Brand, Store } from './models';
 import { AgentStoreStoreResponse, MenuService } from './app.menu.service';
 import { environment } from 'src/environments/environment';
 import { DataSharedService } from './modules/service/data-shared.service';
@@ -37,8 +37,10 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     stores: AgentStoreStoreResponse[]
     selectedStore: Store[]=[]
     selectStore:number[]=[]
+    brand:Brand
     origenIcon: any ="assets/empresas/" + environment.NAME_COMPANY + environment.MARKERS.ORIGEN.URL;
-
+    listInvoice:any[]=[]
+    isShowDialog:boolean = false
      audioEnabled: boolean;
 
     constructor(
@@ -92,6 +94,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
                     }else{
                         this.selectStore .push(this.IdAgent.Value)
                     }
+                    this.startDataFetch()
                     this.dataShared.updateListStore(this.selectStore)
                     try{
                         this.service.setFileAgentStore(this.selectStore).subscribe(resp=>{
@@ -110,7 +113,50 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         //     var button2 = document.getElementById('btnHidden')
         //     button2.click()
         //   }, 500)
-      }
+    }
+
+    startDataFetch() {
+        this.listBrands();
+        
+        setInterval(() => {
+            this.listBrands();
+        }, 10000); 
+    }
+
+    listBrands(){
+        this.service.getBrandsInvoice().subscribe(async (resp) => {
+            await this.getLastInvoiceFromABrand(resp.data);
+        },
+        (_error) => {},
+        () => {});
+    }
+
+      async getLastInvoiceFromABrand(brand: any) {
+        const request = {
+            filters: [
+                { field: "brand_id", value: brand[0].id }
+            ],
+            page: 1,
+            size: 1
+        };
+        try {
+            const response = await this.service.getLastInvoiceOfABrand(request).toPromise();
+            const invoice = response.data[0];
+            
+            if (invoice) {
+                this.listInvoice.push({
+                    brandName: invoice.brandName,
+                    paymentLink: invoice.paymentLink
+                });
+                console.log("LISTADO",this.listInvoice.length)
+                if (this.listInvoice.length > 0) {
+                    this.isShowDialog = true;
+                }
+            }
+        } catch (error) {
+            console.log('error', error);
+        }
+    }
 
     isFirstLogin: boolean = true
     getFirstLogin(){
@@ -210,6 +256,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
             this.isOpenStore=false
         }*/
         console.log("ID",id)
+        console.log("STORES",store)
         try{
             this.service.setFileAgentStore(this.selectStore).subscribe(resp=>{
                 if(!resp.success){
