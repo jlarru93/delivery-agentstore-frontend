@@ -41,7 +41,10 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     origenIcon: any ="assets/empresas/" + environment.NAME_COMPANY + environment.MARKERS.ORIGEN.URL;
     listInvoice:any[]=[]
     isShowDialog:boolean = false
-     audioEnabled: boolean;
+    audioEnabled: boolean;
+    invoiceMap = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
+    dataReady:boolean=false
+    listInvoices: any[] = [];
 
     constructor(
         private auth: AuthService,
@@ -132,27 +135,43 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         () => {});
     }
 
-      async getLastInvoiceFromABrand(brand: any) {
-        const request = {
-            filters: [
-                { field: "brand_id", value: brand[0].id }
-            ],
-            page: 1,
-            size: 1
-        };
+    async getLastInvoiceFromABrand(brands: Brand[]) {
+        this.listInvoices = [];
+        this.isShowDialog = false
+        const promises = brands.map(brand => {
+            const request = {
+                filters: [
+                    { field: "brand_id", value: brand.id }
+                ],
+                page: 1,
+                size: 50
+            };
+    
+            return this.service.getLastInvoiceOfABrand(request).toPromise(); 
+        });
+    
         try {
-            const response = await this.service.getLastInvoiceOfABrand(request).toPromise();
-            const invoice = response.data[0];
-            
-            if (invoice) {
-                this.listInvoice.push({
-                    brandName: invoice.brandName,
-                    paymentLink: invoice.paymentLink
+            const responses = await Promise.all(promises);
+            responses.map((response: any) => {
+                const invoices = response.data.filter(data => data.status === 'pending');
+                invoices.forEach(invoice => {
+                    if (!this.invoiceMap.has(invoice.brandName)) {
+                        this.invoiceMap.set(invoice.brandName, []);
+                    }
+                    this.invoiceMap.get(invoice.brandName)?.push({
+                        paymentLink: invoice.paymentLink,
+                        reportLink: invoice.reportLink
+                    });
                 });
-                console.log("LISTADO",this.listInvoice.length)
-                if (this.listInvoice.length > 0) {
-                    this.isShowDialog = true;
-                }
+            });
+            this.listInvoices = Array.from(this.invoiceMap.entries()).map(([brandName, invoices]) => ({
+                brandName,
+                invoices
+            }));
+            this.dataReady = true
+            if (this.listInvoices.length >= 1 && this.dataReady == true) {
+                this.isShowDialog = true;
+                this.dataReady = false
             }
         } catch (error) {
             console.log('error', error);
