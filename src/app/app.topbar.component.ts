@@ -138,6 +138,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     async getLastInvoiceFromABrand(brands: Brand[]) {
         this.listInvoices = [];
         this.isShowDialog = false
+        this.invoiceMap = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
         const promises = brands.map(brand => {
             const request = {
                 filters: [
