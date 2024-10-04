@@ -63,7 +63,7 @@ import { ActivatedRoute, Router } from "@angular/router";
     ordersInRoute:OrderBean[]=[]
     ordersFinis:OrderBean[]=[]
     orderSelected:OrderBean
-    readyToDmAt:number=10
+    readyToDmAt:number=15
     count: number = 10
     readyToDmMinutesAt: number=0
     displayOrderReject: boolean = false
@@ -458,7 +458,7 @@ import { ActivatedRoute, Router } from "@angular/router";
       if(this.orderSelected.readyToDmAt){
         this.readyToDmAt=this.orderSelected.readyToDmAt
       }else{
-        this.readyToDmAt=10
+        this.readyToDmAt=15
       }
       
       if(this.orderSelected.readyToDmMinutesAt){
