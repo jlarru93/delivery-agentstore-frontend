@@ -631,7 +631,18 @@
                   </div> -->
                </div>
             </div>
-         </div>
+            </div>
+            <div *ngIf="orderSelected?.readyToDmAt">
+               <div class="sidebar-container-title">Fecha/Hora de entrega</div>
+               <div class="card-time">
+                  <div class="p-grid">
+                     <div class="p-col-12" id="counter-value">
+                        {{getFormatDate(orderSelected.readyToDmAt)}} <br>
+                        <div class="counter-min">min</div>
+                     </div>
+                  </div>
+               </div>
+            </div>
 
           </div>
           <div class="sidebar-bottom p-fluid" id="buttons">
