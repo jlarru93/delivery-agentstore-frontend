@@ -638,8 +638,12 @@ import { ActivatedRoute, Router } from "@angular/router";
       this.readyToDmMinutesAt +=5;
     }
     onDecrement() {
-      this.readyToDmAt -= 5;
-      this.readyToDmMinutesAt -=5;
+      console.log(this.readyToDmAt)
+      console.log(this.readyToDmMinutesAt)
+      if(this.readyToDmAt >=0 && this.readyToDmMinutesAt >= 5){
+        this.readyToDmAt -= 5;
+        this.readyToDmMinutesAt -=5;
+      }
     }
     
     accordionContent: any
@@ -786,32 +790,39 @@ import { ActivatedRoute, Router } from "@angular/router";
 
   updateTimes(item: OrderBean) {
     this.loadingButtonUpdateTime = true
+    console.log("ITEM:::",item.readyToDmMinutesAt)
     var json = {
       uuid: item.uuid,
       readyToDmAt: this.orderSelected.createdAt + (this.readyToDmMinutesAt * 60),
       readyToDmMinutesAt: this.readyToDmMinutesAt
     }
 
-    this.orderRepository.updateReadyToDm(json).subscribe((response) => {
-      setTimeout(() => {
-        this.displayOrder = false
-      }, 1500);
-     
-      const indexOrderPreparing = this.ordersPreparing.findIndex(order => order.id == item.id)
-      const indexOrderReady = this.ordersReady.findIndex(order => order.id == item.id)
-
-      if(indexOrderPreparing !== -1){
-        this.ordersPreparing[indexOrderPreparing].readyToDmMinutesAt = this.readyToDmMinutesAt;
-      } else {
-        this.ordersReady[indexOrderReady].readyToDmMinutesAt = this.readyToDmMinutesAt;
-      }
+    if(this.readyToDmMinutesAt >= item.readyToDmMinutesAt){
+      this.orderRepository.updateReadyToDm(json).subscribe((response) => {
+        setTimeout(() => {
+          this.displayOrder = false
+        }, 1500);
+       
+        const indexOrderPreparing = this.ordersPreparing.findIndex(order => order.id == item.id)
+        const indexOrderReady = this.ordersReady.findIndex(order => order.id == item.id)
+  
+        if(indexOrderPreparing !== -1){
+          this.ordersPreparing[indexOrderPreparing].readyToDmMinutesAt = this.readyToDmMinutesAt;
+        } else {
+          this.ordersReady[indexOrderReady].readyToDmMinutesAt = this.readyToDmMinutesAt;
+        }
+        this.loadingButtonUpdateTime = false
+        console.log(response)
+        this.messageService.showSuccess('', 'El tiempo estimada modificado')
+      }, (error) => {
+        this.messageService.showError('Error', error.error.messages[0].message)
+        this.loadingButtonUpdateTime = false
+      })
+    }
+    else{
+      this.messageService.showError('Error', 'El tiempo de preparacion debe ser mayor que el tiempo actual')
       this.loadingButtonUpdateTime = false
-      console.log(response)
-      this.messageService.showSuccess('', 'El tiempo estimada modificado')
-    }, (error) => {
-      this.messageService.showError('Error', error.error.messages[0].message)
-      this.loadingButtonUpdateTime = false
-    })
+    }
   }
   isSelfManagedOrderLoading: boolean = false
 
@@ -897,5 +908,24 @@ import { ActivatedRoute, Router } from "@angular/router";
       case 'CE' : documentType = 'Carnet de extranjería'; break;
     }
     return documentType
+  }
+
+  getFormatDate(timestamp : number){
+    const date = new Date(timestamp * 1000);
+
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const day = ("0" + date.getDate()).slice(-2);
+
+    let hours = date.getHours();
+    const minutes = ("0" + date.getMinutes()).slice(-2);
+    const ampm = hours >= 12 ? "PM" : "AM";
+
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Si hours es 0, asigna 12 en su lugar
+
+    const formattedDate = `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
+
+    return formattedDate
   }
 }
