@@ -1115,7 +1115,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10))
       
     }
-    this.requestTripService.onSaveOrderService(order,localStorage.getItem('zoneId')).subscribe((data) => {
+    let store = JSON.parse(localStorage.getItem('storeBean'))
+    this.requestTripService.onSaveOrderService(order,store.zoneId).subscribe((data) => {
         this.ref = this.dialogService.open(LoadingMotorizedComponent, {
           header: "Repartidor",
           data: {
