@@ -129,7 +129,6 @@ import { ActivatedRoute, Router } from "@angular/router";
                 this.audioService.audioAlreadyPlayed = true;
                 this.audioService.stopAudio()
                 if(this.orders){
-                  
                   let requestBody = {
                     orderUuids: this.orders.map(order => order.uuid)
                   }
@@ -157,6 +156,18 @@ import { ActivatedRoute, Router } from "@angular/router";
               window.innerHeight = screen.height;
             }
           }
+        })
+        this.orderRepository.orderCancel.subscribe(orders=>{
+          orders.map(order=>{
+            const hasCancel = order.statusHistory && order.statusHistory.some(history => 
+              history.status === "cancel" && 
+              history.executeFor && 
+              history.executeFor.userType === "user-app"
+            );
+            if (hasCancel) {
+              console.log('CANCELADO POR EL USUARIO');
+            } 
+          })
         })
         this.orderRepository.orderChat.subscribe((order)=>{
           console.log("this.orderRepository.orderChat.subscribe",order)

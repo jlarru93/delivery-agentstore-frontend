@@ -159,6 +159,16 @@ export class UnreadMessagesBean{
     messagesNoReadTotal?: number
 }
 
+export class ExecuteForBean{
+    id:string
+    userType:string
+}
+export class StatusHistoryBean{
+    status:string
+    createAt:number
+    executeFor:ExecuteForBean
+}
+
 export class OrderBean {
     id?: number
     uuid?: string
@@ -190,7 +200,7 @@ export class OrderBean {
     isSelfManaged:boolean
     isPickUpStore:boolean
     readyToDmMinutesAt?: number
-
+    statusHistory?:StatusHistoryBean[]
     totalPayUser?:number
     productPriceDiscount?:number
     productPriceWithDiscount?:number
