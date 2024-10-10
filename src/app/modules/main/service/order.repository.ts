@@ -23,7 +23,7 @@ export class OrderRepository{
     orderChat:Subject<OrderBean>=new Subject<OrderBean>()
     newOrder:BehaviorSubject<OrderBean> = new BehaviorSubject<OrderBean>(null);
     updatedOrder:BehaviorSubject<OrderBean> = new BehaviorSubject<OrderBean>(null);
-    orderCancel:BehaviorSubject<OrderBean[]> = new BehaviorSubject<OrderBean[]>([]);
+    orderCancel:BehaviorSubject<OrderBean> = new BehaviorSubject<OrderBean>(null);
 
     counter:number=0
     intervalMs:number=10000
@@ -207,11 +207,12 @@ export class OrderRepository{
     private setOrderFromOrderHanlder(){
         this.orderHandler._data.subscribe((orderResponse)=>{
             if(orderResponse.data.status === CONSTANTES.CANCEL_ORDER_STATUS){
+                const orderCancel=OrderResponse.toBean(orderResponse.data)
                 const orders = this.orders.value.filter(order => order.uuid !== orderResponse.data.uuid)
-                this.orderCancel.next(orders)
+                this.orderCancel.next(orderCancel)
                 if(!this.isStop){
                     this.orders.next(orders)
-                }                
+                }
             } else {
                 const newOrder=OrderResponse.toBean(orderResponse.data)
                 this.addProcess(newOrder)

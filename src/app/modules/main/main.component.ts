@@ -157,17 +157,16 @@ import { ActivatedRoute, Router } from "@angular/router";
             }
           }
         })
-        this.orderRepository.orderCancel.subscribe(orders=>{
-          orders.map(order=>{
-            const hasCancel = order.statusHistory && order.statusHistory.some(history => 
-              history.status === "cancel" && 
-              history.executeFor && 
-              history.executeFor.userType === "user-app"
-            );
-            if (hasCancel) {
-              console.log('CANCELADO POR EL USUARIO');
-            } 
-          })
+        this.orderRepository.orderCancel.subscribe(order=>{
+          if(order==null){return}
+          const hasCancel = order.statusHistory && order.statusHistory.some(history => 
+            history.status === "cancel" && 
+            history.executeFor && 
+            history.executeFor.userType === "user-app"
+          );
+          if (hasCancel) {
+            console.log('CANCELADO POR EL USUARIO');
+          } 
         })
         this.orderRepository.orderChat.subscribe((order)=>{
           console.log("this.orderRepository.orderChat.subscribe",order)
