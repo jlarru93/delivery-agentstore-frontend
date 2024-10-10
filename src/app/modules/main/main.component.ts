@@ -98,6 +98,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 
     isInitRequest:boolean=true
     ordersWithUnreadMessages: any
+    isShowOrderCancel:boolean = false
+    orderId:number=null
     private visibilityChangeCallback: () => void;
 
     constructor(
@@ -164,8 +166,10 @@ import { ActivatedRoute, Router } from "@angular/router";
             history.executeFor && 
             history.executeFor.userType === "user-app"
           );
+          console.log("hasCancel",hasCancel)
           if (hasCancel) {
-            console.log('CANCELADO POR EL USUARIO');
+            this.isShowOrderCancel = true
+            this.orderId = order.id
           } 
         })
         this.orderRepository.orderChat.subscribe((order)=>{

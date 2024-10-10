@@ -215,6 +215,7 @@ export class OrderRepository{
                 }
             } else {
                 const newOrder=OrderResponse.toBean(orderResponse.data)
+                this.orderCancel.next(newOrder)
                 this.addProcess(newOrder)
                 //this.orders.complete()
                 if(!this.isStop){
