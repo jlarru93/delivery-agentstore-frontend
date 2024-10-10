@@ -811,3 +811,11 @@
       <p-button label="Sí, seguro" styleClass="p-button-secondary p-button-outlined" icon="pi pi-trash" [loading]="isLoadingButtonOrderReady" (click)="readyOrder()"></p-button>
    </ng-template>
  </p-dialog>
+
+<p-dialog header="Orden Cancelada" [(visible)]="isShowOrderCancel" [modal]="true" [style]="{width: '50vw'}"
+[draggable]="false" [resizable]="false">
+   <p class="m-0">La orden con el id {{orderId}} fue cancelada por el usuario.</p>
+   <ng-template pTemplate="footer">
+   <p-button icon="pi pi-check" (click)="isShowOrderCancel=false" label="Cerrar" styleClass="p-button-text"></p-button>
+   </ng-template>
+</p-dialog>

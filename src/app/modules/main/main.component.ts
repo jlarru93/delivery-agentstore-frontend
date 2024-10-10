@@ -98,6 +98,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 
     isInitRequest:boolean=true
     ordersWithUnreadMessages: any
+    isShowOrderCancel:boolean = false
+    orderId:number=null
     private visibilityChangeCallback: () => void;
 
     constructor(
@@ -129,7 +131,6 @@ import { ActivatedRoute, Router } from "@angular/router";
                 this.audioService.audioAlreadyPlayed = true;
                 this.audioService.stopAudio()
                 if(this.orders){
-                  
                   let requestBody = {
                     orderUuids: this.orders.map(order => order.uuid)
                   }
@@ -157,6 +158,19 @@ import { ActivatedRoute, Router } from "@angular/router";
               window.innerHeight = screen.height;
             }
           }
+        })
+        this.orderRepository.orderCancel.subscribe(order=>{
+          if(order==null){return}
+          const hasCancel = order.statusHistory && order.statusHistory.some(history => 
+            history.status === "cancel" && 
+            history.executeFor && 
+            history.executeFor.userType === "user-app"
+          );
+          console.log("hasCancel",hasCancel)
+          if (hasCancel) {
+            this.isShowOrderCancel = true
+            this.orderId = order.id
+          } 
         })
         this.orderRepository.orderChat.subscribe((order)=>{
           console.log("this.orderRepository.orderChat.subscribe",order)

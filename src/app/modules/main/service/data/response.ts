@@ -368,6 +368,16 @@ export class UnreadMessagesResponse {
     }
 }
 
+export class ExecuteForResponse{
+    id:string
+    userType:string
+}
+export class StatusHistoryResponse{
+    status:string
+    createAt:number
+    executeFor:ExecuteForResponse
+}
+
 export class OrderResponse {
     id?: number
     uuid?: string
@@ -395,7 +405,7 @@ export class OrderResponse {
     isSelfManaged:boolean
     isPickUpStore:boolean
     readyToDmMinutesAt?: number
-
+    statusHistory:StatusHistoryResponse[]
     totalPayUser ?:number
     productPriceDiscount ?:number
     productPriceWithDiscount?:number
@@ -432,6 +442,14 @@ export class OrderResponse {
         bean.productPriceDiscount = self.productPriceDiscount
         bean.productPriceWithDiscount = self.productPriceWithDiscount
         bean.coupons = self?.coupons?.map((it)=> CouponsResponse.toBean(it))
+        bean.statusHistory = (self?.statusHistory || []).map(history => ({
+            ...history,
+            executeFor: {
+                ...(history.executeFor || {}), 
+                userType: history.executeFor?.userType || '',
+                id: String(history.executeFor?.id || '')
+            }
+        }));
         return bean
     }
 }
