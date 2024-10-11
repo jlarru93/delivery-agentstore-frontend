@@ -120,11 +120,11 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
 
     startDataFetch() {
         this.listBrands();
-        
+        const minutes = 10 * 60 * 3600
         setInterval(() => {
             this.listBrands();
             this.listInvoice=[]
-        }, 10000); 
+        }, minutes); 
     }
 
     listBrands(){
