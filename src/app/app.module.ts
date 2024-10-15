@@ -168,6 +168,9 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { AlertModule } from './directives/alert/alert.module';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import { DialogService } from 'primeng/dynamicdialog';
+import { DialogUpdateWebModule } from './modules/dialogUpdateWeb/dialogUpdateWeb.module';
+import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
 /*FullCalendarModule.registerPlugins([
     dayGridPlugin,
     //timeGridPlugin,
@@ -176,6 +179,7 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
 
 @NgModule({
     imports: [
+        DialogUpdateWebModule,
         BrowserModule,
         FormsModule,
         AppRoutingModule,
@@ -320,7 +324,8 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
         TypographyComponent,
         TextComponent,
         WidgetsComponent,
-        SignInComponent
+        SignInComponent,
+        DialogUpdateWebComponent
     ],
     providers: [
         { provide: LocationStrategy, useClass: HashLocationStrategy },
