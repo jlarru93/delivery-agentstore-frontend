@@ -1,0 +1,7 @@
+<p-dialog header="Aviso" [(visible)]="isShowAlert" [modal]="true" [style]="{width: '50vw'}"
+[draggable]="false" [resizable]="false">
+  <p>Se ha detectado una nueva versión. Por favor, actualice la página para obtener la última versión.</p>
+  <ng-template pTemplate="footer">
+      <p-button icon="pi pi-check" (click)="updatePage()" label="Recargar Pagina" styleClass="p-button-text"></p-button>
+  </ng-template>
+</p-dialog>

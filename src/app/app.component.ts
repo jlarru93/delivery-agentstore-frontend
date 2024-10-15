@@ -1,7 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {PrimeNGConfig} from 'primeng/api';
 import { MqttService } from './modules/service/mqtt.service';
 import { ConnectionService } from './modules/service/connection.service';
+import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
+import { HttpClient } from '@angular/common/http';
+import { interval, map, Observable, switchMap } from 'rxjs';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -25,7 +28,10 @@ export class AppComponent implements OnInit{
     inputStyle = 'outlined';
 
     isDialogConnectionShow:boolean
-    constructor(private primengConfig: PrimeNGConfig,private _mqtt:MqttService,private connectionService:ConnectionService) {}
+    private previousVersion: string | null = null;
+    private currentVersion: string | null = null
+    @ViewChild(DialogUpdateWebComponent) dialogUpdate!: DialogUpdateWebComponent;
+    constructor(private primengConfig: PrimeNGConfig,private _mqtt:MqttService,private connectionService:ConnectionService,private http:HttpClient) {}
 
     ngOnInit() {
         
@@ -37,5 +43,25 @@ export class AppComponent implements OnInit{
                 console.log("Lanzar modal")
             }
         })
+
+        interval(10000)
+        .pipe(switchMap(() => this.loadVersion()))
+        .subscribe((version) => {
+        if (this.previousVersion && this.previousVersion !== version) {
+            console.log(`La versión ha cambiado de ${this.previousVersion} a ${version}`);
+            this.dialogUpdate.showMessage();
+        }
+        this.previousVersion = version;
+        });
+    }
+
+    private loadVersion(): Observable<string | null> {
+        return this.http.get<{ version: string }>('assets/version.json').pipe(
+            map((data) => {
+            this.currentVersion = data.version;
+            console.log("VERSION::::",this.currentVersion)
+            return this.currentVersion;
+            })
+        );
     }
 }
