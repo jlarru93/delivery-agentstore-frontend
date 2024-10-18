@@ -99,7 +99,10 @@
 
                 </ng-container>
           <div class="p-grid">
-            <div class="p-col" *ngIf="!item.deliveryMan">
+            <div 
+              class="p-col" 
+              *ngIf="!item.deliveryMan && (item.type == 'traditional' && !['done','inRoute','cancel','preparingOrder','orderReady'].includes(item.status) || item.type == 'SendAndReciveStore')"
+            >
               <button
                 (click)="isDisplayOrderCancelModal=true;orderSelected=item"
                 pButton

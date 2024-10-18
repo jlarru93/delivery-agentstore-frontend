@@ -587,6 +587,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
             : element.status;
           order.order_name = this.onPaymentGroup(element.payment.method.type )
           order.status_order = this.onStatusGroup(status);
+          order.status = element.status;
           order.status_order_color = this.onStatusGroupColor(status)
           console.log('status', status)
           order.user = element.user
