@@ -288,6 +288,8 @@ export class UserResponse {
     email?: string
     documentType?: string
     documentValue?: string
+    name?:string
+    surname?:string
     static toBean(self: UserResponse): UserBean {
         const bean = new UserBean()
         bean.id = self.id,
@@ -297,6 +299,8 @@ export class UserResponse {
             bean.email = self.email
             bean.documentType = self.documentType
             bean.documentValue = self.documentValue
+            bean.name = self.name
+            bean.surname = self.surname
         return bean
     }
 }

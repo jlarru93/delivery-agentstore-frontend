@@ -573,12 +573,40 @@ h5{
     justify-content: space-between;
   }
 
+  .card-order-header-id{
+    flex: 1;
+    text-align: left;
+  }
+
+  .card-order-header-time{
+    flex: 1;
+    text-align: center;
+  }
+
+  .card-order-header-icon{
+    flex: 1;
+    text-align: right;
+  }
+
   .calculated-time{
     color: #DD1F26;
     font-size: 18px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+    white-space: nowrap;     
+    overflow: hidden;         
+    text-overflow: ellipsis;  
+    max-width: 100px;            
+  }
+
+  .calculated-time-end{
+    color: #DD1F26;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;   
+    max-width: 100px;            
   }
 
   .order-isPickUpStore{
@@ -607,6 +635,15 @@ h5{
     line-height: normal;
   }
 
+  .order-preparing{
+    line-height: 1.5;
+    color: #212322;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
   .order-ready-address{
     width: 50%;
     color: #212322;
@@ -617,11 +654,9 @@ h5{
   }
 .main-title{
     display: flex;
-    justify-content: center;
 }
 .order-ready-main-title{
     color: #000;
-    text-align: center;
     font-size: 22px;
     font-style: normal;
     font-weight: 800;
@@ -654,5 +689,51 @@ h5{
     80%,
     90% {
         stroke: #DD1F26;
+    }
+}
+
+.hr-inline{
+    margin: 0.5rem 0!important;
+}
+
+.icon-size {
+    width: 23px;
+    height: 23px;
+}
+
+p{
+    margin: 0 0 0 0!important;
+}
+
+.find-driver{
+    line-height: 1.5;
+    color: #212322;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-left: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+    white-space: nowrap;    
+}
+
+.pickup{
+    line-height: 1.5;
+    color: #212322;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-left: 5px;
+    white-space: nowrap;        
+    overflow: hidden;           
+    text-overflow: ellipsis;
+}
+
+@media screen and (min-width: 992px) {
+    .p-lg-order-5 {
+        width: 20%!important;
     }
 }
