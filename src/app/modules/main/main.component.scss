@@ -761,3 +761,7 @@ p{
     width: auto!important;
     margin: auto!important;
 }
+
+::ng-deep .p-disabled, .p-component:disabled {
+    opacity: 100!important;
+}

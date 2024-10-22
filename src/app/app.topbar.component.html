@@ -187,13 +187,55 @@
     </p-table>
 </p-dialog>
 
-<p-dialog header="Leyenda" [(visible)]="isVisibleLeyend" [modal]="true" [closable]="true" [style]="{width: '50vw'}">
+<p-dialog header="Leyenda" [(visible)]="isVisibleLeyend" [modal]="true" [closable]="true" [style]="{'width': '50vw', 'background-color': 'white!important','color': 'black'}" [styleClass]="'custom-dialog-class'">
     <div class="p-fluid">
-        <!-- Fecha de Inicio -->
-        <div class="p-field p-grid"><label for="dayStart" class="p-col-12 p-md-12"><img src="../../../assets/images/pickupStore.svg" alt="PickupStore" class="icon-size" pTooltip="Pick Up" tooltipPosition="bottom">: Pick Up</label></div>
-        <div class="p-field p-grid"><label for="dayStart" class="p-col-12 p-md-12"><img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">: Buscando Driver</label></div>   
+        <div class="p-field p-grid p-align-center">
+            <div class="p-col-fixed" style="width: 40px;">
+                <img src="../../../assets/images/pickupStore.svg" alt="Autogestión" class="icon-size">
+            </div>
+            <div class="p-col" style="margin-left: 5px;">
+                <label for="dayStart">
+                    Orden de tipo <strong>Recojo en Tienda</strong>.
+                </label>
+            </div>
+        </div>
+
+        <div class="p-field p-grid p-align-center">
+            <div class="p-col-fixed" style="width: 40px;">
+                <img src="../../../assets/images/selfManaged.svg" alt="Autogestión" class="icon-size">
+            </div>
+            <div class="p-col" style="margin-left: 5px;">
+                <label for="dayStart">
+                    Orden de tipo <strong>Autogestionada</strong>
+                </label>
+            </div>
+        </div>
+
+        <div class="p-field p-grid p-align-center">
+            <div class="p-col-fixed" style="width: 40px;">
+                <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">
+            </div>
+            <div class="p-col" style="margin-left: 5px;">
+                <label for="dayStart">
+                    Si la orden está <strong>en preparación</strong> el driver se está dirigiendo a la tienda, en caso contrario si la orden está <strong>en reparto</strong> el driver se dirige al domicilio
+                </label>
+            </div>
+        </div>
+
+        <div class="p-field p-grid p-align-center">
+            <div class="p-col-fixed" style="width: 40px;">
+                <img src="../../../assets/images/driverImage.svg" alt="Driver" class="icon-size">
+            </div>
+            <div class="p-col" style="margin-left: 5px;">
+                <label for="dayStart">
+                    El repartidor se encuentra en la tienda.
+                </label>
+            </div>
+        </div>
     </div>
+
     <p-footer>
         <p-button label="Cerrar" icon="pi pi-times" (click)="isVisibleLeyend=false" class="ui-button-secondary"></p-button>
     </p-footer>
+
 </p-dialog>

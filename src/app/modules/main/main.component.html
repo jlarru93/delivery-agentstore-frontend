@@ -99,7 +99,6 @@
                      </div>
                      <div *ngIf="order?.deliveryMan == null" style="display: flex;">
                         <div *ngIf="!order.isPickUpStore && !order.isApprovedSelfManaged">
-                           <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">
                            <span class="find-driver">Buscando...</span>
                         </div>
                         <div *ngIf="order.isPickUpStore">
@@ -107,19 +106,18 @@
                            <span class="pickup">PICK UP</span>
                         </div>
                         <div *ngIf="order.isApprovedSelfManaged">
+                           <img src="../../../assets/images/selfManaged.svg" alt="SelfManaged" class="icon-size" pTooltip="AUTOGESTIÓN" tooltipPosition="bottom">
                            <span class="pickup">AUTOGESTIÓN</span>
                         </div>
                      </div>
 
                      <div *ngIf="order?.deliveryMan?.status == 'inStore'">
-                        <div>Repartidor en camino</div>
-                        <img *ngIf="order.isPickUpStore" src="{{order.deliveryMan.picture.profile}}" alt="Driver" class="icon-size">
+                        <img src="../../../assets/images/driverImage.svg" alt="Driver" class="icon-size">
                         <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                      </div>
 
                      <div *ngIf="order?.deliveryMan?.status == 'toStore'">
-                        <div>Repartidor está en la tienda</div>
-                        <img *ngIf="order.isPickUpStore" src="{{order.deliveryMan.picture.profile}}" alt="Driver" class="icon-size">
+                        <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">
                         <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                      </div>
                   </div>
@@ -174,27 +172,25 @@
                      </div>
                      <div *ngIf="order?.deliveryMan == null" style="display: flex;">
                         <div *ngIf="!order.isPickUpStore && !order.isApprovedSelfManaged">
-                           <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">
-                           <span class="find-driver">Buscando ...</span>
+                           <span class="find-driver">Buscando...</span>
                         </div>
                         <div *ngIf="order.isPickUpStore">
                            <img src="../../../assets/images/pickupStore.svg" alt="PickupStore" class="icon-size" pTooltip="Pick Up" tooltipPosition="bottom">
                            <span class="pickup">PICK UP</span>
                         </div>
                         <div *ngIf="order.isApprovedSelfManaged">
+                           <img src="../../../assets/images/selfManaged.svg" alt="SelfManaged" class="icon-size" pTooltip="AUTOGESTIÓN" tooltipPosition="bottom">
                            <span class="pickup">AUTOGESTIÓN</span>
                         </div>
                      </div>
 
                      <div *ngIf="order?.deliveryMan?.status == 'inStore'">
-                        <div>Repartidor en camino</div>
-                        <img *ngIf="order.isPickUpStore" src="{{order.deliveryMan.picture.profile}}" alt="Driver" class="icon-size">
+                        <img src="../../../assets/images/driverImage.svg" alt="Driver" class="icon-size">
                         <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                      </div>
 
                      <div *ngIf="order?.deliveryMan?.status == 'toStore'">
-                        <div>Repartidor está en la tienda</div>
-                        <img *ngIf="order.isPickUpStore" src="{{order.deliveryMan.picture.profile}}" alt="Driver" class="icon-size">
+                        <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">
                         <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                      </div>
                   </div>
@@ -246,7 +242,10 @@
                         <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
                      </div>
                      <div>
-                        <span *ngIf="order.isSelfManaged" class="pickup">AUTOGESTIÓN</span>
+                        <div *ngIf="order.isSelfManaged">
+                           <img src="../../../assets/images/selfManaged.svg" alt="SelfManaged" class="icon-size" pTooltip="AUTOGESTIÓN" tooltipPosition="bottom">
+                           <span class="pickup">AUTOGESTIÓN</span>
+                        </div>
    
                         <div *ngIf="order?.statusForAgentStore == 'inRoute' && !order.isSelfManaged">
                            <img src="{{order.deliveryMan.picture.profile}}" alt="Driver" class="icon-size">
@@ -305,6 +304,7 @@
                            <span class="pickup">PICK UP</span>
                         </div>
                         <div *ngIf="order.isApprovedSelfManaged">
+                           <img src="../../../assets/images/selfManaged.svg" alt="SelfManaged" class="icon-size" pTooltip="AUTOGESTIÓN" tooltipPosition="bottom">
                            <span class="pickup">AUTOGESTIÓN</span>
                         </div>
                      </div>
