@@ -29,9 +29,12 @@
         <div class="layout-topbar-right fadeInDown">
             <ul class="layout-topbar-actions">
                 <li #message class="topbar-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === message}">
-                    <a href="#" (click)="appMain.onTopbarItemClick($event,message)">
+                    <a href="#" class="space-between" (click)="appMain.onTopbarItemClick($event,message)">
                         <img src="{{ origenIcon }}" class="search-img marker" alt=""/>
                         <!-- <i class="topbar-icon pi pi-desktop" style="color: #FFFFFF;"></i> -->
+                    </a>
+                    <a href="#" class="space-between" (click)="showLeyend()" pTooltip="Leyenda" tooltipPosition="bottom">
+                        <i class="pi pi-book"></i>
                     </a>
                     <ul class="fadeInDown scrollable-menu">
                         <li class="layout-submenu-header">
@@ -56,7 +59,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </li>        
                     </ul>
                 </li>
@@ -183,4 +185,15 @@
             </tr>
         </ng-template>
     </p-table>
+</p-dialog>
+
+<p-dialog header="Leyenda" [(visible)]="isVisibleLeyend" [modal]="true" [closable]="true" [style]="{width: '50vw'}">
+    <div class="p-fluid">
+        <!-- Fecha de Inicio -->
+        <div class="p-field p-grid"><label for="dayStart" class="p-col-12 p-md-12"><img src="../../../assets/images/pickupStore.svg" alt="PickupStore" class="icon-size" pTooltip="Pick Up" tooltipPosition="bottom">: Pick Up</label></div>
+        <div class="p-field p-grid"><label for="dayStart" class="p-col-12 p-md-12"><img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">: Buscando Driver</label></div>   
+    </div>
+    <p-footer>
+        <p-button label="Cerrar" icon="pi pi-times" (click)="isVisibleLeyend=false" class="ui-button-secondary"></p-button>
+    </p-footer>
 </p-dialog>

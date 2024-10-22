@@ -596,8 +596,7 @@ h5{
     line-height: normal;
     white-space: nowrap;     
     overflow: hidden;         
-    text-overflow: ellipsis;  
-    max-width: 100px;            
+    text-overflow: ellipsis;           
   }
 
   .calculated-time-end{
@@ -605,8 +604,7 @@ h5{
     font-size: 18px;
     font-style: normal;
     font-weight: 700;
-    line-height: normal;   
-    max-width: 100px;            
+    line-height: normal;             
   }
 
   .order-isPickUpStore{
@@ -722,7 +720,7 @@ p{
 .pickup{
     line-height: 1.5;
     color: #212322;
-    font-size: 20px;
+    font-size: 19px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -736,4 +734,30 @@ p{
     .p-lg-order-5 {
         width: 20%!important;
     }
+}
+
+::ng-deep .p-chip .p-chip-text{
+    margin: 0!important;
+}
+
+::ng-deep .p-button.p-button-icon-only.p-button-rounded{
+    height: auto!important;
+}
+
+::ng-deep .p-button.p-button-icon-only {
+    width: auto!important; 
+    padding: .5rem!important;
+}
+
+::ng-deep .p-button.p-button-sm{
+    padding:0.4rem!important;
+}
+
+.p-pt-3{
+    padding-top: .5rem !important
+}
+
+.space-between{
+    width: auto!important;
+    margin: auto!important;
 }

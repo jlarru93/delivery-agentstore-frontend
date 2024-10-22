@@ -34,6 +34,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { ChipModule } from "primeng/chip";
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { SidebarModule } from "primeng/sidebar";
+import {KnobModule} from 'primeng/knob';
+import { TooltipModule } from "primeng/tooltip";
 
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent],
@@ -67,7 +69,9 @@ import { SidebarModule } from "primeng/sidebar";
       MatIconModule,
       InputTextModule,
       TagModule,
-      InputSwitchModule
+      InputSwitchModule,
+      KnobModule,
+      TooltipModule
     ],
     providers:[OrderService]
   })
