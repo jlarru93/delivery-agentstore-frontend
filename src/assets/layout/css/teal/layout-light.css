@@ -7673,7 +7673,7 @@ a {
 }
 .layout-content {
   flex: 1 0 auto;
-  padding: 2em;
+  padding: 0.5em;
 }
 
 .layout-dashboard .list-effect {

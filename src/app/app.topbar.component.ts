@@ -303,4 +303,9 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         this.audioService.onPlayAudioFirstLoad()
         this.isWelcomeDialogOpen = false
     }
+
+    isVisibleLeyend:boolean=false
+    showLeyend(){
+        this.isVisibleLeyend = true
+    }
 }

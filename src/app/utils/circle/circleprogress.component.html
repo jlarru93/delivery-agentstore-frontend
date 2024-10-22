@@ -1,3 +1,7 @@
-<div #circularProgress class="circular-progress">
+<!-- <div #circularProgress class="circular-progress">
     <span #progressValue class="progress-value">0 min</span>
-</div>
+</div> -->
+
+
+<p-knob [(ngModel)]="minutesElapsed" [min]="0" [max]="totalTimeInMinutes" [strokeWidth]="10" size="45" disabled>
+</p-knob>

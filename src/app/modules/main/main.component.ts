@@ -68,7 +68,7 @@ import { ActivatedRoute, Router } from "@angular/router";
     readyToDmMinutesAt: number=0
     displayOrderReject: boolean = false
 
-    title:string="Aceptar"
+    title:string="Por Aceptar"
 
     modal : HTMLDialogElement
     popup : any 
@@ -125,6 +125,7 @@ import { ActivatedRoute, Router } from "@angular/router";
       ){
         this.orderRepository.orders.subscribe((order)=>{
           this.orders=order
+          console.log("Order:::",order)
           this.sortOrders()
           if(this.orders.length > 0){
             if (!this.audioService.audioAlreadyPlayed) {
@@ -790,14 +791,31 @@ import { ActivatedRoute, Router } from "@angular/router";
 
     calculateTime(createdAt: number) {
       const tiempoActual = new Date();
-      const tiempoCreacion = new Date(createdAt*1000);
-      const diferencia = (tiempoActual.getTime() - tiempoCreacion.getTime());
-      const daysDifference = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-      const hoursDifference = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutesDifference = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
-      var day= daysDifference>0?daysDifference+'d ':''
-      var res = (day+' '+hoursDifference+'h '+minutesDifference).toString()
+      const tiempoCreacion = new Date(createdAt * 1000);
+      const diferencia = tiempoActual.getTime() - tiempoCreacion.getTime();
+
+      const hoursDifference = Math.floor(diferencia / (1000 * 60 * 60));
+      const minutesDifference = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60)); 
+
+      const res = `${hoursDifference}h ${minutesDifference}`.toString(); 
       return res;
+    }
+
+    calculateTimeOrderEnd(createdAt: number) {
+      const tiempoCreacion = new Date(createdAt * 1000);
+      
+      const options: Intl.DateTimeFormatOptions = {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      };
+      
+      const formattedDate = new Intl.DateTimeFormat('es-ES', options).format(tiempoCreacion);
+      
+      return formattedDate;
     }
 
   loadingButtonUpdateTime : boolean = false

@@ -1,40 +1,45 @@
 <p-toast [baseZIndex]="1000"></p-toast>
 <div class="p-grid">
-    <div class="p-col-12 p-lg-2 p-md-6">
+    <div class="p-col-12 p-lg-order-5 p-md-6">
       <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
-         <div class="p-text-center main-title">
-            <p class="order-ready-main-title">{{title}} ({{ordersOpen.length}})</p>
-            <div class="p-m-0 p-pt-2 p-pl-1">
-               <i *ngIf="audioService.isPlaying" class="pi pi-volume-up" style="color:#000; font-size: 1.25rem; font-weight: bold;" (click)="stopAudio()"></i>
-               <i *ngIf="!audioService.isPlaying" class="pi pi-volume-off" style="color:#000; font-size: 1.25rem; font-weight: bold;"></i>
-            </div>
+         <div class="p-pl-2 card-order-ready-bottom">
+            <p class="order-ready-main-title">{{title}}</p>
+            <p class="order-ready-main-title">({{ordersOpen.length}})</p>
+            <!-- <div class="p-m-0 p-pt-2 p-pl-1"> -->
+               <!-- <i *ngIf="audioService.isPlaying" class="pi pi-volume-up" style="color:#000; font-size: 1.25rem; font-weight: bold;" (click)="stopAudio()"></i>
+               <i *ngIf="!audioService.isPlaying" class="pi pi-volume-off" style="color:#000; font-size: 1.25rem; font-weight: bold;"></i> -->
+            <!-- </div> -->
          </div>
    
          <div *ngFor="let order of ordersOpen; let i = index">
             <div class="p-p-2">
                <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
                   <div class="card-order-header" (click)="openOrderDialog(order)">
-                     <p class="order-ready-id">{{order.id}}</p>
-                     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23" fill="none">
-                        <circle cx="11.6694" cy="11.6406" r="10.8354" [attr.fill]="activoColor ? '#255FB1' : '#FFD700'"/>
-                     </svg>
-                  </div>
-                  <div class="card-order-ready-time">
-                     <div class="calculated-time-subtitle">Order Time</div>
-                     <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
-                  </div>
-                  <div class="p-pt-3 p-pb-3">
-                     <div *ngIf="order.isPickUpStore">
-                        <div class="order-isPickUpStore">Recojo en tienda</div>
+                     <div class="card-order-header-id">
+                        <p class="order-ready-id">{{order.id}}</p>
                      </div>
-                     
-                     <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
-                     <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
+   
+                     <div class="card-order-header-time">
+                        <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div> 
+                     </div>
+   
+                     <div class="card-order-header-icon">
+                        <img *ngIf="order.isPickUpStore" 
+                        src="../../../assets/images/pickupStore.svg" 
+                        alt="PickupStore" 
+                        class="icon-size"
+                        pTooltip="Pick Up" 
+                        tooltipPosition="bottom">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23" fill="none">
+                           <circle cx="11.6694" cy="11.6406" r="10.8354" [attr.fill]="activoColor ? '#255FB1' : '#FFD700'"/>
+                        </svg>
+                     </div>
                   </div>
-                  <div>
+                  <div class="card-order-ready-bottom"> 
+                     <div class="order-preparing">{{order?.user?.name}} {{order?.user?.surname}}</div>   
                      <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
                   </div>
-                  <hr style="background-color: #DDDDDD; height: 1px;">
+                  <hr style="background-color: #DDDDDD; height: 1px;" class="hr-inline">
                   <div class="card-order-ready-bottom">
                      <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" 
@@ -66,54 +71,58 @@
       </div>
 
     </div>
-    <div class="p-col-12 p-lg-3 p-md-6">
+    <div class="p-col-12 p-lg-order-5 p-md-6">
       <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
-         <div class="p-text-center main-title">
-            <p class="order-ready-main-title">En preparación ({{ordersPreparing.length}})</p>
+         <div class="p-pl-2 card-order-ready-bottom">
+            <p class="order-ready-main-title">En preparación</p>
+            <p class="order-ready-main-title">({{ordersPreparing.length}})</p>
          </div>
          <div *ngFor="let order of ordersPreparing; let i = index">
             <div class="p-p-2">
                <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
                   <div class="card-order-header" (click)="openOrderDialog(order)">
-                     <p class="order-ready-id">{{order.id}}</p>
-                     <circle-progress [startTime]="order.acceptAgentStoreAt" [endTime]="order.readyToDmAt"  style="padding-right: 10px; float: right;"></circle-progress>
-                  </div>
-                  <div class="card-order-ready-time">
-                     <div class="calculated-time-subtitle">Order Time</div>
-                     <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
-                  </div>
-                  <div class="p-pt-3 p-pb-3">
-                     <div *ngIf="order.isPickUpStore">
-                        <div class="order-isPickUpStore">Recojo en tienda</div>
+                     <div class="card-order-header-id order-preparing">
+                        <p class="order-ready-id">{{order.id}}</p>
                      </div>
-
-                     <div *ngIf="order.isApprovedSelfManaged">  
-                        <div class="order-isPickUpStore">Aprobado Autogestión</div>                   
+                     <div class="card-order-header-time order-preparing">
+                        <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div> 
                      </div>
-   
-                     <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
-                     <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
+                     <div class="card-order-header-icon">
+                        <circle-progress [startTime]="order.acceptAgentStoreAt" [endTime]="order.readyToDmAt"  style="padding-right: 10px; float: right;"></circle-progress>
+                        <!-- <p-knob [(ngModel)]="value" [min]="order.acceptAgentStoreAt" [max]="order.readyToDmAt" [strokeWidth]="5" size="50"></p-knob> -->
+                     </div>
                   </div>
-                  <div class="order-store-status">
-                     <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
+                  <div class="order-preparing">{{order?.user?.name}} {{order?.user?.surname}}</div>  
+                  <div class="order-store-status">  
+                     <div>
+                        <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
+                     </div>
                      <div *ngIf="order?.deliveryMan == null" style="display: flex;">
-                        <p-progressSpinner [style]="{width: '20px', height: '20px'}" strokeWidth="5" styleClass="custom-spinner"></p-progressSpinner>
-                        <span>Buscando repartidor...</span>
-                     </div>
-                     <div *ngIf="order?.deliveryMan?.status == 'toStore'">
-                        <div>Repartidor en camino</div>
-                        <div class="p-d-flex p-ai-center">
-                           <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="custom-chip-dm p-mr-2"></p-chip>
+                        <div *ngIf="!order.isPickUpStore && !order.isApprovedSelfManaged">
+                           <span class="find-driver">Buscando...</span>
+                        </div>
+                        <div *ngIf="order.isPickUpStore">
+                           <img src="../../../assets/images/pickupStore.svg" alt="PickupStore" class="icon-size" pTooltip="Pick Up" tooltipPosition="bottom">
+                           <span class="pickup">PICK UP</span>
+                        </div>
+                        <div *ngIf="order.isApprovedSelfManaged">
+                           <img src="../../../assets/images/selfManaged.svg" alt="SelfManaged" class="icon-size" pTooltip="AUTOGESTIÓN" tooltipPosition="bottom">
+                           <span class="pickup">AUTOGESTIÓN</span>
                         </div>
                      </div>
+
                      <div *ngIf="order?.deliveryMan?.status == 'inStore'">
-                        <div>Repartidor está en la tienda</div>
-                        <div class="p-d-flex p-ai-center">
-                           <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="custom-chip-dm p-mr-2"></p-chip>
-                        </div>         
+                        <img src="../../../assets/images/driverImage.svg" alt="Driver" class="icon-size">
+                        <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
+                     </div>
+
+                     <div *ngIf="order?.deliveryMan?.status == 'toStore'">
+                        <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">
+                        <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                      </div>
                   </div>
-                  <hr style="background-color: #DDDDDD; height: 1px;">
+                  
+                  <hr style="background-color: #DDDDDD; height: 1px;" class="hr-inline">
                   <div class="card-order-ready-bottom">
                      <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
@@ -141,51 +150,51 @@
          
       </div>
     </div>
-    <div class="p-col-12 p-lg-3 p-md-6">
+    <div class="p-col-12 p-lg-order-5 p-md-6">
       <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
-         <div class="p-text-center main-title">
-            <p class="order-ready-main-title">Por Entregar ({{ordersReady.length}})</p>
+         <div class="p-pl-2 card-order-ready-bottom">
+            <p class="order-ready-main-title">Por Entregar</p>
+            <p class="order-ready-main-title">({{ordersReady.length}})</p>
          </div>
          <div *ngFor="let order of ordersReady; let i = index">
             <div class="p-p-2">
                <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
                   <div class="card-order-header" (click)="openOrderDialog(order)">
                      <p class="order-ready-id">{{order.id}}</p>
-                  </div>
-                  <div class="card-order-ready-time">
-                     <div class="calculated-time-subtitle">Order Time</div>
-                     <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
-                  </div>
-                  <div class="p-pt-3 p-pb-3">
-                     <div *ngIf="order.isPickUpStore">
-                        <div class="order-isPickUpStore">Recojo en tienda</div>
+                     <div class="card-order-ready-time">
+                        <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
                      </div>
-                     <div *ngIf="order.isApprovedSelfManaged">
-                        <div class="order-isPickUpStore">Aprobado Autogestión</div>                      
-                     </div>
-                     <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
-                     <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
                   </div>
-                  <div class="order-store-status">
-                     <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
-                     <div *ngIf="order?.deliveryMan?.status == 'toStore'">
-                        <div>Repartidor en camino</div>
-                        <div class="p-d-flex p-ai-center">
-                           <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="custom-chip-dm p-mr-2"></p-chip>
-                        </div>
-                     </div>
-                     <div *ngIf="order?.deliveryMan?.status == 'inStore'">
-                        <div>Repartidor está en la tienda</div>
-                        <div class="p-d-flex p-ai-center">
-                           <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="custom-chip-dm p-mr-2"></p-chip>
-                        </div>
+                  <div class="order-preparing">{{order?.user?.name}} {{order?.user?.surname}}</div>  
+                  <div class="order-store-status">  
+                     <div>
+                        <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
                      </div>
                      <div *ngIf="order?.deliveryMan == null" style="display: flex;">
-                        <p-progressSpinner [style]="{width: '20px', height: '20px'}" strokeWidth="5" styleClass="custom-spinner"></p-progressSpinner>
-                        <span>Buscando repartidor...</span>
+                        <div *ngIf="!order.isPickUpStore && !order.isApprovedSelfManaged">
+                           <span class="find-driver">Buscando...</span>
+                        </div>
+                        <div *ngIf="order.isPickUpStore">
+                           <img src="../../../assets/images/pickupStore.svg" alt="PickupStore" class="icon-size" pTooltip="Pick Up" tooltipPosition="bottom">
+                           <span class="pickup">PICK UP</span>
+                        </div>
+                        <div *ngIf="order.isApprovedSelfManaged">
+                           <img src="../../../assets/images/selfManaged.svg" alt="SelfManaged" class="icon-size" pTooltip="AUTOGESTIÓN" tooltipPosition="bottom">
+                           <span class="pickup">AUTOGESTIÓN</span>
+                        </div>
+                     </div>
+
+                     <div *ngIf="order?.deliveryMan?.status == 'inStore'">
+                        <img src="../../../assets/images/driverImage.svg" alt="Driver" class="icon-size">
+                        <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
+                     </div>
+
+                     <div *ngIf="order?.deliveryMan?.status == 'toStore'">
+                        <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">
+                        <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                      </div>
                   </div>
-                  <hr style="background-color: #DDDDDD; height: 1px;">
+                  <hr style="background-color: #DDDDDD; height: 1px;" class="hr-inline">
                   <div class="card-order-ready-bottom">
                      <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
@@ -212,45 +221,40 @@
          </div>
       </div>
     </div>
-   <div class="p-col-12 p-lg-2 p-md-6">
+   <div class="p-col-12 p-lg-order-5 p-md-6">
       <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
-         <div class="p-text-center main-title">
-            <p class="order-ready-main-title">En Reparto ({{ordersInRoute.length}})</p>
+         <div class="p-pl-2 card-order-ready-bottom">
+            <p class="order-ready-main-title">En Reparto</p>
+            <p class="order-ready-main-title">({{ordersInRoute.length}})</p>
          </div>
          <div *ngFor="let order of ordersInRoute; let i = index">
             <div class="p-p-2">
                <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
                   <div class="card-order-header" (click)="openOrderDialog(order)">
                      <p class="order-ready-id">{{order.id}}</p>
-                  </div>
-                  <div class="card-order-ready-time">
-                     <div class="calculated-time-subtitle">Order Time</div>
-                     <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
-                  </div>
-                  <div class="p-pt-3 p-pb-3">
-
-                     <div *ngIf="order.isSelfManaged">
-                        <div class="order-isPickUpStore">Autogestionado</div>                             
+                     <div class="card-order-ready-time">
+                        <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
                      </div>
-   
-                     <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
-                     <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
                   </div>
-                  <div class="order-store-status">
-                     <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
-                     <!-- <div *ngIf="order?.deliveryMan == null" style="display: flex;">
-                        <p-progressSpinner [style]="{width: '20px', height: '20px'}" strokeWidth="5" styleClass="custom-spinner"></p-progressSpinner>
-                        <span>Buscando repartidor...</span>
-                     </div> -->
-                     <div *ngIf="order?.statusForAgentStore == 'inRoute'">
-                        
-                        <div class="p-d-flex p-ai-center">
-                           <p-chip label="{{order.deliveryMan.name.toUpperCase()}}" image="{{order.deliveryMan.picture.profile}}" styleClass="custom-chip-dm p-mr-2"></p-chip>
+                  <div class="order-preparing">{{order?.user?.name}} {{order?.user?.surname}}</div>  
+                  <div class="order-store-status">  
+                     <div>
+                        <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
+                     </div>
+                     <div>
+                        <div *ngIf="order.isSelfManaged">
+                           <img src="../../../assets/images/selfManaged.svg" alt="SelfManaged" class="icon-size" pTooltip="AUTOGESTIÓN" tooltipPosition="bottom">
+                           <span class="pickup">AUTOGESTIÓN</span>
+                        </div>
+   
+                        <div *ngIf="order?.statusForAgentStore == 'inRoute' && !order.isSelfManaged">
+                           <img src="{{order.deliveryMan.picture.profile}}" alt="Driver" class="icon-size">
+                           <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                         </div>
                      </div>
-
                   </div>
-                  <hr style="background-color: #DDDDDD; height: 1px;">
+
+                  <hr style="background-color: #DDDDDD; height: 1px;" class="hr-inline">
                   <div class="card-order-ready-bottom">
                      <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
@@ -275,35 +279,38 @@
          </div>
       </div>
    </div>
-   <div class="p-col-12 p-lg-2 p-md-6">
+   <div class="p-col-12 p-lg-order-5 p-md-6">
       <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
-         <div class="p-text-center main-title">
-            <p class="order-ready-main-title">Culminado ({{ordersFinis.length}})</p>
+         <div class="p-pl-2 card-order-ready-bottom">
+            <p class="order-ready-main-title">Culminados</p>
+            <p class="order-ready-main-title">({{ordersFinis.length}})</p>
          </div>
          <div *ngFor="let order of ordersFinis; let i = index">
             <div class="p-p-2">
                <div class="card-order-ready p-pt-3 p-pl-2 p-pr-2 p-pb-2">
                   <div class="card-order-header" (click)="openOrderDialog(order)">
                      <p class="order-ready-id">{{order.id}}</p>
+                     <div class="calculated-time-end">{{calculateTimeOrderEnd(order?.createdAt)}}</div>   
                   </div>
-                  <div class="card-order-ready-time">
-                     <div class="calculated-time-subtitle">Order Time</div>
-                     <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div>  
-                  </div>
-                  <div class="p-pt-3 p-pb-3">
-                     <div *ngIf="order.isPickUpStore">
-                        <div class="order-isPickUpStore">Recojo en tienda</div>
+
+                  <div class="order-store-status">  
+                     <div>
+                        <div class="order-preparing">{{order?.user?.name}} {{order?.user?.surname}}</div> 
+                        <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
                      </div>
-                     <div *ngIf="order.isApprovedSelfManaged">  
-                        <div class="order-isPickUpStore">Autogestionado</div>                   
+                     <div>
+                        <div *ngIf="order.isPickUpStore">
+                           <img src="../../../assets/images/pickupStore.svg" alt="PickupStore" class="icon-size">
+                           <span class="pickup">PICK UP</span>
+                        </div>
+                        <div *ngIf="order.isApprovedSelfManaged">
+                           <img src="../../../assets/images/selfManaged.svg" alt="SelfManaged" class="icon-size" pTooltip="AUTOGESTIÓN" tooltipPosition="bottom">
+                           <span class="pickup">AUTOGESTIÓN</span>
+                        </div>
                      </div>
-                     <div class="order-ready-fullname">{{order?.user?.fullName}}</div>                              
-                     <div class="order-ready-address">{{order?.user?.address?.addressStreet}}</div>
                   </div>
-                  <div class="order-store-status">
-                     <p-chip label="{{order?.store?.name}}" styleClass="custom-chip p-mr-2"></p-chip>
-                  </div>
-                  <hr style="background-color: #DDDDDD; height: 1px;">
+                  
+                  <hr style="background-color: #DDDDDD; height: 1px;" class="hr-inline">
                   <div class="card-order-ready-bottom">
                      <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
@@ -404,7 +411,7 @@
       <b><h3>Orden: {{orderSelected.id}}</h3></b>
    </div>
    <div class="p-toolbar-group-right">
-      <button  pButton type="button" icon="pi pi-print" label="Imprimir comanda" class="p-button-info" (click)="printToPDF()"></button> 
+      <button pButton type="button" icon="pi pi-print" label="Imprimir comanda" class="p-button-info" (click)="printToPDF()"></button> 
       <div id="pdf" style="display: none;">
          <app-print-template [orderSelected]="orderSelected" [storeData]="storeDataStorage"></app-print-template>
 

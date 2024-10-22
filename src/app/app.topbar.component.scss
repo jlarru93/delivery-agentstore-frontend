@@ -68,37 +68,37 @@
 }
 
 :host ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-close {
-display: none;
-}
-
-:host ::ng-deep .p-dialog .p-dialog-header {
-background-color: red;
-color: white; 
-padding: 20px;
-border-radius: 8px 8px 8px 8px; 
-position: relative; 
-}
-
-:host ::ng-deep .p-dialog .p-dialog-header .custom-close-button {
-position: absolute;
-top: 50%; 
-right: 30px; 
-background-color: black;
-transform: translateY(-50%); 
-border: none; 
-color: white; 
-border-radius: 50%; 
-padding: 10px;
-width: 40px; 
-height: 40px; 
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-:host ::ng-deep .p-dialog .p-dialog-header .custom-close-button .pi {
-  font-size: 1.5em;
-}
+  display: none;
+  }
+  
+  :host ::ng-deep .p-dialog .p-dialog-header {
+  background-color: red;
+  color: white; 
+  padding: 20px;
+  border-radius: 8px 8px 8px 8px; 
+  position: relative; 
+  }
+  
+  :host ::ng-deep .p-dialog .p-dialog-header .custom-close-button {
+  position: absolute;
+  top: 50%; 
+  right: 30px; 
+  background-color: black;
+  transform: translateY(-50%); 
+  border: none; 
+  color: white; 
+  border-radius: 50%; 
+  padding: 10px;
+  width: 40px; 
+  height: 40px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  }
+  
+  :host ::ng-deep .p-dialog .p-dialog-header .custom-close-button .pi {
+    font-size: 1.5em;
+  }
 
 .custom-button-table {
 background-color: black;
@@ -128,4 +128,41 @@ border: none;
 cursor: pointer;
 transition: background-color 0.3s;
 margin-top: 2px;
+}
+
+.space-between{
+  width: auto!important;
+  margin: auto!important;
+  padding: 0.5!important;
+}
+
+.custom-header-leyend {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white!important; /* Custom background color */
+  color: black!important; /* Custom text color */
+  padding: 10px 20px;
+  border-radius: 8px 8px 0 0;
+}
+
+.custom-header-leyend h2 {
+  margin: 0;
+  font-size: 20px; /* Adjust font size */
+}
+
+.custom-close {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.custom-close i {
+  font-size: 16px;
+}
+
+.icon-size {
+  width: 40px;
+  height: 40px;
 }

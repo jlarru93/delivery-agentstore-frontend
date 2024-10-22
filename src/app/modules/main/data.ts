@@ -125,6 +125,8 @@ export class UserBean {
     address?: AddressBean
     phone?: string
     email?: string
+    name?:string
+    surname?:string
     documentType?: string
     documentValue?: string
 }
@@ -214,7 +216,7 @@ export class OrderBean {
         this.showChat = true
     }
     getCurrency(): string {
-        return ""+this.products[0]?.price.currency??'0'
+        return ""+this.products[0]?.price.currency
     }
     getProductPrice(): number {
         return this.products.reduce((accumulation, current) => { return accumulation + current.getTotalPrice() }, 0)//sumOf { it.getTotalPrice() }
