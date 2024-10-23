@@ -112,12 +112,12 @@
                      </div>
 
                      <div *ngIf="order?.deliveryMan?.status == 'inStore'">
-                        <img src="../../../assets/images/driverImage.svg" alt="Driver" class="icon-size">
+                        <img src="../../../assets/images/driverImage.svg" alt="Driver" class="icon-size" pTooltip="En la tienda" tooltipPosition="bottom">
                         <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                      </div>
 
                      <div *ngIf="order?.deliveryMan?.status == 'toStore'">
-                        <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">
+                        <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size" pTooltip="En camino a la tienda" tooltipPosition="bottom">
                         <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                      </div>
                   </div>
@@ -185,12 +185,12 @@
                      </div>
 
                      <div *ngIf="order?.deliveryMan?.status == 'inStore'">
-                        <img src="../../../assets/images/driverImage.svg" alt="Driver" class="icon-size">
+                        <img src="../../../assets/images/driverImage.svg" alt="Driver" class="icon-size" pTooltip="En la tienda" tooltipPosition="bottom">
                         <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                      </div>
 
                      <div *ngIf="order?.deliveryMan?.status == 'toStore'">
-                        <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">
+                        <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size" pTooltip="En camino a la tienda" tooltipPosition="bottom">
                         <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                      </div>
                   </div>
@@ -248,7 +248,7 @@
                         </div>
    
                         <div *ngIf="order?.statusForAgentStore == 'inRoute' && !order.isSelfManaged">
-                           <img src="{{order.deliveryMan.picture.profile}}" alt="Driver" class="icon-size">
+                           <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size" pTooltip="En Ruta" tooltipPosition="bottom">
                            <span class="find-driver">{{order.deliveryMan.name.toUpperCase()}}</span>
                         </div>
                      </div>
