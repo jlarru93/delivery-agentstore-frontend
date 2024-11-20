@@ -153,8 +153,11 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     
         try {
             const responses = await Promise.all(promises);
-            responses.map((response: any) => {
-                const invoices = response.data.filter(data => data.status === 'pending');
+            const date = new Date();
+            const timestampInSeconds = Number(date.getTime().toString().substring(0,10))
+            responses.forEach((response: any) => {
+                console.log("FACTURAS:::",response.data)
+                const invoices = response.data.filter(data => data.status === 'pending' && timestampInSeconds > data.due_date);
                 invoices.forEach(invoice => {
                     if (!this.invoiceMap.has(invoice.brandName)) {
                         this.invoiceMap.set(invoice.brandName, []);
