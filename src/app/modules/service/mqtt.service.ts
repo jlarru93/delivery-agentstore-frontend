@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Client, ConnectionOptions } from "paho-mqtt";
+import { Client, ConnectionOptions, Message } from "paho-mqtt";
 import { v4 as uuidv4 } from 'uuid';
 import { MqttRoutingService } from "./mqtt.routing.service";
 import { threadId } from "worker_threads";
@@ -15,65 +15,69 @@ export class MqttService {
     client: Client
     message: string = ""
     constructor(private routing: MqttRoutingService) {
-        let host = environment.mqttServer.url
-        let wsport = environment.mqttServer.port
-        let path = environment.mqttServer.path
-        let useSSL = environment.mqttServer.useSSL
-        let mqttUser = environment.mqttServer.user
-        let mqttPwd = environment.mqttServer.pwd
-        let idTransaccion = uuidv4();
+        const host = environment.mqttServer.url;
+        const wsport = environment.mqttServer.port;
+        const path = environment.mqttServer.path;
+        const useSSL = environment.mqttServer.useSSL;
+        const mqttUser = environment.mqttServer.user;
+        const mqttPwd = environment.mqttServer.pwd;
+    
+        const idTransaccion = uuidv4();
         const clientId = "AgentStore-" + idTransaccion;
-        console.log("clientId",clientId)
+        console.log("clientId", clientId);
+    
+        // Crear cliente MQTT
         this.client = new Client(host, wsport, path, clientId);
-        // set callback handlers
-        // called when the client loses its connection
-        this.client.onConnectionLost = (responseObject: Paho.MQTT.MQTTError) => {
-            if (responseObject.errorCode !== 0) {
-                console.log("onConnectionLost:" + responseObject.errorMessage);
-            }
+    
+        // Manejadores de eventos
+        this.client.onConnectionLost = (responseObject) => {
+          if (responseObject.errorCode !== 0) {
+            console.log("onConnectionLost:", responseObject.errorMessage);
+          }
         };
-        // called when a message arrives
-        this.client.onMessageArrived = (message: Paho.MQTT.Message) => {
-            console.log("onMessageArrived:", message);
-            let topic = message.destinationName
-            let payload = message.payloadString
-            this.routing.route(topic,payload)
+    
+        this.client.onMessageArrived = (message: Message) => {
+          console.log("onMessageArrived:", message);
+          const topic = message.destinationName;
+          const payload = message.payloadString;
+          this.routing.route(topic, payload);
         };
-        // connect the client
-        let connectionOptions={
-            useSSL:useSSL,
-            timeout: 3,
-            
-            keepAliveInterval: 30,
-            onSuccess: () => {
-                // Once a connection has been made, make a subscription and send a message.
-                console.log("Conecto Mqtt");
-                this.isMqttConnect=true
-                this._onConnect.next(true)
-            },
-            onFailure: (message) => {
-                this.isMqttConnect=false
-                console.log("CONNECTION FAILURE - ", message);
-                this._onConnect.next(false)
-            }
-        } as ConnectionOptions
-        if(mqttUser){
-            connectionOptions.userName=mqttUser
-            connectionOptions.password=mqttPwd
+    
+        // Configuración de conexión
+        const connectionOptions = {
+          useSSL: useSSL,
+          timeout: 3,
+          keepAliveInterval: 30,
+          onSuccess: () => {
+            console.log("Conectado a MQTT");
+            this.isMqttConnect = true;
+          },
+          onFailure: (message) => {
+            console.log("CONNECTION FAILURE -", message);
+            this.isMqttConnect = false;
+          }
+        } as Paho.MQTT.ConnectionOptions;
+    
+        if (mqttUser) {
+          connectionOptions.userName = mqttUser;
+          connectionOptions.password = mqttPwd;
         }
-
-        console.log("environment.mqttServer",environment.mqttServer)
-        console.log("connectionOptions",connectionOptions)
-        console.log("this.client",this.client)
+    
+        console.log("environment.mqttServer", environment.mqttServer);
+        console.log("connectionOptions", connectionOptions);
+        console.log("this.client", this.client);
+    
+        // Conectar al cliente
         this.client.connect(connectionOptions);
-        setInterval(()=>{
-            if(this.client.isConnected()){
-                //console.log('this.client.isConnected()',this.client.isConnected())
-            }else{
-                console.log('this.client.connect',this.client)
-                this.client.connect(connectionOptions);
-            }
-        },15000)
+    
+        // Reconectar cada 15 segundos si la conexión se pierde
+        setInterval(() => {
+          if (!this.client.isConnected()) {
+            console.log("Intentando reconectar...");
+            this.client.connect(connectionOptions);
+          }
+        }, 3000);
+    
     }
 
 
