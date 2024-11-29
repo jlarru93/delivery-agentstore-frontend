@@ -606,7 +606,9 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
           order.store=element.store
           order.isCheckedStore=element.isCheckedStore??false
           order.type = element.type
+          order.urlTracking = element.urlTracking
           this.list_order.push(order);
+          console.log("list order: ",this.list_order)
           this.filteredOrders = this.list_order
           this.filteredOrders = this.list_order.filter(order => order.type === this.filterOrder);
         });

@@ -97,6 +97,7 @@ export class ResponseLoadingOrder{
     store:StoreResponse
     isCheckedStore:boolean
     isSpinnerVisible:boolean
+    urlTracking: string
     constructor(){
         this.isSpinnerVisible = false
         this.messagesNoReadTotal=0
