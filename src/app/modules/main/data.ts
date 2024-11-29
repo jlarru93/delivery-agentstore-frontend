@@ -207,6 +207,7 @@ export class OrderBean {
     productPriceDiscount?:number
     productPriceWithDiscount?:number
     coupons?: CouponsBean[]
+    urlTracking:string
 
     constructor(){
         this.messagesNoReadTotal=0
