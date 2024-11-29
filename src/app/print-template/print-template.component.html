@@ -49,6 +49,10 @@
             <span><strong>{{onGetMethodType(orderSelected?.payment?.method?.type)}}</strong></span>
         </div>
     </div>
+    <div class="item">
+        <span>Cédula:</span>
+        <span><strong>{{orderSelected?.user?.documentValue}}</strong></span>
+    </div>
     <hr style="border-top: dashed 1px;" />
     <div *ngFor="let product of orderSelected.products; index as i">
         <div class="detalle">

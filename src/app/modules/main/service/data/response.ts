@@ -414,6 +414,7 @@ export class OrderResponse {
     productPriceDiscount ?:number
     productPriceWithDiscount?:number
     coupons?: CouponsResponse[]
+    urlTracking:string
 
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
@@ -446,6 +447,7 @@ export class OrderResponse {
         bean.productPriceDiscount = self.productPriceDiscount
         bean.productPriceWithDiscount = self.productPriceWithDiscount
         bean.coupons = self?.coupons?.map((it)=> CouponsResponse.toBean(it))
+        bean.urlTracking = self.urlTracking
         bean.statusHistory = (self?.statusHistory || []).map(history => ({
             ...history,
             executeFor: {
