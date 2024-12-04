@@ -37,7 +37,8 @@ import { DeliveryManRouteResponse, ResponseTrackingMotorized, RouterResponse } f
 import { Router } from "@angular/router";
 import { AlertServices } from "../service/alert.service";
 import { HttpErrorResponse } from "@angular/common/http";
-
+import { ClipboardService } from 'ngx-clipboard';
+import { MessageService } from "primeng/api";
 class PolyLine{
   routePoints:RoutePoint[]
   color: string
@@ -63,6 +64,7 @@ interface Marker {
   selector: "app-order-course",
   templateUrl: "./order-course.component.html",
   styleUrls: ["./order-course.component.scss"],
+  providers:[MessageService]
 })
 export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
@@ -74,7 +76,9 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     private mqtt: MqttService,
     private auth: AuthService,
     private router: Router,
-    private alert:AlertServices
+    private alert:AlertServices,
+    private readonly clipboardService:ClipboardService,
+    private messageService: MessageService,
   ) {}
 
 
@@ -969,5 +973,9 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.filteredOrders = this.list_order.filter(order => order.type === this.filterOrder);
     }
+  }
+  copyClipBoard(value:string){
+    this.clipboardService.copy(value)
+    this.messageService.add({ key: 'tc', severity: 'info', summary: 'copiado!'});
   }
 }
