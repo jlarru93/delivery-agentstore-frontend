@@ -31,6 +31,7 @@ import { interval } from "rxjs";
 import { AudioService } from "../service/audio.service";
 import { OrderRepository } from "./service/order.repository";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ClipboardService } from "ngx-clipboard";
 //import { NgxPrinterService } from "ngx-printer";
 @Component({
     selector: 'app-stores',
@@ -121,7 +122,8 @@ import { ActivatedRoute, Router } from "@angular/router";
       public audioService:AudioService,
       private ngZone: NgZone,
       private router: Router,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private readonly clipboardService:ClipboardService,
       ){
         this.orderRepository.orders.subscribe((order)=>{
           this.orders=order
@@ -959,5 +961,9 @@ import { ActivatedRoute, Router } from "@angular/router";
     const formattedDate = `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
 
     return formattedDate
+  }
+  copyClipBoard(value:string){
+    this.clipboardService.copy(value)
+    this.messageService.showSuccess('', 'copiado!')
   }
 }

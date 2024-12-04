@@ -408,7 +408,12 @@
    <p-toast position="top-center" key="tc"></p-toast>
  <ng-template pTemplate="header">
    <div class="p-toolbar-group-left">
-      <b><h3>Orden: {{orderSelected.id}}</h3></b>
+      <b>
+         <h3>
+            Orden: {{orderSelected.id}} 
+            <i class="pi pi-paperclip" (click)="copyClipBoard(orderSelected.urlTracking)"></i>
+         </h3>
+      </b>
    </div>
    <div class="p-toolbar-group-right">
       <button pButton type="button" icon="pi pi-print" label="Imprimir comanda" class="p-button-info" (click)="printToPDF()"></button> 
@@ -521,10 +526,6 @@
                      <span> {{orderSelected?.user?.documentValue}}</span>
                   </span>
                </div>
-            </div>
-            <div class="sidebar-container-title">URL de Tracking</div>
-            <div class="card-tracking">
-            <p style="font-weight: 50;">{{orderSelected.urlTracking}}</p>
             </div>
             <div *ngIf="orderSelected.status=='open'">
                <div class="sidebar-container-title">Tiempo de preparación</div>

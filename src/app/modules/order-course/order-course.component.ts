@@ -975,7 +975,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
   copyClipBoard(value:string){
-    this.clipboardService.copy(value)
-    this.messageService.add({ key: 'tc', severity: 'info', summary: 'copiado!'});
+    this.clipboardService.copy(value);
+    this.alert.showSuccess('',"copiado!");
   }
 }
