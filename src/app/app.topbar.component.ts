@@ -45,6 +45,12 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     invoiceMap = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
     dataReady:boolean=false
     listInvoices: any[] = [];
+    listInvoicesAfterPay: any[] = [];
+    listInvoicesBeforeTwoDays: any[] = [];
+    invoiceMapAfterPay = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
+    invoiceMapBeforeTwoDays = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
+    invoices: any
+    iterator:number = 1
 
     constructor(
         private auth: AuthService,
@@ -120,11 +126,12 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
 
     startDataFetch() {
         this.listBrands();
-        const minutes = 10 * 60 * 3600
+        const intervalFiveMinutes = 5 * 60 * 1000;
         setInterval(() => {
             this.listBrands();
-            this.listInvoice=[]
-        }, minutes); 
+            this.iterator++
+            console.log("ITERATOR:::",this.iterator)
+        }, intervalFiveMinutes); 
     }
 
     listBrands(){
@@ -136,46 +143,67 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     }
 
     async getLastInvoiceFromABrand(brands: Brand[]) {
-        this.listInvoices = [];
-        this.isShowDialog = false
-        this.invoiceMap = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
-        const promises = brands.map(brand => {
-            const request = {
-                filters: [
-                    { field: "brand_id", value: brand.id }
-                ],
-                page: 1,
-                size: 50
-            };
-    
-            return this.service.getLastInvoiceOfABrand(request).toPromise(); 
-        });
-    
         try {
-            const responses = await Promise.all(promises);
+            if(this.listInvoicesAfterPay.length > 0){
+                this.isShowDialog = false;
+            }
+
+            this.listInvoicesAfterPay = [];
+            this.listInvoicesBeforeTwoDays = [];
+            this.invoiceMapAfterPay = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
+            this.invoiceMapBeforeTwoDays = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
+
+            const statusFilters = ['pending', 'intent', 'failed'];
             const date = new Date();
-            const timestampInSeconds = Number(date.getTime().toString().substring(0,10))
-            responses.forEach((response: any) => {
-                console.log("FACTURAS:::",response.data)
-                const invoices = response.data.filter(data => data.status === 'pending' && timestampInSeconds > data.due_date);
-                invoices.forEach(invoice => {
-                    if (!this.invoiceMap.has(invoice.brandName)) {
-                        this.invoiceMap.set(invoice.brandName, []);
+            const timestampInSeconds = Number(date.getTime().toString().substring(0,10));
+
+            const processInvoices = (data: any[], map: Map<string, { paymentLink?: string; reportLink?: string }[]>, condition: (invoice: any) => boolean) => {
+                data.filter(condition).forEach(invoice => {
+                    if (!map.has(invoice.brandName)) {
+                        map.set(invoice.brandName, []);
                     }
-                    this.invoiceMap.get(invoice.brandName)?.push({
+                    map.get(invoice.brandName)?.push({
                         paymentLink: invoice.paymentLink,
                         reportLink: invoice.reportLink
                     });
                 });
+            };
+
+            const promises = brands.map(brand => {
+                const request = {
+                    filters: [{ field: "brand_id", value: brand.id }],
+                    page: 1,
+                    size: 50
+                };
+                return this.service.getLastInvoiceOfABrand(request).toPromise();
             });
-            this.listInvoices = Array.from(this.invoiceMap.entries()).map(([brandName, invoices]) => ({
-                brandName,
-                invoices
-            }));
-            this.dataReady = true
-            if (this.listInvoices.length >= 1 && this.dataReady == true) {
-                this.isShowDialog = true;
-                this.dataReady = false
+
+            const responses = await Promise.all(promises);
+
+            responses.forEach((response: any) => {
+                this.invoices = response.data;
+
+                processInvoices(this.invoices, this.invoiceMapAfterPay, invoice => 
+                    statusFilters.includes(invoice.status) && timestampInSeconds > invoice.due_date
+                );
+                
+                processInvoices(this.invoices, this.invoiceMapBeforeTwoDays, invoice => 
+                    statusFilters.includes(invoice.status) && timestampInSeconds >= (invoice.due_date - (2 * 24 * 60 * 60)) && timestampInSeconds < invoice.due_date
+                );
+            });
+
+            this.listInvoicesAfterPay = Array.from(this.invoiceMapAfterPay, ([brandName, invoices]) => ({ brandName, invoices }));
+            this.listInvoicesBeforeTwoDays = Array.from(this.invoiceMapBeforeTwoDays, ([brandName, invoices]) => ({ brandName, invoices }));
+
+            this.dataReady = true;
+            if (this.dataReady && (this.listInvoicesAfterPay.length || this.listInvoicesBeforeTwoDays.length)) {
+                if(this.iterator > 1 && this.listInvoicesBeforeTwoDays.length > 0){
+                    this.isShowDialog = false
+                }
+                else{
+                    this.isShowDialog = true;
+                }
+                this.dataReady = false;
             }
         } catch (error) {
             console.log('error', error);
@@ -310,5 +338,11 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     isVisibleLeyend:boolean=false
     showLeyend(){
         this.isVisibleLeyend = true
+    }
+    
+    showDialogOpenStore(storeOpen:StatusOpenStoreBean){
+        this.displayOpenStore=true;
+        this.listBrands()
+        this.storeOpenSelected=storeOpen
     }
 }
