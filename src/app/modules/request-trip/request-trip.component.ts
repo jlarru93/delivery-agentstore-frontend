@@ -1052,7 +1052,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     order.uuid_price=this.uuid_price
     order.type = "SendAndReciveStore"
     let fechaActual = Date.now()
-    order.readyToDmAt = Number((fechaActual += this.request_trip.readyToDmAt *60 *1000).toString().substring(0,10));
+    if(this.request_trip.isOrderCalendar==false){
+      order.readyToDmMinutesAt=this.request_trip.readyToDmMinutesAt
+    }
+    
     order.description = this.request_trip.description;
     order.mobile = this.request_trip.mobile;
     order.addresses = [
@@ -1184,17 +1187,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     order.uuid_price=this.uuid_price
 
     
-    if(this.request_trip.isOrderCalendar){
-      
+    if(this.request_trip.isOrderCalendar){      
       order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10)) 
     } else {
-      if(this.request_trip.readyToDmAt == 0){
-        order.readyToDmAt = this.editTripData.readyToDmAt
-      } else {
-        let readyToDmAt =  this.minutesToReadyToDm(this.request_trip.readyToDmAt,this.editTripData.createdAt );
-      
-        order.readyToDmAt = this.request_trip.readyToDmAt ? readyToDmAt : 0;
-      }
+      order.readyToDmMinutesAt = this.editTripData.readyToDmMinutesAt
     }
 
 
