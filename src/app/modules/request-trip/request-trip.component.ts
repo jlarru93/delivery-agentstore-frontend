@@ -1050,12 +1050,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     };
     
     order.uuid_price=this.uuid_price
-    order.type = "SendAndReciveStore"
-    let fechaActual = Date.now()
-    if(this.request_trip.isOrderCalendar==false){
-      order.readyToDmMinutesAt=this.request_trip.readyToDmMinutesAt
-    }
-    
+    order.type = "SendAndReciveStore"    
     order.description = this.request_trip.description;
     order.mobile = this.request_trip.mobile;
     order.addresses = [
@@ -1113,10 +1108,13 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     order.isOrderCalendar=this.request_trip.isOrderCalendar
     order.isCheckedStore=this.request_trip.isCheckedStore??false
     order.store.id= this.request_trip.store.id
-    if(this.request_trip.isOrderCalendar){
-      
-      order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10))
-      
+
+    if(this.request_trip.isOrderCalendar==true){
+      order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10));
+      order.readyToDmMinutesAt=null;
+    }else{
+      order.readyToDmMinutesAt=this.request_trip.readyToDmMinutesAt;
+      order.readyToDmAt=null;
     }
     let store = JSON.parse(localStorage.getItem('storeBean'))
     this.requestTripService.onSaveOrderService(order,store.zoneId).subscribe((data) => {
@@ -1189,7 +1187,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     
     if(this.request_trip.isOrderCalendar){      
       order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10)) 
+      order.readyToDmMinutesAt=null
     } else {
+      order.readyToDmAt=null
       order.readyToDmMinutesAt = this.editTripData.readyToDmMinutesAt
     }
 
