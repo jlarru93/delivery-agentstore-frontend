@@ -288,7 +288,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       } else {
         let differenceInSeconds = this.editTripData.readyToDmAt - this.editTripData.createdAt
         let differenceInMinutes = differenceInSeconds / 60
-        this.request_trip.readyToDmAt = differenceInMinutes > 0 ? Math.round(differenceInMinutes) : 0
+        this.request_trip.readyToDmMinutesAt = differenceInMinutes > 0 ? Math.round(differenceInMinutes) : 0
       }
       
       this.onGetAmountOrder()
@@ -1184,14 +1184,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
     order.uuid_price=this.uuid_price
 
-    
-    if(this.request_trip.isOrderCalendar){      
-      order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10)) 
-      order.readyToDmMinutesAt=null
-    } else {
-      order.readyToDmAt=null
-      order.readyToDmMinutesAt = this.editTripData.readyToDmMinutesAt
-    }
 
 
     order.description = this.request_trip.description;
@@ -1257,6 +1249,13 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     order.isOrderCalendar=this.request_trip.isOrderCalendar
     order.isCheckedStore=this.request_trip.isCheckedStore
     order.store.id=this.request_trip.store.id
+    if(this.request_trip.isOrderCalendar==true){
+      order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10));
+      order.readyToDmMinutesAt=null;
+    }else{
+      order.readyToDmMinutesAt=this.request_trip.readyToDmMinutesAt;
+      order.readyToDmAt=null;
+    }
     this.requestTripService.onUpdateOrderService(order).subscribe(
       (data) => {
         this.ref = this.dialogService.open(LoadingMotorizedComponent, {
