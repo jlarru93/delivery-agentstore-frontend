@@ -21,6 +21,10 @@ export const environment = {
     store_banckEnd:"https://api.tres22.net/delivery-store",
     backEndInvoice:'https://api.tres22.net/delivery-invoice',
   },
+  microFront:{
+    invoice:"https://micro-invoice.tres22.net/#/",
+    multipleAssignment:"https://micro-multi-assigment.tres22.net/#/"
+  },
   microFronted:'https://micro-report.tres22.net/#/',
   region: 'us-east-1',
   //userPoolId: 'us-east-1_GNlrPkzvB',
