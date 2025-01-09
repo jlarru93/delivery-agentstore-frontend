@@ -13,7 +13,7 @@ export class UserReportService {
     private http:HttpClient
   ) { }
 
-  // http://dev-api.tres22.net/agent-store/user
+  // http://dev-api.piwi.pe/agent-store/user
   getUserReportList(request,pagination: Pagination){
     let headers:HttpHeaders=new HttpHeaders({
       size:pagination.size.toString(),
@@ -23,7 +23,7 @@ export class UserReportService {
   }
 
   //https://dev-api.delivery-app.net/agent-store/user/{user_id}/address
-  //https://dev-api.tres22.net/user/user/135/address/agent-store
+  //https://dev-api.piwi.pe/user/user/135/address/agent-store
   getUsersDirection(user_id: number,pagination: Pagination){
     let headers:HttpHeaders=new HttpHeaders({
       size:pagination.size.toString(),

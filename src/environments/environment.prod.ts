@@ -2,30 +2,30 @@ export const environment = {
   production: true,
   url:{
     backEndInit : [
-      'https://api.tres22.net/agent-store',
-      'https://api.tres22.net/tracking',
-      "https://api.tres22.net/utils",
-      'https://api.tres22.net/delivery-zone',
-      'https://api.tres22.net/delivery-store',
-      'https://api.tres22.net/delivery-order',
-      'https://api.tres22.net/user',
-      'https://api.tres22.net/delivery-invoice'
+      'https://api.piwi.pe/agent-store',
+      'https://api.piwi.pe/tracking',
+      "https://api.piwi.pe/utils",
+      'https://api.piwi.pe/delivery-zone',
+      'https://api.piwi.pe/delivery-store',
+      'https://api.piwi.pe/delivery-order',
+      'https://api.piwi.pe/user',
+      'https://api.piwi.pe/delivery-invoice'
     ],
-    backEndUser: 'https://api.tres22.net/user',
-    backendOrder: 'https://api.tres22.net/delivery-order',
-    backEnd: 'https://api.tres22.net/agent-store',
-    url_back_tracking : 'https://api.tres22.net/tracking',
+    backEndUser: 'https://api.piwi.pe/user',
+    backendOrder: 'https://api.piwi.pe/delivery-order',
+    backEnd: 'https://api.piwi.pe/agent-store',
+    url_back_tracking : 'https://api.piwi.pe/tracking',
     fileWindows : "http://127.0.0.1:65535/",
-    util_banckEnd:"https://api.tres22.net/utils",
-    backEnd_Zone: 'https://api.tres22.net/delivery-zone',
-    store_banckEnd:"https://api.tres22.net/delivery-store",
-    backEndInvoice:'https://api.tres22.net/delivery-invoice',
+    util_banckEnd:"https://api.piwi.pe/utils",
+    backEnd_Zone: 'https://api.piwi.pe/delivery-zone',
+    store_banckEnd:"https://api.piwi.pe/delivery-store",
+    backEndInvoice:'https://api.piwi.pe/delivery-invoice',
   },
   microFront:{
-    invoice:"https://micro-invoice.tres22.net/#/",
-    multipleAssignment:"https://micro-multi-assigment.tres22.net/#/"
+    invoice:"https://micro-invoice.piwi.pe/#/",
+    multipleAssignment:"https://micro-multi-assigment.piwi.pe/#/"
   },
-  microFronted:'https://micro-report.tres22.net/#/',
+  microFronted:'https://micro-report.piwi.pe/#/',
   region: 'us-east-1',
   //userPoolId: 'us-east-1_GNlrPkzvB',
   userPoolWebClientId: '4ml3aebd21313gkto8j0ra7clu',
@@ -35,7 +35,7 @@ export const environment = {
       userPoolId: 'us-east-1_GNlrPkzvB',
       cookieStorage:{
         // - Cookie domain (only required if cookieStorage is provided)
-        domain: '.tres22.net',
+        domain: '.piwi.pe',
         // (optional) - Cookie path
         path: '/',
         // (optional) - Cookie expiration in days
@@ -51,7 +51,7 @@ export const environment = {
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/prod',
   mqttServer:{
-    url: "prodwss.tres22.net",
+    url: "prodwss.piwi.pe",
     port: 443,
     path:"/",
     user:"socket",

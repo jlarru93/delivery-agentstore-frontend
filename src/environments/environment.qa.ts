@@ -6,32 +6,32 @@ export const environment = {
   production: false,
   url:{
     backEndInit : [
-      'https://qa-api.tres22.net/agent-store',
-      'https://qa-api.tres22.net/tracking',
-      "https://qa-api.tres22.net/utils",
-      'https://qa-api.tres22.net/delivery-zone',
-      'https://qa-api.tres22.net/delivery-store',
-      'https://dev-api.tres22.net/delivery-order',
-      'https://dev-api.tres22.net/user',
-      'https://dev-api.tres22.net/delivery-invoice'
+      'https://qa-api.piwi.pe/agent-store',
+      'https://qa-api.piwi.pe/tracking',
+      "https://qa-api.piwi.pe/utils",
+      'https://qa-api.piwi.pe/delivery-zone',
+      'https://qa-api.piwi.pe/delivery-store',
+      'https://dev-api.piwi.pe/delivery-order',
+      'https://dev-api.piwi.pe/user',
+      'https://dev-api.piwi.pe/delivery-invoice'
     ],
-    backEndUser: 'https://dev-api.tres22.net/user',
-    backendOrder: 'https://dev-api.tres22.net/delivery-order',
-    backEnd: 'https://qa-api.tres22.net/agent-store',
-    url_back_tracking : 'https://qa-api.tres22.net/tracking',
-    util_banckEnd:"https://qa-api.tres22.net/utils",
+    backEndUser: 'https://dev-api.piwi.pe/user',
+    backendOrder: 'https://dev-api.piwi.pe/delivery-order',
+    backEnd: 'https://qa-api.piwi.pe/agent-store',
+    url_back_tracking : 'https://qa-api.piwi.pe/tracking',
+    util_banckEnd:"https://qa-api.piwi.pe/utils",
     fileWindows : "http://127.0.0.1:65535/",
-    backEnd_Zone: 'https://qa-api.tres22.net/delivery-zone',
-    store_banckEnd:"https://qa-api.tres22.net/delivery-store",
-    backEndInvoice:'https://dev-api.tres22.net/delivery-invoice',
+    backEnd_Zone: 'https://qa-api.piwi.pe/delivery-zone',
+    store_banckEnd:"https://qa-api.piwi.pe/delivery-store",
+    backEndInvoice:'https://dev-api.piwi.pe/delivery-invoice',
     //util_dev : "https://nkdqe8xd51.execute-api.us-east-1.amazonaws.com/dev"
    
   },
   microFront:{
-    invoice:"https://dev-micro-invoice.tres22.net/#/",
-    multipleAssignment:"https://dev-micro-multi-assigment.tres22.net/#/"
+    invoice:"https://dev-micro-invoice.piwi.pe/#/",
+    multipleAssignment:"https://dev-micro-multi-assigment.piwi.pe/#/"
   },
-  microFronted:'https://dev-micro-report.tres22.net/#/',
+  microFronted:'https://dev-micro-report.piwi.pe/#/',
   region: 'us-east-2',
   //userPoolId: 'us-east-2_bq5gZkIZ7',
   userPoolWebClientId: '2l4qjgigviuct4drm88ev16r3o',
@@ -41,7 +41,7 @@ export const environment = {
       userPoolId: 'us-east-2_bq5gZkIZ7', //process.env.USERPOOLID_ADMIN_STORE
       cookieStorage:{
         // - Cookie domain (only required if cookieStorage is provided)
-        domain: '.tres22.net',
+        domain: '.piwi.pe',
         // (optional) - Cookie path
         path: '/',
         // (optional) - Cookie expiration in days
@@ -57,7 +57,7 @@ export const environment = {
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/dev',
   mqttServer:{
-    url: "qawss.tres22.net",
+    url: "qawss.piwi.pe",
     port: 443,
     path:"/",
     user:"socket",

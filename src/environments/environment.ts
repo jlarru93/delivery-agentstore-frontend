@@ -6,30 +6,30 @@ export const environment = {
   production: false,
   url:{
     backEndInit : [
-      'https://dev-api.tres22.net/agent-store',
-      'https://dev-api.tres22.net/tracking',
-      "https://dev-api.tres22.net/utils",
-      'https://dev-api.tres22.net/delivery-zone',
-      "https://dev-api.tres22.net/delivery-store",
-      'https://dev-api.tres22.net/delivery-order',
-      'https://dev-api.tres22.net/user',
-      'https://dev-api.tres22.net/delivery-invoice'
+      'https://dev-api.piwi.pe/agent-store',
+      'https://dev-api.piwi.pe/tracking',
+      "https://dev-api.piwi.pe/utils",
+      'https://dev-api.piwi.pe/delivery-zone',
+      "https://dev-api.piwi.pe/delivery-store",
+      'https://dev-api.piwi.pe/delivery-order',
+      'https://dev-api.piwi.pe/user',
+      'https://dev-api.piwi.pe/delivery-invoice'
     ],
-    backEndUser: 'https://dev-api.tres22.net/user',
-    backendOrder: 'https://dev-api.tres22.net/delivery-order',
-    backEnd: 'https://dev-api.tres22.net/agent-store',
+    backEndUser: 'https://dev-api.piwi.pe/user',
+    backendOrder: 'https://dev-api.piwi.pe/delivery-order',
+    backEnd: 'https://dev-api.piwi.pe/agent-store',
     fileWindows : "http://127.0.0.1:65535/",
-    url_back_tracking : 'https://dev-api.tres22.net/tracking',
-    util_banckEnd:"https://dev-api.tres22.net/utils",
-    store_banckEnd:"https://dev-api.tres22.net/delivery-store",
-    backEnd_Zone: 'https://dev-api.tres22.net/delivery-zone',
-    backEndInvoice:'https://dev-api.tres22.net/delivery-invoice',
+    url_back_tracking : 'https://dev-api.piwi.pe/tracking',
+    util_banckEnd:"https://dev-api.piwi.pe/utils",
+    store_banckEnd:"https://dev-api.piwi.pe/delivery-store",
+    backEnd_Zone: 'https://dev-api.piwi.pe/delivery-zone',
+    backEndInvoice:'https://dev-api.piwi.pe/delivery-invoice',
   },
   microFront:{
-    invoice:"https://dev-micro-invoice.tres22.net/#/",
-    multipleAssignment:"https://dev-micro-multi-assigment.tres22.net/#/"
+    invoice:"https://dev-micro-invoice.piwi.pe/#/",
+    multipleAssignment:"https://dev-micro-multi-assigment.piwi.pe/#/"
   },
-  microFronted:'https://dev-micro-report.tres22.net/#/',
+  microFronted:'https://dev-micro-report.piwi.pe/#/',
   region: 'us-west-1',
   //userPoolId: 'us-west-1_4xM3rA9gH',
   userPoolWebClientId: '2ai45jc047fbj9gbo9apju2e6l',
@@ -55,7 +55,7 @@ export const environment = {
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/dev',
   mqttServer:{
-    url: "devwss.tres22.net",
+    url: "devwss.piwi.pe",
     port: 443,
     path:"/",
     user:"socket",
@@ -132,7 +132,7 @@ export const environment = {
       ICON_SIZE: new google.maps.Size(30, 35)
     }
   },
-  NAME_COMPANY: 'tres22',//'<<your name>>',
+  NAME_COMPANY: 'piwi',
   conuntryCode:'PE',
   countryDial: '+51',
   cityCenterPoint: {

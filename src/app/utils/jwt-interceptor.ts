@@ -50,7 +50,7 @@ export class JWTInterceptor implements HttpInterceptor {
   }
 
   private attachResponse(url:string){
-    if(url.includes("api.tres22.net")){
+    if(url.includes("api.piwi.pe")){
       this.connectionService.setValue(true)
     }
   }

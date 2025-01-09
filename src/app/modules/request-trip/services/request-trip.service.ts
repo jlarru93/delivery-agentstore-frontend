@@ -77,7 +77,7 @@ export class RequestTripService {
       env.url.url_back_tracking + path.replace(":uuid", uuid.toString())
     );
   }
-  //http://dev-api.tres22.net/delivery-zone/zone/:zoneid/agent/store
+  //http://dev-api.piwi.pe/delivery-zone/zone/:zoneid/agent/store
   onGetPolygonZone(){
     let store = JSON.parse(localStorage.getItem('storeBean'))
     let path = "/zone/:zoneid/agent/store"
