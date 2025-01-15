@@ -32,7 +32,7 @@ export const environment = {
   microFronted:'https://dev-micro-report.piwi.pe/#/',
   region: 'us-west-1',
   //userPoolId: 'us-west-1_4xM3rA9gH',
-  userPoolWebClientId: '2ai45jc047fbj9gbo9apju2e6l',
+  userPoolWebClientId: '4hbd17p5udfca8i18rbmk5g0dp',
   awsConfig:{
     region: 'us-west-1',
     cognito:{
