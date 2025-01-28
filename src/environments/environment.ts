@@ -10,7 +10,7 @@ export const environment = {
       'https://dev-api.piwi.pe/tracking',
       "https://dev-api.piwi.pe/utils",
       'https://dev-api.piwi.pe/delivery-zone',
-      "https://dev-api.piwi.pe/delivery-store",
+      'https://dev-api.piwi.pe/delivery-store',
       'https://dev-api.piwi.pe/delivery-order',
       'https://dev-api.piwi.pe/user',
       'https://dev-api.piwi.pe/delivery-invoice'
@@ -18,11 +18,11 @@ export const environment = {
     backEndUser: 'https://dev-api.piwi.pe/user',
     backendOrder: 'https://dev-api.piwi.pe/delivery-order',
     backEnd: 'https://dev-api.piwi.pe/agent-store',
-    fileWindows : "http://127.0.0.1:65535/",
     url_back_tracking : 'https://dev-api.piwi.pe/tracking',
+    fileWindows : "http://127.0.0.1:65535/",
     util_banckEnd:"https://dev-api.piwi.pe/utils",
-    store_banckEnd:"https://dev-api.piwi.pe/delivery-store",
     backEnd_Zone: 'https://dev-api.piwi.pe/delivery-zone',
+    store_banckEnd:"https://dev-api.piwi.pe/delivery-store",
     backEndInvoice:'https://dev-api.piwi.pe/delivery-invoice',
   },
   microFront:{
@@ -36,10 +36,10 @@ export const environment = {
   awsConfig:{
     region: 'us-west-1',
     cognito:{
-      userPoolId: 'us-west-1_4xM3rA9gH',
+      userPoolId: 'us-west-1_fM8av0cDx',
       cookieStorage:{
         // - Cookie domain (only required if cookieStorage is provided)
-        domain: 'localhost',
+        domain: '.localhost',
         // (optional) - Cookie path
         path: '/',
         // (optional) - Cookie expiration in days
@@ -48,7 +48,7 @@ export const environment = {
         sameSite: 'strict',
         // (optional) - Cookie secure flag
         // Either true or false, indicating if the cookie transmission requires a secure protocol (https).
-        secure: false
+        secure: true
       }
     }
   },
@@ -132,7 +132,7 @@ export const environment = {
       ICON_SIZE: new google.maps.Size(30, 35)
     }
   },
-  NAME_COMPANY: 'piwi',
+  NAME_COMPANY: 'piwi',//'<<your name>>',
   conuntryCode:'PE',
   countryDial: '+51',
   cityCenterPoint: {
