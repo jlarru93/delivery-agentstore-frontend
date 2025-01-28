@@ -1,15 +1,10 @@
-.layout-topbar .layout-topbar-wrapper .layout-topbar-right .profile-item > ul > li.profile-submenu-header {
 
-  background-image: url("../assets/layout/images/dashboard/news-1.png");
-
-}
 .search-img{
-  height: 22px;
-  width: 22px;
-  margin-right: 12px;
+  height: 50px;
+  width: 45px;
 }
 .image-container {
-  height: 135px;
+  height: 61px;
   width: auto;
 }
 
@@ -42,6 +37,17 @@
       font-size: 28px;
   }
 }
+
+:host ::ng-deep {
+  .open-store .p-menuitem-link {
+    color: green !important;
+  }
+  
+  .closed-store .p-menuitem-link {
+    color: red !important;
+  }
+}
+
 :host ::ng-deep.layout-submenu-header{
   padding: 10px !important;
 }
@@ -70,12 +76,16 @@
 :host ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-close {
   display: none;
   }
+
+  :host ::ng-deep .p-dialog .p-dialog-content{
+    padding-top: 1.5rem;
+  }
   
   :host ::ng-deep .p-dialog .p-dialog-header {
-  background-color: red;
+  background-color: #47AC34;
   color: white; 
   padding: 20px;
-  border-radius: 8px 8px 8px 8px; 
+  border-radius: 8px 8px 0px 0px; 
   position: relative; 
   }
   
@@ -165,4 +175,17 @@ margin-top: 2px;
 .icon-size {
   width: 40px;
   height: 40px;
+}
+
+.submenu-content{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 5px
+}
+
+.submenu-icons{
+  display: flex;
+  align-items: center;
 }

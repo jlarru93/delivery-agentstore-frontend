@@ -1,12 +1,14 @@
 <div class="layout-topbar">
     <div class="layout-topbar-wrapper">
         <div class="layout-topbar-left" style="gap: 10px;">
-
-            <ng-container *ngFor="let storeOpen of storesOpen">
+            <p-button (onClick)="menu.toggle($event)" icon="pi pi-ellipsis-v" label="Opciones"></p-button>
+            <p-menu #menu [model]="items" [popup]="true" />
+            <!-- <ng-container *ngFor="let storeOpen of storesOpen">
                 <div class="layout-megamenu-wrapper" (click)="showDialogOpenStore(storeOpen)">
                     <button pButton type="button"  [label]="storeOpen?.name??'Tienda'" icon="pi pi-home" [loading]="storeOpen.isLoadingOpenStatusStore" [ngClass]="storeOpen.isOpen?'p-button-success':'p-button-warning'" ></button>
                 </div>
-            </ng-container>
+            </ng-container> -->
+
             <ng-container *ngIf="isAllLoadingOpenStatusStore">
                 <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="1"></p-progressSpinner>
             </ng-container>
@@ -14,7 +16,7 @@
             
             
             <div style="margin: 0 auto;" id="logoImagen">
-                <img src="assets/images/Logotipo_TRES22-delivery-02.png" alt="LogoTRES22" class="image-container">
+                <img src="assets/images/LOGOTIPO_BLANK.png" alt="LogoTRES22" class="image-container">
             </div>
             <a href="#" class="sidebar-menu-button" (click)="appMain.onMenuButtonClick($event)">
                 <i class="pi pi-bars" style="color: #FFFFFF;"></i>
@@ -38,37 +40,41 @@
                     </a>
                     <ul class="fadeInDown scrollable-menu">
                         <li class="layout-submenu-header">
-                            <h1>Tiendas Disponibles</h1>
-                            <span>Seleccione las Tiendas disponibles</span>
+                            <h1 style="color: #202020;">Tiendas Disponibles</h1>
+                            <span style="color: #757575;">Seleccione las Tiendas disponibles</span>
                         </li>
                         <li class="layout-submenu-item" *ngFor="let store of stores" class="scrollable-menu" >
-                            <!-- <p-avatar label="{{(Store.store_name).toUpperCase()}}" styleClass="mr-2" [style]="{'background-color':'#2D2D2D', 'color': '#ffffff'}" shape="circle"></p-avatar> -->
-                            <div class="p-col-12">
+                            <div class="submenu-content">
+                                <div class="submenu-icons">
+                                    <img src="assets/images/ICON STORE.svg" class="search-img marker" alt=""/>
+                                    <p>{{store?.store_name?.toUpperCase()??"Tienda"}}</p>
+                                </div>
+                                <div>
+                                    <p-checkbox name="{{store.id}}" value="{{store.store_id}}" [(ngModel)]="selectStore" inputId="ny" class="float-right" (onChange)="setStoreId(store,store.store_id,$event)"></p-checkbox>
+                                </div>
+                            </div>
+                            <!-- <div class="p-col-12">
                                 <div class="p-grid">
                                     <div class="p-col-2">
-                                        <img src="{{ origenIcon }}" class="search-img marker" alt=""/>
                                     </div>
                                     <div class="p-col-7">
                                         <div class="menu-text">
-                                            <p>{{store?.store_name?.toUpperCase()??"Tienda"}}</p>
-                                            <!-- <span>{{Store.id}}</span> -->
                                         </div>
                                     </div>
                                     <div class="p-col-2">
-                                        <p-checkbox name="{{store.id}}" value="{{store.store_id}}" [(ngModel)]="selectStore" inputId="ny" class="float-right" (onChange)="setStoreId(store,store.store_id,$event)"></p-checkbox>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </li>        
                     </ul>
                 </li>
                 <li #profile class="topbar-item profile-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === profile}">
                     <a href="#" (click)="appMain.onTopbarItemClick($event,profile)">
                         <span class="profile-image-wrapper">
-                            <p-avatar icon="pi pi-user" styleClass="mr-2" size="large" shape="circle" [style]="{'background-color':'#FFFFFF', 'color': '#212222'}"></p-avatar>
+                            <p-avatar styleClass="mr-2" size="large" shape="circle" image="assets/images/USER 2.png"></p-avatar>
                         </span>
                         <span class="profile-info-wrapper">
-                        <h3>{{userName}}</h3>
+                        <h3>{{userName | titlecase}}</h3>
                         <span>Agente</span>
                     </span>
                     </a>
@@ -78,15 +84,15 @@
                                 <!-- <span>Weekly Performance</span>
                                 <img src="assets/layout/images/topbar/asset-bars.svg" alt="mirage-layout" /> -->
                             </div>
-                            <div class="profile">
-                                <img src="assets/images/user.png" alt="mirage-layout"
+                            <div class="profile" style="align-items: center;">
+                                <img src="assets/images/USER.png" alt="mirage-layout"
                                                 width="40" />
-                                <h1>{{userName}}</h1>
+                                <h1>{{userName | titlecase}}</h1>
                                 <span>Agente</span>
                             </div>
                         </li>
 
-                        <li class="layout-submenu-footer">
+                        <li class="layout-submenu-footer" style="padding: 8px;">
                             <button class="signout-button" (click)="logout()">Cerrar Sesión</button>
                         </li>
                     </ul>
@@ -101,7 +107,7 @@
                         <img src="assets/layout/images/topbar/avatar-eklund.png" alt="mirage-layout" />
                     </span>
                         <span class="profile-info-wrapper">
-                        <h3 style="color: #FFFFFF;">{{userName}}</h3>
+                        <h3 style="color: #FFFFFF;">{{userName | titlecase}}</h3>
                         <span>Agente</span>
                     </span>
                     </a>
@@ -109,7 +115,7 @@
                         <li class="profile-submenu-header">
                             <div class="profile">
                                 <img src="assets/images/user.png" alt="mirage-layout"width="40" />
-                                <h1>{{userName}}</h1>
+                                <h1>{{userName | titlecase}}</h1>
                                 <span>Agente</span>
                             </div>
                         </li>
@@ -122,7 +128,7 @@
         </div>
     </div>
 </div>
-<p-dialog [(visible)]="displayOpenStore" [modal]="true">
+<p-dialog [(visible)]="displayOpenStore" [modal]="true" header="Opciones de la tienda">
     <ng-template pTemplate="content">
         <h5 class="p-p-5 p-m-auto">La tienda esta {{storeOpenSelected.isOpen?'Abierta':'Cerrada'}}</h5  >
     </ng-template>
@@ -259,7 +265,7 @@
 
         <div class="p-field p-grid p-align-center">
             <div class="p-col-fixed" style="width: 40px;">
-                <img src="../../../assets/images/deliveryMan.png" alt="Driver" class="icon-size">
+                <img src="assets/images/DELIVERY_MAN.png" alt="Driver" class="icon-size">
             </div>
             <div class="p-col" style="margin-left: 5px;">
                 <label for="dayStart">
@@ -270,7 +276,7 @@
 
         <div class="p-field p-grid p-align-center">
             <div class="p-col-fixed" style="width: 40px;">
-                <img src="../../../assets/images/driverImage.svg" alt="Driver" class="icon-size">
+                <img src="assets/images/DRIVER_IMAGE.svg" alt="Driver" class="icon-size">
             </div>
             <div class="p-col" style="margin-left: 5px;">
                 <label for="dayStart">

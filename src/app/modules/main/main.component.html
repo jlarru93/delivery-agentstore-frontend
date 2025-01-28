@@ -43,7 +43,7 @@
                   <div class="card-order-ready-bottom">
                      <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order)" icon="pi pi-comment" 
-                        class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
+                        class="p-button-rounded" [label]="order.messagesNoReadTotal"></button>
                         <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
                            <ng-container *ngIf="order.showChat">
 
@@ -62,7 +62,7 @@
                         </div>
                      </div>
                      <p-button label="Aceptar Orden" styleClass="p-button-sm p-button-rounded" (click)="openOrderDialog(order)"
-                      [style]="{background: '#DD1F26'}"></p-button>
+                      ></p-button>
                   </div>
                </div>
             </div>
@@ -126,7 +126,7 @@
                   <div class="card-order-ready-bottom">
                      <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
-                        class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
+                        class="p-button-rounded" [label]="order.messagesNoReadTotal"></button>
                            <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
                               <app-chat 
                                  [isLoading]="order.isLoadingChat"
@@ -142,7 +142,7 @@
                            </div>
                      </div>
                      <p-button label="Pedido Listo" styleClass="p-button-sm p-button-rounded"
-                      [style]="{background: '#DD1F26'}" (click)="openOrderDialog(order)"></p-button>
+                       (click)="openOrderDialog(order)"></p-button>
                   </div>
                </div>
             </div>
@@ -198,7 +198,7 @@
                   <div class="card-order-ready-bottom">
                      <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
-                        class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
+                        class="p-button-rounded" [label]="order.messagesNoReadTotal"></button>
                            <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
                               <app-chat 
                                  [isLoading]="order.isLoadingChat"
@@ -214,7 +214,7 @@
                            </div>
                      </div>
                      <p-button label="Entregar pedido" styleClass="p-button-sm p-button-rounded" 
-                      [style]="{background: '#DD1F26'}" (click)="openOrderDialog(order)"></p-button>
+                      (click)="openOrderDialog(order)"></p-button>
                   </div>
                </div>
             </div>
@@ -258,7 +258,7 @@
                   <div class="card-order-ready-bottom">
                      <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
-                        class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
+                        class="p-button-rounded" [label]="order.messagesNoReadTotal"></button>
                         <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
                            <app-chat 
                               [isLoading]="order.isLoadingChat"
@@ -314,7 +314,7 @@
                   <div class="card-order-ready-bottom">
                      <div style="position: relative;">
                         <button pButton pRipple type="button" (click)="toggleDisplayDiv(order);$event.stopPropagation()" icon="pi pi-comment" 
-                        class="p-button-rounded" [label]="order.messagesNoReadTotal" style="background-color: #DD1F26;"></button>
+                        class="p-button-rounded" [label]="order.messagesNoReadTotal"></button>
                         <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
                            <app-chat 
                               [isLoading]="order.isLoadingChat"

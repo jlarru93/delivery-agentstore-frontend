@@ -56,8 +56,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     "assets/empresas/" +
     environment.NAME_COMPANY +
     environment.MARKERS.DESTINO.URL;
-  referenciaIcon: any = "assets/images/busqueda/referencia.svg";
-  imgLogo: any = "assets/images/656.png";
+  referenciaIcon: any = "assets/images/REFERENCIA_VERDE.png";
+  imgLogo: any = "assets/images/icono-piwi.png";
 
   userPhone: string;
   userAttributes: any;
@@ -120,15 +120,15 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   globalIconOrigin: any = {
     url: this.origenIcon,
     scaledSize: {
-      height: 50,
-      width: 50
+      height: 70,
+      width: 60
     }
   }
   globalIconDestination: any = {
     url: this.destinoIcon,
     scaledSize: {
-      height: 50,
-      width: 50
+      height: 70,
+      width: 60 
     }
   }
   activeIndexCalendar: number = 0

@@ -12,6 +12,7 @@ import { StatusOpenStoreBean } from './modules/main/data';
 import { AudioService } from './modules/service/audio.service';
 import { OpenStoreHandler } from './modules/service/handlers/store.open.handler';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import { MenuItem } from 'primeng/api';
 
 @Component({
     selector: 'app-topbar',
@@ -38,7 +39,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     selectedStore: Store[]=[]
     selectStore:number[]=[]
     brand:Brand
-    origenIcon: any ="assets/empresas/" + environment.NAME_COMPANY + environment.MARKERS.ORIGEN.URL;
+    origenIcon: any ="assets/images/TRACKING COMERCIO.png";
     listInvoice:any[]=[]
     isShowDialog:boolean = false
     audioEnabled: boolean;
@@ -51,6 +52,8 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     invoiceMapBeforeTwoDays = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
     invoices: any
     iterator:number = 1
+
+    items: MenuItem[] | undefined;
 
     constructor(
         private auth: AuthService,
@@ -267,6 +270,14 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         this.isAllLoadingOpenStatusStore=true
         this.appMain.getStatusOpen().subscribe((resp)=>{
             this.storesOpen=resp.data
+            if(this.storesOpen){
+                this.items = this.storesOpen.map(storeOpen => ({
+                    label: storeOpen.name ?? 'Tienda',
+                    icon: storeOpen.isOpen ? 'pi pi-check-circle' : 'pi pi-times-circle',
+                    styleClass: storeOpen.isOpen ? 'open-store' : 'closed-store',
+                    command: () => this.showDialogOpenStore(storeOpen)
+                  }));
+            }
             ///this.isOpenStore=resp.data.status
             this.isAllLoadingOpenStatusStore=false
             this.isDoneGetStatusOpenStore=true
@@ -282,17 +293,31 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
             id:this.storeOpenSelected.id,
             status:!this.storeOpenSelected.isOpen
         }
+
         this.displayOpenStore=false
-        this.storeOpenSelected.isLoadingOpenStatusStore=true
+        this.storeOpenSelected.isLoadingOpenStatusStore=true;
+
         this.appMain.changeStatusOpenStore(request).subscribe((resp)=>{
             const data=resp.data
             this.storeOpenSelected.isOpen=data.isOpen
+            this.updateMenuItems();
+
             this.processSubsCribeStore(data.id)
             this.storeOpenSelected.isLoadingOpenStatusStore=false
         },(error)=>{
             this.storeOpenSelected.isLoadingOpenStatusStore=false
         },()=>{})
     }
+
+    updateMenuItems() {
+        this.items = this.storesOpen.map(storeOpen => ({
+          label: storeOpen.name ?? 'Tienda',
+          icon: storeOpen.isOpen ? 'pi pi-check-circle' : 'pi pi-times-circle', // Cambia icono según estado
+          styleClass: storeOpen.isOpen ? 'open-store' : 'closed-store',
+          command: () => this.showDialogOpenStore(storeOpen)
+        }));
+      }
+
     lstAgentStore(){
         
         //console.log(this.IdAgent)

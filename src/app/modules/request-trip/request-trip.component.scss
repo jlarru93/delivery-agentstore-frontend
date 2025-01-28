@@ -36,8 +36,8 @@
 }
 
 .search-img-origin{
-    height: 32px;
-    width: 32px;
+    height: 55px;
+    width: 50px;
     margin-right: 12px;
 }
 .search-img-origin img{
@@ -62,8 +62,8 @@
 }
 
 :host ::ng-deep .p-selectbutton .p-button.p-highlight {
-    background-color: #dc3545;
-    border: 1px solid #dc3545;
+    background-color: #47AC34;
+    border: 1px solid #47AC34;
     padding: 0.8rem;
     color: #ffffff;
 }
@@ -76,8 +76,8 @@
 }
 
 :host ::ng-deep .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight):hover {
-    background-color: #F28686;
-    border: 1px solid #F28686;
+    background-color: #C8E6C9;
+    border: 1px solid #C8E6C9;
 }
 
 :host ::ng-deep .p-col-9 {
@@ -87,7 +87,7 @@
 :host ::ng-deep .p-button:focus {
     outline: 0 none;
     outline-offset: 0;
-    box-shadow: 0 0 0 0.2rem #F28686;
+    box-shadow: 0 0 0 0.2rem #C8E6C9;
   }
 
   .mat-mdc-form-field {

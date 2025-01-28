@@ -6,7 +6,7 @@
             <i class="pi pi-lock-open" *ngIf="!appMain.staticMenuActive"></i>
         </a>
         <a>
-            <img alt="logo" src="assets/images/656.png" />
+            <img alt="logo" src="assets/images/icono-piwi.png" />
             <span class="app-name" style="color: #ffffff;">
                 Admin 
             </span><br>
@@ -17,6 +17,6 @@
         <ul class="layout-menu">
             <li app-menuitem *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true"></li>
         </ul>
-        <img src="assets/images/Logotipo_TRES22-02.png" alt="" style="position: absolute; width: 280px; margin-bottom: 30px; bottom: 0; margin-left: -31px; z-index: -1;">
+        <img src="assets/images/LOGOTIPO 1.png" alt="" [ngClass]="{'close' : !appMain.sidebarActive}" style="position: absolute; width: 280px; margin-bottom: 30px; bottom: 0; margin-left: -31px; z-index: -1; transition: All 0.3s ease;">
     </div>
 </div>

@@ -44,7 +44,7 @@
             [markerDraggable]="marker.isDraggable"
             (dragEnd)="onChangeMapMarkers($event, marker)"
             ></agm-marker>
-        <agm-polyline *ngFor="let polyLine of polyLines" [editable]="false" [strokeColor]="'#FF5733'" [strokeWeight]="3">
+        <agm-polyline *ngFor="let polyLine of polyLines" [editable]="false" [strokeColor]="'#47AC34'" [strokeWeight]="3">
           <agm-polyline-point *ngFor="let point of polyLine.routePoints" [latitude]="point.lat" [longitude]="point.lng" [visible]="false"></agm-polyline-point>
         </agm-polyline>
     </agm-map>
@@ -240,12 +240,11 @@
         </div>
         <div class="p-col-12">
           <div class="input-origin-content">
-            <div style="padding: 11px">
-              <i
-                class="pi pi-phone"
-                style="font-size: 1.5rem; color: #212222"
-              ></i>
-            </div>
+            <p-avatar 
+              image="assets/images/TELEPHONE VERDE.png" 
+              styleClass="mr-2" 
+              size="large" 
+              shape="circle"></p-avatar>
             <p-dropdown id="countrycode_adminStore" appendTo="body" [options]="countryCodes" 
               [(ngModel)]="selectCountryCode" optionLabel="name"
                 [filter]="true" filterBy="name" [showClear]="true" placeholder="País">
@@ -272,12 +271,14 @@
         </div>
         <div class="p-col-12">
           <div class="input-origin-content">
-            <div style="padding: 11px">
-              <i
-                class="pi pi-user"
-                style="font-size: 1.5rem; color: #212222"
-              ></i>
-            </div>
+            <!-- <div style="padding: 11px">
+              <img src="assets/images/USER.png" alt="">
+            </div> -->
+            <p-avatar 
+              image="assets/images/USER.png" 
+              styleClass="mr-2" 
+              size="large" 
+              shape="circle"></p-avatar>
             <input
               type="text"
               class="p-inputtext-lg"
@@ -320,7 +321,7 @@
             <div style="padding: 8px">
               <i
                 class="pi pi-comment"
-                style="font-size: 1.5rem; color: #212222"
+                style="font-size: 1.5rem; color: #47AC34"
               ></i>
             </div>
             <textarea
@@ -413,13 +414,18 @@
         (click)="onSaveOrder()"
           pButton
           pRipple
-          class="col-12 p-button-danger p-button-lg"
+          class="col-12 p-button-lg"
           style="position: relative; padding: 1rem"
           [loading]="onSaveLoading"
         >
-          <label for="">SOLICITAR UN TRES22</label>
-          <span style="position: absolute; right: 2%">
-            <img src="{{ imgLogo }}" class="sign-logo" alt="" />
+          <label for="">SOLICITAR UN PIWI</label>
+          <span style="position: absolute; right: 2%; top:9%">
+            <p-avatar 
+              image="assets/images/GROUP.svg" 
+              styleClass="mr-2" 
+              size="large" 
+              shape="circle"></p-avatar>
+            <!-- <img src="{{ imgLogo }}" class="sign-logo" alt="" /> -->
           </span>
         </button>
       </div>
@@ -430,13 +436,17 @@
         (click)="onUpdateOrder()"
           pButton
           pRipple
-          class="col-12 p-button-danger p-button-lg"
+          class="col-12 p-button-lg"
           style="position: relative; padding: 1rem"
           [loading]="onSaveLoading"
         >
           <label for="">ACTUALIZAR ORDEN</label>
-          <span style="position: absolute; right: 2%">
-            <img src="{{ imgLogo }}" class="sign-logo" alt="" />
+          <span style="position: absolute; right: 2%; top:9%">
+            <p-avatar 
+              image="assets/images/GROUP.svg" 
+              styleClass="mr-2" 
+              size="large" 
+              shape="circle"></p-avatar>
           </span>
         </button>
       </div>

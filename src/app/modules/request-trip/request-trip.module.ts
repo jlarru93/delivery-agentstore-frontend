@@ -26,10 +26,12 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { CalendarModule } from 'primeng/calendar';
 import { environment } from "src/environments/environment";
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { AvatarModule } from 'primeng/avatar';
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
   imports: [
+    AvatarModule,
     AutoCompleteModule,
     AgmCoreModule.forRoot({
       // please get your own API key here:
