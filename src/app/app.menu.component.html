@@ -17,6 +17,6 @@
         <ul class="layout-menu">
             <li app-menuitem *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true"></li>
         </ul>
-        <img src="assets/images/LOGOTIPO 1.png" alt="" [ngClass]="{'close' : !appMain.sidebarActive}" style="position: absolute; width: 280px; margin-bottom: 30px; bottom: 0; margin-left: -31px; z-index: -1; transition: All 0.3s ease;">
+        <img src="assets/images/LOGOTIPO 1.png" alt="" [ngClass]="{'close' : !appMain.staticMenuActive, 'close-img': appMain.sidebarActive}" style="position: absolute; width: 280px; margin-bottom: 30px; bottom: 0; margin-left: -31px; z-index: -1; transition: All 0.3s ease;">
     </div>
 </div>
