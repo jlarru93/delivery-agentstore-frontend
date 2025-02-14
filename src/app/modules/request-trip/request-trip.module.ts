@@ -27,6 +27,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { environment } from "src/environments/environment";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AvatarModule } from 'primeng/avatar';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
@@ -59,6 +60,7 @@ import { AvatarModule } from 'primeng/avatar';
     ButtonModule,
     TabViewModule,
     DropdownModule ,
+    MultiSelectModule ,
     BsDatepickerModule.forRoot(),
     TypeaheadModule.forRoot(),
     CalendarModule
