@@ -181,6 +181,10 @@ export class StoreResponse {
         return bean
     } 
 }
+export class TagOrderResponse{
+    value:string
+    color:string
+}
 export class StoreTripResponse {
     id: number; 
     store : RequestStore;
@@ -189,6 +193,7 @@ export class StoreTripResponse {
     tripSetting: {
         paymentMethod: PaymentMethod[];
     };
+    tagsOrder:TagOrderResponse[]
 
     static toBean(json: any): StoreTripResponse {
         const trip = new StoreTripResponse();

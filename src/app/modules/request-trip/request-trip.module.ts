@@ -26,6 +26,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { CalendarModule } from 'primeng/calendar';
 import { environment } from "src/environments/environment";
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
   declarations: [RequestTripComponent, LoadingMotorizedComponent],
@@ -57,6 +58,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     ButtonModule,
     TabViewModule,
     DropdownModule ,
+    MultiSelectModule ,
     BsDatepickerModule.forRoot(),
     TypeaheadModule.forRoot(),
     CalendarModule
