@@ -44,7 +44,7 @@
             [markerDraggable]="marker.isDraggable"
             (dragEnd)="onChangeMapMarkers($event, marker)"
             ></agm-marker>
-        <agm-polyline *ngFor="let polyLine of polyLines" [editable]="false" [strokeColor]="'#47AC34'" [strokeWeight]="3">
+        <agm-polyline *ngFor="let polyLine of polyLines" [editable]="false" [strokeColor]="'#eb0045'" [strokeWeight]="3">
           <agm-polyline-point *ngFor="let point of polyLine.routePoints" [latitude]="point.lat" [longitude]="point.lng" [visible]="false"></agm-polyline-point>
         </agm-polyline>
     </agm-map>
@@ -275,8 +275,8 @@
               <img src="assets/images/USER.png" alt="">
             </div> -->
             <p-avatar 
-              image="assets/images/USER.png" 
-              styleClass="mr-2" 
+              image="assets/images/user.png" 
+              styleClass="mr-2"   
               size="large" 
               shape="circle"></p-avatar>
             <input
@@ -391,7 +391,7 @@
               [showButtons]="true" 
               min="0"
               buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="5"
-              decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" 
+              decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-success" 
               incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" currency="EUR">
             </p-inputNumber>
           </div>
