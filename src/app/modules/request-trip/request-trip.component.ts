@@ -12,7 +12,7 @@ import { LoadingMotorizedComponent } from "./dialog/loading-motorized/loading-mo
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { environment } from "src/environments/environment";
 import { AlertServices } from "../service/alert.service";
-import { StoreTripResponse } from "../main/service/data/response";
+import { StoreTripResponse, TagOrderResponse } from "../main/service/data/response";
 import { DataSharedService } from "../service/data-shared.service";
 import { MenuService } from "src/app/app.menu.service";
 import { AppMainComponent } from "src/app/app.main.component";
@@ -153,7 +153,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   countryCodes: CountryCode[] = CountryCodes;
   selectCountryCode: CountryCode = CountryCodes.find(country => country.dial_code == environment.countryDial);
-
+  tagsOrderSelect:TagOrderResponse[]
 
   constructor(
     private storeService: StoreService,
@@ -364,14 +364,16 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.polilyneRuta = [];
     this.lstPosiciones = [];
     this.lstPosicionConductor = [];
-  }  
+  }
+  isLoadingStoreAvailable=false
   private onGetLocationStore() {
     //const storesAvailable:StoreTripResponse[]=[]
     this.appSer.getStoreByIdAgent().subscribe((store:any)=>{
       const storeId=store.data.map((sA)=>sA.store_id).join(",")
+      this.isLoadingStoreAvailable=true
       this.storeService.onGetLocationStoreService(storeId).subscribe((resp)=>{
         this.storesAvailable=resp.data
-        
+        this.isLoadingStoreAvailable=false
         if(this.storesAvailable.length>0){
           if(!this.editTripData){
             this.request_trip.store=this.storesAvailable[0]
@@ -382,6 +384,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       })
     },(error) => {
       this.alert.showError('Error', error.error.messages[0].message)
+      this.isLoadingStoreAvailable=false
     })
   }
   selectStore(event:any, flagInit : any,Defauliten:boolean=false){
@@ -1108,6 +1111,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     order.isOrderCalendar=this.request_trip.isOrderCalendar
     order.isCheckedStore=this.request_trip.isCheckedStore??false
     order.store.id= this.request_trip.store.id
+    order.tags = this.tagsOrderSelect
 
     if(this.request_trip.isOrderCalendar==true){
       order.readyToDmAt=Number(this.creadDate.getTime().toString().substring(0,10));

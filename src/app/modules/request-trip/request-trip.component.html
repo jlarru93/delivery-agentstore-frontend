@@ -338,6 +338,21 @@
         </div>
       </div>
     </div>
+    <ng-container *ngIf="selectedStore?.tagsOrder?.length>0">
+      <hr />
+      <div class="p-grid p-fluid">
+        <div class="p-col-12">
+            <p-multiSelect
+              [options]="selectedStore.tagsOrder" 
+              [(ngModel)]="tagsOrderSelect" 
+              placeholder="Tags"
+              optionLabel="value" 
+              display="chip" 
+              [showClear]="true" />
+            <div class="mr-5"></div>
+        </div>
+      </div>
+    </ng-container>
     <hr />
     <h5>Método de pago</h5>
     <div class="content-company">

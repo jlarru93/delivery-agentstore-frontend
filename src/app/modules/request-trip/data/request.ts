@@ -31,6 +31,10 @@ export class Point {
     method: { type: string };
     id ?: number
   }
+  export class TagsRequest{
+    value:string
+    color:string
+  }
   
   // Define the main class with all the properties
   export class RequestTrip {
@@ -52,6 +56,7 @@ export class Point {
     isCheckedStore:boolean
     type?:string
     store:StoreRequest = new StoreRequest()
+    tags:TagsRequest[]
     constructor(){
       this.addresses= [new Address,new Address]
     }
