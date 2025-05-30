@@ -51,7 +51,7 @@ export const environment = {
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/prod',
   mqttServer:{
-    url: "wssmqtt.piwi.pe",
+    url: "wss.piwi.pe",
     port: 443,
     path:"/",
     user:"socket",
