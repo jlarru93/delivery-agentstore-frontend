@@ -27,12 +27,11 @@ export const environment = {
   },
   microFronted:'https://micro-report.piwi.pe/#/',
   region: 'us-east-1',
-  //userPoolId: 'us-east-1_GNlrPkzvB',
-  userPoolWebClientId: '4ml3aebd21313gkto8j0ra7clu',
+  userPoolWebClientId: '4kh9mhumd42cnoe4l3e3603j4k',
   awsConfig:{
     region: 'us-east-1',
     cognito:{
-      userPoolId: 'us-east-1_GNlrPkzvB',
+      userPoolId: 'us-east-1_IGz8a0uQ1',
       cookieStorage:{
         // - Cookie domain (only required if cookieStorage is provided)
         domain: '.piwi.pe',
