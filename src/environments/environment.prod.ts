@@ -127,7 +127,7 @@ export const environment = {
       ICON_SIZE: new google.maps.Size(30, 35)
     }
   },
-  NAME_COMPANY: 'tres22',
+  NAME_COMPANY: 'piwi',
   conuntryCode:'CO',
   countryDial: '+57',
   cityCenterPoint: {
