@@ -136,17 +136,17 @@ export const environment = {
   conuntryCode:'PE',
   countryDial: '+51',
   cityCenterPoint: {
-    lat: -12.0621065,
-    lng: -77.0365256
+    lat: -8.387155,
+    lng: -74.566047
   },
   centermap:{
-    lat: -12.1251109,
-    lng: -76.9928316
+    lat: -8.387155,
+    lng: -74.566047
   },
   numberFormat: {
-    decimalSeparator: ',',
-    thousandsSeparator: '.',
-    decimalPlaces: 0
+    decimalSeparator: '.',
+    thousandsSeparator: "'",
+    decimalPlaces: 2
   },
   STATUS_COMPLAINT_OPEN : 'open',
   STATUS_COMPLAINT_IN_PROCESS : 'inProcess',

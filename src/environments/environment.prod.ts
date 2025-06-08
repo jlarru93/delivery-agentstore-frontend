@@ -128,20 +128,20 @@ export const environment = {
     }
   },
   NAME_COMPANY: 'piwi',
-  conuntryCode:'CO',
-  countryDial: '+57',
+  conuntryCode:'PE',
+  countryDial: '+51',
   cityCenterPoint: {
-    lat: 11.0101922,
-    lng: -74.8231794084391
+    lat: -8.387155,
+    lng: -74.566047
   },
   centermap:{
-    lat: 10.96854,
-    lng: -74.78132
+    lat: -8.387155,
+    lng: -74.566047
   },
   numberFormat: {
-    decimalSeparator: ',',
-    thousandsSeparator: '.',
-    decimalPlaces: 0
+    decimalSeparator: '.',
+    thousandsSeparator: "'",
+    decimalPlaces: 2
   },
   STATUS_COMPLAINT_OPEN : 'open',
   STATUS_COMPLAINT_IN_PROCESS : 'inProcess',
