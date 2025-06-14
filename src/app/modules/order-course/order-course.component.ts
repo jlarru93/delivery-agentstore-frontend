@@ -123,16 +123,16 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   center: LatLngLiteral = {
-    lat: 10.96854,
-    lng: -74.78132,
+    lat: environment.centermap.lat,
+    lng: environment.centermap.lng,
   };
 
   markers: Marker[] = [
     {
-      maintext: "Barranquilla",
-      secondText: "Hotel atrium",
-      lat: 10.96854,
-      lng: -74.78132,
+      maintext: "Pucallpa",
+      secondText: "Real plaza",
+      lat: environment.centermap.lat,
+      lng: environment.centermap.lng,
       iconUrl: 'none'
     }
   ];
@@ -157,10 +157,10 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   activeState: boolean[] = [true, false, false];
   interval_motorized_order?: any;
   marker?: any = {
-    maintext: "Barranquilla",
-    secondText: "Hotel atrium",
-    lat: 10.96854,
-    lng: -74.78132,
+    maintext: "Pucallpa",
+    secondText: "Real Plaza",
+    lat: environment.centermap.lat,
+    lng: environment.centermap.lng
   };
   polyline_order?: PersonalisationPolyline[] = [];
   lstPosiciones: PersonalisationMarker[] = [];
