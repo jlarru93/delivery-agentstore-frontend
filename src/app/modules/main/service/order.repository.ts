@@ -126,6 +126,8 @@ export class OrderRepository{
 
     start(){
         this.isStop=false
+        const storeIds=this.dataSharedService.listStore.value
+        this.getOrder(storeIds+"")
     }
     stop(){
         this.isStop=true

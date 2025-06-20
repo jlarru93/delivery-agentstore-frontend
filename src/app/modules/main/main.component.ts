@@ -125,6 +125,10 @@ import { ClipboardService } from "ngx-clipboard";
       private route: ActivatedRoute,
       private readonly clipboardService:ClipboardService,
       ){
+        
+      }
+    
+    suscribers(){
         this.orderRepository.orders.subscribe((order)=>{
           this.orders=order
           console.log("Order:::",order)
@@ -180,12 +184,12 @@ import { ClipboardService } from "ngx-clipboard";
           const indexOrder=this.orders.findIndex(o=>o.id===order.id)
           this.orders[indexOrder]=order
         })
-      }
-    
+    }
     flagAudio: boolean
     fullScreenSideBar: boolean = false
     isWelcomeDialogOpen: boolean = true
     ngOnInit(): void { 
+      this.suscribers();
       this.orderRepository.start()
       this.visibilityChangeCallback = this.handleVisibilityChange.bind(this);
       document.addEventListener('visibilitychange', this.visibilityChangeCallback);
