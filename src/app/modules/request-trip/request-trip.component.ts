@@ -20,7 +20,7 @@ import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { COUNTRYCODE, NUMBERPHONELENGTH } from 'src/app/utils/constant';
 import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 import { AddressSuggestionResponse } from "../order-course/data/response";
-
+type InputType = 'coordinates' | 'place' | 'autocomplete';
 interface PolyLine{
   routePoints:RoutePoint[]
 }
@@ -627,7 +627,20 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 
   searchAddressDestination(e){
-    this.requestTripService.onGetSuggestionAddress(e.query, this.request_trip.store.id).subscribe(
+    const word=e.query;
+    const inputType=this.identifyInputType(word)
+    if(inputType=="autocomplete"){
+      this.autocompleteDestionation(word)
+    }
+    if(inputType=="place"){
+      this.selectPredictionDestination(null,word)
+    }
+    if(inputType=="coordinates"){
+
+    }
+  }
+  autocompleteDestionation(word:string){
+        this.requestTripService.onGetSuggestionAddress(word, this.request_trip.store.id).subscribe(
       (resp) => {
         this.addressesDestination = resp.data.map((as) => AddressSuggestionResponse.toBean(as))
         if (resp.data.length == 0) {
@@ -639,11 +652,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     )
   }
 
-  selectPredictionDestination(prediction: any) {
+  selectPredictionDestination(prediction?: any,address?:string) {
     //this.autocompleteInput = prediction.mainText;
     this.addressesDestination = []; // Limpia las predicciones una vez seleccionada
 
-    this.requestTripService.onGeoCodeUser({placeId: prediction.placeId, storeId: this.request_trip.store.id}).subscribe(
+    this.requestTripService.onGeoCodeUser({address: address, placeId: prediction?.placeId, storeId: this.request_trip.store.id}).subscribe(
       (resp) => {
         console.log(resp.data)
 
@@ -1326,6 +1339,30 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   onPlaceSelected() {
     this.isButtonDisabled = !this.isButtonDisabled;
+  }
+  identifyInputType(input: string): InputType {
+    const trimmed = input.trim();
+
+    // 1. Verifica si son coordenadas
+    const coordinateRegex = /^-?\d{1,3}\.\d+,\s*-?\d{1,3}\.\d+$/;
+    if (coordinateRegex.test(trimmed)) {
+      return 'coordinates';
+    }
+
+    // 2. Verifica si parece un Plus Code (contiene "+" y espacio)
+    const plusCodeRegex = /^[23456789CFGHJMPQRVWX]+\+[23456789CFGHJMPQRVWX]+(\s+\w+)?$/i;
+    if (plusCodeRegex.test(trimmed)) {
+      return 'place';
+    }
+
+    // 3. Si tiene forma de dirección (más de 2 palabras, o contiene números)
+    const looksLikeAddress = /\d/.test(trimmed) || trimmed.split(/\s+/).length >= 3;
+    if (looksLikeAddress) {
+      return 'place';
+    }
+
+    // 4. Palabra o palabras para autocompletar
+    return 'autocomplete';
   }
   
 }
