@@ -654,10 +654,14 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   selectPredictionDestination(prediction?: any,address?:string) {
     //this.autocompleteInput = prediction.mainText;
-    this.addressesDestination = []; // Limpia las predicciones una vez seleccionada
+    if(prediction){
+      this.addressesDestination = []; // Limpia las predicciones una vez seleccionada
+    }
+    
 
     this.requestTripService.onGeoCodeUser({address: address, placeId: prediction?.placeId, storeId: this.request_trip.store.id}).subscribe(
       (resp) => {
+        this.addressesDestination = []
         console.log(resp.data)
 
         this.request_trip.addresses[1].point.type = "Point";
@@ -696,6 +700,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           this.onGetAmountOrder();
           this.centrarMapa()
 
+      },
+      ()=>{
+        this.addressesDestination = []
       }
     )
   }
