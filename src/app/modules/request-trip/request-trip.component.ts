@@ -1350,36 +1350,36 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   identifyInputType(input: string): InputType {
     const trimmed = input.trim();
 
-    // 1. Coordenadas (lat, lng) - valores entre -90 a 90 y -180 a 180 (más estrictos)
+    // 1. Coordenadas (lat, lng)
     const coordinateRegex = /^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?((1[0-7]\d|[1-9]?\d)(\.\d+)?|180(\.0+)?)$/;
     if (coordinateRegex.test(trimmed)) return 'coordinates';
 
     // 2. Plus Code (Open Location Code)
-    // Ejemplos válidos: 7FG8V4V4+G6, 8FVC9G8F+6X, 8FVC+6X Lima
     const plusCodeRegex = /^[23456789CFGHJMPQRVWX]{4,8}\+[23456789CFGHJMPQRVWX]{2,3}(?:\s+\w+.*)?$/i;
     if (plusCodeRegex.test(trimmed)) return 'place';
 
-    // 3. Dirección - reglas comunes
+    // 3. Posible dirección
     const words = trimmed.split(/\s+/);
 
-    // Palabras típicas en direcciones
     const commonAddressKeywords = [
       'calle', 'av', 'avenida', 'jr', 'jirón', 'psj', 'pasaje',
       'mz', 'manzana', 'lt', 'lote', 'edificio', 'urb', 'urbanización',
       'interior', 'dpto', 'departamento', 'bloque', 'km', 'carretera'
     ];
 
-    // Verifica si contiene algún número o palabra clave típica de dirección
     const hasCommonKeyword = commonAddressKeywords.some(keyword =>
       trimmed.toLowerCase().includes(keyword)
     );
 
-    const hasStreetNumber = /\b\d{1,5}\b/.test(trimmed); // número de puerta o calle
-    const looksLikeAddress = hasCommonKeyword || hasStreetNumber || words.length >= 3;
+    const hasStreetNumber = /\b\d{1,5}\b/.test(trimmed);
 
-    if (looksLikeAddress) return 'place';
+    // Solo es 'place' si tiene número y al menos 3 palabras
+    const looksLikeCompleteAddress =
+      hasStreetNumber && words.length >= 3;
 
-    // 4. Por defecto, se asume autocompletado (nombre corto, plaza, lugar sin dirección detallada)
+    if (looksLikeCompleteAddress) return 'place';
+
+    // Todo lo demás es autocompletado
     return 'autocomplete';
   }
   

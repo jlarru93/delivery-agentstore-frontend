@@ -96,6 +96,8 @@ export class RequestTripService {
   }
 
   onGeoCodeUser(request){
+    let zone = JSON.parse(localStorage.getItem('zoneResponse'))
+    request={... request , "zoneId":zone.id}
     return this.http.post<ObjetResponse<any>>(env.url.util_banckEnd + '/gmap/geoCode/agent-store', request)
   }
 
