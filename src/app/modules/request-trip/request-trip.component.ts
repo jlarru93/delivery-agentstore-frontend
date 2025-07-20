@@ -1350,25 +1350,36 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   identifyInputType(input: string): InputType {
     const trimmed = input.trim();
 
-    // 1. Verifica si son coordenadas
-    const coordinateRegex = /^-?\d{1,3}\.\d+,\s*-?\d{1,3}\.\d+$/;
-    if (coordinateRegex.test(trimmed)) {
-      return 'coordinates';
-    }
+    // 1. Coordenadas (lat, lng) - valores entre -90 a 90 y -180 a 180 (más estrictos)
+    const coordinateRegex = /^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?((1[0-7]\d|[1-9]?\d)(\.\d+)?|180(\.0+)?)$/;
+    if (coordinateRegex.test(trimmed)) return 'coordinates';
 
-    // 2. Verifica si parece un Plus Code (contiene "+" y espacio)
-    const plusCodeRegex = /^[23456789CFGHJMPQRVWX]+\+[23456789CFGHJMPQRVWX]+(\s+\w+)?$/i;
-    if (plusCodeRegex.test(trimmed)) {
-      return 'place';
-    }
+    // 2. Plus Code (Open Location Code)
+    // Ejemplos válidos: 7FG8V4V4+G6, 8FVC9G8F+6X, 8FVC+6X Lima
+    const plusCodeRegex = /^[23456789CFGHJMPQRVWX]{4,8}\+[23456789CFGHJMPQRVWX]{2,3}(?:\s+\w+.*)?$/i;
+    if (plusCodeRegex.test(trimmed)) return 'place';
 
-    // 3. Si tiene forma de dirección (más de 2 palabras, o contiene números)
-    const looksLikeAddress = /\d/.test(trimmed) || trimmed.split(/\s+/).length >= 3;
-    if (looksLikeAddress) {
-      return 'place';
-    }
+    // 3. Dirección - reglas comunes
+    const words = trimmed.split(/\s+/);
 
-    // 4. Palabra o palabras para autocompletar
+    // Palabras típicas en direcciones
+    const commonAddressKeywords = [
+      'calle', 'av', 'avenida', 'jr', 'jirón', 'psj', 'pasaje',
+      'mz', 'manzana', 'lt', 'lote', 'edificio', 'urb', 'urbanización',
+      'interior', 'dpto', 'departamento', 'bloque', 'km', 'carretera'
+    ];
+
+    // Verifica si contiene algún número o palabra clave típica de dirección
+    const hasCommonKeyword = commonAddressKeywords.some(keyword =>
+      trimmed.toLowerCase().includes(keyword)
+    );
+
+    const hasStreetNumber = /\b\d{1,5}\b/.test(trimmed); // número de puerta o calle
+    const looksLikeAddress = hasCommonKeyword || hasStreetNumber || words.length >= 3;
+
+    if (looksLikeAddress) return 'place';
+
+    // 4. Por defecto, se asume autocompletado (nombre corto, plaza, lugar sin dirección detallada)
     return 'autocomplete';
   }
   
