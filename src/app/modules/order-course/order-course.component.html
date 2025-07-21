@@ -17,7 +17,7 @@
         <p-accordionTab transitionOptions="400ms cubic-bezier(0.86, 0, 0.07, 1)" *ngFor="let item of filteredOrders; index as i" [(selected)]="selectedTabs[item.uuid]" >
         <ng-template pTemplate="header">
           <div>
-            Orden  N.°: {{ item.id + ' - ' }} <b style="font-weight: 500;" [ngStyle]="{ color: item.status_order_color}">
+            <strong>{{ item.id + ' - ' }}</strong>   {{ getFormatDate(item.createdAt) }}  / {{ getMinutesRemaining(item.readyToDmAt) }} Min <b style="font-weight: 500;" [ngStyle]="{ color: item.status_order_color}">
               {{
                 '(' + item.status_order + ')' 
               }}
@@ -28,45 +28,27 @@
           <div class="grid m-0">
             <div class="col-12">
               <div class="grid flex">
-                <p class="etiqueta-lista col-5">Cliente</p>
-                <p class="contenido-lista col-7">
-                  {{ item.addresses[1]?.receptorName ? item.addresses[1].receptorName : '' }}
+                <p class="col-5">
+                  URL Tracking <i class="pi pi-paperclip" (click)="copyClipBoard(item.urlTracking)"></i>
                 </p>
               </div>
               <div class="grid flex">
-                <p class="etiqueta-lista col-5">Tienda</p>
-                <p class="contenido-lista col-7">
-                  {{ item.addresses[0].addressStreet }}
-                </p>
+                <p class="col-5"><strong>Cliente:</strong> {{ item.addresses[1]?.receptorName ? item.addresses[1].receptorName : '' }}</p>
               </div>
               <div class="grid flex">
-                <p class="etiqueta-lista col-5">Destino</p>
-                <p class="contenido-lista col-7">
-                  {{ item.addresses[1]?.addressStreet??'' }}
-                </p>
+                <p class="col-5"><strong>Tienda:</strong> {{ item.addresses[0].addressStreet }}</p>
               </div>
               <div class="grid flex">
-                <p class="etiqueta-lista col-5">Método de Pago</p>
-                <p class="contenido-lista col-7">
-                  {{ item.order_name}}
-                </p>
+                <p class="col-5"><strong>Destino</strong> {{ item.addresses[1]?.addressStreet??'' }}</p>
               </div>
               <div class="grid flex">
-                <p class="etiqueta-lista col-5">
-                  URL Tracking 
-                  <i class="pi pi-paperclip" (click)="copyClipBoard(item.urlTracking)"></i>
-                </p>
+                <p class="col-5"><strong>Método de Pago</strong> {{ item.order_name}}</p>
               </div>
               <div class="grid flex">
-                <p class="etiqueta-lista col-5">Precio Estimado</p>
-                <p
-                  class="contenido-lista col-7"
-                  style="color: #e52421; font-weight: 500"
-                >
-                {{ item.payment.amount.currency }}
-                  {{ item.payment.amount.value }}
-                
-                </p>
+                <p class="col-5"><strong>Precio Estimado:</strong> {{ item.payment.amount.currency }} {{ item.payment.amount.value }}
+              </div>
+              <div class="grid flex">
+                <p class="col-5"><strong>Hora listo:</strong> {{ getFormatDate(item.readyToDmAt) }}</p>
               </div>
             </div>
           </div>
