@@ -580,7 +580,7 @@ import { ClipboardService } from "ngx-clipboard";
         })
       } else {
         if(!this.flagOpenReceiptDialog){
-          this.messageService.showWarning('', 'Por favor revise el comprobante de pago primero')
+          this.messageService.showWarning('', 'Por favor revise el comprobante de pago primero, Dar click en el boton del ojo')
           this.loadingButtonAcept = false
         } else {
           this.orderRepository.aceptOder(orderRequest.uuid,orderRequest.readyToDmAt).subscribe((resp)=>{

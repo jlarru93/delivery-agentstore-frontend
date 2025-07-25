@@ -433,7 +433,7 @@
                   <div class="accordion-item"> 
                      <div class="p-grid grid-quantity" style="border-bottom: 0px">
                         <div class="p-col-1 accodion-quantity">
-                           <p>{{product.quantity}}x</p>
+                           <p><strong>{{product.quantity}}x</strong></p>
                         </div>
                         <div class="p-col-11 header">
                            <span class="accordion-title">
@@ -447,17 +447,18 @@
                            <div class="accordion-options">
                               <div *ngFor="let option of product.options">
                                  <div style="padding-left: 10px;">
-                                    <div style="padding-top: 10px;">
+                                    <div>
                                        <p style="font-size: 15px; color: #c2cad3">{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}</p>
+                                       <div style="padding-top: 5px;"></div>
                                        <div *ngFor="let sub of option.subOptions">
                                           <div class="p-grid" style="margin-top: -20px;">
                                              <div class="p-col-6">
-                                                <p style="font-size: 17px;">{{sub.name}}</p>
+                                                <p style="font-size: 17px;"> <strong>{{sub.quantity > 0 ? (sub.quantity+'X ') : '' }} </strong> {{sub.name}}</p>
                                              </div>
                                              <div class="p-col-6">
                                                 <p style="float: right;">
                                                    <span *ngIf="sub.price.value > 0">{{sub.getPriceMinimalCurrency()}}</span>
-                                                   {{sub.quantity > 0 ? sub.quantity : '' }}
+                                                   
                                                 </p>
                                              </div>
                                           </div>

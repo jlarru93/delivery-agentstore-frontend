@@ -1,13 +1,13 @@
 <div class="layout-topbar">
     <div class="layout-topbar-wrapper">
         <div class="layout-topbar-left" style="gap: 10px;">
-            <p-button (onClick)="menu.toggle($event)" icon="pi pi-ellipsis-v" label="Opciones"></p-button>
-            <p-menu #menu [model]="items" [popup]="true" />
-            <!-- <ng-container *ngFor="let storeOpen of storesOpen">
+            <!--p-button (onClick)="menu.toggle($event)" icon="pi pi-ellipsis-v" label="Opciones"></p-button-->
+            <!--p-menu #menu [model]="items" [popup]="true" /-->
+            <ng-container *ngFor="let storeOpen of storesOpen">
                 <div class="layout-megamenu-wrapper" (click)="showDialogOpenStore(storeOpen)">
                     <button pButton type="button"  [label]="storeOpen?.name??'Tienda'" icon="pi pi-home" [loading]="storeOpen.isLoadingOpenStatusStore" [ngClass]="storeOpen.isOpen?'p-button-success':'p-button-warning'" ></button>
                 </div>
-            </ng-container> -->
+            </ng-container>
 
             <ng-container *ngIf="isAllLoadingOpenStatusStore">
                 <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="1"></p-progressSpinner>
@@ -26,6 +26,7 @@
             </a>
         </div>
         <div class="tristate">
+
             <p-triStateCheckbox [(ngModel)]="audioEnabled" label="Alarma" (onChange)="onChangeFlagAudio()"></p-triStateCheckbox>
         </div>
         <div class="layout-topbar-right fadeInDown">
@@ -38,6 +39,13 @@
                     <a href="#" class="space-between" (click)="showLeyend()" pTooltip="Leyenda" tooltipPosition="bottom">
                         <i class="pi pi-book"></i>
                     </a>
+                    <a 
+                        class="space-between"
+                        href="https://drive.google.com/drive/folders/1LEJ-r2VD7-YupLr73X2nQRDG4rMzk8CZ?usp=sharing" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        class="p-button font-bold">
+                        Tutoriales</a> 
                     <ul class="fadeInDown scrollable-menu">
                         <li class="layout-submenu-header">
                             <h1 style="color: #202020;">Tiendas Disponibles</h1>
