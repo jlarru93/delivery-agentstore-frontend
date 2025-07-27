@@ -133,7 +133,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
       secondText: "Real plaza",
       lat: environment.centermap.lat,
       lng: environment.centermap.lng,
-      iconUrl: 'none'
+      //iconUrl: 'none'
     }
   ];
 
@@ -188,6 +188,8 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   userId: any
 
   
+  received_by_store_method_available:string[] =["CASH","YAPE","PLIN","OTROS"]
+  isLoadingReceived_by_store_method_available:boolean=false
 
   ngAfterViewInit() {}
   isMqttConnect: boolean = false;
@@ -270,6 +272,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
               },
               method :{
                 type :  orderMqtt.payment.method.type,
+                //received_by_store_method: orderMqtt?.payment?.method?.received_by_store_method
               },
               id : orderMqtt.payment.id
             }
@@ -1004,5 +1007,25 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     const minutesRemaining = Math.floor(secondsRemaining / 60);
     return minutesRemaining;
   }
-
+  
+  changeReceivedByStoreMethodAvailable(order: ResponseLoadingOrder){
+    const received_by_store_method=order.payment.method.received_by_store_method;
+    const uuid=order.uuid;
+    this.requestTripService.updateReceivedByStoreMethodAvailable(uuid,received_by_store_method).subscribe(
+      (resp)=>{
+        this.isLoadingReceived_by_store_method_available=false
+        //this.messageService.showSuccess('', 'Se Actualizo recepción de dinero')
+      },
+      (error)=>{
+        this.isLoadingReceived_by_store_method_available=false
+        if(error.status==400){
+          error.error.messages.forEach(element => {
+          //this.messageService.showError('Error',element.message)
+        });
+        }else{
+          //this.messageService.showError('Error',error.message)
+        }
+      }
+    )
+  }
 }

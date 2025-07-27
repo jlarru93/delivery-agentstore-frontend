@@ -322,12 +322,14 @@ export class CardResponse {
 
 export class MethodResponse{
     name?: string 
-    type?: string 
+    type?: string
+    received_by_store_method?: string 
     url?: string
     static toBean(self?: MethodResponse): MethodBean | null {
         if (!self) return null
         const bean = new MethodBean
         bean.name = self?.name
+        bean.received_by_store_method = self?.received_by_store_method
         bean.type = self?.type
         bean.url = self?.url
         return bean

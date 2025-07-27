@@ -42,7 +42,14 @@
                 <p class="col-5"><strong>Destino</strong> {{ item.addresses[1]?.addressStreet??'' }}</p>
               </div>
               <div class="grid flex">
-                <p class="col-5"><strong>Método de Pago</strong> {{ item.order_name}}</p>
+                <p class="col-5"><strong>Método de Pago</strong> {{ item.order_name}} 
+                  <b *ngIf="item.payment?.method?.type == 'CASH' && item?.payment?.method?.received_by_store_method">
+                    <p-dropdown 
+                      [options]="received_by_store_method_available"
+                      [loading]="isLoadingReceived_by_store_method_available"
+                      (onChange)="changeReceivedByStoreMethodAvailable(item)" 
+                      [(ngModel)]="item.payment.method.received_by_store_method" />
+               </b></p>
               </div>
               <div class="grid flex">
                 <p class="col-5"><strong>Precio Estimado:</strong> {{ item.payment.amount.currency }} {{ item.payment.amount.value }}

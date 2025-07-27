@@ -28,7 +28,7 @@ export class Point {
   // Define the class for the "payment" object
   export class Payment {
     amount?: { value: number };
-    method: { type: string };
+    method: { type: string,received_by_store_method?:string };
     id ?: number
   }
   export class TagsRequest{

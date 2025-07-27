@@ -16,6 +16,7 @@ import { ObjetResponse } from "src/app/models";
 import { environment as env } from "../../../../environments/environment";
 import { ResponseMotorizedOrigin } from "../data/response";
 import { AddressSuggestionResponse, ResponseTrackingMotorized } from "../../order-course/data/response";
+import { OrderResponse } from "../../main/service/data/response";
 @Injectable({
   providedIn: "root",
 })
@@ -104,5 +105,10 @@ export class RequestTripService {
   ///gmap/geoCodeInverse/user
   onGeoCodeInverseUser(request){
     return this.http.post<ObjetResponse<any>>(env.url.util_banckEnd + '/gmap/geoCodeInverse/agent-store', request)
+  }
+  
+  updateReceivedByStoreMethodAvailable(uuid: string, received_by_store_method: string) {
+    let path = '/order/' + uuid + '/receivedMethod/agent-store'
+    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backendOrder + path, { received_by_store_method: received_by_store_method })
   }
 }

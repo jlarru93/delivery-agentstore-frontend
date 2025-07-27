@@ -17,6 +17,7 @@ import { OrderCourseComponent } from './order-course.component';
 import { environment } from "src/environments/environment";
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   declarations: [OrderCourseComponent],
@@ -36,7 +37,8 @@ import { InputTextModule } from 'primeng/inputtext';
     InputTextModule,
     SelectButtonModule,
     TagModule,
-    ChatModule
+    ChatModule,
+    DropdownModule
   ],
   exports : [OrderCourseComponent]
 })
