@@ -137,7 +137,8 @@ export class CardBean {
 
 export class MethodBean{
     name?: string 
-    type?: string 
+    type?: string
+    received_by_store_method?:string
     url?: string
 }
 

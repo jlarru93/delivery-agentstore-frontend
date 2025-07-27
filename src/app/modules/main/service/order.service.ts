@@ -63,4 +63,8 @@ export class OrderService {
     let path = '/chat/message/NoReadTotal/agentstore'
     return this.http.post<ObjetResponse<UnreadMessagesResponse[]>>(env.url.util_banckEnd + path, request)
   }
+  updateReceivedByStoreMethodAvailable(uuid: string, received_by_store_method: string) {
+    let path = '/order/' + uuid + '/receivedByStoreMethod/agent-store'
+    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backendOrder + path, { received_by_store_method: received_by_store_method })
+  }
 }

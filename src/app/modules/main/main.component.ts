@@ -101,6 +101,9 @@ import { ClipboardService } from "ngx-clipboard";
     ordersWithUnreadMessages: any
     isShowOrderCancel:boolean = false
     orderId:number=null
+
+    received_by_store_method_available:string[] =["CASH","YAPE","PLIN","OTROS"]
+    isLoadingReceived_by_store_method_available:boolean=false
     private visibilityChangeCallback: () => void;
 
     constructor(
@@ -969,5 +972,27 @@ import { ClipboardService } from "ngx-clipboard";
   copyClipBoard(value:string){
     this.clipboardService.copy(value)
     this.messageService.showSuccess('', 'copiado!')
+  }
+
+  changeReceivedByStoreMethodAvailable(){
+    const uuid=this.orderSelected.uuid;
+    const received_by_store_method=this.orderSelected.payment.method.received_by_store_method;
+    this.isLoadingReceived_by_store_method_available=true
+    this.orderService.updateReceivedByStoreMethodAvailable(uuid,received_by_store_method).subscribe(
+      (resp)=>{
+        this.isLoadingReceived_by_store_method_available=false
+        this.messageService.showSuccess('', 'Se Actualizo recepción de dinero')
+      },
+      (error)=>{
+        this.isLoadingReceived_by_store_method_available=false
+        if(error.status==400){
+          error.error.messages.forEach(element => {
+          this.messageService.showError('Error',element.message)
+        });
+        }else{
+          this.messageService.showError('Error',error.message)
+        }
+      }
+    )
   }
 }
