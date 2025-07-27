@@ -517,8 +517,7 @@
                      [options]="received_by_store_method_available"
                      [loading]="isLoadingReceived_by_store_method_available"
                      (onChange)="changeReceivedByStoreMethodAvailable()" 
-                     [(ngModel)]="payment.method.received_by_store_method" 
-                     optionLabel="Recepción dinero"/>
+                     [(ngModel)]="payment.method.received_by_store_method" />
                </b>
                <b *ngIf="payment.method.type == 'PAY_IN_STORE'">Pago en tienda</b>
                <i *ngIf="payment.method.type == 'E-WALLET' || payment.method.type == 'BANK'" class="pi pi-eye" style="float: right; font-size: 1.5rem;" (click)="openDialogScreenShoot()"></i>
