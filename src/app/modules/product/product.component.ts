@@ -5,8 +5,8 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-product-micro',
-  templateUrl: './product-micro.component.html',
-  styleUrls: ['./product-micro.component.scss'],
+  templateUrl: './product.component.html',
+  styleUrls: ['./product.component.scss'],
   providers: [MessageService]
 })
 export class ProductComponent implements OnInit {
