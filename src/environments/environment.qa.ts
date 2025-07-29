@@ -29,6 +29,7 @@ export const environment = {
   },
   microFront:{
     invoice:"https://dev-micro-invoice.piwi.pe/#/",
+    product: "https://qa-micro-product.piwi.pe/#/",
     multipleAssignment:"https://dev-micro-multi-assigment.piwi.pe/#/"
   },
   microFronted:'https://dev-micro-report.piwi.pe/#/',

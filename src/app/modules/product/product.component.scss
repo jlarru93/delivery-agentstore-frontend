@@ -1,87 +1,14 @@
-.coverImg{
-    object-fit:scale-down;
-    // width: 100%;
-    height: 200px;
+body {
+    margin: 0;            /* Reset default margin */
 }
-
-.productImg{
-    
-    background-color: #e1dcdcb6
-}
-
-.imgCover{
-    object-fit:fill;
+iframe {
+    display: block;       /* iframes are inline by default */
+    /*background:white;*/
+    border: none;         /* Reset default border */
     width: 100%;
-    height: 78%;
-}
-
-// .productContent{
-  
-// }
-
-.dialog-content {
-    padding: 1rem;
-}
-
-.product-badge {
-	border-radius: 2px;
-	padding: .25em .5rem;
-	text-transform: uppercase;
-	font-weight: 700;
-	font-size: 12px;
-	letter-spacing: .3px;
-
-	&.status-false {
-		background: #C8E6C9;
-		color: #256029;
-	}
-
-	&.status-true {
-		background: #FFCDD2;
-		color: #C63737;
-	}
-}
-
-.icon-badge {
-    &.status-false{
-        pointer-events: none;
-        opacity: 0.5;
-    }
-}
-
-.icon-badge-trash{
-    &.status-true{
-        pointer-events: none;
-        opacity: 0.5;
-    }
-}
-
-
-:host ::ng-deep .p-selectbutton .p-button.p-highlight {
-    background-color: #47AC34;
-    border: 1px solid #47AC34;
-    //padding: 0.8rem;
-    color: #ffffff;
-}
-
-:host ::ng-deep .p-selectbutton .p-button {
-    background: transparent;
-    //border: 1px solid #;
-    border: 1px solid #ced4da;
-    color: #000000;
-}
-
-:host ::ng-deep .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight):hover {
-    background-color: #C8E6C9;
-    border: 1px solid #C8E6C9;
-}
-
-
-.select-button-custom{
-    margin-top: -3rem !important;
-}
-.product-card-price{
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+    height: 100%;
+    // padding-top: 1cm;
+    /*border: 1px solid black;*/
+    position: relative;
+    
 }
