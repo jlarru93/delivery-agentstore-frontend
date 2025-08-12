@@ -404,8 +404,10 @@
 
 
 
- <p-dialog [(visible)]="displayOrder" [modal]="true" (onHide)="onCloseOrderDetail()">
-   <p-toast position="top-center" key="tc"></p-toast>
+<p-dialog [(visible)]="displayOrder" [modal]="true" (onHide)="onCloseOrderDetail()" 
+styleClass="order-dialog" [breakpoints]="{ '960px': '95vw', '640px': '98vw' }" [contentStyle]="{ padding: '0' }">
+
+ <p-toast position="top-center" key="tc"></p-toast>
  <ng-template pTemplate="header">
    <div class="p-toolbar-group-left">
       <b>
@@ -494,9 +496,6 @@
          </div>
       </main>
       <div id="sidebar">
-          <!-- <div class="sidebar-method-payment" id="payment">
-            
-          </div> -->
           <div class="sidebar-info" id="info" style="overflow: auto;">
             <ng-container *ngIf="orderSelected.coupons && orderSelected.coupons.length > 0">
                <div class="sidebar-container-title">Cupones</div>
@@ -521,8 +520,6 @@
                </b>
                <b *ngIf="payment.method.type == 'PAY_IN_STORE'">Pago en tienda</b>
                <i *ngIf="payment.method.type == 'E-WALLET' || payment.method.type == 'BANK'" class="pi pi-eye" style="float: right; font-size: 1.5rem;" (click)="openDialogScreenShoot()"></i>
-               <!-- <button  pButton pRipple type="button" icon="pi pi-eye" style="float: right;"
-               class="p-button p-button-rounded p-button-text" (click)="openDialog()"></button> -->
             </div>
             <div class="sidebar-container-title">Cliente</div>
             <div class="card-client">
@@ -616,15 +613,6 @@
                <div *ngIf="orderSelected.deliveryMan">
                <div class="p-mb-2"></div>
                <div class="card-time">
-                     <!-- <div class="delivery-content">
-                        <div class="deliveryman">
-                           <b>{{orderSelected?.deliveryMan?.name}}</b><br>
-                           <p>Tel: {{orderSelected?.deliveryMan?.phone}}</p>
-                        </div>
-                        <div class="deliveryman-img">
-                           <img src="" alt=""  onError="this.src='assets/images/user.png'" width="40">
-                        </div>
-                     </div> -->
                      <div class="deliveryman-content">
                         <div *ngIf="orderSelected?.deliveryMan?.status == 'toStore'">
                            <div class="delivery-status">
@@ -639,16 +627,6 @@
                            </div>
                         </div>
                      </div>
-                  
-                  <!-- <div *ngIf="orderSelected.deliveryMan == null">
-                     <div class="card-repartidor">
-                        <div class="p-grid">
-                           <div class="p-col-12" style="text-align: center;">
-                              <span>Estamos buscando al repartidor más adecuado para recoger esta orden.</span>
-                           </div>                        
-                        </div>           
-                     </div>
-                  </div> -->
                </div>
             </div>
             </div>
@@ -671,11 +649,8 @@
                <button class="p-button-outlined p-mb-2" *ngIf="orderSelected.status=='orderReady'&& orderSelected.isApprovedSelfManaged &&!orderSelected.isSelfManaged" pButton type="button" label="Autogestionar Orden" [loading]="isSelfManagedOrderLoading" (click)="selfManagedOrder(orderSelected)" ></button>
                <button class="btn-order "  *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
                <button class="btn-order" *ngIf="orderSelected.status=='preparingOrder'" pButton type="button" label="Orden lista" [loading]="loadingButtonAcept" (click)="isDisplayOrderReadyModalConfirm=true"></button>
-               <!--button class="btn-order" *ngIf="orderSelected.status=='orderReady'" pButton type="button" label="Entregar Order" [loading]="loadingButtonAcept" (click)="giveOrderToDriver()" [disabled]="!isButtonEnabled"></button-->
                <button pButton type="button" *ngIf="!['done','inRoute','cancel','preparingOrder','orderReady'].includes(orderSelected.statusForAgentStore)" label="Rechazar orden" class="p-button-danger btn-reject p-mt-2" (click)="openDialogDenyOrder()"></button>
             </div>
-            <!-- <div id="reject">
-            </div> -->
           </div>
       </div>
       <footer id="footer-main">

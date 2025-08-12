@@ -2,6 +2,9 @@
 //     margin-top: -1.9rem;
 //     margin-right: -2rem;
 // }
+:host ::ng-deep .layout-content{
+    padding: 0;
+}
 .country-item{
     display: flex;
     align-items: center;
@@ -17,6 +20,7 @@
 .input-origin-content{
     display: flex;
     align-items: center;
+    gap: 8px;
     width: 100%;
 }
 .address-mainText{
@@ -28,7 +32,7 @@
     margin: 0;
     font-size: 12px;
 }
-.autocomplet-items{
+.autocomplete-items{
     display: flex; 
     align-items: center; 
     gap: 10px; 
@@ -38,7 +42,6 @@
 .search-img-origin{
     height: 55px;
     width: 50px;
-    margin-right: 12px;
 }
 .search-img-origin img{
     height: 100%;
@@ -289,7 +292,7 @@
     }
 }
   .container-map {
-    // height: calc(100vh) !important;
+    
     width: 71%;
     height: 87vh;
     right: 0;
@@ -298,5 +301,115 @@
     overflow: hidden;
     margin: 0% 0% 0% 0%;
     padding: 0% 0% 0% 1%;
-    /* background-color: #23507c; */
+    
+}
+
+/* ----- Página: mapa a full pantalla ----- */
+.rt-page{
+  position: relative;
+  height: calc(100vh - 120px);   /* ocupa todo el alto visible */
+  width: 100%;
+  overflow: hidden;              /* que el mapa no cree scroll de la página */
+}
+
+/* Mapa a full */
+.rt-map-wrap{
+  position: absolute;
+  inset: 0;                      /* top/right/bottom/left: 0 */
+}
+.rt-map{
+  width: 100%;
+  height: 100%;
+}
+
+
+.rt-sheet{
+  position: absolute;
+  left: 0; right: 0;
+  bottom: 0;
+  padding: 0 12px calc(env(safe-area-inset-bottom, 0px) + 12px);
+
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,.18));
+}
+
+.rt-sheet > .rt-sheet__body{
+  max-height: min(40vh, 380px);  
+  overflow: auto;                
+  padding: 12px 16px 16px;
+  background: #fff;
+  border-radius: 18px;
+}
+
+
+.rt-sheet__grabber{
+  height: 6px;
+  width: 44px;
+  margin: 8px auto 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.15);
+}
+
+
+.rt-sheet__header{
+  position: relative;
+  z-index: 1;
+  margin: 0 16px -8px;           
+  color: #111827;
+}
+.rt-sheet__header h3{
+  margin: 0 0 2px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+
+.field{ margin-bottom: 8px; }
+.field label{
+  display: block;
+  font-size: 13px;
+  margin: 6px 0 6px;
+  color: #374151;
+}
+
+
+.rt-sheet__footer{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+}
+.rt-sheet__footer .price{
+  font-size: 14px;
+}
+.rt-btn-primary{
+  background: #2f76ff;
+  border: none;
+  color: #fff;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+@media (min-width: 992px){
+  .rt-page{
+    display: grid;
+    grid-template-columns: 1fr 420px; 
+  }
+  .rt-map-wrap{ position: relative; }
+  .rt-sheet{
+    position: relative;
+    padding: 0;
+    filter: none;
+  }
+  .rt-sheet > .rt-sheet__body{
+    height: 100vh;               
+    max-height: none;
+    border-radius: 0;
+    border-left: 1px solid #eef0f3;
+  }
+  .rt-sheet__grabber{ display: none; }
+
 }

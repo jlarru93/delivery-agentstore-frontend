@@ -41,6 +41,27 @@
       }
   }
 
+:host ::ng-deep .order-dialog .p-dialog {
+  width: clamp(880px, 80vw, 1100px);
+}
+
+:host ::ng-deep .order-dialog .p-dialog-content {
+  /* Quitamos padding para que tu .container-dialog aproveche el espacio */
+  padding: 0;
+}
+
+/* En mobile: ancho casi completo y contenido scrolleable */
+@media (max-width: 768px) {
+  :host ::ng-deep .order-dialog .p-dialog {
+    width: 96vw !important;
+    max-width: 96vw !important;
+  }
+  :host ::ng-deep .order-dialog .p-dialog-content {
+    max-height: calc(100dvh - 110px); /* altura segura bajo header del dialog */
+    overflow: auto;
+  }
+}
+
 .container-dialog{
     display: grid;
     height: calc(100vh - 45vh);
@@ -53,19 +74,17 @@
      "main main main sidebar"
      "main main main sidebar"
      "footer footer footer sidebar";
-
-     @media (max-width: 1920px) {
-        height: calc(100vw - 55vw);
-    }
-
-     @media (max-width: 1280px) {
-        height: calc(100vh - 30vh);
-    }
+    gap: 1rem;
+    @media (max-width: 1920px) { height: calc(100vh - 55vh); }
+    @media (max-width: 1280px) { height: calc(100vh - 30vh); }
     
 }
 main{
-    background-color: #EFF1F5;
     grid-area: main;
+    background-color: #EFF1F5;
+    display: flex;
+    justify-content: center;
+    overflow: auto;
 }
 
 #sidebar {
@@ -74,34 +93,56 @@ main{
     border: 1px solid #EBEFF4;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1.5fr 1.5fr 1.5fr 1fr;
+    grid-template-rows: 1fr auto;
     grid-template-areas: 
-    "info"
-    "info"
-    "info"
     "info"
     "buttons"
   }
 
-  
-  #info {
-    grid-area: info;
-    padding: 10px;
-    @media (max-width: 960px) {
-        padding: 5px;
-    }
+#info     { grid-area: info; padding: 10px; }
+#buttons  { padding: 10px; }
+footer    { grid-area: footer; background:#FAFBFD; border:1px solid #EBEFF4; }
+
+@media (max-width: 768px) {
+  .container-dialog {
+    height: auto;                  /* que crezca por contenido */
+    grid-template-columns: 1fr;    /* una sola columna */
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "main"
+      "footer"
+      "sidebar";
+    gap: .75rem;
   }
-  
-  #buttons {
-    
-    padding: 10px;
-    
+
+  main, #sidebar, footer {
+    min-height: initial;
+    overflow: visible;             /* dejemos que el scroll lo maneje .p-dialog-content */
   }
-  
-footer{
-    background-color: #FAFBFD;
-    border: 1px solid #EBEFF4;
-    grid-area: footer;
+
+  /* Espaciados más compactos */
+  #info { padding: 6px; }
+
+  /* Resumen: 2 columnas en mobile */
+  .grid-resume{
+    top: 0;                        /* quita ese 25% en mobile */
+    margin: 0;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "residency tip"
+      "products-amount total-amount";
+    gap: .5rem 1rem;
+  }
+
+  /* Tipografías un poco más pequeñas en mobile */
+  .sidebar-container-title { font-size: 12px; margin-top: 0; }
+  .card-client b { font-size: 14px; }
+  #counter-value { font-size: 18px; }
+  .card-recommend span { font-size: 12px; }
+
+  footer{
+    padding-bottom: 2rem;
+  }
 }
 
 #acept {
@@ -294,44 +335,7 @@ footer{
 .btn-preparation{
     text-align: center;
 }
-
-// .btn-preparation-2{
-//     background-color: #fff;
-//     border: 1px solid #fff;
-//     color: #000;
-// }
-
-.btn-preparation:hover{
-    background-color: #21998d;
-    border: 1px solid #21998d;
-}
-
-.line-divisor{
-    width: 100%;
-    border: 1px solid #EEF2F6;
-}
-
-.footer-grid{
-    display: flex;
-    flex-wrap: wrap;
-    margin-right: 0rem;
-    margin-left: 0rem;
-    
-}
-.delivery-content{
-    display: flex;
-    min-height: 50px;
-    padding: 0 10px;
-    align-items: center;
-    justify-content: space-between;
-}
-
-main{
-    display: flex;
-    justify-content: center;
-    //flex-direction: column;
-    overflow: auto;
-}
+ 
 .accordion{
     max-width: 700px;
     width: 100%;

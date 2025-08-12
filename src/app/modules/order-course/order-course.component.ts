@@ -3,6 +3,7 @@ import { Component,
   OnDestroy,
   AfterViewInit,
   ViewChild,
+  HostListener,
 } from "@angular/core";
 import { Viaje } from "./data";
 import { LatLngLiteral, MouseEvent } from "src/agm/core";
@@ -67,6 +68,8 @@ interface Marker {
   providers:[MessageService]
 })
 export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
+  showPanel = false;
+
   constructor(
     private requestTripService: RequestTripService,
     private chatService: ChatService,
@@ -190,6 +193,14 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   
   received_by_store_method_available:string[] =["CASH","YAPE","PLIN","OTROS"]
   isLoadingReceived_by_store_method_available:boolean=false
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: UIEvent) {
+    const width = (event.target as Window).innerWidth;
+    if (width > 991 && this.showPanel) {
+      this.showPanel = false; // Si pasamos a desktop, cerramos el sidebar
+    }
+  }
 
   ngAfterViewInit() {}
   isMqttConnect: boolean = false;

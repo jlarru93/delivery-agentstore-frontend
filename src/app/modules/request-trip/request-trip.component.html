@@ -1,34 +1,341 @@
-<div class="p-grid">
+<div class="rt-page">
+  <div class="rt-map-wrap">
+    <agm-map class="rt-map"
+        [style]="{height:'100%'}" 
+        [latitude]="center.lat" 
+        [longitude]="center.lng" 
+        [zoom]="zoom"
+        >
+        <agm-marker *ngFor="let marker of markers" 
+            [markerDraggable]="true" 
+            [latitude]="marker.lat" 
+            [longitude]="marker.lng" 
+             
+            [iconUrl]="marker.iconUrl"
+            [markerDraggable]="marker.isDraggable"
+            (dragEnd)="onChangeMapMarkers($event, marker)"
+            ></agm-marker>
+        <agm-polyline *ngFor="let polyLine of polyLines" [editable]="false" [strokeColor]="'#eb0045'" [strokeWeight]="3">
+          <agm-polyline-point *ngFor="let point of polyLine.routePoints" [latitude]="point.lat" [longitude]="point.lng" [visible]="false"></agm-polyline-point>
+        </agm-polyline>
+    </agm-map>
+  </div>
+
+  <div class="rt-sheet">
+    <div class="rt-sheet__grabber" aria-hidden="true"></div>
+    <div #sheetBody class="rt-sheet__body">
+      <div class="field">
+        <div class="p-grid p-fluid">
+          <label>Tienda factura</label>
+          <div class="p-col-12">
+            <p-dropdown 
+              [options]="storesAvailable"  
+              [(ngModel)]="request_trip.store.id" 
+              optionLabel="store.fullName" optionValue="store.id" 
+              (onChange)="selectStore($event,input_visible_pickup)"   
+              placeholder="Tienda factura">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="p-grid p-fluid">
+          <label>Tienda</label>
+          <div class="p-col-12">
+            <div class="input-origin-content">
+              <img src="{{origenIcon}}" class="search-img-origin marker" alt=""/>
+              <p-autoComplete
+                  placeholder="¿Dónde lo recogemos?"
+                  [(ngModel)]="address" [delay]="1000" 
+                  [suggestions]="addresses" (completeMethod)="searchAddress($event)" 
+                  (onSelect)="selectPrediction($event)"
+                  field="mainText" 
+                  [disabled]="!request_trip.isCheckedStore"
+                  [ngStyle]="{'flex-grow': '1', 'width': '100%'}"
+                  >
+                  <ng-template let-address pTemplate="item">
+                      <div class="autocomplete-items">
+                        <div>
+                          <p class="address-mainText" style="text-wrap: balance;">{{ address.mainText }}</p>
+                          <p class="address-secondText">{{ address.secondText }}</p>
+                        </div>
+                      </div>
+                  </ng-template>
+              </p-autoComplete>
+              <p-checkbox [(ngModel)]="request_trip.isCheckedStore" [binary]="true" inputId="binary" (onChange)="enablePickUpInput()"></p-checkbox>
+            </div>
+          </div>
+          <div class="p-col-12" *ngIf="isHiddenInput">
+            <div class="input-origin-content">
+              <img
+                src="{{ referenciaIcon }}"
+                class="search-img-origin marker"
+                alt=""
+                width="6"
+              />
+              <input
+                type="text"
+                pInputText
+                placeholder="Referencia"
+                [(ngModel)]="input_reference_pickup"
+                required
+                autofocus
+              />
+            </div>
+          </div>
+          <div class="p-col-12" *ngIf="isHiddenInput">
+            <div class="input-origin-content">
+              <i class="pi pi-phone" style="font-size: 1.5rem; color: #212222"></i>
+              <p-dropdown id="countrycode_adminStore" appendTo="body" [options]="countryCodes" 
+                [(ngModel)]="selectCountryCode" optionLabel="name"
+                  [filter]="true" filterBy="name" [showClear]="true" placeholder="País">
+                  <ng-template pTemplate="selectedItem">
+                      <div class="country-item country-item-value" *ngIf="selectCountryCode">
+                          <img src="assets/country-flags/flag_placeholder.png"
+                              [class]="'flag flag-' + selectCountryCode.code.toLowerCase()" />
+                          <div>&nbsp;{{selectCountryCode.dial_code}}</div>
+                      </div>
+                  </ng-template>
+                  <ng-template let-country pTemplate="item">
+                      <div class="country-item">
+                          <img src="assets/country-flags/flag_placeholder.png"
+                              [class]="'flag flag-' + country.code.toLowerCase()" />&nbsp;
+                          <div>{{country.name}} {{country.dial_code}} </div>
+                      </div>
+                  </ng-template>
+              </p-dropdown>
+              <p-inputNumber mode="decimal" inputId="withoutgrouping" placeholder="Número de teléfono" 
+              [useGrouping]="false" [(ngModel)]="originMobilePhone"></p-inputNumber>
+            </div>
+          </div>
+          <div class="p-col-12" *ngIf="isHiddenInput">
+            <div class="input-origin-content">
+              <i class="pi pi-user" style="font-size: 1.5rem; color: #212222"></i>
+              <input type="text" pInputText placeholder="¿Quién recibe?" [(ngModel)]="input_receptorNameOrigin_pickup" autofocus />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="p-grid p-fluid">
+          <label>Dirección de entrega</label>
+          <div class="p-col-12">
+            <div class="input-origin-content">
+              <img src="{{ destinoIcon }}" class="search-img-origin marker" alt="" />
+              <p-autoComplete 
+                placeholder="¿A dónde lo llevamos?"
+                [(ngModel)]="addressDestination" [delay]="1000" 
+                [suggestions]="addressesDestination" (completeMethod)="searchAddressDestination($event)" 
+                (onSelect)="selectPredictionDestination($event)"
+                field="mainText" 
+                [ngStyle]="{'flex-grow': '1', 'width': '100%'}">
+                <ng-template let-address pTemplate="item">
+                    <div class="autocomplete-items">
+                      <div>
+                        <p class="address-mainText" style="text-wrap: balance;">{{ address.mainText }}</p>
+                        <p class="address-secondText">{{ address.secondText }}</p>
+                      </div>
+                    </div>
+                </ng-template>
+              </p-autoComplete>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="input-origin-content">
+              <img src="{{ referenciaIcon }}" width="6" class="search-img-origin marker ml-1" alt="" />
+              <input type="text" pInputText placeholder="Referencia" [(ngModel)]="input_reference_destination" required autofocus />
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="input-origin-content">
+              <p-avatar 
+                image="assets/images/TELEPHONE VERDE.png" 
+                styleClass="mr-2" 
+                size="large" 
+                shape="circle">
+              </p-avatar>
+              <p-dropdown id="countrycode_adminStore" appendTo="body" [options]="countryCodes" 
+                [(ngModel)]="selectCountryCode" optionLabel="name"
+                  [filter]="true" filterBy="name" [showClear]="true" placeholder="País">
+                  <ng-template pTemplate="selectedItem">
+                      <div class="country-item country-item-value" *ngIf="selectCountryCode">
+                          <img src="assets/country-flags/flag_placeholder.png"
+                              [class]="'flag flag-' + selectCountryCode.code.toLowerCase()" />
+                          <div>&nbsp;{{selectCountryCode.dial_code}}</div>
+                      </div>
+                  </ng-template>
+                  <ng-template let-country pTemplate="item">
+                      <div class="country-item">
+                          <img src="assets/country-flags/flag_placeholder.png"
+                              [class]="'flag flag-' + country.code.toLowerCase()" />&nbsp;
+                          <div>{{country.name}} {{country.dial_code}} </div>
+                      </div>
+                  </ng-template>
+              </p-dropdown>
+              <p-inputNumber inputId="withoutgrouping" placeholder="Número de teléfono" 
+              [useGrouping]="false" [(ngModel)]="destinationMobilePhone"></p-inputNumber>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="input-origin-content">
+              <p-avatar 
+                image="assets/images/user.png" 
+                styleClass="mr-2"   
+                size="large" 
+                shape="circle"></p-avatar>
+              <input
+                type="text"
+                pInputText
+                placeholder="Nombre del cliente"
+                [(ngModel)]="destinationReceptorName"
+                autofocus
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <h5>Detalles</h5>
+        <div class="p-grid p-fluid">
+          <div class="p-col-12">
+            <div class="input-origin-content">
+              <i class="pi pi-comment" style="font-size: 1.5rem; color: #47AC34"></i>
+              <div style="width: 100%;">
+                <label>Detalle del pedido</label>
+                <textarea
+                  [rows]="6"
+                  [cols]="30"
+                  pInputTextarea
+                  [autoResize]="true"
+                  placeholder="Escriba aquí..."
+                  [(ngModel)]="request_trip.description"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-container *ngIf="selectedStore?.tagsOrder?.length>0">
+        <hr />
+          <div class="p-grid p-fluid">
+            <div class="p-col-12">
+                <p-multiSelect
+                  [options]="selectedStore.tagsOrder" 
+                  [(ngModel)]="tagsOrderSelect" 
+                  placeholder="Tags"
+                  optionLabel="value" 
+                  display="chip" 
+                  [showClear]="true" />
+                <div class="mr-5"></div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="field">
+        <h5>Método de pago</h5>
+        <div class="content-company">
+          <div class="p-grid p-fluid">
+            <div class="p-col-12">
+              <p-selectButton
+                class="select-button-custom"
+                [options]="stateOptions"
+                [(ngModel)]="method_payment"
+                optionLabel="name"
+                optionValue="value"
+              ></p-selectButton>
+            </div>
+          </div>
+          <div class="p-grid p-fluid">
+            <div class="p-col-12" *ngIf="method_payment != 'CREDIT'">
+              <label for="cashAmount">Monto:</label>
+              <p-inputNumber [(ngModel)]="cashAmount" id="cashAmount" prefix="S/ "></p-inputNumber>
+            </div>
+            <div class="p-col-12">
+              <mat-form-field appearance="outline">
+                <mat-label>DOMICILIO</mat-label>
+                <input
+                  matInput
+                  placeholder="Placeholder"
+                  value="$20.00"
+                  [readonly]="true"
+                  class="mat-input-custom"
+                  [(ngModel)]="amount"/>
+              </mat-form-field>
+            </div>
+          </div>
+          <p-tabView [(activeIndex)]="activeIndexCalendar" (onChange)="onChangeOrder($event)" >
+            <p-tabPanel  header="Minutos">
+              <div class="p-grid p-fluid">      
+                <p-inputNumber 
+                  [(ngModel)]="request_trip.readyToDmMinutesAt" 
+                  [showButtons]="true" 
+                  min="0"
+                  buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="5"
+                  decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-success" 
+                  incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" currency="EUR">
+                </p-inputNumber>
+              </div>
+            </p-tabPanel>
+            <p-tabPanel  header="Calendario">
+              <div class="p-grid p-fluid">
+                <div class="p-col-12">
+                  <p-calendar [(ngModel)]="creadDate" [minDate]="minDate" [showTime]="true" [showSeconds]="true" [showIcon]="true"  ></p-calendar>
+                </div>
+              </div>
+            </p-tabPanel>
+          </p-tabView>
+        </div>
+      </div>
+      <div class="field">
+        <div class="p-grid p-fluid" *ngIf="!editTripData">
+          <div class="p-col-12">
+            <button 
+            (click)="onSaveOrder()"
+              pButton
+              pRipple
+              class="col-12 p-button-lg"
+              style="position: relative; padding: 1rem"
+              [loading]="onSaveLoading"
+            >
+              <span>SOLICITAR UN PIWI</span>
+              <span style="position: absolute; right: 2%; top:9%">
+                <p-avatar 
+                  image="assets/images/GROUP.svg" 
+                  styleClass="mr-2" 
+                  size="large" 
+                  shape="circle"></p-avatar>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="p-grid p-fluid" *ngIf="editTripData">
+          <div class="p-col-12">
+            <button 
+            (click)="onUpdateOrder()"
+              pButton
+              pRipple
+              class="col-12 p-button-lg"
+              style="position: relative; padding: 1rem"
+              [loading]="onSaveLoading"
+            >
+              <span>ACTUALIZAR ORDEN</span>
+              <span style="position: absolute; right: 2%; top:9%">
+                <p-avatar 
+                  image="assets/images/GROUP.svg" 
+                  styleClass="mr-2" 
+                  size="large" 
+                  shape="circle"></p-avatar>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div class="p-grid">
   <div class="p-col-12 p-md-7 p-lg-9">
-    <!-- <nexus-informacion-mapa
-    [idMap]="'MapModal-'"
-    [coberturePosition]="coberturePosition"
-    [lstPosiciones]="lstPosiciones"
-    [lstPosicionesDriver]="lstPosicionConductor"
-    (onChange)="onChangeMapMarkers($event)"
-    [viewMetros]="false"
-    [metros]="viaje.distance"
-    [viewPriceEstimate]="false"
-    [priceEstimate]="viaje.totalService"
-    [initMap]="flagInitMap"
-    [initMapViewAfter]="initMapViewAfter"
-    [lstCoordinateEncoded]="polyline_order"
-  >
-  </nexus-informacion-mapa> -->
-    <!-- <agm-map
-      [style]="{ height: '89vh' }"
-      [latitude]="center.lat"
-      [longitude]="center.lng"
-      (mapClick)="mapClicked($event)"
-      [zoom]="12"
-    >
-      <agm-marker
-        [latitude]="marker.lat"
-        [longitude]="marker.lng"
-        [markerDraggable]="true"
-        (dragEnd)="mapClicked($event)"
-      ></agm-marker>
-    </agm-map> -->
     <agm-map 
         [style]="{height:'100%'}" 
         [latitude]="center.lat" 
@@ -52,8 +359,6 @@
   <div class="p-col-12 p-md-5 p-lg-3" style="background-color: #ffffff;">
     <div class="search-container">
       <div class="p-grid p-fluid">
-        <!-- is_disabled_pickup -->
-        <!-- <pre>{{this.request_trip.addresses | json}}</pre> -->
         <div class="p-col-12">
           <div class="p-ml-5">
             <label for="">Tienda factura</label>
@@ -70,10 +375,6 @@
           </div>
           <div class="input-origin-content" >
             <img src="{{origenIcon}}" class="search-img-origin marker" alt=""/>
-
-            <!-- <input type="text" pInputText id="txtUbicacion_origin" 
-              [disabled]="!request_trip.isCheckedStore" 
-              [(ngModel)]="input_visible_pickup"  placeholder="¿Dónde lo recogemos?"> -->
             
             <p-autoComplete 
             placeholder="¿Dónde lo recogemos?"
@@ -183,19 +484,6 @@
               class="search-img-origin marker"
               alt=""
             />
-            <!-- <input
-              #search
-              autocorrect="off" autocapitalize="off" spellcheck="off" 
-              type="text"
-              class="p-inputtext-lg"
-              pInputText
-              placeholder="¿A dónde lo llevamos?"
-              [(ngModel)]="inputVisibleDestino"
-              id="txtUbicacion" 
-              (input)="onInputChange($event.target.value)"
-              required
-              autofocus
-            /> -->
 
             <p-autoComplete 
             placeholder="¿A dónde lo llevamos?"
@@ -271,9 +559,6 @@
         </div>
         <div class="p-col-12">
           <div class="input-origin-content">
-            <!-- <div style="padding: 11px">
-              <img src="assets/images/user.png" alt="">
-            </div> -->
             <p-avatar 
               image="assets/images/user.png" 
               styleClass="mr-2"   
@@ -296,23 +581,6 @@
     <h5>Detalles</h5>
     <div>
       <div class="p-grid p-fluid">
-        <!-- <div class="p-col-12">
-          <div class="p-ml-6">
-            <label for="">Número de cliente</label>
-          </div>
-          <div class="input-origin-content">
-            <div style="padding: 8px">
-              <i
-                class="pi pi-phone"
-                style="font-size: 1.5rem; color: #212222"
-              ></i>
-            </div>
-            <p-inputNumber mode="decimal" inputId="withoutgrouping" [useGrouping]="false" [(ngModel)]="request_trip.mobile"> </p-inputNumber>
-
-
-            <div class="mr-5"></div>
-          </div>
-        </div> -->
         <div class="p-col-12">
           <div class="p-ml-6">
             <label for="">Detalle del pedido</label>
@@ -372,14 +640,6 @@
         <div class="p-col-12" *ngIf="method_payment != 'CREDIT'">
           <label for="cashAmount">Monto:</label>
           <p-inputNumber [(ngModel)]="cashAmount" id="cashAmount" prefix="S/ "></p-inputNumber>
-          <!-- <mat-form-field appearance="outline">
-            <mat-label>MONTO</mat-label>
-            <input
-              matInput
-              class="mat-input-custom"
-              [(ngModel)]="cashAmount"
-            />
-          </mat-form-field> -->
         </div>
         <div class="p-col-12">
           <mat-form-field appearance="outline">
@@ -398,9 +658,7 @@
       
       <p-tabView [(activeIndex)]="activeIndexCalendar" (onChange)="onChangeOrder($event)" >
         <p-tabPanel  header="Minutos">
-          <!-- <h5>Minutos</h5> -->
-          <div class="p-grid p-fluid">
-            
+          <div class="p-grid p-fluid">      
             <p-inputNumber 
               [(ngModel)]="request_trip.readyToDmMinutesAt" 
               [showButtons]="true" 
@@ -416,7 +674,6 @@
             <div class="p-col-12">
               <p-calendar [(ngModel)]="creadDate" [minDate]="minDate" [showTime]="true" [showSeconds]="true" [showIcon]="true"  ></p-calendar>
             </div>
-            <!-- <input type="text" [(ngModel)]="creadDate" [minDate]="minDate" pInputText bsDatepicker [isOpen]="false" [bsConfig]="{ adaptivePosition: true,withTimepicker: true,dateInputFormat: 'DD-MM-YYYY h:mm:ss a'}"> -->
           </div>
         </p-tabPanel>
       </p-tabView>
@@ -440,7 +697,6 @@
               styleClass="mr-2" 
               size="large" 
               shape="circle"></p-avatar>
-            <!-- <img src="{{ imgLogo }}" class="sign-logo" alt="" /> -->
           </span>
         </button>
       </div>
@@ -467,4 +723,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
