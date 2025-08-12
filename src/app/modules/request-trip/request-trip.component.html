@@ -2,6 +2,8 @@
   <div class="rt-map-wrap">
     <agm-map class="rt-map"
         [style]="{height:'100%'}" 
+        [styles]="mapStyles"
+        [gestureHandling]="gestureHandling"
         [latitude]="center.lat" 
         [longitude]="center.lng" 
         [zoom]="zoom"

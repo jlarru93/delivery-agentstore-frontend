@@ -108,6 +108,17 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       routePoints:[]
     }
   ]
+  mapStyles: any[] = [
+    {
+      featureType: 'poi',
+      stylers: [{ visibility: 'off' }]
+    },
+    {
+      featureType: 'transit',
+      stylers: [{ visibility: 'off' }]
+    }
+  ];
+  gestureHandling="greedy"
   creadDate:Date= new Date()
   minDate:Date= new Date()
   selectedStore:StoreTripResponse
