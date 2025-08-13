@@ -639,8 +639,12 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   searchAddressDestination(e){
     let word=e.query as string;
-    if(word.includes("https://www.google.com/maps?q=")){
-      word=word.split("https://www.google.com/maps?q=")[1]
+    const regex = /[?&]q=(-?\d+(\.\d+)?),(-?\d+(\.\d+)?)/;
+    const match=word.match(regex)
+    if(match){
+      const lat = parseFloat(match[1]);
+      const lng = parseFloat(match[3]);
+      word=lat+","+lng
     }
     const inputType=this.identifyInputType(word)
     if(inputType=="autocomplete"){
@@ -653,6 +657,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       const lat=+(word.split(",")[0].trim());
       const lng=+(word.split(",")[1].trim());
       this.setDestination(lat,lng);
+      this.geoInverse()
     }
   }
   autocompleteDestionation(word:string){
