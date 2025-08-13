@@ -638,7 +638,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 
   searchAddressDestination(e){
-    const word=e.query;
+    let word=e.query as string;
+    if(word.includes("https://www.google.com/maps?q=")){
+      word=word.split("https://www.google.com/maps?q=")[1]
+    }
     const inputType=this.identifyInputType(word)
     if(inputType=="autocomplete"){
       this.autocompleteDestionation(word)
@@ -647,11 +650,13 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.selectPredictionDestination(null,word)
     }
     if(inputType=="coordinates"){
-
+      const lat=+(word.split(",")[0].trim());
+      const lng=+(word.split(",")[1].trim());
+      this.setDestination(lat,lng);
     }
   }
   autocompleteDestionation(word:string){
-        this.requestTripService.onGetSuggestionAddress(word, this.request_trip.store.id).subscribe(
+    this.requestTripService.onGetSuggestionAddress(word, this.request_trip.store.id).subscribe(
       (resp) => {
         this.addressesDestination = resp.data.map((as) => AddressSuggestionResponse.toBean(as))
         if (resp.data.length == 0) {
@@ -672,50 +677,43 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
     this.requestTripService.onGeoCodeUser({address: address, placeId: prediction?.placeId, storeId: this.request_trip.store.id}).subscribe(
       (resp) => {
-        this.addressesDestination = []
-        console.log(resp.data)
-
-        this.request_trip.addresses[1].point.type = "Point";
-          this.request_trip.addresses[1].floor = "";
-          this.request_trip.addresses[1].alias = "";
-          this.request_trip.addresses[1].marker = "store";
-          this.request_trip.addresses[1].addressStreet = this.addressDestination.mainText;
-          this.request_trip.addresses[1].point.coordinates = [
-            resp.data.lng,
-            resp.data.lat
-          ];
-          // this.geocodePlaceId(place);
-
-
-          const newMarkers: Marker = {
-            lat: resp.data.lat,
-            lng: resp.data.lng,
-            iconUrl: this.globalIconDestination,
-            label: 'Destino',
-            isDraggable: true,
-            onDragEnd: (e)=>{
-              console.log(e.coords)
-            }
-          }
-
-          // this.center = {
-          //   lat: results[0].geometry.location.lat(),
-          //   lng: results[0].geometry.location.lng(),
-          // }
-
-          this.markers[1] = newMarkers
-
-          //this.drawPolyline()
-
-          this.updatePosition();
-          this.onGetAmountOrder();
-          this.centrarMapa()
-
+        this.setDestination(resp.data.lat,resp.data.lng);
       },
       ()=>{
         this.addressesDestination = []
       }
     )
+  }
+
+  setDestination(lat:number,lng:number){
+    this.addressesDestination = []
+    this.request_trip.addresses[1].point.type = "Point";
+    this.request_trip.addresses[1].floor = "";
+    this.request_trip.addresses[1].alias = "";
+    this.request_trip.addresses[1].marker = "store";
+    this.request_trip.addresses[1].addressStreet = this.addressDestination.mainText;
+    this.request_trip.addresses[1].point.coordinates = [
+      lng,
+      lat
+    ];
+    const newMarkers: Marker = {
+      lat: lat,
+      lng: lng,
+      iconUrl: this.globalIconDestination,
+      label: 'Destino',
+      isDraggable: true,
+      onDragEnd: (e)=>{
+        console.log(e.coords)
+      }
+    }
+
+    this.markers[1] = newMarkers
+
+    //this.drawPolyline()
+
+    this.updatePosition();
+    this.onGetAmountOrder();
+    this.centrarMapa()
   }
 
   findAdressOrigin() {
