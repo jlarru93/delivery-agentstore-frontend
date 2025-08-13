@@ -458,109 +458,56 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
   onChangeMapMarkers($event: any, marker: any) {
     this.flagInitMap = false;
-    // console.log('event--', $event)
-    // const elementOrigin = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
-
-    // const element = <HTMLInputElement>document.getElementById("txtUbicacion");
-    //  var geocoder = new google.maps.Geocoder;
-     var latlng = {
+    let latlng = {
       lat: $event.coords?.lat,
       lng: $event.coords?.lng,
       storeId: this.request_trip.store.id
     };
 
-    this.requestTripService.onGeoCodeInverseUser(latlng).subscribe(
-      (resp) => {
+    this.setGeoInverse(latlng,marker.label);
 
-        if(marker.label == "Destino"){
-          this.addressDestination = {mainText: resp.data.address}
+  }
+
+  setGeoInverse(coords:{lat:number,lng:number,storeId?:number},label:string){
+    this.requestTripService.onGeoCodeInverseUser(coords).subscribe(
+      (resp) => {
+        const address=resp.data.address
+        if(label == "Destino"){
+          this.addressDestination = {mainText: address}
 
           this.request_trip.addresses[1].point.type = "Point";
           this.request_trip.addresses[1].floor = "";
           this.request_trip.addresses[1].alias = "";
           this.request_trip.addresses[1].marker = "store";
-          this.request_trip.addresses[1].addressStreet = resp.data.address;
+          this.request_trip.addresses[1].addressStreet = address;
           this.request_trip.addresses[1].point.coordinates = [
-            $event.coords?.lng,
-            $event.coords?.lat,
+          coords?.lng,
+          coords?.lat,
           ]
           //this.updatePosition();
           this.onGetAmountOrder();
         }
 
-        if(marker.label == "Origen"){
-          this.address = {
-            mainText: resp.data.address
-          }
-
+        if(label == "Origen"){
+          this.address = { mainText: address }
           this.request_trip.addresses[0].point.type = "Point";
           this.request_trip.addresses[0].floor = "";
           this.request_trip.addresses[0].alias = "";
           this.request_trip.addresses[0].marker = "store";
-          this.request_trip.addresses[0].addressStreet = resp.data.address;
-          this.request_trip.addresses[0].point.coordinates = [
-            $event.coords?.lng,
-            $event.coords?.lat,
-          ]
+          this.request_trip.addresses[0].addressStreet = address;
+          this.request_trip.addresses[0].point.coordinates = [ coords?.lng, coords?.lat ]
           //this.updatePosition();
           this.onGetAmountOrder();
 
         }
-
       },
       (error) => {
         this.alert.showInfo('','Geocoder failed');
       }
     )
 
-    //  geocoder.geocode({
-    //    'location': latlng
-    //  }, (results, status)=> {
-    //    if (status === 'OK') {
-    //      if(marker.label == "Destino"){
-    //        if (results[0]) {
-    //         element.value = results[0].formatted_address;
-    //         this.request_trip.addresses[1].point.type = "Point";
-    //         this.request_trip.addresses[1].floor = "";
-    //         this.request_trip.addresses[1].alias = "";
-    //         this.request_trip.addresses[1].marker = "store";
-    //         this.request_trip.addresses[1].addressStreet = results[0].formatted_address;
-    //         this.request_trip.addresses[1].point.coordinates = [
-    //           $event.coords?.lng,
-    //           $event.coords?.lat,
-    //         ]
-    //         //this.updatePosition();
-    //         this.onGetAmountOrder();
-            
-    //        } else {
-    //         this.alert.showError('','No results found');
-    //        }
-           
-    //     } 
-    //     if(marker.label == "Origen"){
-    //       if (results[0]) {
-    //         elementOrigin.value = results[0].formatted_address;
-    //         this.request_trip.addresses[0].point.type = "Point";
-    //         this.request_trip.addresses[0].floor = "";
-    //         this.request_trip.addresses[0].alias = "";
-    //         this.request_trip.addresses[0].marker = "store";
-    //         this.request_trip.addresses[0].addressStreet = results[0].formatted_address;
-    //         this.request_trip.addresses[0].point.coordinates = [
-    //           $event.coords?.lng,
-    //           $event.coords?.lat,
-    //         ]
-    //         //this.updatePosition();
-    //         this.onGetAmountOrder();
-    //        } else {
-    //         this.alert.showInfo('','No results found');
-    //        }
-    //     }
-    //    } else {
-    //     this.alert.showInfo('','Geocoder failed due to: ' + status);
-    //    }
-    //  });
-  }
 
+  }
 
   convertPolygonToLatLngLiteral(coordinates: number[][]): LatLngLiteral[] {
     return coordinates.map(coord => {
@@ -657,7 +604,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       const lat=+(word.split(",")[0].trim());
       const lng=+(word.split(",")[1].trim());
       this.setDestination(lat,lng);
-      this.geoInverse()
+      this.setGeoInverse({lat:lat,lng:lng,storeId: this.request_trip.store.id},"Destino")
     }
   }
   autocompleteDestionation(word:string){
@@ -683,6 +630,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.requestTripService.onGeoCodeUser({address: address, placeId: prediction?.placeId, storeId: this.request_trip.store.id}).subscribe(
       (resp) => {
         this.setDestination(resp.data.lat,resp.data.lng);
+        this.onGetAmountOrder();
       },
       ()=>{
         this.addressesDestination = []
@@ -717,7 +665,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     //this.drawPolyline()
 
     this.updatePosition();
-    this.onGetAmountOrder();
     this.centrarMapa()
   }
 
