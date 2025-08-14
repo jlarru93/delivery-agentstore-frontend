@@ -405,7 +405,7 @@
     filter: none;
   }
   .rt-sheet > .rt-sheet__body{
-    height: 100vh;               
+    height: calc(100vh - 120px);              
     max-height: none;
     border-radius: 0;
     border-left: 1px solid #eef0f3;
