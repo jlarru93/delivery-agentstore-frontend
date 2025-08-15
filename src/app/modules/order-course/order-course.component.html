@@ -31,8 +31,116 @@
             </div>
           </ng-template>
 
-          <!-- TODO: aquí va TODO el contenido que ya tienes del acordeón -->
-          <!-- ... -->
+          <div class="grid m-0">
+            <div class="col-12">
+              <div class="grid flex">
+                <p class="col-5">
+                  URL Tracking <i class="pi pi-paperclip" (click)="copyClipBoard(item.urlTracking)"></i>
+                </p>
+              </div>
+              <div class="grid flex">
+                <p class="col-5"><strong>Cliente:</strong> {{ item.addresses[1]?.receptorName ? item.addresses[1].receptorName : '' }}</p>
+              </div>
+              <div class="grid flex">
+                <p class="col-5"><strong>Tienda:</strong> {{ item.addresses[0].addressStreet }}</p>
+              </div>
+              <div class="grid flex">
+                <p class="col-5"><strong>Destino</strong> {{ item.addresses[1]?.addressStreet??'' }}</p>
+              </div>
+              <div class="grid flex">
+                <p class="col-5"><strong>Método de Pago</strong> {{ item.order_name}} 
+                  <b *ngIf="item.payment?.method?.type == 'CASH' && item?.payment?.method?.received_by_store_method">
+                    <p-dropdown 
+                      [options]="received_by_store_method_available"
+                      [loading]="isLoadingReceived_by_store_method_available"
+                      (onChange)="changeReceivedByStoreMethodAvailable(item)" 
+                      [(ngModel)]="item.payment.method.received_by_store_method" />
+               </b></p>
+              </div>
+              <div class="grid flex">
+                <p class="col-5"><strong>Precio Estimado:</strong> {{ item.payment.amount.currency }} {{ item.payment.amount.value }}
+              </div>
+              <div class="grid flex">
+                <p class="col-5"><strong>Hora listo:</strong> {{ getFormatDate(item.readyToDmAt) }}</p>
+              </div>
+            </div>
+          </div>
+          <br />
+          <ng-container *ngIf="item.deliveryMan">
+                  <div class="datos-conductor-container p-3 mb-3">
+                    <div class="p-grid m-0">
+                      <h4 class="pb-2">Datos del repartidor:</h4>
+                    </div>
+                    <div class="p-grid col-12 md:col-12 lg:col-12 p-0">
+                      <i class="pi pi-user m-2"></i>
+                      <div class="p-col">
+                        <h5 for="firstname2">
+                          {{ item.deliveryMan?.id! }}  - {{ item.deliveryMan?.name! | uppercase }} 
+                        </h5>
+                      </div>
+                    </div>
+                    <div class="p-grid col-12 md:col-12 lg:col-12 p-0">
+                      <i class="pi pi-phone m-2"></i>
+                      <div class="p-col">
+                        <h5 for="firstname2">{{ item.deliveryMan?.phone!  }} </h5>
+                      </div>
+                    </div>
+                    <div
+                      class="p-grid col-12 md:col-12 lg:col-12 text-center"
+                      style="
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                      "
+                    >
+                    <img src="{{item.deliveryMan?.picture?.profile}}" alt="" style="width: 100px; height: 100px; background-color: #fff; border-radius: 50%;" onError="this.src='assets/images/user.png'">
+
+                    </div>
+                  </div>
+
+                </ng-container>
+          <div class="p-grid">
+            <div 
+              class="p-col" 
+              *ngIf="!item.deliveryMan && (item.type == 'traditional' && !['done','inRoute','cancel','preparingOrder','orderReady'].includes(item.status) || item.type == 'SendAndReciveStore')"
+            >
+              <button
+                (click)="isDisplayOrderCancelModal=true;orderSelected=item"
+                pButton
+                pRipple
+                type="button"
+                label="Cancelar"
+                class="p-mr-2"
+              ></button>
+              <button
+                (click)="redirectOrderTrip(item)"
+                pButton
+                pRipple
+                type="button"
+                label="Editar"
+                class="p-button-outlined"
+              ></button>
+            </div>
+            <div class="p-col">
+              <div class="overlay-container">
+                <button pButton pRipple type="button" (click)="toggleDisplayDiv(item);$event.stopPropagation()" icon="pi pi-comment" class="p-button-rounded" [label]="item.messagesNoReadTotal" style="float: right;"></button>
+                <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="item.showButton" [@enterAnimation]>
+                   <app-chat 
+                      [isLoading]="item.isLoadingChat"
+                      [messages]="item.messagesChat" 
+                      [orderId]="item.id"
+                      [orderUuid]="item.uuid"
+                      [usuarioLogueado]="userName"
+                      [userId]="userId"
+                      [flagMainComponent]="true"
+                      (hideChat)="hideChatComponent(item)"
+                      (emitMessage)="sendMessage($event)"
+                      ></app-chat>
+                </div>
+             </div>
+            </div>
+            
+          </div>
         </p-accordionTab>
       </p-accordion>
     </ng-container>
