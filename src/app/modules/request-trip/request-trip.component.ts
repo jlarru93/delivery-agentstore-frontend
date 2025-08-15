@@ -20,7 +20,7 @@ import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { COUNTRYCODE, NUMBERPHONELENGTH } from 'src/app/utils/constant';
 import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 import { AddressSuggestionResponse } from "../order-course/data/response";
-type InputType = 'coordinates' | 'place' | 'autocomplete';
+type InputType = 'coordinates' | 'place' | 'autocomplete' | 'linkconvert';
 interface PolyLine{
   routePoints:RoutePoint[]
 }
@@ -601,11 +601,26 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.selectPredictionDestination(null,word)
     }
     if(inputType=="coordinates"){
-      const lat=+(word.split(",")[0].trim());
-      const lng=+(word.split(",")[1].trim());
-      this.setDestination(lat,lng);
-      this.setGeoInverse({lat:lat,lng:lng,storeId: this.request_trip.store.id},"Destino")
+      this.setCoordinates(word)
     }
+    if(inputType=="linkconvert"){
+      this.setLinkConvert(word)
+    }
+  }
+  setLinkConvert(word: string) {
+    this.requestTripService.setLinkConvert(word).subscribe(
+      (resp) => {
+        const latLng = resp.data.lat + "," + resp.data.lng;
+        this.setCoordinates(latLng);
+      },
+      (error) => { }
+    )
+  }
+  setCoordinates(word:string){
+    const lat=+(word.split(",")[0].trim());
+    const lng=+(word.split(",")[1].trim());
+    this.setDestination(lat,lng);
+    this.setGeoInverse({lat:lat,lng:lng,storeId: this.request_trip.store.id},"Destino");
   }
   autocompleteDestionation(word:string){
     this.requestTripService.onGetSuggestionAddress(word, this.request_trip.store.id).subscribe(
@@ -1311,6 +1326,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   identifyInputType(input: string): InputType {
     const trimmed = input.trim();
 
+    const gmapsUrlRegex =
+    /^(?:https?:\/\/)?(?:www\.)?(?:maps\.app\.goo\.gl\/[A-Za-z0-9]+(?:[/?#][^\s]*)?|goo\.gl\/maps\/[^\s]+|(?:maps\.google\.[A-Za-z.]{2,}|google\.[A-Za-z.]{2,})\/maps(?:[/?#][^\s]*)?)$/i;
+    if (gmapsUrlRegex.test(trimmed)) return 'linkconvert';
     // 1. Coordenadas (lat, lng)
     const coordinateRegex = /^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?((1[0-7]\d|[1-9]?\d)(\.\d+)?|180(\.0+)?)$/;
     if (coordinateRegex.test(trimmed)) return 'coordinates';

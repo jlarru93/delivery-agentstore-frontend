@@ -106,6 +106,9 @@ export class RequestTripService {
   onGeoCodeInverseUser(request){
     return this.http.post<ObjetResponse<any>>(env.url.util_banckEnd + '/gmap/geoCodeInverse/agent-store', request)
   }
+  setLinkConvert(word: string) {
+    return this.http.post<ObjetResponse<{lat:number,lng:number}>>(env.url.util_banckEnd + '/gmap/linkconvert/agent-store', {url:word})
+  }
   
   updateReceivedByStoreMethodAvailable(uuid: string, received_by_store_method: string) {
     let path = '/order/' + uuid + '/receivedMethod/agent-store'
