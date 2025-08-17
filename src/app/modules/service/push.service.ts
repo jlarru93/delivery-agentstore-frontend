@@ -50,6 +50,8 @@ export class PushService {
     try {
       const regs = await navigator.serviceWorker.getRegistrations();
       console.log('SW regs:', regs.map(r => ({ scope: r.scope })));
+      console.log("environment.vapidKey",environment?.vapidKey);
+      console.log("swReg",swReg)
       token = await getToken(this.messaging, {
         vapidKey: environment.vapidKey,
         serviceWorkerRegistration: swReg
