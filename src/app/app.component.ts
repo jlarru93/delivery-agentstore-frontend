@@ -66,6 +66,7 @@ export class AppComponent implements OnInit{
             console.log('Mensaje en foreground:', payload);
             // Aquí puedes mostrar un toast, alert, etc.
         });
+        this.permitToNotify()
     }
 
     private loadVersion(): Observable<string | null> {
