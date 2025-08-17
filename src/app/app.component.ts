@@ -5,6 +5,7 @@ import { ConnectionService } from './modules/service/connection.service';
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
 import { HttpClient } from '@angular/common/http';
 import { interval, map, Observable, switchMap } from 'rxjs';
+import { PushService } from './modules/service/push.service';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -30,8 +31,16 @@ export class AppComponent implements OnInit{
     isDialogConnectionShow:boolean
     private previousVersion: string | null = null;
     private currentVersion: string | null = null
+
+    displayToken: string | null = null;
     @ViewChild(DialogUpdateWebComponent) dialogUpdate!: DialogUpdateWebComponent;
-    constructor(private primengConfig: PrimeNGConfig,private _mqtt:MqttService,private connectionService:ConnectionService,private http:HttpClient) {}
+    constructor(
+        private primengConfig: PrimeNGConfig,
+        private _mqtt:MqttService,
+        private connectionService:ConnectionService,
+        private http:HttpClient,
+        private push: PushService
+    ) {}
 
     ngOnInit() {
         
@@ -53,6 +62,10 @@ export class AppComponent implements OnInit{
         }
         this.previousVersion = version;
         });
+        this.push.onForegroundMessage((payload) => {
+            console.log('Mensaje en foreground:', payload);
+            // Aquí puedes mostrar un toast, alert, etc.
+        });
     }
 
     private loadVersion(): Observable<string | null> {
@@ -63,5 +76,10 @@ export class AppComponent implements OnInit{
             return this.currentVersion;
             })
         );
+    }
+
+    async permitToNotify() {
+        this.displayToken = await this.push.requestPermissionAndToken();
+        console.log('FCM token:', this.displayToken);
     }
 }

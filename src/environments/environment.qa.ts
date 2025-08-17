@@ -55,6 +55,15 @@ export const environment = {
       }
     }
   },
+  firebase: {
+    apiKey: '<your-key>',
+    authDomain: '<your-project-authdomain>',
+    databaseURL: '<your-database-URL>',
+    projectId: '<your-project-id>',
+    storageBucket: '<your-storage-bucket>',
+    messagingSenderId: '<your-messaging-sender-id>'
+  },
+  vapidKey:"",
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/dev',
   mqttServer:{

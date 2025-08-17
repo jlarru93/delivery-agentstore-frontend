@@ -30,7 +30,6 @@
                           "src/favicon.ico",
                           "src/upload.php",
                           "src/assets",
-                          "src/manifest.webmanifest",
                           "src/manifest.webmanifest"
                         ],
                         "styles": [
@@ -164,7 +163,6 @@
                           "src/favicon.ico",
                           "src/upload.php",
                           "src/assets",
-                          "src/manifest.webmanifest",
                           "src/manifest.webmanifest"
                         ],
                         "styles": [

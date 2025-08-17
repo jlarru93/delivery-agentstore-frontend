@@ -1,5 +1,5 @@
 {
-  "name": "mirage",
+  "name": "pospiwi",
   "version": "12.2.0",
   "scripts": {
     "ng": "ng",
@@ -7,6 +7,7 @@
     "start:prod": "ng serve --configuration prod",
     "build": "ng build",
     "build-dev": "ng build --configuration dev",
+    "build-dev-spa": "ng build --configuration dev --source-map",
     "build-qa": "ng build --configuration qa",
     "build-prod": "ng build --configuration prod",
     "test": "ng test",
@@ -20,6 +21,7 @@
     "@angular/common": "^15.2.10",
     "@angular/compiler": "^15.2.10",
     "@angular/core": "^15.2.10",
+    "@angular/fire": "^20.0.1",
     "@angular/forms": "^15.2.10",
     "@angular/material": "^15.2.9",
     "@angular/platform-browser": "^15.2.10",
@@ -31,6 +33,7 @@
     "aws-amplify": "^5.3.19",
     "buffer": "^6.0.3",
     "chart.js": "^3.3.2",
+    "firebase": "^12.1.0",
     "google-maps": "^4.3.3",
     "howler": "^2.2.4",
     "jwt-decode": "^3.1.2",
