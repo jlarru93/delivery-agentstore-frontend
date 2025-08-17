@@ -32,7 +32,6 @@ import {DividerModule} from 'primeng/divider';
 import {DropdownModule} from 'primeng/dropdown';
 import {FieldsetModule} from 'primeng/fieldset';
 import {FileUploadModule} from 'primeng/fileupload';
-//import {FullCalendarModule} from '@fullcalendar/angular';
 import {GalleriaModule} from 'primeng/galleria';
 import {ImageModule} from 'primeng/image';
 import {InplaceModule} from 'primeng/inplace';
@@ -151,9 +150,6 @@ import {BreadcrumbService} from './breadcrumb.service';
 import {MenuService} from './app.menu.service';
 import {AppCodeModule} from './app.code.component';
 
-//import dayGridPlugin from '@fullcalendar/daygrid';
-//import timeGridPlugin from '@fullcalendar/timegrid';
-//import interactionPlugin from '@fullcalendar/interaction';
 import { JWTInterceptor } from './utils/jwt-interceptor';
 import { ErrorInterceptor } from './utils/error-interceptor';
 import { SignInComponent } from './login/sign-in/sign-in.component';

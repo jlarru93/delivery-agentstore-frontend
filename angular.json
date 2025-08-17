@@ -42,9 +42,6 @@
                             "node_modules/prismjs/components/prism-typescript.js"
                         ],
                         "allowedCommonJsDependencies": [
-                            "@fullcalendar/daygrid",
-                            "@fullcalendar/timegrid",
-                            "@fullcalendar/interaction",
                             "chart.js",
                             "uuid",
                             "lodash",
