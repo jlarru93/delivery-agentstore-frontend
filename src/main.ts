@@ -18,3 +18,16 @@ Amplify.configure({
 });
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.error(err));
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+        scope: '/firebase-cloud-messaging-push-scope'
+      });
+      console.log('FCM SW registrado:', reg.scope);
+    } catch (e) {
+      console.error('Error registrando FCM SW', e);
+    }
+  });
+}

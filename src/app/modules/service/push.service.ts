@@ -23,20 +23,43 @@ export class PushService {
    * Retorna el token FCM o null si no hay permiso.
    */
   async requestPermissionAndToken(): Promise<string | null> {
-    await this.init();
+    // ...
+    // 1) intenta conseguir la registration del SW de FCM explícitamente
+    let swReg = await navigator.serviceWorker.getRegistration('/firebase-cloud-messaging-push-scope');
 
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted' || !this.messaging) return null;
+    // 2) si no existe, registra de nuevo por si el load aún no la hizo
+    if (!swReg) {
+      try {
+        swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+          scope: '/firebase-cloud-messaging-push-scope'
+        });
+        console.log('FCM SW registrado on-demand:', swReg.scope);
+      } catch (e) {
+        console.error('No se pudo registrar el FCM SW:', e);
+      }
+    }
 
-    // Usa el SW activo de Angular (básico) o uno propio (ver sección 7).
-    const swReg = await navigator.serviceWorker.ready;
+    // 3) como último recurso, usa cualquiera que esté "ready"
+    if (!swReg) {
+      swReg = await navigator.serviceWorker.ready;
+      console.warn('Usando SW ready (probablemente ngsw) como fallback');
+    }
 
-    const token = await getToken(this.messaging, {
-      vapidKey: environment.vapidKey,
-      serviceWorkerRegistration: swReg, // básico: usa ngsw-worker
-    });
-
-    return token ?? null;
+    // 4) pide el token con esa registration
+    let token: string | null = null;
+    try {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      console.log('SW regs:', regs.map(r => ({ scope: r.scope })));
+      token = await getToken(this.messaging, {
+        vapidKey: environment.vapidKey,
+        serviceWorkerRegistration: swReg
+      });
+      console.log('getToken OK:', token);
+    } catch (err:any) {
+      console.error('getToken error:', err?.code || err, err);
+      return null;
+    }
+    return null
   }
 
   /**

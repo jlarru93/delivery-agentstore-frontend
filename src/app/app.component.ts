@@ -4,7 +4,7 @@ import { MqttService } from './modules/service/mqtt.service';
 import { ConnectionService } from './modules/service/connection.service';
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
 import { HttpClient } from '@angular/common/http';
-import { interval, map, Observable, switchMap } from 'rxjs';
+import { interval, map, Observable, of, switchMap } from 'rxjs';
 import { PushService } from './modules/service/push.service';
 @Component({
     selector: 'app-root',
@@ -66,7 +66,7 @@ export class AppComponent implements OnInit{
             console.log('Mensaje en foreground:', payload);
             // Aquí puedes mostrar un toast, alert, etc.
         });
-        this.permitToNotify()
+
     }
 
     private loadVersion(): Observable<string | null> {
@@ -82,8 +82,10 @@ export class AppComponent implements OnInit{
     async permitToNotify() {
         console.log("permitToNotify")
         try {
-            this.displayToken = await this.push.requestPermissionAndToken();
-            console.log('FCM token:', this.displayToken);
+            of(this.push.requestPermissionAndToken()).subscribe(()=>{
+                console.log('FCM token:', this.displayToken);
+            })
+            
         } catch (error) {
             console.log("Error",error)
         }
