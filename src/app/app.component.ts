@@ -80,7 +80,12 @@ export class AppComponent implements OnInit{
     }
 
     async permitToNotify() {
-        this.displayToken = await this.push.requestPermissionAndToken();
-        console.log('FCM token:', this.displayToken);
+        try {
+            this.displayToken = await this.push.requestPermissionAndToken();
+            console.log('FCM token:', this.displayToken);
+        } catch (error) {
+            console.log("Error",error)
+        }
+
     }
 }
