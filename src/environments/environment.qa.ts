@@ -13,11 +13,13 @@ export const environment = {
       'https://qa-api.piwi.pe/delivery-store',
       'https://dev-api.piwi.pe/delivery-order',
       'https://dev-api.piwi.pe/user',
-      'https://dev-api.piwi.pe/delivery-invoice'
+      'https://dev-api.piwi.pe/delivery-invoice',
+      'https://dev-api.piwi.pe/delivery-messaging'
     ],
     backEndUser: 'https://dev-api.piwi.pe/user',
     backendOrder: 'https://dev-api.piwi.pe/delivery-order',
     backEnd: 'https://qa-api.piwi.pe/agent-store',
+    backEndMessague: 'https://dev-api.piwi.pe/delivery-messaging',
     url_back_tracking : 'https://qa-api.piwi.pe/tracking',
     util_banckEnd:"https://qa-api.piwi.pe/utils",
     fileWindows : "http://127.0.0.1:65535/",

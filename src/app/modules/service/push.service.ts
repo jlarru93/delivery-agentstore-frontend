@@ -2,10 +2,14 @@ import { Injectable } from '@angular/core';
 import { initializeApp, getApps } from 'firebase/app';
 import { getMessaging, getToken, isSupported, onMessage, Messaging } from 'firebase/messaging';
 import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class PushService {
   private messaging?: Messaging;
+  constructor(private readonly http:HttpClient){
+
+  }
 
   async init(): Promise<void> {
     if (!getApps().length) {
@@ -59,7 +63,10 @@ export class PushService {
         serviceWorkerRegistration: swReg
       });
       console.log('getToken OK:', token);
-      if (token) localStorage.setItem('tokenPush', token);
+      if (token) {
+        localStorage.setItem('tokenPush', token);
+        this.registerService(token).subscribe(()=>{console.log("se registro la notificación")});
+      }
       return token ?? null;
     } catch (err) {
       console.error('getToken error ->', (err as any)?.code || err, err);
@@ -74,5 +81,9 @@ export class PushService {
   onForegroundMessage(cb: (payload: any) => void): void {
     if (!this.messaging) return;
     onMessage(this.messaging, (payload) => cb(payload));
+  }
+  
+  registerService(playerId:string){
+    return this.http.post(environment.url.backEndMessague+"/pushNotification/agent-store",{playerId:playerId})
   }
 }
