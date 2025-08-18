@@ -392,6 +392,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
 
         try {
             from(this.pwaInstallService.promptInstall()).subscribe((resp)=>{
+                console.log("resp",resp)
                 this.statusMsg = resp === 'accepted'
                 ? '¡Gracias! App instalada 🎉'
                 : resp === 'dismissed'
