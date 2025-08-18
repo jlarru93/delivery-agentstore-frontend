@@ -6,7 +6,6 @@ importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-com
 firebase.initializeApp(self.FIREBASE_CONFIG);
 
 const messaging = firebase.messaging();
-
 // Opción A: dejar que FCM muestre la notificación si el payload trae "notification".
 
 // Opción B (personalizar): manejar data-only o sobreescribir la notificación
@@ -18,6 +17,7 @@ self.addEventListener('push', event => {
     const options = {
       body: notif.body || '',
       icon: notif.icon || '/assets/icons/icon-192x192.png',
+      vibrate: [200, 100, 200, 100, 200],
       data: payload.data || {}
     };
     event.waitUntil(self.registration.showNotification(title, options));
