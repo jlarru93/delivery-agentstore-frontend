@@ -18,6 +18,22 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#398E3C">
+  <script>
+    // Guarda el evento globalmente para que Angular pueda leerlo
+    window.__piwiBIP = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();               // evitamos el mini-infobar
+      window.__piwiBIP = e;             // guardamos el evento
+      // Avisamos a Angular que ya hay evento disponible
+      window.dispatchEvent(new Event('piwi-bip-ready'));
+    });
+
+    // Estado instalado → útil para ocultar botón
+    window.addEventListener('appinstalled', () => {
+      window.__piwiBIP = null;
+      window.dispatchEvent(new Event('piwi-bip-cleared'));
+    });
+  </script>
 </head>
 <body class="mat-typography">
 <app-root>

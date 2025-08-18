@@ -71,7 +71,8 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         private audioService:AudioService,
         private openStoreHanlder:OpenStoreHandler,
         private push: PushService,
-        private readonly pwaInstallService:PwaInstallService
+        private readonly pwaInstallService:PwaInstallService,
+        private messageService:AlertServices,
     ) {
     }
     isWelcomeDialogOpen: boolean = true
@@ -398,6 +399,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
                 : resp === 'dismissed'
                 ? 'Instalación cancelada'
                 : 'No disponible';
+                this.messageService.showError('Error:PWA', resp);
             })
         } catch (error) {
             
