@@ -23,46 +23,50 @@ export class PushService {
    * Retorna el token FCM o null si no hay permiso.
    */
   async requestPermissionAndToken(): Promise<string | null> {
-    // ...
-    // 1) intenta conseguir la registration del SW de FCM explícitamente
+    // cache local para no pedir token cada vez
+    const cached = localStorage.getItem('tokenPush');
+    if (cached) return cached;
+
+    await this.init(); // initializeApp + isSupported + getMessaging
+    if (!this.messaging) return null;
+
+    // 1) permiso de notificación
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') {
+      console.warn('Permiso no concedido');
+      return null;
+    }
+
+    // 2) aseguramos la registration del SW de FCM (NO usar ready)
     let swReg = await navigator.serviceWorker.getRegistration('/firebase-cloud-messaging-push-scope');
-
-    // 2) si no existe, registra de nuevo por si el load aún no la hizo
     if (!swReg) {
-      try {
-        swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
-          scope: '/firebase-cloud-messaging-push-scope'
-        });
-        console.log('FCM SW registrado on-demand:', swReg.scope);
-      } catch (e) {
-        console.error('No se pudo registrar el FCM SW:', e);
-      }
+      swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+        scope: '/firebase-cloud-messaging-push-scope'
+      });
+      console.log('FCM SW registrado on-demand:', swReg.scope);
     }
 
-    // 3) como último recurso, usa cualquiera que esté "ready"
-    if (!swReg) {
-      swReg = await navigator.serviceWorker.ready;
-      console.warn('Usando SW ready (probablemente ngsw) como fallback');
+    // 3) validaciones duras antes de getToken
+    if (!environment.vapidKey || typeof environment.vapidKey !== 'string') {
+      console.error('VAPID key ausente o inválida en environment');
+      return null;
     }
 
-    // 4) pide el token con esa registration
-    let token: string | null = null;
+    // 4) llamada directa, sin helpers intermedios
     try {
-      const regs = await navigator.serviceWorker.getRegistrations();
-      console.log('SW regs:', regs.map(r => ({ scope: r.scope })));
-      console.log("environment.vapidKey",environment?.vapidKey);
-      console.log("swReg",swReg)
-      token = await getToken(this.messaging, {
+      const token = await getToken(this.messaging, {
         vapidKey: environment.vapidKey,
         serviceWorkerRegistration: swReg
       });
       console.log('getToken OK:', token);
-    } catch (err:any) {
-      console.error('getToken error:', err?.code || err, err);
+      if (token) localStorage.setItem('tokenPush', token);
+      return token ?? null;
+    } catch (err) {
+      console.error('getToken error ->', (err as any)?.code || err, err);
       return null;
     }
-    return null
   }
+
 
   /**
    * Escucha mensajes cuando la pestaña está en foreground.
