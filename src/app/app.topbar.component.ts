@@ -15,8 +15,9 @@ import { OverlayPanel } from 'primeng/overlaypanel';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { PushService } from './modules/service/push.service';
 import { AlertServices } from './modules/service/alert.service';
-import { of } from 'rxjs';
+import { from, of } from 'rxjs';
 import { DialogService } from 'primeng/dynamicdialog';
+import { PwaInstallService } from './modules/service/pwa-install.service';
 
 @Component({
     selector: 'app-topbar',
@@ -59,7 +60,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     iterator:number = 1
 
     items: MenuItem[] | undefined;
-
+    statusMsg:string
     constructor(
         private auth: AuthService,
         private router: Router,
@@ -70,6 +71,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         private audioService:AudioService,
         private openStoreHanlder:OpenStoreHandler,
         private push: PushService,
+        private readonly pwaInstallService:PwaInstallService
     ) {
     }
     isWelcomeDialogOpen: boolean = true
@@ -388,5 +390,16 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
             console.log("Error",error)
         }
 
+        try {
+            from(this.pwaInstallService.promptInstall()).subscribe((resp)=>{
+                this.statusMsg = resp === 'accepted'
+                ? '¡Gracias! App instalada 🎉'
+                : resp === 'dismissed'
+                ? 'Instalación cancelada'
+                : 'No disponible';
+            })
+        } catch (error) {
+            
+        }
     }
 }
