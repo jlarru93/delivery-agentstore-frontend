@@ -55,7 +55,7 @@ export class PushService {
     // 3) validaciones duras antes de getToken
     if (!environment.vapidKey || typeof environment.vapidKey !== 'string') {
       console.error('VAPID key ausente o inválida en environment');
-      return null;
+      return {error:'VAPID key ausente o inválida en environment'};
     }
 
     // 4) llamada directa, sin helpers intermedios
@@ -72,7 +72,7 @@ export class PushService {
       return {token:token,perm:perm}
     } catch (err) {
       console.error('getToken error ->', (err as any)?.code || err, err);
-      return null;
+      return {error:'getToken error ->'+(err as any)?.code};
     }
   }
 

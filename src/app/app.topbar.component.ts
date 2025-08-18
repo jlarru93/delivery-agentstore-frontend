@@ -386,23 +386,13 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
             if(resp.perm!='granted'){
                 
             }
+            if(resp?.error){
+                this.messageService.showError('Error', resp.error);
+            }
             //this.messageService.showError('Error',JSON.stringify(resp.perm))
         } catch (error) {
             console.log("Error",error)
-        }
-
-        try {
-            from(this.pwaInstallService.promptInstall()).subscribe((resp)=>{
-                console.log("resp",resp)
-                this.statusMsg = resp === 'accepted'
-                ? '¡Gracias! App instalada 🎉'
-                : resp === 'dismissed'
-                ? 'Instalación cancelada'
-                : 'No disponible';
-                this.messageService.showError('Error:PWA', resp);
-            })
-        } catch (error) {
-            
+            this.messageService.showError('Error', error);
         }
     }
 }
