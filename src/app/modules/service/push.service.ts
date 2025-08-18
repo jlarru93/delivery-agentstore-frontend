@@ -26,10 +26,9 @@ export class PushService {
    * Llamar esto desde un botón (gesto de usuario).
    * Retorna el token FCM o null si no hay permiso.
    */
-  async requestPermissionAndToken(): Promise<string | null> {
+  async requestPermissionAndToken() {
     // cache local para no pedir token cada vez
-    const cached = localStorage.getItem('tokenPush');
-    if (cached) return cached;
+
 
     await this.init(); // initializeApp + isSupported + getMessaging
     if (!this.messaging) return null;
@@ -37,10 +36,13 @@ export class PushService {
     // 1) permiso de notificación
     const perm = await Notification.requestPermission();
     if (perm !== 'granted') {
+      localStorage.removeItem('tokenPush')
       console.warn('Permiso no concedido');
       return null;
     }
-
+    const cached = localStorage.getItem('tokenPush');
+    console.log("cached",cached)
+    if (cached) return {perm:perm,token:cached};
     // 2) aseguramos la registration del SW de FCM (NO usar ready)
     let swReg = await navigator.serviceWorker.getRegistration('/firebase-cloud-messaging-push-scope');
     if (!swReg) {
@@ -67,7 +69,7 @@ export class PushService {
         localStorage.setItem('tokenPush', token);
         this.registerService(token).subscribe(()=>{console.log("se registro la notificación")});
       }
-      return token ?? null;
+      return {token:token,perm:perm}
     } catch (err) {
       console.error('getToken error ->', (err as any)?.code || err, err);
       return null;

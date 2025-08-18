@@ -5,6 +5,7 @@ import { ConnectionService } from './modules/service/connection.service';
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
 import { HttpClient } from '@angular/common/http';
 import { interval, map, Observable, of, switchMap } from 'rxjs';
+import { PushService } from './modules/service/push.service';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -37,7 +38,8 @@ export class AppComponent implements OnInit{
         private primengConfig: PrimeNGConfig,
         private _mqtt:MqttService,
         private connectionService:ConnectionService,
-        private http:HttpClient
+        private http:HttpClient,
+        private push: PushService
     ) {}
 
     ngOnInit() {
@@ -60,6 +62,10 @@ export class AppComponent implements OnInit{
         }
         this.previousVersion = version;
         });
+        this.push.onForegroundMessage((payload) => {
+            console.log('Mensaje en foreground:', payload);
+            // Aquí puedes mostrar un toast, alert, etc.
+        })
     }
 
     private loadVersion(): Observable<string | null> {

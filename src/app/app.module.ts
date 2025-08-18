@@ -167,6 +167,7 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import { DialogService } from 'primeng/dynamicdialog';
 import { DialogUpdateWebModule } from './modules/dialogUpdateWeb/dialogUpdateWeb.module';
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
+import { PushService } from './modules/service/push.service';
 /*FullCalendarModule.registerPlugins([
     dayGridPlugin,
     //timeGridPlugin,
@@ -327,7 +328,7 @@ import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdate
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         { provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-        
+        PushService,
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, BreadcrumbService,
         MqttService, MqttRoutingService, OrderHandler, StoreHandler

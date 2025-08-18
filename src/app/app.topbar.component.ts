@@ -12,12 +12,17 @@ import { StatusOpenStoreBean } from './modules/main/data';
 import { AudioService } from './modules/service/audio.service';
 import { OpenStoreHandler } from './modules/service/handlers/store.open.handler';
 import { OverlayPanel } from 'primeng/overlaypanel';
-import { MenuItem } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { PushService } from './modules/service/push.service';
+import { AlertServices } from './modules/service/alert.service';
+import { of } from 'rxjs';
+import { DialogService } from 'primeng/dynamicdialog';
 
 @Component({
     selector: 'app-topbar',
     templateUrl:'app.topbar.component.html',
-    styleUrls: ['./app.topbar.component.scss']
+    styleUrls: ['./app.topbar.component.scss'],
+    providers:[]
 })
 export class AppTopBarComponent implements OnInit, AfterViewInit{
     displayOpenStore:boolean=false
@@ -63,8 +68,8 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         private service: MenuService,
         private dataShared:DataSharedService,
         private audioService:AudioService,
-        private openStoreHanlder:OpenStoreHandler
-
+        private openStoreHanlder:OpenStoreHandler,
+        private push: PushService,
     ) {
     }
     isWelcomeDialogOpen: boolean = true
@@ -117,7 +122,8 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
                     }
                     catch(error){}
                 }
-        })
+        });
+        this.permitToNotify();
     }
 
     ngAfterViewInit() {
@@ -369,5 +375,18 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         this.displayOpenStore=true;
         this.listBrands()
         this.storeOpenSelected=storeOpen
+    }
+    async permitToNotify() {
+        console.log("permitToNotify")
+        try {
+            const resp=await this.push.requestPermissionAndToken()
+            if(resp.perm!='granted'){
+                
+            }
+            //this.messageService.showError('Error',JSON.stringify(resp.perm))
+        } catch (error) {
+            console.log("Error",error)
+        }
+
     }
 }

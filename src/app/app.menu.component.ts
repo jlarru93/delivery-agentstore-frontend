@@ -6,13 +6,12 @@ import { Router } from '@angular/router';
 import { DataSharedService } from './modules/service/data-shared.service';
 import { RequestTripService } from './modules/request-trip/services/request-trip.service';
 import { ZoneResponse } from './modules/request-trip/data/response';
-import { PushService } from './modules/service/push.service';
-import { of } from 'rxjs';
 
 @Component({
     selector: 'app-menu',
     styleUrls: ['./app.menu.component.scss'],
-    templateUrl: './app.menu.component.html'
+    templateUrl: './app.menu.component.html',
+    providers:[]
 })
 export class AppMenuComponent implements OnInit {
 
@@ -22,8 +21,7 @@ export class AppMenuComponent implements OnInit {
         private productService: ProductService,
         private router: Router,
         private store:DataSharedService,
-        private requestTripService: RequestTripService,
-        private push: PushService
+        private requestTripService: RequestTripService
     ) { }
 
     ngOnInit() {
@@ -46,11 +44,6 @@ export class AppMenuComponent implements OnInit {
             const store_id=storesAvilible[0].store_id
             this.getProducts(store_id)
         })
-        this.permitToNotify();
-        /*this.push.onForegroundMessage((payload) => {
-            console.log('Mensaje en foreground:', payload);
-            // Aquí puedes mostrar un toast, alert, etc.
-        });*/
     }
 
     onMenuClick() {
@@ -86,16 +79,4 @@ export class AppMenuComponent implements OnInit {
         this.router.navigate(['/request-trip']);
     }
 
-    permitToNotify() {
-        console.log("permitToNotify")
-        try {
-            of(this.push.requestPermissionAndToken()).subscribe(()=>{
-                //console.log('FCM token:', this.displayToken);
-            })
-            
-        } catch (error) {
-            console.log("Error",error)
-        }
-
-    }
 }
