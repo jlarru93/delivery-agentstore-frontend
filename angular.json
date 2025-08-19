@@ -75,6 +75,10 @@
                             "buildOptimizer": true,
                             "aot": true,
                             "assets":[
+                                "src/favicon.ico",
+                                "src/upload.php",
+                                "src/assets",
+                                "src/manifest.webmanifest",
                                 "src/firebase-messaging-sw.js",
                                 {
                                     "glob": "firebase-config.js",
