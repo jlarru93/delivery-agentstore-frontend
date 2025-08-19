@@ -40,9 +40,9 @@ export class PushService {
       console.warn('Permiso no concedido');
       return null;
     }
-    const cached = localStorage.getItem('tokenPush');
+    /*const cached = localStorage.getItem('tokenPush');
     console.log("cached",cached)
-    if (cached) return {perm:perm,token:cached};
+    if (cached) return {perm:perm,token:cached};*/
     // 2) aseguramos la registration del SW de FCM (NO usar ready)
     let swReg = await navigator.serviceWorker.getRegistration('/firebase-cloud-messaging-push-scope');
     if (!swReg) {
