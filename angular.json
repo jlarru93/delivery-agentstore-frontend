@@ -57,7 +57,8 @@
                             "isomorphic-unfetch",
                             "ulid",
                             "camelcase-keys",
-                            "@aws-crypto/crc32"
+                            "@aws-crypto/crc32",
+                            "paho-mqtt"
                         ],
                         "serviceWorker": true,
                         "webWorkerTsConfig": "tsconfig.worker.json",

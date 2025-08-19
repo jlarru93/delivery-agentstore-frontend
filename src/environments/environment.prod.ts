@@ -59,7 +59,7 @@ export const environment = {
     appId: "1:146697692384:web:95ffc65346fbef97045c85",
     measurementId: "G-E9LRHCY4XD"
   },
-  vapidKey:"BHTI2BL7GRHyKhafm-laOu5h0PjUQIGSHvJJZhFsritTr70LPn9rXqkaaXLdm7qkQwWllPhWsBSF3DIXV2KXJgs	",
+  vapidKey:"BHTI2BL7GRHyKhafm-laOu5h0PjUQIGSHvJJZhFsritTr70LPn9rXqkaaXLdm7qkQwWllPhWsBSF3DIXV2KXJgs",
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/prod',
   mqttServer:{
