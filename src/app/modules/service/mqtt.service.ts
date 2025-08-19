@@ -78,7 +78,7 @@ export class MqttService {
             console.log("Intentando reconectar...");
             this.client.connect(connectionOptions);
           }
-        }, 3000);
+        }, 30000);
     
     }
 
