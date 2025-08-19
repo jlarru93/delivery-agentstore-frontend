@@ -46,8 +46,10 @@ export class MqttService {
         // Configuración de conexión
         const connectionOptions = {
           useSSL: useSSL,
-          timeout: 3,
-          keepAliveInterval: 30,
+          timeout: 30,
+          keepAliveInterval: 25,
+          cleanSession: true,
+          reconnect:true,
           onSuccess: () => {
             console.log("Conectado a MQTT");
             this.isMqttConnect = true;
