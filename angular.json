@@ -60,6 +60,7 @@
                             "@aws-crypto/crc32"
                         ],
                         "serviceWorker": true,
+                        "webWorkerTsConfig": "tsconfig.worker.json",
                         "ngswConfigPath": "ngsw-config.json"
                     },
                     "configurations": {
@@ -189,7 +190,8 @@
                             "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
                             "src/styles.scss"
                         ],
-                        "scripts": []
+                        "scripts": [],
+                        "webWorkerTsConfig": "tsconfig.worker.json"
                     }
                 }
             }

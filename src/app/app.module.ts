@@ -168,6 +168,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { DialogUpdateWebModule } from './modules/dialogUpdateWeb/dialogUpdateWeb.module';
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
 import { PushService } from './modules/service/push.service';
+import { WokerHandler } from './modules/service/worker.service';
 /*FullCalendarModule.registerPlugins([
     dayGridPlugin,
     //timeGridPlugin,

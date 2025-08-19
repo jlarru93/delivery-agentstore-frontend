@@ -1,23 +1,20 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import {AppMainComponent} from './app.main.component';
+import { AppMainComponent } from './app.main.component';
 import { AuthService } from './utils/auth.service';
 import { OpenStoreRequest } from './modules/main/service/data/request';
-import { MqttService } from './modules/service/mqtt.service';
 import { Brand, Store } from './models';
 import { AgentStoreStoreResponse, MenuService } from './app.menu.service';
-import { environment } from 'src/environments/environment';
 import { DataSharedService } from './modules/service/data-shared.service';
 import { StatusOpenStoreBean } from './modules/main/data';
 import { AudioService } from './modules/service/audio.service';
 import { OpenStoreHandler } from './modules/service/handlers/store.open.handler';
 import { OverlayPanel } from 'primeng/overlaypanel';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { PushService } from './modules/service/push.service';
 import { AlertServices } from './modules/service/alert.service';
-import { from, of } from 'rxjs';
-import { DialogService } from 'primeng/dynamicdialog';
 import { PwaInstallService } from './modules/service/pwa-install.service';
+import { WokerHandler } from './modules/service/worker.service';
 
 @Component({
     selector: 'app-topbar',
@@ -65,7 +62,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         private auth: AuthService,
         private router: Router,
         public appMain: AppMainComponent,
-        private mqtt:MqttService,
+        private workerHandler:WokerHandler,
         private service: MenuService,
         private dataShared:DataSharedService,
         private audioService:AudioService,
@@ -96,7 +93,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
             }
         })
         
-        this.mqtt._onConnect.subscribe((isConnect)=>{
+        this.workerHandler._onConnect.subscribe((isConnect)=>{
             this.isConnectMqtt=isConnect
             this.validateConnectMqttAndGetStatus()
         })
@@ -247,14 +244,14 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         var chanelStore = "store/"+id
         const store=this.storesOpen.find(s=>s.id==id)
         if(store.isOpen){
-            this.mqtt.subscribe(chanelStore)
+            this.workerHandler.subscribe(chanelStore)
         }else{
-            this.mqtt.unSubscribe(chanelStore)
+            this.workerHandler.unsubscribe(chanelStore)
         }
     }
     processSubsCribeOpenStore(id?:any){
         var chanelStore = "open/store/"+id
-        this.mqtt.subscribe(chanelStore)
+        this.workerHandler.subscribe(chanelStore)
        
     }
     

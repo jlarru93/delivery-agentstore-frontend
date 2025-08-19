@@ -595,7 +595,7 @@ export function getUrlIcon(detalleMarker: PersonalisationMarker): any {
         "assets/empresas/" +
         environment.NAME_COMPANY +
         environment.MARKERS.ORIGEN.URL;
-      urlIcon.scaledSize = environment.MARKERS.ORIGEN.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.ORIGEN.ICON_SIZE, environment.MARKERS.ORIGEN.ICON_SIZE);
       urlIcon.zIndex = environment.MARKERS.ORIGEN.POSICION;
       break;
     case TypeMarkers.DESTINO:
@@ -603,7 +603,7 @@ export function getUrlIcon(detalleMarker: PersonalisationMarker): any {
         "assets/empresas/" +
         environment.NAME_COMPANY +
         environment.MARKERS.DESTINO.URL;
-      urlIcon.scaledSize = environment.MARKERS.DESTINO.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.DESTINO.ICON_SIZE,environment.MARKERS.DESTINO.ICON_SIZE);
       urlIcon.zIndex = environment.MARKERS.ORIGEN.POSICION;
       break;
     case TypeMarkers.CONDUCTOR:
@@ -611,70 +611,70 @@ export function getUrlIcon(detalleMarker: PersonalisationMarker): any {
         "assets/empresas/" +
         environment.NAME_COMPANY +
         environment.MARKERS.CONDUCTOR.URL;
-      urlIcon.scaledSize = environment.MARKERS.CONDUCTOR.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.CONDUCTOR.ICON_SIZE, environment.MARKERS.CONDUCTOR.ICON_SIZE);
       break;
     case TypeMarkers.CONDUCTOR_LABEL:
       urlIcon.url =
       "assets/empresas/" +
       environment.NAME_COMPANY +
       environment.MARKERS.CONDUCTOR_LABEL.URL;
-      urlIcon.scaledSize = environment.MARKERS.CONDUCTOR_LABEL.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.CONDUCTOR_LABEL.ICON_SIZE, environment.MARKERS.CONDUCTOR_LABEL.ICON_SIZE);
       break;
     case TypeMarkers.PASAJERO:
       urlIcon.url =
         "assets/empresas/" +
         environment.NAME_COMPANY +
         environment.MARKERS.PASAJERO.URL;
-      urlIcon.scaledSize = environment.MARKERS.PASAJERO.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.PASAJERO.ICON_SIZE, environment.MARKERS.PASAJERO.ICON_SIZE);
       break;
     case TypeMarkers.CHECKPOINT:
       urlIcon.url =
         "assets/empresas/" +
         environment.NAME_COMPANY +
         environment.MARKERS.CHECKPOINT.URL;
-      urlIcon.scaledSize = environment.MARKERS.CHECKPOINT.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.CHECKPOINT.ICON_SIZE, environment.MARKERS.CHECKPOINT.ICON_SIZE);
       break;
     case TypeMarkers.PRECLOSE:
       urlIcon.url =
         "assets/empresas/" +
         environment.NAME_COMPANY +
         environment.MARKERS.PRECLOSE.URL;
-      urlIcon.scaledSize = environment.MARKERS.PRECLOSE.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.PRECLOSE.ICON_SIZE, environment.MARKERS.PRECLOSE.ICON_SIZE);
       break;
     case TypeMarkers.READING:
       urlIcon.url =
         "assets/empresas/" +
         environment.NAME_COMPANY +
         environment.MARKERS.READING.URL;
-      urlIcon.scaledSize = environment.MARKERS.READING.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.READING.ICON_SIZE, environment.MARKERS.READING.ICON_SIZE);
       break;
     case TypeMarkers.CONTACT:
       urlIcon.url =
         "assets/empresas/" +
         environment.NAME_COMPANY +
         environment.MARKERS.CONTACT.URL;
-      urlIcon.scaledSize = environment.MARKERS.CONTACT.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.CONTACT.ICON_SIZE, environment.MARKERS.CONTACT.ICON_SIZE);
       break;
     case TypeMarkers.START_DESTINATION:
       urlIcon.url =
         "assets/empresas/" +
         environment.NAME_COMPANY +
         environment.MARKERS.START_DESTINATION.URL;
-      urlIcon.scaledSize = environment.MARKERS.START_DESTINATION.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.START_DESTINATION.ICON_SIZE, environment.MARKERS.START_DESTINATION.ICON_SIZE);
       break;
     case TypeMarkers.END_DESTINATION:
       urlIcon.url =
         "assets/empresas/" +
         environment.NAME_COMPANY +
         environment.MARKERS.END_DESTINATION.URL;
-      urlIcon.scaledSize = environment.MARKERS.END_DESTINATION.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.END_DESTINATION.ICON_SIZE, environment.MARKERS.END_DESTINATION.ICON_SIZE);
       break;
     case TypeMarkers.RIDE_END:
       urlIcon.url =
         "assets/empresas/" +
         environment.NAME_COMPANY +
         environment.MARKERS.RIDE_END.URL;
-      urlIcon.scaledSize = environment.MARKERS.RIDE_END.ICON_SIZE;
+      urlIcon.scaledSize = new google.maps.Size(environment.MARKERS.RIDE_END.ICON_SIZE, environment.MARKERS.RIDE_END.ICON_SIZE);
       break;
   }
 

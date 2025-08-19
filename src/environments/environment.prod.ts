@@ -76,67 +76,62 @@ export const environment = {
     ORIGEN: {
       URL: '/img/markers/Comercio.png',
       POSICION: 20,
-      ICON_SIZE: new google.maps.Size(50, 50)
+      ICON_SIZE: 50
     },
     DESTINO: {
       URL: '/img/markers/Cliente.png',
       POSICION: 20,
-      ICON_SIZE: new google.maps.Size(50, 50)
+      ICON_SIZE: 50
     },
     CONDUCTOR_LABEL: {
       URL: '/img/markers/Domiciliario_1.png',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(50, 50)
-    },
-    CONDUCTOR_ELITE: {
-      URL: '/img/markers/autoElite.png',
-      POSICION: 1,
-      ICON_SIZE: new google.maps.Size(20, 20)
+      ICON_SIZE: 50
     },
     CONDUCTOR: {
       URL: '/img/markers/Domiciliario_1.png',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(50, 50)
+      ICON_SIZE: 50
     },
     PASAJERO:{
       URL: '/img/markers/marker_destino.png',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(30, 35)
+      ICON_SIZE: 30
     },
     CHECKPOINT:{
       URL: '/img/markers/pinNegro.svg',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(25, 30)
+      ICON_SIZE: 25
     },
     PRECLOSE:{
       URL: '/img/markers/pinRojo.svg',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(30, 35)
+      ICON_SIZE: 30
     },
     READING:{
       URL: '/img/markers/pinAmarillo.svg',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(30, 35)
+      ICON_SIZE: 30
     },
     CONTACT:{
       URL: '/img/markers/pinVerde.svg',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(30, 35)
+      ICON_SIZE: 30
     },
     START_DESTINATION:{
       URL: '/img/markers/pinCeleste.svg',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(30, 35)
+      ICON_SIZE: 30
     },
     END_DESTINATION:{
       URL: '/img/markers/pinNaranja.svg',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(30, 35)
+      ICON_SIZE: 30
     },
     RIDE_END:{
       URL: '/img/markers/pinMorado.svg',
       POSICION: 1,
-      ICON_SIZE: new google.maps.Size(30, 35)
+      ICON_SIZE: 30
     }
   },
   NAME_COMPANY: 'piwi',

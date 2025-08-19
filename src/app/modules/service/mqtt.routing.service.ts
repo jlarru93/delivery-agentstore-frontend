@@ -28,4 +28,8 @@ export class MqttRoutingService{
             this.chatHandler.handle(payload)
         }
     }
+    notifyConnection(isConnected:boolean){
+        console.log("conectToMqtt",isConnected)
+        //this.chatHandler.asyncronousIsConnect=isConnected
+    }
 }

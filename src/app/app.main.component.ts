@@ -8,7 +8,7 @@ import { OpenStoreRequest } from './modules/main/service/data/request';
 import { DataSharedService } from './modules/service/data-shared.service';
 import { Subscription } from 'rxjs';
 import { StoreResponse } from './modules/main/service/data/response';
-import { MqttService } from './modules/service/mqtt.service';
+import { WokerHandler } from './modules/service/worker.service';
 
 @Component({
     selector: 'app-main',
@@ -69,7 +69,7 @@ export class AppMainComponent implements AfterViewInit {
         public app: AppComponent,
         private storeService:StoreService,
         private store:DataSharedService,
-        private _mqtt:MqttService,//en el constructor esta la logica de conexion
+        private worker:WokerHandler
     ) {}
     ngAfterViewInit(): void {
         this.dataSubscription= this.store.storeBean$.subscribe((data)=>{
