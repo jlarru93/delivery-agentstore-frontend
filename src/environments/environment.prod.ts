@@ -51,19 +51,21 @@ export const environment = {
     }
   },
   firebase: {
-    apiKey: '<your-key>',
-    authDomain: '<your-project-authdomain>',
-    databaseURL: '<your-database-URL>',
-    projectId: '<your-project-id>',
-    storageBucket: '<your-storage-bucket>',
-    messagingSenderId: '<your-messaging-sender-id>'
+    apiKey: "AIzaSyBJu-NK-Tfs-9uWbH2urdzCdGyHY4iqF5I",
+    authDomain: "agent-store-piwi-prod.firebaseapp.com",
+    projectId: "agent-store-piwi-prod",
+    storageBucket: "agent-store-piwi-prod.firebasestorage.app",
+    messagingSenderId: "146697692384",
+    appId: "1:146697692384:web:95ffc65346fbef97045c85",
+    measurementId: "G-E9LRHCY4XD"
   },
-  vapidKey:"",
+  vapidKey:"BHTI2BL7GRHyKhafm-laOu5h0PjUQIGSHvJJZhFsritTr70LPn9rXqkaaXLdm7qkQwWllPhWsBSF3DIXV2KXJgs	",
   bucketNameS3Images:'',
   basePathS3ImagesDeliveryMan:'/prod',
   mqttServer:{
     url: "wss.piwi.pe",
-    port: 443,
+    port_ws: 443,
+    port_mqtt: 1883,
     path:"/",
     user:"socket",
     pwd:"socket",

@@ -69,7 +69,8 @@ export const environment = {
   basePathS3ImagesDeliveryMan:'/dev',
   mqttServer:{
     url: "devwss.piwi.pe",
-    port: 443,
+    port_ws: 443,
+    port_mqtt: 1883,
     path:"/",
     user:"socket",
     pwd:"socket",
