@@ -159,21 +159,12 @@ import { StoreHandler } from './modules/service/handlers/store.handler';
 import { OrderHandler } from './modules/service/handlers/order.handler';
 import { MqttRoutingService } from './modules/service/mqtt.routing.service';
 import { MqttService } from './modules/service/mqtt.service';
-import { ModalComponent } from './modal/modal.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 import { AlertModule } from './directives/alert/alert.module';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
-import { DialogService } from 'primeng/dynamicdialog';
 import { DialogUpdateWebModule } from './modules/dialogUpdateWeb/dialogUpdateWeb.module';
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
 import { PushService } from './modules/service/push.service';
-import { WokerHandler } from './modules/service/worker.service';
-/*FullCalendarModule.registerPlugins([
-    dayGridPlugin,
-    //timeGridPlugin,
-    //interactionPlugin
-]);*/
+
 
 @NgModule({
     imports: [
@@ -268,13 +259,7 @@ import { WokerHandler } from './modules/service/worker.service';
         MainModule,
         ProductModule,
         AlertModule,
-        ProgressSpinnerModule,
-        ServiceWorkerModule.register('ngsw-worker.js', {
-          enabled: !isDevMode(),
-          // Register the ServiceWorker as soon as the application is stable
-          // or after 30 seconds (whichever comes first).
-          registrationStrategy: 'registerWhenStable:30000'
-        })
+        ProgressSpinnerModule
     ],
     declarations: [
         AppComponent,
