@@ -16,6 +16,7 @@ import { AlertServices } from './modules/service/alert.service';
 import { PwaInstallService } from './modules/service/pwa-install.service';
 import { WokerHandler } from './modules/service/worker.service';
 import { AudioBackgroundService } from './modules/service/audio.background.service';
+import { url } from 'inspector';
 
 @Component({
     selector: 'app-topbar',
@@ -134,6 +135,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
                 const data = event.data || {};
                 this.zone.run(() => { // asegurar cambio dentro de Angular
                     if (data.type === 'PLAY_AUDIO' && data.url) {
+                        data.url=data.url??"assets/audio/audio.mp3"
                         this.audio.play(data.url, data.metadata);
                     }
                     if (data.type === 'PAUSE_AUDIO') {
@@ -396,7 +398,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     }
     async permitToNotify() {
         console.log("permitToNotify")
-        this.playAudio();
+        this.audio.play("assets/audio/audio.mp3");
         try {
             const resp=await this.push.requestPermissionAndToken()
             if(resp.perm!='granted'){
@@ -412,14 +414,4 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         }
     }
 
-    playAudio() {
-        try{
-            this.audioPlayerRef.nativeElement.play();
-        }catch(e){}
-        
-    }
-
-    pauseAudio() {
-        this.audioPlayerRef.nativeElement.pause();
-    }
 }
