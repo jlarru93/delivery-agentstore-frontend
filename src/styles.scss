@@ -27,3 +27,16 @@ body { margin: 0; font-family: 'Poppins', sans-serif;}
 .float-right{
     float: right !important;
 }
+
+input, select, textarea {
+  font-size: 16px;   /* clave */
+}
+/* Para todos los inputs y selects de PrimeNG */
+.p-inputtext,
+.p-dropdown-label,
+.p-multiselect-label,
+.p-calendar input,
+.p-password input,
+.p-inputtextarea {
+  font-size: 16px !important; /* evita auto-zoom en móviles */
+}
