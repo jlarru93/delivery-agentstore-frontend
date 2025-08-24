@@ -9,14 +9,20 @@ import { BehaviorSubject } from "rxjs";
     providedIn: 'root'
 })
 export class WokerHandler{
-    public _onConnect: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
-    onConnect$ = this._onConnect.asObservable();
+    public _onConnectWorker: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    onConnectWoker$ = this._onConnectWorker.asObservable();
+    public _onConnectWS: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    onConnectWs$ = this._onConnectWS.asObservable();
+    public _onConnectAsync: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    onConnectAsync$ = this._onConnectAsync.asObservable();
 
     sharedWorker!: SharedWorker;
     isSupportedWorker:boolean=false
 
     constructor(private routing: MqttRoutingService,private mqttService:MqttService){
-        if(this.validateWorkerSupport()){
+        const isSupportedWorker=this.validateWorkerSupport()
+        console.log("this.validateWorkerSupport()",isSupportedWorker)
+        if(isSupportedWorker){
             this.initSharedWorker()
         }else{
             this.initMqttService()
@@ -32,8 +38,7 @@ export class WokerHandler{
         //@ts-ignore
         this.sharedWorker = new SharedWorker(new URL('../../workers/app.shared.worker', import.meta.url));
         //this.sharedWorker = new SharedWorker('assets/workers/app.shared.worker.ts');
-        this.sharedWorker.port.onmessage = ({ data })=>{
-    
+        this.sharedWorker.port.onmessage = ({ data })=>{    
             if(data.action==="mqttMessage"){  
                 const message=data as WorkerAction<any> /*Paho.MQTT.Message*/
                 console.log("onMessageArrived:", message);
@@ -43,7 +48,8 @@ export class WokerHandler{
             }else if(data.action==="mqttConnect"){
                 console.log('Data received from shared worker ', data.param as boolean);
                 this.routing.notifyConnection(data.param as boolean);
-                this._onConnect.next(true);
+                this._onConnectWorker.next(true);
+                this._onConnectAsync.next(true);
             }else{
                 console.log('Data received from shared worker ', data);
             }
@@ -54,7 +60,10 @@ export class WokerHandler{
     initMqttService(){
         this.isSupportedWorker=false
         this.mqttService.init()
-
+        this.mqttService._onConnect.subscribe((resp)=>{
+            this._onConnectWS.next(resp);
+            this._onConnectAsync.next(resp)
+        })
     }
 
 

@@ -87,9 +87,8 @@
                      <div class="card-order-header-time order-preparing">
                         <div class="calculated-time">{{calculateTime(order?.createdAt)}} min</div> 
                      </div>
-                     <div class="card-order-header-icon">
+                     <div class="card-order-header-icon" *ngIf="order.acceptAgentStoreAt!=null && order.readyToDmAt!=null">
                         <circle-progress [startTime]="order.acceptAgentStoreAt" [endTime]="order.readyToDmAt"  style="padding-right: 10px; float: right;"></circle-progress>
-                        <!-- <p-knob [(ngModel)]="value" [min]="order.acceptAgentStoreAt" [max]="order.readyToDmAt" [strokeWidth]="5" size="50"></p-knob> -->
                      </div>
                   </div>
                   <div class="order-preparing">{{order?.user?.name}} {{order?.user?.surname}}</div>  
@@ -795,9 +794,6 @@ styleClass="order-dialog" [breakpoints]="{ '960px': '95vw', '640px': '98vw' }" [
          </div>
          <div >
             <div class="p-text-center text-900 font-bold text-3xl mb-3">¿Estas seguro que la orden esta lista ?</div>
-            <!--circle-progress [startTime]="orderSelected.acceptAgentStoreAt" [endTime]="orderSelected.readyToDmAt"  style="padding-right: 10px; float: right;"></circle-progress-->
-            <!--div class="text-700 text-xl mb-5">Hora de orden</div-->
-
          </div>
       </div>
    </div>

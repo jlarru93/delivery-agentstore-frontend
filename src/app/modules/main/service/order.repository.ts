@@ -3,7 +3,6 @@ import { OrderService } from "./order.service";
 import { OrderHandler } from "../../service/handlers/order.handler";
 import { StoreHandler } from "../../service/handlers/store.handler";
 import { AudioService } from "../../service/audio.service";
-import { MqttService } from "../../service/mqtt.service";
 import { OrderBean } from "../data";
 import { OrderResponse } from "./data/response";
 import { BehaviorSubject, Observable, Subject, map } from "rxjs";
@@ -13,6 +12,7 @@ import { AceptOrderRequest } from "./data/request";
 import { ChatHandler } from "../../service/handlers/chat.handler";
 import { ChatService } from "./chat.service";
 import { ChatResponse } from "./data/chat.response";
+import { WokerHandler } from "../../service/worker.service";
 
 @Injectable({
     providedIn: 'root'
@@ -41,7 +41,7 @@ export class OrderRepository{
         private dataSharedService:DataSharedService,
         private chatHandler:ChatHandler,
         private chatService:ChatService ,
-        private mqtt:MqttService){
+        private mqtt:WokerHandler){
             this.setOrderFromOrderHanlder()
             this.setOrderFromStoreHanlder()
             this.setOrderChatFromChatHanlder()

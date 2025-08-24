@@ -10,12 +10,12 @@ import { MessageService } from 'primeng/api';
 import { ChatBean } from 'src/app/chat/data.chat';
 import { ChatService } from '../main/service/chat.service';
 import { ChatResponse } from '../main/service/data/chat.response';
-import { MqttService } from '../service/mqtt.service';
 import { ChatHandler } from '../service/handlers/chat.handler';
 import { ChatComponent } from 'src/app/chat/chat.component';
 import * as CONSTANTS from 'src/app/utils/constant';
 import { OrderResponse } from '../main/service/data/response';
 import { OrderBean } from '../main/data';
+import { WokerHandler } from '../service/worker.service';
 
 @Component({
   selector: 'app-order-history',
@@ -75,7 +75,7 @@ export class OrderHistoryComponent implements OnInit {
     private service: OrderHistoryService,
     private messageService: MessageService,
     private chatService:ChatService,
-    private mqtt:MqttService,
+    private mqtt:WokerHandler,
     private chatHandler:ChatHandler,
 
   ) { }
@@ -89,16 +89,12 @@ export class OrderHistoryComponent implements OnInit {
       {label: 'Rechazar', icon: 'pi pi-times', command: () => { /*this.onUpdateStatus('reject')*/ }},
     ];
 
-    if(this.mqtt.client.isConnected()){
-      this.mqttListener()
-    }else{
-      this.mqtt._onConnect.subscribe((isConnect)=>{
-        if(isConnect){
-          this.isMqttConnect=isConnect
-          this.mqttListener()
-        }
-      })
-    }
+    this.mqtt._onConnectAsync.subscribe((isConnect)=>{
+      if(isConnect){
+        this.isMqttConnect=isConnect
+        this.mqttListener()
+      }
+    })
     
     this.GetOrderHistories()
     this.getUserData()

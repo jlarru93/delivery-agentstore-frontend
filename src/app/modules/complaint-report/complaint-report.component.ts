@@ -8,10 +8,10 @@ import { ChatBean } from 'src/app/chat/data.chat';
 import { ChatComponent } from 'src/app/chat/chat.component';
 import { ChatService } from '../main/service/chat.service';
 import { ChatResponse } from '../main/service/data/chat.response';
-import { MqttService } from '../service/mqtt.service';
 import { ChatHandler } from '../service/handlers/chat.handler';
 import { AuthService } from 'src/app/utils/auth.service';
 import * as CONSTANTS from 'src/app/utils/constant';
+import { WokerHandler } from '../service/worker.service';
 
 @Component({
   selector: 'app-complaint-report',
@@ -46,21 +46,17 @@ export class ComplaintReportComponent implements OnInit {
     private service: ComplaintReportService,
     private chatService: ChatService,
     private messageService: MessageService,
-    private mqtt: MqttService,
+    private mqtt: WokerHandler,
     private chatHandler:ChatHandler,
   ) { }
 
   ngOnInit(): void {
-    if(this.mqtt.client.isConnected()){
-      this.mqttListener()
-    }else{
-      this.mqtt._onConnect.subscribe((isConnect)=>{
-        if(isConnect){
-          this.isMqttConnect=isConnect
-          this.mqttListener()
-        }
-      })
-    }
+    this.mqtt._onConnectWorker.subscribe((isConnect)=>{
+      if(isConnect){
+        this.isMqttConnect=isConnect
+        this.mqttListener()
+      }
+    })
     this.getOrdersComplaints()
     this.getUserData()
     this.getStatusSplitButton()

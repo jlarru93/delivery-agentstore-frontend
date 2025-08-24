@@ -8,29 +8,22 @@ import { Component,
 import { Viaje } from "./data";
 import { LatLngLiteral, MouseEvent } from "src/agm/core";
 import { RequestTripService } from "../request-trip/services/request-trip.service";
-import {
-  AddressResponseLoadingOrder,
-  ResponseLoadingOrder,
-  ResponseOrderPayment,
-} from "../request-trip/data/response";
+import { ResponseLoadingOrder } from "../request-trip/data/response";
 import { RequestGeoAutocomplete } from "src/app/directives/informacion/data/serviceGeo";
 import {
   PersonalisationMarker,
   PersonalisationPolyline,
   TypeMarkers,
 } from "src/app/directives/informacion/data/enumMapa";
-import * as UtilModalViaje from "../request-trip/util-modal-viaje-corporate";
 import { OrderBean } from "../main/data";
 import { ChatBean } from "src/app/chat/data.chat";
 import { ChatService } from "../main/service/chat.service";
 import { ChatComponent } from "src/app/chat/chat.component";
 import { ChatResponse } from "../main/service/data/chat.response";
 import { ChatHandler } from "../service/handlers/chat.handler";
-import { OrderResponse } from "../main/service/data/response";
 import { StoreHandler } from "../service/handlers/store.handler";
 import { OrderHandler } from "../service/handlers/order.handler";
 import * as CONSTANTES from "src/app/utils/constant";
-import { MqttService } from "../service/mqtt.service";
 import { enumStatusOrder, enumTypePayment } from "../request-trip/data/enum";
 import { environment } from "src/environments/environment";
 import { AuthService } from "src/app/utils/auth.service";
@@ -40,6 +33,7 @@ import { AlertServices } from "../service/alert.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ClipboardService } from 'ngx-clipboard';
 import { MessageService } from "primeng/api";
+import { WokerHandler } from "../service/worker.service";
 class PolyLine{
   routePoints:RoutePoint[]
   color: string
@@ -76,7 +70,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     private chatHandler: ChatHandler,
     private storeHandler: StoreHandler,
     private orderHandler: OrderHandler,
-    private mqtt: MqttService,
+    private mqtt: WokerHandler,
     private auth: AuthService,
     private router: Router,
     private alert:AlertServices,
@@ -209,7 +203,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   async ngOnInit() {
     this.initMapViewAfter = true;
     await this.onOrderCourseIntervalSubscription(0);
-    this.mqtt._onConnect.subscribe((isConnect) => {
+    this.mqtt._onConnectAsync.subscribe((isConnect) => {
       if (isConnect) {
         this.isMqttConnect = isConnect;
         this.mqttListener();

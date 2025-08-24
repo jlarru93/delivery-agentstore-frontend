@@ -99,7 +99,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
             }
         })
         
-        this.workerHandler._onConnect.subscribe((isConnect)=>{
+        this.workerHandler._onConnectWorker.subscribe((isConnect)=>{
             this.isConnectMqtt=isConnect
             this.validateConnectMqttAndGetStatus()
         })
