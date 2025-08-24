@@ -132,11 +132,12 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         this.permitToNotify();
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.addEventListener('message', (event: MessageEvent) => {
+                console.log("serviceWorker::message:::event",event)
                 const data = event.data || {};
                 this.zone.run(() => { // asegurar cambio dentro de Angular
-                    if (data.type === 'PLAY_AUDIO' && data.url) {
-                        data.url=data.url??"assets/audio/audio.mp3"
-                        this.audio.play(data.url, data.metadata);
+                    if (data.type === 'PLAY_AUDIO' && data.audioUrl) {
+                        const audioUrl=data.audioUrl??"assets/audio/audio.mp3"
+                        this.audio.play(audioUrl, data.metadata);  
                     }
                     if (data.type === 'PAUSE_AUDIO') {
                         this.audio.pause();

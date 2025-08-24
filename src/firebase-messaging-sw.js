@@ -39,7 +39,7 @@ self.addEventListener('push', event => {
     if (data.audioUrl) {
       await broadcastToClients({
         type: 'PLAY_AUDIO',
-        url: data.audioUrl,
+        audioUrl: data.audioUrl,
         metadata: {
           title: data.title || notif.title,
           artist: data.artist || 'Piwi',
