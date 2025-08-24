@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppMainComponent } from './app.main.component';
 import { AuthService } from './utils/auth.service';
@@ -15,6 +15,7 @@ import { PushService } from './modules/service/push.service';
 import { AlertServices } from './modules/service/alert.service';
 import { PwaInstallService } from './modules/service/pwa-install.service';
 import { WokerHandler } from './modules/service/worker.service';
+import { AudioBackgroundService } from './modules/service/audio.background.service';
 
 @Component({
     selector: 'app-topbar',
@@ -70,10 +71,14 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         private push: PushService,
         private readonly pwaInstallService:PwaInstallService,
         private messageService:AlertServices,
+        private audio: AudioBackgroundService, 
+        private zone: NgZone
     ) {
     }
     isWelcomeDialogOpen: boolean = true
     @ViewChild('op') overlayPanel: OverlayPanel;
+    @ViewChild('audioPlayer') audioPlayerRef!: ElementRef<HTMLAudioElement>;
+    
     ngOnInit(): void {
         this.getFirstLogin()
         
@@ -124,6 +129,19 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
                 }
         });
         this.permitToNotify();
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', (event: MessageEvent) => {
+                const data = event.data || {};
+                this.zone.run(() => { // asegurar cambio dentro de Angular
+                    if (data.type === 'PLAY_AUDIO' && data.url) {
+                        this.audio.play(data.url, data.metadata);
+                    }
+                    if (data.type === 'PAUSE_AUDIO') {
+                        this.audio.pause();
+                    }
+                });
+            });
+        }
     }
 
     ngAfterViewInit() {
@@ -378,6 +396,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     }
     async permitToNotify() {
         console.log("permitToNotify")
+        this.playAudio();
         try {
             const resp=await this.push.requestPermissionAndToken()
             if(resp.perm!='granted'){
@@ -391,5 +410,16 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
             console.log("Error",error)
             this.messageService.showError('Error', error);
         }
+    }
+
+    playAudio() {
+        try{
+            this.audioPlayerRef.nativeElement.play();
+        }catch(e){}
+        
+    }
+
+    pauseAudio() {
+        this.audioPlayerRef.nativeElement.pause();
     }
 }
