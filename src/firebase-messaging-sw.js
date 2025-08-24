@@ -22,7 +22,7 @@ self.addEventListener('push', event => {
     const data  = payload.data || {};
 
     // 1) Mostrar notificación (opcional)
-    const title = notif.title || 'Notificación';
+    /*const title = notif.title || 'Notificación';
     const options = {
       body: notif.body || '',
       icon: notif.icon || '/assets/icons/icon-192x192.png',
@@ -32,8 +32,8 @@ self.addEventListener('push', event => {
         { action: 'play',  title: '▶ Reproducir' },
         { action: 'pause', title: '⏸ Pausar' }
       ]
-    };
-    await self.registration.showNotification(title, options);
+    };*/
+    //await self.registration.showNotification(title, options);
 
     // 2) Si viene audio en el payload, avisar a los clientes que reproduzcan
     if (data.audioUrl) {
