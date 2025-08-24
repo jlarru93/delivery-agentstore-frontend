@@ -129,7 +129,6 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
                     catch(error){}
                 }
         });
-        this.permitToNotify();
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.addEventListener('message', (event: MessageEvent) => {
                 console.log("serviceWorker::message:::event",event)
