@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {PrimeNGConfig} from 'primeng/api';
 import { ConnectionService } from './modules/service/connection.service';
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { interval, map, Observable, of, switchMap } from 'rxjs';
 import { PushService } from './modules/service/push.service';
 import { WokerHandler } from './modules/service/worker.service';
@@ -67,13 +67,17 @@ export class AppComponent implements OnInit{
             // Aquí puedes mostrar un toast, alert, etc.
         })
     }
-
+    
     private loadVersion(): Observable<string | null> {
-        return this.http.get<{ version: string }>('assets/version.json').pipe(
+        const headers = new HttpHeaders({
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+        });
+        const params = new HttpParams().set('t', Date.now().toString());
+        return this.http.get<{ version: string }>('assets/version.json', { headers, params }).pipe(
             map((data) => {
-            this.currentVersion = data.version;
-            console.log("VERSION::::",this.currentVersion)
-            return this.currentVersion;
+                this.currentVersion = data.version;
+                return this.currentVersion;
             })
         );
     }
