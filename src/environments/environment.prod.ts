@@ -86,12 +86,12 @@ export const environment = {
       ICON_SIZE: 50
     },
     CONDUCTOR_LABEL: {
-      URL: '/img/markers/Domiciliario_1.png',
+      URL: '/img/markers/deliveryMan.png',
       POSICION: 1,
       ICON_SIZE: 50
     },
     CONDUCTOR: {
-      URL: '/img/markers/Domiciliario_1.png',
+      URL: '/img/markers/deliveryMan.png',
       POSICION: 1,
       ICON_SIZE: 50
     },
