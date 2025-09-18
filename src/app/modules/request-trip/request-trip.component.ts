@@ -1362,4 +1362,37 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     return 'autocomplete';
   }
   
+  onPhoneBlur(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const formatted = this.formatPeruPhone(input.value);
+
+    if (formatted) {
+      this.destinationMobilePhone = formatted;   // ✅ deja el número limpio
+      input.value = formatted;  // actualiza lo que ve el usuario
+    } else {
+      this.destinationMobilePhone = "";
+      input.value = "";
+      alert("Número inválido, debe ser un celular peruano (9 dígitos, empieza en 9).");
+    }
+  }
+  formatPeruPhone(input: string): string | null {
+    if (!input) return null;
+    // 1. Dejar solo dígitos
+    let digits = input.replace(/\D+/g, "");
+    // 2. Quitar ceros iniciales extraños
+    digits = digits.replace(/^0+/, "");
+    // 3. Manejar prefijos dobles "51" (ejemplo: 5151933...)
+    while (digits.startsWith("51") && digits.length > 11) {
+      digits = digits.slice(2);
+    }
+    // 4. Quitar un único "51" si está presente
+    if (digits.length === 11 && digits.startsWith("51")) {
+      digits = digits.slice(2);
+    }
+    // 5. Validar que sea un número peruano válido (9 dígitos, empieza en 9)
+    if (/^9\d{8}$/.test(digits)) {
+      return digits; // ✅ siempre devuelve 9 dígitos
+    }
+    return input; // ❌ inválido
+  }
 }

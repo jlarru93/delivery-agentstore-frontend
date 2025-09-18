@@ -174,8 +174,13 @@
                       </div>
                   </ng-template>
               </p-dropdown>
-              <p-inputNumber inputId="withoutgrouping" placeholder="Número de teléfono" 
-              [useGrouping]="false" [(ngModel)]="destinationMobilePhone"></p-inputNumber>
+              <p-inputNumber
+                inputId="withoutgrouping"
+                placeholder="Número de teléfono" 
+                [useGrouping]="false"
+                [(ngModel)]="destinationMobilePhone"
+                (onBlur)="onPhoneBlur($event)" 
+                ></p-inputNumber>
             </div>
           </div>
           <div class="p-col-12">
