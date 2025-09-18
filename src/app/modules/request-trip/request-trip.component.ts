@@ -146,7 +146,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   stateOptions: any[]=[];
   method_payment = "efectivo";
   amount?: number = 0;
-  cashAmount?: number = 0;
+  cashAmount?: number = null;
   request_trip: RequestTrip = new RequestTrip();
   ref?: DynamicDialogRef;
   editTripData: any
