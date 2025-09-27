@@ -3,15 +3,36 @@
         <div class="layout-topbar-left" style="gap: 10px;">
             <!--p-button (onClick)="menu.toggle($event)" icon="pi pi-ellipsis-v" label="Opciones"></p-button-->
             <!--p-menu #menu [model]="items" [popup]="true" /-->
+            <ng-container *ngIf="!isMobile">
             <ng-container *ngFor="let storeOpen of storesOpen">
                 <div class="layout-megamenu-wrapper" (click)="showDialogOpenStore(storeOpen)">
-                    <button pButton type="button"  [label]="storeOpen?.name??'Tienda'" icon="pi pi-home" [loading]="storeOpen.isLoadingOpenStatusStore" [ngClass]="storeOpen.isOpen?'p-button-success':'p-button-warning'" ></button>
+                <button
+                    pButton
+                    type="button"
+                    [label]="storeOpen?.name ?? 'Tienda'"
+                    icon="pi pi-home"
+                    [loading]="storeOpen.isLoadingOpenStatusStore"
+                    [ngClass]="storeOpen.isOpen ? 'p-button-success' : 'p-button-warning'">
+                </button>
                 </div>
+            </ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="isMobile">
+            <button
+                pButton
+                type="button"
+                label="Tiendas"
+                icon="pi pi-home"
+                (click)="storesMenu.toggle($event)">
+            </button>
+            <p-menu #storesMenu [model]="items" [popup]="true"></p-menu>
             </ng-container>
 
             <ng-container *ngIf="isAllLoadingOpenStatusStore">
                 <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="1"></p-progressSpinner>
             </ng-container>
+
 
             
             

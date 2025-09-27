@@ -31,6 +31,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     storeOpenSelected:StatusOpenStoreBean
     //isOpenStore:boolean=false
     isAllLoadingOpenStatusStore:boolean=false
+    isMobile: boolean = false;
 
     value: any;
 
@@ -82,6 +83,8 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     
     ngOnInit(): void {
         this.getFirstLogin()
+        this.checkDevice(); 
+        window.addEventListener('resize', () => this.checkDevice()); 
         
         var flagAudio = JSON.parse(localStorage.getItem('audioEnabled'))
         var lstIdStore= JSON.parse(localStorage.getItem('lstIdStore'))
@@ -144,6 +147,10 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
                 });
             });
         }
+    }
+
+    checkDevice() {
+        this.isMobile = window.innerWidth <= 768; 
     }
 
     ngAfterViewInit() {
