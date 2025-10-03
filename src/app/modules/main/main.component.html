@@ -697,7 +697,7 @@ styleClass="order-dialog" [breakpoints]="{ '960px': '95vw', '640px': '98vw' }" [
     <p-dialog id="imageDialog"  [(visible)]="dialogScreenshoot" [draggable]="false" [resizable]="false" 
     [style]="{ width: '800px' }" (onHide)="dialogScreenshoot = false">
     <ng-template pTemplate="header">
-      Screenshoot
+      Screenshoot {{payment?.amount?.getCurrencyAndValue()??''}}
       <button pButton pRipple type="button" label="Descargar" icon="pi pi-download" (click)="onDownloadScrenshoot(imagenURL)"
       class="p-button-rounded p-button-raised p-button-text" [loading]="onDownloadLoading"></button>
       

@@ -574,6 +574,7 @@ import { ClipboardService } from "ngx-clipboard";
         if(!this.flagOpenReceiptDialog){
           this.messageService.showWarning('', 'Por favor revise el comprobante de pago primero, Dar click en el boton del ojo')
           this.loadingButtonAcept = false
+          this.openDialogScreenShoot()
         } else {
           this.orderRepository.aceptOder(orderRequest.uuid,orderRequest.readyToDmAt).subscribe((resp)=>{
             this.displayOrder=false
