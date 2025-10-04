@@ -707,6 +707,10 @@ styleClass="order-dialog" [breakpoints]="{ '960px': '95vw', '640px': '98vw' }" [
       <img [src]="imagenURL" width="90%" >
 
     </div>
+      <ng-template pTemplate="footer">
+         <button class="btn-order "  *ngIf="orderSelected.status=='open'" pButton type="button" label="Aceptar orden" [loading]="loadingButtonAcept" (click)="aceptOrder()"></button>
+      </ng-template>
+    
    </p-dialog>
  </ng-template>
  </p-dialog>
