@@ -139,6 +139,8 @@ export class OrderRepository{
         this.audioService.stopAudio()
     }
     private pullRequest(){
+        const storeIds=this.dataSharedService.listStore.value
+        this.getOrder(storeIds+"")
         this.interval=setInterval(()=>{
             if(this.isStop){
                 return
