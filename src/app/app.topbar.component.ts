@@ -38,7 +38,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
 
     userDetails: any
     userName: string
-    IdAgent:any
+    //IdAgent:any
     isConnectMqtt:boolean=false
     isDoneGetStatusOpenStore:boolean=false
     stores: AgentStoreStoreResponse[]
@@ -111,26 +111,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
                 //console.log(this.userDetails)
                 let username = this.userDetails.find(user => user.Name == 'name')
                 this.userName = username.Value
-                this.IdAgent=this.userDetails.find(user=>user.Name=='custom:_idStore')
-                if(this.IdAgent){
-                    this.lstAgentStore()
-                    if(lstIdStore!=null&&lstIdStore!=undefined&&lstIdStore.length>0){
-                        console.log("AXAXA",lstIdStore)
-                        this.selectStore=lstIdStore
-                    }else{
-                        this.selectStore .push(this.IdAgent.Value)
-                    }
-                    this.startDataFetch()
-                    this.dataShared.updateListStore(this.selectStore)
-                    try{
-                        this.service.setFileAgentStore(this.selectStore).subscribe(resp=>{
-                            if(!resp.success){
-                                console.log("No se pudo registrar en el archivo",resp.error)
-                            }
-                        })
-                    }
-                    catch(error){}
-                }
+                this.lstAgentStore()
         });
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.addEventListener('message', (event: MessageEvent) => {
@@ -147,6 +128,17 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
                 });
             });
         }
+    }
+
+    setStoreToWindows(){
+        try{
+            this.service.setFileAgentStore(this.selectStore).subscribe(resp=>{
+                if(!resp.success){
+                    console.log("No se pudo registrar en el archivo",resp.error)
+                }
+            })
+        }
+        catch(error){}
     }
 
     checkDevice() {
@@ -172,7 +164,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
 
     listBrands(){
         this.service.getBrandsInvoice().subscribe(async (resp) => {
-            await this.getLastInvoiceFromABrand(resp.data);
+            //await this.getLastInvoiceFromABrand(resp.data);
         },
         (_error) => {},
         () => {});
@@ -354,10 +346,17 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
     lstAgentStore(){
         
         //console.log(this.IdAgent)
-        this.service.getStoreByIdAgent().subscribe((data:any)=>{
+        this.service.getStoreByIdAgent().subscribe((data)=>{
+            this.selectStore=data.data.map(s=>s.store_id)
             this.stores=data.data
-            //console.log(this.stores)
+            console.log("this.stores",this.stores)
+            console.log("this.selectStore",this.selectStore)
+            
+            localStorage.setItem('lstIdStore',JSON.stringify(this.selectStore))  
+            this.dataShared.updateListStore(this.selectStore)
             this.dataShared.setStoreAviliable(this.stores)
+            this.setStoreToWindows()
+            this.stores.forEach(s=>this.processSubsCribeStore(s.store_id)) 
         })
     }
     setStoreId(store:Store,id:any,event:any){
@@ -365,16 +364,10 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         /*if(this.selectStore.findIndex((eve)=>eve==id)==-1){
             this.isOpenStore=false
         }*/
+       console.log("this.selectStore",this.selectStore)
         console.log("ID",id)
         console.log("STORES",store)
-        try{
-            this.service.setFileAgentStore(this.selectStore).subscribe(resp=>{
-                if(!resp.success){
-                    console.log("No se pudo registrar en el archivo",resp.error)
-                }
-            })
-        }
-        catch(error){}
+        this.setStoreToWindows()
 
         localStorage.setItem('lstIdStore',JSON.stringify(this.selectStore))       
         this.processSubsCribeStore(id) 

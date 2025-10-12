@@ -23,7 +23,7 @@ export class MenuService {
     
     getStoreByIdAgent(){
        var url=environment.url.backEnd+'/agentStore-store/agent-store'
-       return this.http.get<ObjetResponse<AgentStoreStoreResponse>>(url)
+       return this.http.get<ObjetResponse<AgentStoreStoreResponse[]>>(url)
     }
 
     setFileAgentStore(stores:number[]){
@@ -52,7 +52,7 @@ export class MenuService {
 
 export class AgentStoreStoreResponse{
     id: number
-    agentStore_id: string
+    agentStore_id: number
     store_id: number
     store_name: string
     enable: number
