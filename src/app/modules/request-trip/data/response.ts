@@ -141,3 +141,26 @@ export class PolygonResponse {
   lng: number
 }
   
+export class CustomerExpressResponse {
+    id: number
+    country_code: string
+    phone: string
+    fullName: string
+    brand_id: number
+}
+export class AddressCustomerExpressResponse {
+    id: number
+    addressStreet: string
+    default: boolean
+    lng: number
+    lat: number
+    alias: string
+    reference: string
+    floor: string
+    user_id: number
+    zone_id: number
+    enable: boolean
+    createAt: number
+    isHide: boolean
+    customer_express_id: number
+}

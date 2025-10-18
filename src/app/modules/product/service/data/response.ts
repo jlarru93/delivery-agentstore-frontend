@@ -49,7 +49,11 @@ export class ProductsResponse{
 export class MenuResponse {
 
 }
-
+export class BrandResponse{
+    id:number
+    name:string
+    urlLogo:string
+}
 export class StoreResponse {
     id?: number;
     zoneId?: number;
@@ -63,6 +67,7 @@ export class StoreResponse {
     isOpen: boolean;
     ticketKitchen: TiketKitchenResponse[];
     tripSetting:any[];
+    brand:BrandResponse
     static toBean(self: StoreResponse) : StoreBean{
         const bean = new StoreBean()
             bean.id = self.id;
@@ -77,6 +82,7 @@ export class StoreResponse {
             bean.isOpen = self.isOpen
             bean.tripSetting=self.tripSetting
             bean.ticketKitchen = self.ticketKitchen.map((it) => TiketKitchenResponse.toBean(it)) 
+            bean.brand= self.brand
         return bean
     }
 }

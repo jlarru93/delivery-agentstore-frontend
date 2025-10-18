@@ -20,6 +20,11 @@ export class ProductBean{
     picture ?: string;
     isOutStock : boolean;
 }
+export class BrandBean{
+    id:number
+    name:string
+    urlLogo:string
+}
 
 export class StoreBean {
     id?: number;
@@ -34,6 +39,7 @@ export class StoreBean {
     isOpen: boolean;
     tripSetting:any[]
     ticketKitchen: TiketKitchenBean[]
+    brand:BrandBean
 }
 
 export class TiketKitchenBean {

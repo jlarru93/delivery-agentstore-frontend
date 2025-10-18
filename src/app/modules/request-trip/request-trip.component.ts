@@ -7,7 +7,7 @@ import { RequestGeoAutocomplete } from "src/app/directives/informacion/data/serv
 import { RequestMotorizedOrigin, RequestOrderPayment, RequestTrip} from "./data/request";
 import * as UtilModalViaje from "./util-modal-viaje-corporate";
 import { RequestTripService } from "./services/request-trip.service";
-import { ResponseLoadingOrder, ResponseMotorizedOrigin, ZoneResponse } from "./data/response";
+import { CustomerExpressResponse, ResponseLoadingOrder, ResponseMotorizedOrigin, ZoneResponse } from "./data/response";
 import { LoadingMotorizedComponent } from "./dialog/loading-motorized/loading-motorized.component";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { environment } from "src/environments/environment";
@@ -20,6 +20,8 @@ import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { COUNTRYCODE, NUMBERPHONELENGTH } from 'src/app/utils/constant';
 import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 import { AddressSuggestionResponse } from "../order-course/data/response";
+import { CustomerExpressService } from "./services/customer-express.service";
+import { FilterRequest } from "../order-history/service/data/request";
 type InputType = 'coordinates' | 'place' | 'autocomplete' | 'linkconvert';
 interface PolyLine{
   routePoints:RoutePoint[]
@@ -165,7 +167,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   countryCodes: CountryCode[] = CountryCodes;
   selectCountryCode: CountryCode = CountryCodes.find(country => country.dial_code == environment.countryDial);
   tagsOrderSelect:TagOrderResponse[]
-
+  storeSelected:any
   constructor(
     private storeService: StoreService,
     private requestTripService: RequestTripService,
@@ -173,8 +175,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     private alert:AlertServices,
     private dataShared:DataSharedService,
     private appSer:MenuService,
-    private main: AppMainComponent
-  ) {}
+    private main: AppMainComponent,
+    private readonly customerExpressService: CustomerExpressService
+  ) {
+    this.storeSelected=JSON.parse(localStorage.getItem('storeBean'))
+  }
   ngAfterViewInit(): void {
     setTimeout( () => {
       if(!this.stateOptions||this.stateOptions.length==0){
@@ -522,6 +527,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   addressDestination: AddressSuggestionBean
   addressesDestination: AddressSuggestionBean[]
+  addressesDestinationCopy: AddressSuggestionBean[]
 
   searchAddress(e){
     this.requestTripService.onGetSuggestionAddress(e.query, this.request_trip.store.id).subscribe(
@@ -585,7 +591,18 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 
   searchAddressDestination(e){
+    console.log("searchAddressDestination",e)
     let word=e.query as string;
+    console.log("addressesDestination",this.addressesDestination)
+    console.log("addressesDestinationCustomerExpress",this.addressesDestinationCopy)
+    console.log("addressDestination",this.addressDestination)
+    if(!word){
+      if(this.addressesDestinationCopy ==null || this.addressesDestinationCopy?.length==0){
+        this.addressesDestination = [{mainText: "No se encontro coincidencias"}]
+      }
+      this.addressesDestination=JSON.parse(JSON.stringify(this.addressesDestinationCopy ))
+      return
+    }
     const regex = /[?&]q=(-?\d+(\.\d+)?),(-?\d+(\.\d+)?)/;
     const match=word.match(regex)
     if(match){
@@ -626,6 +643,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     this.requestTripService.onGetSuggestionAddress(word, this.request_trip.store.id).subscribe(
       (resp) => {
         this.addressesDestination = resp.data.map((as) => AddressSuggestionResponse.toBean(as))
+        this.addressesDestinationCopy= JSON.parse(JSON.stringify(this.addressesDestination))
         if (resp.data.length == 0) {
           this.addressesDestination = [{mainText: "No se encontro coincidencias"}]
         }
@@ -876,11 +894,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   calcularNivelDeZoom(distance: number): number{
     // Puedes ajustar estos valores según tus preferencias
     if (distance < 1000) {
-      return 20; // Zoom más cercano si la distancia es corta
+      return 15; // Zoom más cercano si la distancia es corta
     } else if (distance < 5000) {
-      return 15; // Zoom intermedio para distancias medianas
+      return 14; // Zoom intermedio para distancias medianas
     } else {
-      return 14; // Zoom más alejado si la distancia es larga
+      return 13; // Zoom más alejado si la distancia es larga
     }
   }
   private calcularZoom(bounds: google.maps.LatLngBounds): number { 
@@ -1032,7 +1050,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     const isEmptyOriginMobilePhone=!this.originMobilePhone || this.originMobilePhone.toString().trim().length==0
     const isEmpty=!this.destinationMobilePhone || this.destinationMobilePhone.toString().trim().length==0
     if(this.request_trip.isCheckedStore == true && (isEmptyOriginMobilePhone && isEmpty)){
-      this.alert.showError('',"es obligatorio escribir por lo menos un numero");
+      this.alert.showError('Error', "es obligatorio escribir por lo menos un numero")
       return;
     }
 
@@ -1366,15 +1384,17 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     const input = event.target as HTMLInputElement;
     const formatted = this.formatPeruPhone(input.value);
 
-    if (formatted) {
-      this.destinationMobilePhone = formatted;   // ✅ deja el número limpio
-      input.value = formatted;  // actualiza lo que ve el usuario
-    } else {
+    if (!formatted) {
       this.destinationMobilePhone = "";
       input.value = "";
       alert("Número inválido, debe ser un celular peruano (9 dígitos, empieza en 9).");
+      return;
     }
+    this.destinationMobilePhone = formatted;   // ✅ deja el número limpio
+    input.value = formatted;  // actualiza lo que ve el usuario
+    this.requestCustomer(this.selectCountryCode.dial_code,formatted)
   }
+
   formatPeruPhone(input: string): string | null {
     if (!input) return null;
     // 1. Dejar solo dígitos
@@ -1394,5 +1414,70 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       return digits; // ✅ siempre devuelve 9 dígitos
     }
     return input; // ❌ inválido
+  }
+  isLoadingRequestCustomer:boolean
+  customerExpress:CustomerExpressResponse
+  requestCustomer(dial_code: string, phone: string) {
+    
+    const request:FilterRequest={
+      filters:[
+        {field:"country_code",value:dial_code},
+        {field:"phone",value:phone},
+        {field:"brand_id",value:this.storeSelected.brand.id}
+      ]
+    }
+    this.isLoadingRequestCustomer=true
+    this.customerExpressService.filteCustomer(request).subscribe(
+      (resp)=>{
+        this.isLoadingRequestCustomer=false
+        this.customerExpress=resp.data[0]        
+        if(!this.customerExpress){
+          return
+        }
+        this.destinationReceptorName=this.customerExpress.fullName
+        this.requestAddressCustomer()
+      },
+      (error)=>{
+        this.isLoadingRequestCustomer=false
+      },
+      ()=>{}
+    )
+  }
+  isDropDownEnable:boolean=true
+  requestAddressCustomer(){
+    const request:FilterRequest={
+      filters:[
+        {field:"customer_express_id",value:this.customerExpress.id}
+      ]
+    }
+    this.customerExpressService.filterAddress(request).subscribe(
+      (resp)=>{
+        const addresses=resp.data
+        const defaultAddress=addresses.find(a=>a.default)??addresses[0]
+        this.isDropDownEnable=false
+        if(!defaultAddress){
+          return
+        }
+        if(addresses?.length>1){          
+          this.addressesDestination=addresses.map(a=>{
+            return {
+              mainText:a.addressStreet,
+              secondText: a?.reference??''
+            } as AddressSuggestionBean
+          })
+          this.addressesDestinationCopy=JSON.parse(JSON.stringify(this.addressesDestination))
+          this.isDropDownEnable=true
+        }
+        this.addressDestination={mainText:defaultAddress.addressStreet}
+
+        this.setDestination(defaultAddress.lat,defaultAddress.lng);
+        this.onGetAmountOrder();
+        this.input_reference_destination=defaultAddress.reference
+      },
+      (error)=>{
+
+      },
+      ()=>{}
+    )
   }
 }

@@ -124,13 +124,17 @@
           <div class="p-col-12">
             <div class="input-origin-content">
               <img src="{{ destinoIcon }}" class="search-img-origin marker" alt="" />
-              <p-autoComplete 
+              <p-autoComplete
+                [dropdown]="isDropDownEnable"
                 placeholder="¿A dónde lo llevamos?"
                 [(ngModel)]="addressDestination" [delay]="1000" 
-                [suggestions]="addressesDestination" (completeMethod)="searchAddressDestination($event)" 
+                [suggestions]="addressesDestination" 
+                (completeMethod)="searchAddressDestination($event)" 
                 (onSelect)="selectPredictionDestination($event)"
                 field="mainText" 
-                [ngStyle]="{'flex-grow': '1', 'width': '100%'}">
+                [ngStyle]="{'flex-grow': '1', 'width': '100%'}"
+                optionLabel="mainText"
+                >
                 <ng-template let-address pTemplate="item">
                     <div class="autocomplete-items">
                       <div>
@@ -181,6 +185,7 @@
                 [(ngModel)]="destinationMobilePhone"
                 (onBlur)="onPhoneBlur($event)" 
                 ></p-inputNumber>
+                <i class="pi pi-spin pi-spinner" *ngIf="isLoadingRequestCustomer"></i>
             </div>
           </div>
           <div class="p-col-12">
