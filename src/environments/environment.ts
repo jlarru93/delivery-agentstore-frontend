@@ -1,45 +1,40 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
 export const environment = {
-  production: false,
+  production: true,
   url:{
     backEndInit : [
-      'https://dev-api.piwi.pe/agent-store',
-      'https://dev-api.piwi.pe/tracking',
-      "https://dev-api.piwi.pe/utils",
-      'https://dev-api.piwi.pe/delivery-zone',
-      'https://dev-api.piwi.pe/delivery-store',
-      'https://dev-api.piwi.pe/delivery-order',
-      'https://dev-api.piwi.pe/user',
-      'https://dev-api.piwi.pe/delivery-invoice',
-      'https://dev-api.piwi.pe/delivery-messaging'
+      'https://api.piwi.pe/agent-store',
+      'https://api.piwi.pe/tracking',
+      "https://api.piwi.pe/utils",
+      'https://api.piwi.pe/delivery-zone',
+      'https://api.piwi.pe/delivery-store',
+      'https://api.piwi.pe/delivery-order',
+      'https://api.piwi.pe/user',
+      'https://api.piwi.pe/delivery-invoice',
+      'https://api.piwi.pe/delivery-messaging',
     ],
-    backEndUser: 'https://dev-api.piwi.pe/user',
-    backendOrder: 'https://dev-api.piwi.pe/delivery-order',
-    backEnd: 'https://dev-api.piwi.pe/agent-store',
-    backEndMessague: 'https://dev-api.piwi.pe/delivery-messaging',
-    url_back_tracking : 'https://dev-api.piwi.pe/tracking',
+    backEndUser: 'https://api.piwi.pe/user',
+    backendOrder: 'https://api.piwi.pe/delivery-order',
+    backEnd: 'https://api.piwi.pe/agent-store',
+    backEndMessague: 'https://api.piwi.pe/delivery-messaging',
+    url_back_tracking : 'https://api.piwi.pe/tracking',
     fileWindows : "http://127.0.0.1:65535/",
-    util_banckEnd:"https://dev-api.piwi.pe/utils",
-    backEnd_Zone: 'https://dev-api.piwi.pe/delivery-zone',
-    store_banckEnd:"https://dev-api.piwi.pe/delivery-store",
-    backEndInvoice:'https://dev-api.piwi.pe/delivery-invoice',
+    util_banckEnd:"https://api.piwi.pe/utils",
+    backEnd_Zone: 'https://api.piwi.pe/delivery-zone',
+    store_banckEnd:"https://api.piwi.pe/delivery-store",
+    backEndInvoice:'https://api.piwi.pe/delivery-invoice',
   },
   microFront:{
-    invoice:"https://dev-micro-invoice.piwi.pe/#/",
-    product: "https://dev-micro-product.piwi.pe/#/",
-    multipleAssignment:"https://dev-micro-multi-assigment.piwi.pe/#/"
+    invoice:"https://micro-invoice.piwi.pe/#/",
+    product: "https://micro-product.piwi.pe/#/",
+    multipleAssignment:"https://micro-multi-assigment.piwi.pe/#/"
   },
-  microFronted:'https://dev-micro-report.piwi.pe/#/',
-  region: 'us-west-1',
-  //userPoolId: 'us-west-1_4xM3rA9gH',
-  userPoolWebClientId: '4hbd17p5udfca8i18rbmk5g0dp',
+  microFronted:'https://micro-report.piwi.pe/#/',
+  region: 'us-east-1',
+  userPoolWebClientId: '4kh9mhumd42cnoe4l3e3603j4k',
   awsConfig:{
-    region: 'us-west-1',
+    region: 'us-east-1',
     cognito:{
-      userPoolId: 'us-west-1_fM8av0cDx',
+      userPoolId: 'us-east-1_IGz8a0uQ1',
       cookieStorage:{
         // - Cookie domain (only required if cookieStorage is provided)
         domain: '.localhost',
@@ -56,19 +51,19 @@ export const environment = {
     }
   },
   firebase: {
-    apiKey: "AIzaSyBoQRzFRT1U45O40YmOwYbsVUihoL9FEOo",
-    authDomain: "agent-store-piwi-dev.firebaseapp.com",
-    projectId: "agent-store-piwi-dev",
-    storageBucket: "agent-store-piwi-dev.firebasestorage.app",
-    messagingSenderId: "521256989007",
-    appId: "1:521256989007:web:d621b8eae234b36d0fd53a",
-    measurementId: "G-71YJXN6Y19"
+    apiKey: "AIzaSyBJu-NK-Tfs-9uWbH2urdzCdGyHY4iqF5I",
+    authDomain: "agent-store-piwi-prod.firebaseapp.com",
+    projectId: "agent-store-piwi-prod",
+    storageBucket: "agent-store-piwi-prod.firebasestorage.app",
+    messagingSenderId: "146697692384",
+    appId: "1:146697692384:web:ebc085c6f23b2ff1045c85",
+    measurementId: "G-RNJCXJMC2E"
   },
-  vapidKey:"BKq3BIMtSP9sfcFMS-hgZGvAqTpLXYnMmUptPPUnJd70CysqUOqHqYgwjvfSI4tN6BbCTgFVri2M1P9tDTUEFNA",
+  vapidKey:"BH6MZkXBcBq1rccazpI2e94euJIe5JDHzlUUKR1iZHF-qnvccT0e5PbFWg0LDyTY2sRqBFk8BWmrdxA-a_jU_Uc",
   bucketNameS3Images:'',
-  basePathS3ImagesDeliveryMan:'/dev',
+  basePathS3ImagesDeliveryMan:'/prod',
   mqttServer:{
-    url: "devwss.piwi.pe",
+    url: "wss.piwi.pe",
     port_ws: 443,
     port_mqtt: 1883,
     path:"/",
@@ -77,7 +72,7 @@ export const environment = {
     useSSL:true
   },
   GOOGLE:{
-    APIKEY: 'AIzaSyDjv5HAoqzn8-kMHLFAdCF2XbHZ2vUmI8Y'
+    APIKEY: 'AIzaSyD6XfEXqDHjJMLbc-GFA9dzPzoF3dzzsJk'
   },
   MARKERS: {
     ORIGEN: {
@@ -141,7 +136,7 @@ export const environment = {
       ICON_SIZE: 30
     }
   },
-  NAME_COMPANY: 'piwi',//'<<your name>>',
+  NAME_COMPANY: 'piwi',
   conuntryCode:'PE',
   countryDial: '+51',
   cityCenterPoint: {
@@ -182,12 +177,3 @@ export const environment = {
   STATUSORDER_PENDING_PAYMENT : 'pendingPayment',
   STATUSORDER_REJECT_PAYMENT : 'rejectPayment'
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

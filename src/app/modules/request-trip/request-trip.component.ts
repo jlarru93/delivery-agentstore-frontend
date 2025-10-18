@@ -596,7 +596,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     console.log("addressesDestination",this.addressesDestination)
     console.log("addressesDestinationCustomerExpress",this.addressesDestinationCopy)
     console.log("addressDestination",this.addressDestination)
-    if(!word){
+    if(!word || word==''){
       if(this.addressesDestinationCopy ==null || this.addressesDestinationCopy?.length==0){
         this.addressesDestination = [{mainText: "No se encontro coincidencias"}]
       }
@@ -653,8 +653,17 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     )
   }
 
-  selectPredictionDestination(prediction?: any,address?:string) {
+  selectPredictionDestination(prediction?: AddressSuggestionBean,address?:string) {
     //this.autocompleteInput = prediction.mainText;
+    console.log("selectPredictionDestination",prediction)
+    this.addressesDestinationCopy.find(a=>a.id!=null)
+    if(!(prediction?.placeId)){
+      this.addressesDestination = JSON.parse(JSON.stringify(this.addressesDestinationCopy));
+      this.setDestination(prediction.lat,prediction.lng);
+      this.onGetAmountOrder();
+      return;
+    }
+
     if(prediction){
       this.addressesDestination = []; // Limpia las predicciones una vez seleccionada
     }
@@ -1432,6 +1441,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         this.isLoadingRequestCustomer=false
         this.customerExpress=resp.data[0]        
         if(!this.customerExpress){
+          this.destinationReceptorName=""
           return
         }
         this.destinationReceptorName=this.customerExpress.fullName
@@ -1461,8 +1471,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         if(addresses?.length>1){          
           this.addressesDestination=addresses.map(a=>{
             return {
+              id: a.id,
               mainText:a.addressStreet,
-              secondText: a?.reference??''
+              secondText: a?.reference??'',
+              lat: a.lat,
+              lng: a.lng
             } as AddressSuggestionBean
           })
           this.addressesDestinationCopy=JSON.parse(JSON.stringify(this.addressesDestination))

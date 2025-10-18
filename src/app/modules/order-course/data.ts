@@ -170,9 +170,12 @@ export class Destination {
 
 
 export class AddressSuggestionBean {
+    id?:number
     city?: string
     country?: string
     mainText?: string
     placeId?: string
     secondText?: string
+    lat?:number
+    lng?:number
 }
