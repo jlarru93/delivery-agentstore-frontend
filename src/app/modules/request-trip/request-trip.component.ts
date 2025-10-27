@@ -527,7 +527,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
   addressDestination: AddressSuggestionBean
   addressesDestination: AddressSuggestionBean[]
-  addressesDestinationCopy: AddressSuggestionBean[]
+  addressesDestinationCopy: AddressSuggestionBean[]=[]
 
   searchAddress(e){
     this.requestTripService.onGetSuggestionAddress(e.query, this.request_trip.store.id).subscribe(
@@ -657,7 +657,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     //this.autocompleteInput = prediction.mainText;
     console.log("selectPredictionDestination",prediction)
     this.addressesDestinationCopy.find(a=>a.id!=null)
-    if(!(prediction?.placeId)){
+    if(prediction && !(prediction?.placeId) && prediction.lat && prediction.lng){
       this.addressesDestination = JSON.parse(JSON.stringify(this.addressesDestinationCopy));
       this.setDestination(prediction.lat,prediction.lng);
       this.onGetAmountOrder();
