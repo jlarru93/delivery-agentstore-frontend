@@ -653,7 +653,7 @@ styleClass="order-dialog" [breakpoints]="{ '960px': '95vw', '640px': '98vw' }" [
           </div>
       </div>
       <footer id="footer-main">
-         <div class="grid-resume">
+         <div class="footer-content">
             <div id="piwiCoin">
                <p>PiwiCoins</p>
                <p class="total-amount-underline">{{orderSelected.getPiwiCoinAndCurrency()}}</p>
@@ -664,11 +664,7 @@ styleClass="order-dialog" [breakpoints]="{ '960px': '95vw', '640px': '98vw' }" [
                   <ng-container *ngIf="orderSelected.deliveryPriceWithDiscount != orderSelected.deliveryPrice">
                      <del>{{orderSelected.getdeliveryPriceAndCurrency()}}</del> | 
                   </ng-container>
-                  
-                  
                   {{orderSelected.getdeliveryPriceDiscountAndCurrency()}} </p>
-               
-               
             </div>
             <div id="tip">
                <p>Propina</p>
