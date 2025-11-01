@@ -654,6 +654,10 @@ styleClass="order-dialog" [breakpoints]="{ '960px': '95vw', '640px': '98vw' }" [
       </div>
       <footer id="footer-main">
          <div class="grid-resume">
+            <div id="piwiCoin">
+               <p>PiwiCoins</p>
+               <p class="total-amount-underline">{{orderSelected.getPiwiCoinAndCurrency()}}</p>
+            </div>
             <div id="residency">
                <p>Domicilio</p>
                <p>

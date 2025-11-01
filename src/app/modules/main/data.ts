@@ -147,6 +147,7 @@ export class PaymentBean {
     amount?: PriceBean
     method?: MethodBean
     card?: CardBean
+    piwiCoin:number
 }
 
 export class CouponsBean{
@@ -273,6 +274,9 @@ export class OrderBean {
     }
     getTotalAndCurrencyCommand(){
         return ""+this.getCurrency()+formatCurrency(this.total)
+    }
+    getPiwiCoinAndCurrency(){
+        return ""+this.getCurrency() + formatCurrency(this.payment?.piwiCoin??0)
     }
 }
 export interface StatusOpenStoreBean{

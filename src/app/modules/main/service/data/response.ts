@@ -341,12 +341,14 @@ export class PaymentResponse {
     amount?: PriceResponse
     method?: MethodResponse
     card?: CardResponse
+    piwiCoin?:number
     static toBean(self?: PaymentResponse): PaymentBean {
         const bean = new PaymentBean()
         bean.id = self?.id
         bean.amount = PriceResponse.toBean(self?.amount)
         bean.method = MethodResponse.toBean(self?.method)
         bean.card = CardResponse.toBean(self?.card)
+        bean.piwiCoin= self.piwiCoin
         return bean
     }
 }

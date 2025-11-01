@@ -129,7 +129,7 @@ footer    { grid-area: footer; background:#FAFBFD; border:1px solid #EBEFF4; }
     margin: 0;
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
-      "residency tip"
+      "piwiCoin residency tip"
       "products-amount total-amount";
     gap: .5rem 1rem;
   }
