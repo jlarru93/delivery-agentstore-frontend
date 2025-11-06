@@ -71,15 +71,15 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   input_receptorNameOrigin_pickup?:string
   is_disabled_pickup: boolean = true;
   center: LatLngLiteral = {
-    lat: 10.96854,
-    lng: -74.78132,
+    lat: environment.centermap.lat,
+    lng: environment.centermap.lng,
   };
   markers: Marker[] = [
     {
       maintext: "Barranquilla",
       secondText: "Hotel atrium",
-      lat: 10.96854,
-      lng: -74.78132,
+      lat: environment.centermap.lat,
+      lng: environment.centermap.lng
     }
   ];
   lstPosiciones: PersonalisationMarker[] = [];
@@ -100,8 +100,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   // };
   coberturePosition: RequestGeoAutocomplete = {
       key_word: "",
-      longitude: -76.9928316,
-      latitude: -12.1251109,
+      longitude: environment.centermap.lng,
+      latitude: environment.centermap.lat,
     };
   polyline_order?: PersonalisationPolyline[] = [];
   //agm-map
