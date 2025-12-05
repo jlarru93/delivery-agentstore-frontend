@@ -30,10 +30,10 @@ export class AppMenuComponent implements OnInit {
             { label: 'Productos', icon: 'pi pi-fw pi-flag', routerLink: ['/product'] },
             { label: 'Solicitar Viaje', icon: 'pi pi-fw pi-car', command: () => this.redirectRequestTrip()},
             { label: 'Servicios en curso', icon: 'pi pi-fw pi-history', routerLink: ['/order-course']},
-            { label: 'Historial de Órdenes', icon: 'pi pi-fw pi-history', routerLink: ['/order-history']},
+            //{ label: 'Historial de Órdenes', icon: 'pi pi-fw pi-history', routerLink: ['/order-history']},
             { label: 'Reporte de usuarios', icon: 'pi pi-fw pi-users', routerLink: ['/user-report']},
-            { label: 'Quejas', icon: 'pi pi-fw pi-box', routerLink: ['/complaint-report']},
-            { label: 'Asignacion Multiple', icon: 'pi pi-sitemap', routerLink: ['/multiple-assignment']},       
+            //{ label: 'Quejas', icon: 'pi pi-fw pi-box', routerLink: ['/complaint-report']},
+            //{ label: 'Asignacion Multiple', icon: 'pi pi-sitemap', routerLink: ['/multiple-assignment']},       
             { label: 'Reporte dinamico', icon: 'pi pi-fw pi-file', routerLink: ['/dynamic-report']}
         ];
         this.store.storeAviliable.subscribe((storesAvilible)=>{
