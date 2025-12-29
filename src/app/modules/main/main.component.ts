@@ -1020,7 +1020,7 @@ import { DomSanitizer } from "@angular/platform-browser";
    */
   getPaymentIcon(order: OrderBean) {
     const method = order?.payment?.method?.type?.toUpperCase() || 'CASH';
-    
+    const aplication= order?.payment?.method.name
     const icons = {
       'CASH': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Efectivo">
         <rect x="2" y="5" width="20" height="14" rx="3" fill="#16A085"/>
@@ -1080,7 +1080,23 @@ import { DomSanitizer } from "@angular/platform-browser";
         <path d="M17 14H11L12.5 15.5" stroke="#E0E7FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>`
     };
-    
+
+    if(method=="CASH"){
+      return this.sanitizer.bypassSecurityTrustHtml(icons['CASH']);
+    }
+    if(method=="E-WALLET" && aplication=="Yape"){
+      return this.sanitizer.bypassSecurityTrustHtml(icons['YAPE']);
+    }
+    if(method=="E-WALLET" && aplication?.toLowerCase()=="plin"){
+      return this.sanitizer.bypassSecurityTrustHtml(icons['PLIN']);
+    }
+    if(method=="BANK"){
+      return this.sanitizer.bypassSecurityTrustHtml(icons['BANK']);
+    }
+    if(method=="CARD"){
+      return this.sanitizer.bypassSecurityTrustHtml(icons['CARD']);
+    }
+
     return this.sanitizer.bypassSecurityTrustHtml(icons['CASH']);
   }
 

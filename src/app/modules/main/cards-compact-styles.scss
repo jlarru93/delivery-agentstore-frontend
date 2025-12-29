@@ -10,10 +10,24 @@
   cursor: pointer;
   position: relative;
 
+
+  &.en-preparacion {
+    border-left: 3px solid #FFA500;
+  }
+  &.por-entregar {
+    border-left: 3px solid #4ECDC4;
+  }
+  &.en-ruta {
+    border-left: 3px solid #5B7FFF;
+  }
+  &.terminado {
+    border-left: 3px solid #47AC34;
+  }
   &:hover {
     box-shadow: 0px 6px 16px 0px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
   }
+  
 }
 
 /* HEADER COMPACTO - TODO EN UNA LÍNEA */
