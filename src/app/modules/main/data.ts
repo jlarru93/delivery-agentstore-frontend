@@ -278,6 +278,35 @@ export class OrderBean {
     getPiwiCoinAndCurrency(){
         return ""+this.getCurrency() + formatCurrency(this.payment?.piwiCoin??0)
     }
+    calculateTime(){
+        const tiempoActual = new Date();
+        const tiempoCreacion = new Date(this.createdAt * 1000);
+        const diferencia = tiempoActual.getTime() - tiempoCreacion.getTime();
+
+        const hoursDifference = Math.floor(diferencia / (1000 * 60 * 60));
+        const minutesDifference = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60)); 
+
+        const res = `${hoursDifference}h ${minutesDifference}`.toString(); 
+        return res;
+    }
+    
+    getDriverBadge(){
+        if (!this?.deliveryMan?.name) {
+            return '🏍️ Sin asignar';
+        }
+        
+        const nombreParts = this.deliveryMan.name.trim().split(' ');
+        const primerNombre = nombreParts[0];
+        const primerApellido = nombreParts.length > 1 ? nombreParts[1].charAt(0) + '.' : '';
+        
+        return `🏍️ ${primerNombre} ${primerApellido}`;
+    }
+    getPrepTimeBadge(){
+        if (!this?.readyToDmMinutesAt || this.readyToDmMinutesAt === 0) {
+            return '⏲️ --';
+        }
+        return `⏲️ ${this.readyToDmMinutesAt}min`;
+    }
 }
 export interface StatusOpenStoreBean{
     id:number

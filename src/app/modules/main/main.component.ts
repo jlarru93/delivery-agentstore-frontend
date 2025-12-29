@@ -26,7 +26,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
-    styleUrls: ['./main.component.scss','./cards-compact-styles.scss'],
+    styleUrls: ['./main.component.scss','./cards-compact-styles.scss','cards-compact-styles.preparing.scss'],
     providers: [ConfirmationService, MessageService,DialogService],
     animations: [
       trigger(
