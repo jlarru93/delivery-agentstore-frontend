@@ -21,11 +21,12 @@ import { AudioService } from "../service/audio.service";
 import { OrderRepository } from "./service/order.repository";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ClipboardService } from "ngx-clipboard";
+import { DomSanitizer } from "@angular/platform-browser";
 //import { NgxPrinterService } from "ngx-printer";
 @Component({
     selector: 'app-stores',
     templateUrl: './main.component.html',
-    styleUrls: ['./main.component.scss'],
+    styleUrls: ['./main.component.scss','./cards-compact-styles.scss'],
     providers: [ConfirmationService, MessageService,DialogService],
     animations: [
       trigger(
@@ -116,6 +117,7 @@ import { ClipboardService } from "ngx-clipboard";
       private router: Router,
       private route: ActivatedRoute,
       private readonly clipboardService:ClipboardService,
+      private sanitizer: DomSanitizer
       ){
         
       }
@@ -984,5 +986,129 @@ import { ClipboardService } from "ngx-clipboard";
         }
       }
     )
+  }
+
+
+  /**
+   * Obtiene solo el primer nombre del cliente
+   */
+  getFirstName(order: OrderBean): string {
+    return order?.user?.name || 'Cliente';
+  }
+
+  /**
+   * Obtiene la clase CSS según el tiempo transcurrido
+   */
+  getTimeClass(createdAt: number): string {
+    const minutes = this.getMinutesSinceCreation(createdAt);
+    if (minutes >= 30) return 'time-urgent';
+    if (minutes >= 15) return 'time-warning';
+    return 'time-normal';
+  }
+
+  /**
+   * Calcula minutos desde creación
+   */
+  getMinutesSinceCreation(createdAt: number): number {
+    const now = new Date().getTime();
+    const created = new Date(createdAt * 1000).getTime();
+    return Math.floor((now - created) / (1000 * 60));
+  }
+
+  /**
+   * Obtiene el icono SVG según el método de pago
+   */
+  getPaymentIcon(order: OrderBean) {
+    const method = order?.payment?.method?.type?.toUpperCase() || 'CASH';
+    
+    const icons = {
+      'CASH': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Efectivo">
+        <rect x="2" y="5" width="20" height="14" rx="3" fill="#16A085"/>
+        <rect x="4" y="7" width="16" height="10" rx="2" fill="#1ABC9C"/>
+        <text x="12" y="14" text-anchor="middle" font-size="6.5" font-family="Arial, Helvetica, sans-serif" fill="#ECFDF5" font-weight="bold">S/</text>
+      </svg>`,
+      
+      'YAPE': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" aria-label="Yape billetera electrónica" role="img">
+        <defs>
+          <linearGradient id="yapeGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#6B21A8"/>
+            <stop offset="100%" stop-color="#9333EA"/>
+          </linearGradient>
+        </defs>
+        <rect x="8" y="8" width="240" height="240" rx="48" fill="url(#yapeGradient)"/>
+        <circle cx="128" cy="78" r="34" fill="#2DD4BF"/>
+        <text x="128" y="88" text-anchor="middle" font-size="36" font-weight="700" font-family="Arial Rounded MT Bold, Arial, Helvetica, sans-serif" fill="#6B21A8">S/</text>
+        <text x="128" y="198" text-anchor="middle" font-size="88" font-weight="700" font-family="Arial Rounded MT Bold, Arial, Helvetica, sans-serif" fill="#FFFFFF">yape</text>
+      </svg>`,
+      
+      'PLIN': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 260" width="24" height="24" aria-label="Plin billetera electrónica" role="img">
+        <defs>
+          <linearGradient id="plinGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#2F80ED"/>
+            <stop offset="100%" stop-color="#00E5C0"/>
+          </linearGradient>
+        </defs>
+        <path d="M70 40 C20 70, 10 150, 60 190 C90 220, 150 240, 210 215 C250 200, 280 160, 270 120 C260 70, 210 20, 140 20 C110 20, 90 25, 70 40 Z" fill="url(#plinGradient)"/>
+        <text x="150" y="155" text-anchor="middle" font-size="92" font-weight="700" font-family="Arial Rounded MT Bold, Arial, Helvetica, sans-serif" fill="#FFFFFF">plin</text>
+        <circle cx="166" cy="95" r="9.5" fill="#FF4DA6"/>
+      </svg>`,
+      
+      'CARD': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-label="Tarjeta de crédito" role="img">
+        <rect x="2" y="5" width="20" height="14" rx="3" fill="#2563EB"/>
+        <rect x="2" y="8" width="20" height="3" fill="#1E40AF"/>
+        <rect x="6" y="12" width="4.5" height="3.2" rx="0.6" fill="#FACC15"/>
+        <rect x="6.8" y="12.6" width="2.9" height="2" rx="0.4" fill="#FDE68A"/>
+        <rect x="12" y="13.2" width="6" height="1.2" rx="0.6" fill="#E0E7FF"/>
+      </svg>`,
+      
+      'POS': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-label="Tarjeta de crédito" role="img">
+        <rect x="2" y="5" width="20" height="14" rx="3" fill="#2563EB"/>
+        <rect x="2" y="8" width="20" height="3" fill="#1E40AF"/>
+        <rect x="6" y="12" width="4.5" height="3.2" rx="0.6" fill="#FACC15"/>
+        <rect x="6.8" y="12.6" width="2.9" height="2" rx="0.4" fill="#FDE68A"/>
+        <rect x="12" y="13.2" width="6" height="1.2" rx="0.6" fill="#E0E7FF"/>
+      </svg>`,
+      
+      'BANK': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-label="Transferencia bancaria" role="img">
+        <path d="M4 10L12 5L20 10V12H4V10Z" fill="#2563EB"/>
+        <rect x="5" y="12" width="2.5" height="6" fill="#1E40AF"/>
+        <rect x="8.75" y="12" width="2.5" height="6" fill="#1E40AF"/>
+        <rect x="12.5" y="12" width="2.5" height="6" fill="#1E40AF"/>
+        <rect x="16.25" y="12" width="2.5" height="6" fill="#1E40AF"/>
+        <rect x="4" y="18" width="16" height="2" rx="1" fill="#1E40AF"/>
+        <path d="M7 9H13L11.5 7.5" stroke="#E0E7FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M17 14H11L12.5 15.5" stroke="#E0E7FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>`
+    };
+    
+    return this.sanitizer.bypassSecurityTrustHtml(icons['CASH']);
+  }
+
+  /**
+   * Obtiene el label del método de pago
+   */
+  getPaymentLabel(order: OrderBean): string {
+    const method = order?.payment?.method?.type?.toUpperCase() || 'CASH';
+    const labels = {
+      'CASH': 'EFECTIVO',
+      'YAPE': 'YAPE',
+      'PLIN': 'PLIN',
+      'CARD': 'TARJETA',
+      'POS': 'POS'
+    };
+    return labels[method] || 'EFECTIVO';
+  }
+
+  /**
+   * Abre WhatsApp con el número del cliente
+   */
+  openWhatsApp(phoneNumber: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    if (phoneNumber) {
+      const url = `https://wa.me/${phoneNumber}`;
+      window.open(url, '_blank');
+    }
   }
 }
