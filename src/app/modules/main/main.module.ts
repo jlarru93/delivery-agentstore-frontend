@@ -37,9 +37,10 @@ import { SidebarModule } from "primeng/sidebar";
 import {KnobModule} from 'primeng/knob';
 import { TooltipModule } from "primeng/tooltip";
 import { DropdownModule } from "primeng/dropdown";
+import { OrderModalComponent } from "./ordermodal/order.modal.component";
 
 @NgModule({
-    declarations: [MainComponent,CircleProgress,OrderDialogComponent],
+    declarations: [MainComponent,CircleProgress,OrderDialogComponent,OrderModalComponent],
     imports: [
       AvatarModule,
       AvatarGroupModule,

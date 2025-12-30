@@ -8,6 +8,9 @@ export abstract class SubOptionBean {
     price?: PriceBean
     quantity? : number
     abstract getPrice(): number
+    getPriceAndCurrency(){
+        return "S/"+this.getPrice().toFixed(2)
+    }
     getPriceMinimalCurrency(): string {
         return this.price.currency + formatCurrency(this.price.value)
     }
@@ -60,6 +63,7 @@ export class ProductBean {
     options?: OptionBean[]
     review?: string
     comment?: string
+    picture?: string
 
     getTotalPrice(): number {
         return this.quantity * this.getUnitPrice()

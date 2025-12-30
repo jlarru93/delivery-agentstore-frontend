@@ -87,15 +87,17 @@ export class ProductResponse {
     options?: OptionResponse[]
     review?: string
     comment?: string
+    picture?: string
     static toBean(self: ProductResponse): ProductBean {
         const bean = new ProductBean()
         bean.id = self.id,
-            bean.name = self.name,
-            bean.price = PriceResponse.toBean(self.price),
-            bean.quantity = self.quantity,
-            bean.options = self?.options.map((it) => OptionResponse.toBean(it)),
-            bean.review = self?.review,
-            bean.comment = self?.comment
+        bean.name = self.name,
+        bean.price = PriceResponse.toBean(self.price),
+        bean.quantity = self.quantity,
+        bean.options = self?.options.map((it) => OptionResponse.toBean(it)),
+        bean.review = self?.review,
+        bean.comment = self?.comment
+        bean.picture = self?.picture
         return bean
     }
 }

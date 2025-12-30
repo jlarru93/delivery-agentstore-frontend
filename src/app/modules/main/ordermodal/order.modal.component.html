@@ -1,0 +1,287 @@
+<p-dialog 
+    [(visible)]="visible" 
+    (visibleChange)="onVisibleChange($event)"
+    (onShow)="onShow($event)"
+    (onHide)="closeOptionBusinessIdDialog()"
+    [modal]="true" 
+    [closable]="true"
+    [style]="{width: '95vw', maxWidth: '1400px', height: '90vh'}"
+    [contentStyle]="{padding: '0', overflow: 'hidden'}"
+    styleClass="modal-orden-verde">
+    
+    <!-- HEADER -->
+    <ng-template pTemplate="header">
+        <div class="modal-orden-header">
+            <h2 class="modal-orden-titulo">Orden: #{{orderSelected.id}}</h2>
+            <div class="modal-orden-acciones">
+                <!-- Botón imprimir solo en desktop -->
+                <button 
+                    pButton 
+                    type="button" 
+                    icon="pi pi-print" 
+                    label="Imprimir comanda" 
+                    class="p-button-outlined btn-imprimir-modal btn-imprimir-desktop"
+                    (click)="printToPDF()">
+                </button>
+                <button 
+                    pButton 
+                    type="button" 
+                    icon="pi pi-times" 
+                    class="p-button-rounded p-button-text btn-cerrar-modal"
+                    (click)="onVisibleChange(false)">
+                </button>
+            </div>
+        </div>
+        <div id="pdf" style="display: none;">
+            <app-print-template [orderSelected]="orderSelected" [storeData]="storeDataStorage"></app-print-template>
+        </div>
+    </ng-template>
+    
+    <!-- BODY -->
+    <ng-template pTemplate="body">
+        
+        <!-- ==================== DESKTOP LAYOUT (60/40) ==================== -->
+        <div class="orden-modal-content orden-desktop-view">
+            <!-- COLUMNA PRODUCTOS (60%) -->
+            <div class="orden-modal-productos-col">
+                <!-- PRODUCTOS SCROLLEABLES -->
+                <div class="orden-modal-productos-scroll">
+                    <button id="btnOnClicked" (click)="accordionFunction()" style="display: none;"></button>
+                    
+                    <!-- PRODUCTO ITEM -->
+                    <div *ngFor="let product of orderSelected.products; index as i" class="orden-producto-item">
+                        <!-- HEADER DEL PRODUCTO -->
+                        <div class="orden-producto-header accordion-item" 
+                             [class.no-expandible]="!tieneDetalles(product)">
+                            <div class="orden-producto-header-content">
+                                <span class="orden-badge-cantidad">{{product.quantity}}x</span>
+                                
+                                <!-- TRIÁNGULO - Solo si tiene detalles -->
+                                <div class="orden-producto-toggle" 
+                                     *ngIf="tieneDetalles(product)"></div>
+                                
+                                <!-- ESPACIO VACÍO si no tiene detalles -->
+                                <div class="orden-producto-toggle-placeholder" 
+                                     *ngIf="!tieneDetalles(product)"></div>
+                                
+                                <img 
+                                    [src]="product.picture" 
+                                    alt="{{product.name}}" 
+                                    class="orden-producto-imagen">
+                                <div class="orden-producto-info">
+                                    <h4 class="orden-producto-nombre">
+                                        {{(product.name.charAt(0)).toUpperCase() + product.name.slice(1)}}
+                                    </h4>
+                                    <p class="orden-producto-descripcion">{{product.description || 'Sin descripción'}}</p>
+                                </div>
+                                <span class="orden-producto-precio">{{product.getPriceMinimalCurrency()}}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- DETALLES DEL PRODUCTO - Solo si tiene detalles -->
+                        <div class="orden-producto-detalles accordion-description" 
+                             *ngIf="tieneDetalles(product)">
+                            <!-- OPCIONES -->
+                            <div *ngIf="product.options && product.options.length > 0">
+                                <div *ngFor="let option of product.options" class="orden-opcion-grupo">
+                                    <div class="orden-opcion-titulo">
+                                        <i class="pi pi-circle orden-opcion-icono" 
+                                           *ngIf="option.type === 'unique'"></i>
+                                        <i class="pi pi-check-square orden-opcion-icono" 
+                                           *ngIf="option.type === 'multiple'"></i>
+                                        <i class="pi pi-plus-circle orden-opcion-icono" 
+                                           *ngIf="option.type === 'sumable'"></i>
+                                        
+                                        <span>{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}</span>
+                                        
+                                        <span class="orden-badge-tipo orden-badge-unica" 
+                                              *ngIf="option.type === 'unique'">ÚNICA</span>
+                                        <span class="orden-badge-tipo orden-badge-multiple" 
+                                              *ngIf="option.type === 'multiple'">MÚLTIPLE</span>
+                                        <span class="orden-badge-tipo orden-badge-sumable" 
+                                              *ngIf="option.type === 'sumable'">SUMABLE</span>
+                                    </div>
+                                    
+                                    <div *ngFor="let sub of option.subOptions" class="orden-opcion-item">
+                                        <span>• {{sub.name}}</span>
+                                        <i class="pi pi-check orden-opcion-check" 
+                                           *ngIf="sub.selected && !sub.quantity"></i>
+                                        <span class="orden-opcion-cantidad" 
+                                              *ngIf="sub.quantity && sub.quantity > 0">x{{sub.quantity}} 
+                                            <ng-container *ngIf="sub?.price?.value > 0"> {{sub.getPriceAndCurrency()}}</ng-container>
+                                        </span>
+                                        <span class="orden-opcion-no-seleccionada" 
+                                              *ngIf="!sub.selected && (!sub.quantity || sub.quantity === 0)">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- COMENTARIOS -->
+                            <div *ngIf="product.comment && product.comment.trim() !== ''" class="orden-comentario-card">
+                                <div class="orden-comentario-header">
+                                    <i class="pi pi-comment orden-comentario-icono"></i>
+                                    <span>COMENTARIOS</span>
+                                </div>
+                                <div class="orden-comentario-texto">
+                                    "{{product.comment}}"
+                                </div>
+                            </div>
+                            
+                            <!-- SUBTOTAL DEL PRODUCTO -->
+                            <div class="orden-subtotal-card">
+                                <span class="orden-subtotal-label">Sub Total</span>
+                                <span class="orden-subtotal-valor">{{product.getTotalPriceAndCurrency()}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- RESUMEN FIJO (DESKTOP) -->
+                <div class="orden-modal-resumen-fijo">
+                    <div class="orden-resumen-grid">
+                        <div class="orden-resumen-item">
+                            <div class="orden-resumen-item-label">Domicilio</div>
+                            <div class="orden-resumen-item-valor">
+                                <ng-container *ngIf="orderSelected.deliveryPriceDiscount">
+                                    <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getdeliveryPriceAndCurrency()}}</del><br>
+                                </ng-container>
+                                {{orderSelected.getdeliveryPriceDiscountAndCurrency()}}
+                            </div>
+                        </div>
+                        <div class="orden-resumen-item">
+                            <div class="orden-resumen-item-label">Propina</div>
+                            <div class="orden-resumen-item-valor">{{orderSelected.getTipAndCurrency()}}</div>
+                        </div>
+                        <div class="orden-resumen-item">
+                            <div class="orden-resumen-item-label">Productos</div>
+                            <div class="orden-resumen-item-valor">{{orderSelected.getProductPriceAndCurrency()}}</div>
+                        </div>
+                        <div class="orden-resumen-item orden-resumen-total">
+                            <div class="orden-resumen-item-label">Total</div>
+                            <div class="orden-resumen-item-valor">{{orderSelected.getTotalDiscountAndCurrency()}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COLUMNA INFO (40%) - DESKTOP -->
+            <div class="orden-modal-info-col">
+                <ng-container *ngTemplateOutlet="infoTemplate"></ng-container>
+            </div>
+        </div>
+        
+        <!-- ==================== MÓVIL LAYOUT (TABS) ==================== -->
+        <div class="orden-modal-content orden-mobile-view">
+            <p-tabView styleClass="orden-tabs-mobile">
+                
+                <!-- TAB 1: PRODUCTOS -->
+                <p-tabPanel header="Productos">
+                    <div class="orden-mobile-tab-content">
+                        <!-- Mismo contenido de productos -->
+                        <div *ngFor="let product of orderSelected.products; index as i" class="orden-producto-item">
+                            <div class="orden-producto-header accordion-item" 
+                                 [class.no-expandible]="!tieneDetalles(product)">
+                                <div class="orden-producto-header-content">
+                                    <span class="orden-badge-cantidad">{{product.quantity}}x</span>
+                                    <div class="orden-producto-toggle" *ngIf="tieneDetalles(product)"></div>
+                                    <div class="orden-producto-toggle-placeholder" *ngIf="!tieneDetalles(product)"></div>
+                                    <img [src]="product.picture" alt="{{product.name}}" class="orden-producto-imagen">
+                                    <div class="orden-producto-info">
+                                        <h4 class="orden-producto-nombre">
+                                            {{(product.name.charAt(0)).toUpperCase() + product.name.slice(1)}}
+                                        </h4>
+                                        <p class="orden-producto-descripcion">{{product.description || 'Sin descripción'}}</p>
+                                    </div>
+                                    <span class="orden-producto-precio">{{product.getPriceMinimalCurrency()}}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="orden-producto-detalles accordion-description" *ngIf="tieneDetalles(product)">
+                                <div *ngIf="product.options && product.options.length > 0">
+                                    <div *ngFor="let option of product.options" class="orden-opcion-grupo">
+                                        <div class="orden-opcion-titulo">
+                                            <i class="pi pi-circle orden-opcion-icono" *ngIf="option.type === 'unique'"></i>
+                                            <i class="pi pi-check-square orden-opcion-icono" *ngIf="option.type === 'multiple'"></i>
+                                            <i class="pi pi-plus-circle orden-opcion-icono" *ngIf="option.type === 'sumable'"></i>
+                                            <span>{{(option.name.charAt(0)).toUpperCase() + option.name.slice(1)}}</span>
+                                            <span class="orden-badge-tipo orden-badge-unica" *ngIf="option.type === 'unique'">ÚNICA</span>
+                                            <span class="orden-badge-tipo orden-badge-multiple" *ngIf="option.type === 'multiple'">MÚLTIPLE</span>
+                                            <span class="orden-badge-tipo orden-badge-sumable" *ngIf="option.type === 'sumable'">SUMABLE</span>
+                                        </div>
+                                        <div *ngFor="let sub of option.subOptions" class="orden-opcion-item">
+                                            <span>• {{sub.name}}</span>
+                                            <i class="pi pi-check orden-opcion-check" *ngIf="sub.selected && !sub.quantity"></i>
+                                            <span class="orden-opcion-cantidad" *ngIf="sub.quantity && sub.quantity > 0">x{{sub.quantity}}</span>
+                                            <span class="orden-opcion-no-seleccionada" *ngIf="!sub.selected && (!sub.quantity || sub.quantity === 0)">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div *ngIf="product.comment && product.comment.trim() !== ''" class="orden-comentario-card">
+                                    <div class="orden-comentario-header">
+                                        <i class="pi pi-comment orden-comentario-icono"></i>
+                                        <span>COMENTARIOS</span>
+                                    </div>
+                                    <div class="orden-comentario-texto">"{{product.comment}}"</div>
+                                </div>
+                                
+                                <div class="orden-subtotal-card">
+                                    <span class="orden-subtotal-label">Sub Total</span>
+                                    <span class="orden-subtotal-valor">{{product.getTotalPriceAndCurrency()}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </p-tabPanel>
+                
+                <!-- TAB 2: INFO -->
+                <p-tabPanel header="Info">
+                    <div class="orden-mobile-tab-content">
+                        <ng-container *ngTemplateOutlet="infoTemplate"></ng-container>
+                    </div>
+                </p-tabPanel>
+                
+                <!-- TAB 3: RESUMEN -->
+                <p-tabPanel header="Resumen">
+                    <div class="orden-mobile-tab-content">
+                        <div class="orden-resumen-grid-mobile">
+                            <div class="orden-resumen-item">
+                                <div class="orden-resumen-item-label">Domicilio</div>
+                                <div class="orden-resumen-item-valor">
+                                    <ng-container *ngIf="orderSelected.deliveryPriceDiscount">
+                                        <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getdeliveryPriceAndCurrency()}}</del><br>
+                                    </ng-container>
+                                    {{orderSelected.getdeliveryPriceDiscountAndCurrency()}}
+                                </div>
+                            </div>
+                            <div class="orden-resumen-item">
+                                <div class="orden-resumen-item-label">Propina</div>
+                                <div class="orden-resumen-item-valor">{{orderSelected.getTipAndCurrency()}}</div>
+                            </div>
+                            <div class="orden-resumen-item">
+                                <div class="orden-resumen-item-label">Productos</div>
+                                <div class="orden-resumen-item-valor">{{orderSelected.getProductPriceAndCurrency()}}</div>
+                            </div>
+                            <div class="orden-resumen-item orden-resumen-total">
+                                <div class="orden-resumen-item-label">Total</div>
+                                <div class="orden-resumen-item-valor">{{orderSelected.getTotalDiscountAndCurrency()}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </p-tabPanel>
+            </p-tabView>
+            
+            <!-- FAB IMPRIMIR (MÓVIL) -->
+            <button 
+                pButton 
+                type="button" 
+                icon="pi pi-print" 
+                class="p-button-rounded orden-fab-imprimir"
+                pTooltip="Imprimir comanda"
+                tooltipPosition="left"
+                (click)="printToPDF()">
+            </button>
+        </div>
+        
+    </ng-template>
+</p-dialog>

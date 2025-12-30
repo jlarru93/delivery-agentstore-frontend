@@ -1,0 +1,969 @@
+// ============================================
+// MODAL DE ORDEN - VERDE #47AC34
+// Agregar al final del archivo SCSS existente
+// ============================================
+
+// ========== VARIABLES DEL MODAL ==========
+$orden-primary-color: #47AC34;
+$orden-primary-dark: #3a8c2a;
+$orden-green-50: #E8F5E9;
+$orden-green-100: #C8E6C9;
+$orden-green-200: #A5D6A7;
+$orden-green-700: #388E3C;
+$orden-green-800: #2E7D32;
+$orden-green-900: #1B5E20;
+
+$orden-text-color: #202020;
+$orden-text-secondary: rgba(0, 0, 0, 0.6);
+$orden-surface-card: #ffffff;
+$orden-surface-border: rgba(0, 0, 0, .12);
+$orden-surface-hover: rgba(0, 0, 0, .04);
+
+// ========== MODAL PRINCIPAL ==========
+:host ::ng-deep {
+    .modal-orden-verde {
+        .p-dialog-header {
+            padding: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0 !important;
+        }
+        
+        // OCULTAR BOTÓN DE CERRAR NATIVO
+        .p-dialog-header-icon {
+            display: none !important;
+        }
+        
+        .p-dialog-content {
+            padding: 0 !important;
+            overflow: hidden !important;
+            border-radius: 0 !important;
+        }
+        
+        .p-dialog {
+            border-radius: 4px !important;
+            overflow: hidden !important;
+        }
+        .p-dialog-footer {
+            padding: 1rem !important;
+            background: white;
+            border-top: 1px solid #dee2e6;
+        }
+// ESTILOS DE TABS MÓVIL (agregar dentro de :host ::ng-deep)
+        .orden-tabs-mobile {
+            height: 100%;
+            
+            .p-tabview-nav {
+                background: white;
+                border-bottom: 2px solid $orden-surface-border;
+                justify-content: space-around;
+            }
+            
+            .p-tabview-nav-link {
+                color: $orden-text-secondary !important;
+                font-weight: 500;
+                padding: 1rem !important;
+            }
+            
+            .p-tabview-selected .p-tabview-nav-link {
+                color: $orden-primary-color !important;
+                border-bottom-color: $orden-primary-color !important;
+            }
+            
+            .p-tabview-panels {
+                padding: 0 !important;
+                background: transparent !important;
+                height: calc(100% - 60px);
+            }
+            
+            .p-tabview-panel {
+                height: 100%;
+            }
+        }
+    }
+}
+// ========== HEADER DEL MODAL ==========
+.modal-orden-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: $orden-primary-color !important;
+    color: white;
+    width: 100%;
+}
+
+.modal-orden-titulo {
+    margin: 0;
+    font-size: 1.25rem;
+    color: white;
+    font-weight: 500;
+}
+
+.modal-orden-acciones {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-imprimir-modal {
+    background: white !important;
+    color: $orden-primary-color !important;
+    border-color: white !important;
+    
+    &:hover {
+        background: #f5f5f5 !important;
+    }
+}
+
+.btn-cerrar-modal {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border: none !important;
+    width: 36px !important;
+    height: 36px !important;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    &:focus {
+        box-shadow: none !important;
+    }
+}
+
+// ========== LAYOUT PRINCIPAL ==========
+.orden-modal-content {
+    display: grid;
+    grid-template-columns: 60% 40%;
+    height: calc(90vh - 80px);
+    overflow: hidden;
+}
+
+// ========== COLUMNA PRODUCTOS ==========
+.orden-modal-productos-col {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid $orden-surface-border;
+    overflow: hidden;
+    background: white;
+}
+
+.orden-modal-productos-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    
+    // Scrollbar personalizado
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: $orden-primary-color;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+        background: $orden-green-700;
+    }
+}
+
+// ========== PRODUCTO ITEM ==========
+.orden-producto-item {
+    background: $orden-surface-card;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s;
+    
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.orden-producto-header-content {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    gap: 0.5rem;
+    
+    &:hover {
+        background: $orden-surface-hover;
+    }
+}
+
+.orden-badge-cantidad {
+    background: $orden-primary-color;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.orden-producto-toggle {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 0 8px 12px;
+    border-color: transparent transparent transparent $orden-primary-color;
+    transition: transform 0.3s;
+    transform: rotate(90deg);
+    flex-shrink: 0;
+    
+    &.expandido {
+        transform: rotate(180deg);
+    }
+}
+
+.orden-producto-imagen {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #f0f0f0;
+    flex-shrink: 0;
+}
+
+.orden-producto-info {
+    flex: 1;
+}
+
+.orden-producto-nombre {
+    font-weight: 500;
+    color: $orden-text-color;
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+}
+
+.orden-producto-descripcion {
+    color: $orden-text-secondary;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.orden-producto-precio {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: $orden-primary-color;
+    flex-shrink: 0;
+}
+
+// ========== DETALLES DEL PRODUCTO ==========
+.orden-producto-detalles {
+    padding: 0 1rem 1rem 1rem;
+    border-top: 1px solid $orden-surface-border;
+    display: none;
+    
+    &.visible {
+        display: block;
+    }
+}
+
+.orden-opcion-grupo {
+    margin: 1rem 0;
+}
+
+.orden-opcion-titulo {
+    font-weight: 500;
+    color: $orden-text-secondary;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+}
+
+.orden-opcion-icono {
+    color: #9E9E9E;
+    font-size: 1rem;
+}
+
+.orden-badge-tipo {
+    padding: 0.125rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.orden-badge-unica {
+    background: $orden-green-50;
+    color: $orden-green-800;
+}
+
+.orden-badge-multiple {
+    background: $orden-green-100;
+    color: $orden-green-800;
+}
+
+.orden-badge-sumable {
+    background: $orden-green-200;
+    color: $orden-green-900;
+}
+
+.orden-opcion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    color: $orden-text-color;
+}
+
+.orden-opcion-check {
+    color: $orden-primary-color;
+    font-size: 1.125rem;
+}
+
+.orden-opcion-cantidad {
+    color: $orden-primary-color;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.orden-opcion-no-seleccionada {
+    color: $orden-text-secondary;
+}
+
+// ========== COMENTARIOS ==========
+.orden-comentario-card {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: $orden-green-50;
+    border-radius: 8px;
+    border-left: 3px solid $orden-primary-color;
+}
+
+.orden-comentario-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $orden-text-secondary;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.orden-comentario-icono {
+    font-size: 1rem;
+    color: $orden-primary-color;
+}
+
+.orden-comentario-texto {
+    color: $orden-text-color;
+    font-style: italic;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+// ========== SUBTOTAL ==========
+.orden-subtotal-card {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: $orden-primary-color;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.orden-subtotal-label {
+    color: white;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.orden-subtotal-valor {
+    color: white;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+// ========== RESUMEN FIJO ==========
+.orden-modal-resumen-fijo {
+    padding: 1rem;
+    background: transparent;
+    border-top: 1px solid $orden-surface-border;
+}
+
+.orden-resumen-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.orden-resumen-item {
+    text-align: center;
+    padding: 0.75rem;
+    background: #F5F5F5;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+    cursor: pointer;
+    
+    &:hover {
+        border-color: $orden-primary-color;
+        box-shadow: 0 2px 8px rgba(71, 172, 52, 0.3);
+    }
+}
+
+.orden-resumen-item-label {
+    font-size: 0.75rem;
+    color: $orden-text-secondary;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.orden-resumen-item-valor {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: $orden-text-color;
+}
+
+.orden-resumen-total {
+    background: $orden-primary-color;
+    
+    .orden-resumen-item-label {
+        color: rgba(255,255,255,0.9);
+    }
+    
+    .orden-resumen-item-valor {
+        color: white;
+        font-size: 1.25rem;
+    }
+    
+    &:hover {
+        border-color: $orden-green-700;
+        box-shadow: 0 4px 12px rgba(71, 172, 52, 0.4);
+    }
+}
+
+// ========== COLUMNA INFO ==========
+.orden-modal-info-col {
+    overflow-y: auto;
+    padding: 1rem;
+    background: #FAFAFA;
+    
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: $orden-primary-color;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+        background: $orden-green-700;
+    }
+}
+
+.orden-info-card {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: white;
+    border: 1px solid $orden-surface-border;
+    border-radius: 8px;
+}
+
+.orden-info-card-titulo {
+    color: $orden-text-secondary;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    margin: 0 0 0.75rem 0;
+    font-weight: 500;
+}
+
+.orden-metodo-pago {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.orden-metodo-icono {
+    font-size: 1.5rem;
+    color: $orden-primary-color;
+    flex-shrink: 0;
+}
+
+.orden-metodo-info {
+    flex: 1;
+}
+
+.orden-metodo-nombre {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $orden-text-color;
+    margin-bottom: 0.25rem;
+}
+
+.orden-metodo-tipo {
+    color: $orden-text-secondary;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.orden-btn-ver-evidencia {
+    flex-shrink: 0;
+    color: $orden-primary-color !important;
+    
+    &:hover {
+        background: rgba(71, 172, 52, 0.1) !important;
+    }
+    
+    &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(71, 172, 52, 0.2) !important;
+    }
+}
+
+.orden-info-icon-action {
+    margin-left: auto;
+    font-size: 1.5rem;
+    color: $orden-primary-color;
+    cursor: pointer;
+    
+    &:hover {
+        color: $orden-green-700;
+    }
+}
+
+.orden-cliente-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.orden-cliente-nombre {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: $orden-text-color;
+    margin-bottom: 0.25rem;
+}
+
+.orden-cliente-telefono {
+    color: $orden-text-secondary;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.orden-btn-whatsapp {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #25D366;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover {
+        background: #20b358;
+    }
+}
+
+.orden-tiempo-prep {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.orden-tiempo-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.orden-tiempo-valor {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: $orden-text-color;
+    min-width: 60px;
+    text-align: center;
+}
+
+.orden-tiempo-min {
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+.orden-btn-counter {
+    width: 32px !important;
+    height: 32px !important;
+}
+
+.orden-btn-actualizar {
+    width: 100%;
+}
+
+.orden-tiempo-sugerido {
+    background: $orden-green-50;
+    border: 1px solid $orden-green-100;
+    padding: 0.75rem;
+    border-radius: 8px;
+    text-align: center;
+    
+    span {
+        color: $orden-green-700;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+}
+
+.orden-repartidor-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.orden-repartidor-detalles {
+    flex: 1;
+}
+
+.orden-repartidor-nombre {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: $orden-text-color;
+    margin-bottom: 0.25rem;
+}
+
+.orden-repartidor-telefono {
+    color: $orden-text-secondary;
+    font-size: 0.875rem;
+}
+
+.orden-repartidor-estado {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.orden-estado-en-camino {
+    background: $orden-green-100;
+    color: $orden-green-800;
+}
+
+.orden-estado-en-tienda {
+    background: $orden-green-50;
+    color: $orden-green-700;
+}
+
+.orden-buscando-repartidor {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.orden-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid $orden-primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.orden-buscando-titulo {
+    font-weight: 500;
+    color: $orden-text-color;
+    margin-bottom: 0.25rem;
+}
+
+.orden-buscando-subtitulo {
+    color: $orden-text-secondary;
+    font-size: 0.875rem;
+}
+
+.orden-delivery-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid $orden-surface-border;
+    border-radius: 8px;
+}
+
+.orden-delivery-text-warning {
+    color: #FFAC09;
+    font-weight: 600;
+    margin: 0;
+}
+
+.orden-delivery-text-success {
+    color: $orden-green-700;
+    font-weight: 600;
+    margin: 0;
+}
+
+// ========== RESPONSIVO ==========
+@media (max-width: 768px) {
+    .orden-modal-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .orden-modal-productos-col {
+        border-right: none;
+    }
+    
+    .orden-resumen-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .orden-resumen-total {
+        grid-column: 1 / -1;
+    }
+}
+
+.comprobante-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-height: 70vh;
+    overflow: auto;
+    padding: 1rem;
+    background: #f5f5f5;
+    
+    // Scrollbar personalizado
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: $orden-primary-color;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+        background: $orden-green-700;
+    }
+}
+
+.comprobante-imagen {
+    max-width: 100%;
+    max-height: 65vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: white;
+    display: block;
+}
+
+// Responsive móvil
+@media (max-width: 768px) {
+    .comprobante-container {
+        max-height: 60vh;
+        padding: 0.5rem;
+    }
+    
+    .comprobante-imagen {
+        max-height: 55vh;
+    }
+}
+
+// ========== PRODUCTOS NO EXPANDIBLES ==========
+.orden-producto-header.no-expandible {
+    cursor: default !important;
+    
+    &:hover {
+        background: transparent !important;
+    }
+}
+
+.orden-producto-toggle-placeholder {
+    width: 12px;
+    height: 16px;
+    flex-shrink: 0;
+    // Espacio vacío del mismo tamaño que el triángulo
+}
+
+// ========== LAYOUT DESKTOP Y MÓVIL ==========
+.orden-desktop-view {
+    display: grid;
+}
+
+.orden-mobile-view {
+    display: none;
+    position: relative;
+}
+
+.orden-mobile-tab-content {
+    height: 100%;
+    overflow-y: auto;
+    padding: 1rem;
+    
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: $orden-primary-color;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+        background: $orden-green-700;
+    }
+}
+
+.orden-resumen-grid-mobile {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    
+    .orden-resumen-total {
+        grid-column: 1 / -1;
+    }
+}
+
+// ========== FAB IMPRIMIR MÓVIL ==========
+.orden-fab-imprimir {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 56px !important;
+    height: 56px !important;
+    background: $orden-primary-color !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(71, 172, 52, 0.4) !important;
+    z-index: 1000;
+    
+    &:hover {
+        background: $orden-green-700 !important;
+        box-shadow: 0 6px 16px rgba(71, 172, 52, 0.5) !important;
+    }
+    
+    &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(71, 172, 52, 0.3) !important;
+    }
+}
+
+// ========== RESPONSIVE ==========
+@media (max-width: 768px) {
+    // Ocultar desktop, mostrar móvil
+    .orden-desktop-view {
+        display: none !important;
+    }
+    
+    .orden-mobile-view {
+        display: block !important;
+        height: 100%;
+    }
+    
+    // Ocultar botón imprimir del header en móvil
+    .btn-imprimir-desktop {
+        display: none !important;
+    }
+    
+    // Ajustar tamaño del modal
+    :host ::ng-deep {
+        .modal-orden-verde.p-dialog {
+            .p-dialog {
+                width: 100vw !important;
+                height: 100vh !important;
+                max-width: 100vw !important;
+                max-height: 100vh !important;
+                margin: 0 !important;
+            }
+        }
+    }
+    
+    .orden-modal-content {
+        height: calc(100vh - 70px);
+    }
+    
+    .comprobante-container {
+        max-height: 60vh;
+        padding: 0.5rem;
+    }
+    
+    .comprobante-imagen {
+        max-height: 55vh;
+    }
+}
+
+@media (min-width: 769px) {
+    // Mostrar desktop, ocultar móvil
+    .orden-desktop-view {
+        display: grid !important;
+    }
+    
+    .orden-mobile-view {
+        display: none !important;
+    }
+}
+@media (max-width: 991px) {
+    .p-d-none.p-d-lg-block {
+        display: none !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .mobile-card-view {
+        display: none !important;
+    }
+}
+@media (min-width: 992px) {
+    // Ocultar botón "Abrir Filtros" en desktop
+    .p-lg-hidden {
+        display: none !important;
+    }
+    
+    // Ocultar tarjetas móviles en desktop
+    .mobile-card-view {
+        display: none !important;
+    }
+}
+
+@media (max-width: 991px) {
+    // Ocultar toolbar desktop en móvil
+    .p-d-none.p-d-lg-block {
+        display: none !important;
+    }
+    
+    // Mostrar controles móviles
+    .p-lg-hidden {
+        display: block !important;
+    }
+}

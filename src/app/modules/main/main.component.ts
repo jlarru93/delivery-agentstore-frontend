@@ -468,51 +468,8 @@ import { DomSanitizer } from "@angular/platform-browser";
     storeDataStorage: StoreBean
 
     openOrderDialog(order:OrderBean){
-      this.audioService.stopAudio()
       this.orderSelected=order
-      if(this.orderSelected.readyToDmAt){
-        this.readyToDmAt=this.orderSelected.readyToDmAt
-      }else{
-        this.readyToDmAt=15
-      }
-      
-      if(this.orderSelected.readyToDmMinutesAt){
-        this.readyToDmMinutesAt = this.orderSelected.readyToDmMinutesAt
-      } else {
-        this.readyToDmMinutesAt = 0
-      }
-      
       this.displayOrder=true
-
-      this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
-      this.router.navigate([], { queryParams: { order: this.orderSelected.id }, queryParamsHandling: 'merge' });
-      // this.orderService.getOrders().subscribe((resp)=>{
-      //   if(this.orderSelected.status == 'inStore'){
-      //     this.isButtonEnabled = true;
-      //   } else {
-      //     this.isButtonEnabled = false;
-      //   }
-      // })
-
-      this.orderSelected.products.forEach(element => {
-        let priceformat = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(element.price.value)
-        this.priceValueFormat.push(priceformat)
-      })
-
-      let totalPrice = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(this.orderSelected.total)
-      this.totalPriceValueFormat = totalPrice
-
-      this.payment = this.orderSelected.payment
-
-      this.imagenURL = this.payment?.method?.url
-      let methodName=this.payment.method.name?.toUpperCase()
-      methodName=methodName?methodName:""
-      //this.paymentName = this.payment.method.type.toUpperCase() + methodName
-      this.paymentName = this.onGetMethodType(this.payment.method.type)
-      setTimeout(() => {
-        var button2 = document.getElementById('btnOnClicked')
-        button2.click()
-      }, 500)
     }
 
     onCloseOrderDetail(){
