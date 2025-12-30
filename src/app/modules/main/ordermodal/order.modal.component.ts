@@ -4,6 +4,8 @@ import { DialogService } from "primeng/dynamicdialog";
 import { OrderBean, PaymentBean, ProductBean } from "../data";
 import { HttpClient } from "@angular/common/http";
 import { OrderRepository } from "../service/order.repository";
+import { AceptOrderRequest } from "../service/data/request";
+import * as CONSTANTES from "src/app/utils/constant";
 
 @Component({
     selector: 'order-modal',
@@ -329,6 +331,7 @@ export class OrderModalComponent implements OnInit {
     loadingButtonOrderReady: boolean = false;
     loadingButtonFinish: boolean = false;
     loadingButtonSelfManage: boolean = false;
+    showConfirmOrderReady: boolean = false;  //
     shouldShowActionButtons(): boolean {
         const status = this.orderSelected?.status;
         const statusAgent = this.orderSelected?.statusForAgentStore;
@@ -404,7 +407,76 @@ export class OrderModalComponent implements OnInit {
       }
 
     }
-    markOrderReady(){}
+    markOrderReady() {
+        // Validar que hay orden seleccionada
+        if (!this.orderSelected) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No hay orden seleccionada'
+            });
+            return;
+        }
+        
+        // Validar que la orden esté en estado correcto
+        if (this.orderSelected.status !== 'preparingOrder') {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Esta orden no está en preparación'
+            });
+            return;
+        }
+        
+        // Mostrar modal de confirmación
+        this.showConfirmOrderReady = true;
+    }
+    confirmarOrdenLista() {
+        this.loadingButtonOrderReady = true;
+        var body:AceptOrderRequest
+        const uuid=this.orderSelected.uuid
+        if(this.orderSelected.isPickUpStore){
+        body={uuid:uuid,status:CONSTANTES.DONE_ORDER_STATUS} as AceptOrderRequest
+        }else{
+        body={uuid:uuid,status:CONSTANTES.READY_ORDER_STATUS} as AceptOrderRequest
+        }
+        
+        // Llamar al servicio para marcar orden como lista
+        this.orderRepository.readyOder(uuid,body).subscribe({
+            next: (response) => {
+                this.loadingButtonOrderReady = false;
+                this.showConfirmOrderReady = false;
+                                
+                // Cerrar modal de orden si está abierto
+                this.onVisibleChange(false)
+                
+                // Mensaje de éxito
+                this.messageService.add({
+                    severity: 'success',
+                    summary: '¡Orden Lista!',
+                    detail: `La orden #${this.orderSelected.id} está lista para entregar`,
+                    life: 5000
+                });
+                
+                // Log opcional
+                console.log(`Orden ${this.orderSelected.id} marcada como lista`);
+            },
+            error: (error) => {
+                this.loadingButtonOrderReady = false;
+                
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudo marcar la orden como lista. Intenta nuevamente.'
+                });
+                
+                console.error('Error al marcar orden como lista:', error);
+            }
+        });
+    }
+    cancelarConfirmacionOrdenLista() {
+        this.showConfirmOrderReady = false;
+    }
     finishOrder(){}
     selfManagedOrder(){}
     openRejectDialog() {

@@ -1336,3 +1336,255 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
 }
 
 
+
+
+/* ========== MODAL CONFIRMAR ORDEN LISTA ========== */
+/* Agregar al final del archivo SCSS */
+
+:host ::ng-deep {
+    .modal-confirm-orden-lista {
+        .p-dialog-header {
+            padding: 0 !important;
+            background: transparent !important;
+            border: none !important;
+        }
+        
+        .p-dialog-content {
+            padding: 0 !important;
+        }
+        
+        .p-dialog-footer {
+            padding: 1rem 1.5rem !important;
+            background: #F8F9FA !important;
+            border-top: 1px solid #E0E0E0 !important;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+    }
+}
+
+/* ========== HEADER VERDE ========== */
+.confirm-lista-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+    border-bottom: 2px solid #47AC34;
+    
+    h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2E7D32;
+    }
+}
+
+.confirm-lista-icon {
+    font-size: 2rem;
+    color: #47AC34;
+    animation: pulse-check 2s infinite;
+}
+
+@keyframes pulse-check {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* ========== CONTENT ========== */
+.confirm-lista-content {
+    padding: 1.5rem;
+}
+
+.confirm-lista-message {
+    font-size: 1rem;
+    color: #333;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.5;
+    
+    strong {
+        color: #47AC34;
+        font-weight: 700;
+    }
+}
+
+/* ========== INFO DE LA ORDEN ========== */
+.confirm-lista-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.confirm-lista-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #F5F5F5;
+    border-radius: 6px;
+    border-left: 3px solid #47AC34;
+    
+    i {
+        font-size: 1.25rem;
+        color: #47AC34;
+        flex-shrink: 0;
+    }
+    
+    div {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        .label {
+            font-size: 0.813rem;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .value {
+            font-size: 0.875rem;
+            color: #333;
+            font-weight: 500;
+        }
+    }
+}
+
+/* ========== AVISO ========== */
+.confirm-lista-aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #E3F2FD;
+    border-left: 3px solid #2196F3;
+    border-radius: 6px;
+    
+    i {
+        font-size: 1.25rem;
+        color: #2196F3;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+    }
+    
+    p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: #1565C0;
+        line-height: 1.5;
+    }
+}
+
+/* ========== BOTÓN CONFIRMAR ========== */
+.confirm-lista-btn-confirmar {
+    background: linear-gradient(135deg, #47AC34 0%, #3a8c2a 100%) !important;
+    border: none !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 600 !important;
+    box-shadow: 0 3px 10px rgba(71, 172, 52, 0.3) !important;
+    transition: all 0.3s ease !important;
+    
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #3a8c2a 0%, #2d6b21 100%) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 5px 15px rgba(71, 172, 52, 0.4) !important;
+    }
+    
+    &:active:not(:disabled) {
+        transform: translateY(0) !important;
+    }
+    
+    &:disabled {
+        opacity: 0.6 !important;
+        cursor: not-allowed !important;
+    }
+}
+
+/* ========== BOTÓN CANCELAR ========== */
+:host ::ng-deep {
+    .modal-confirm-orden-lista {
+        .p-dialog-footer {
+            .p-button-text {
+                color: #666 !important;
+                
+                &:hover {
+                    background: rgba(0, 0, 0, 0.04) !important;
+                    color: #333 !important;
+                }
+            }
+        }
+    }
+}
+
+/* ========== RESPONSIVE ========== */
+@media screen and (max-width: 480px) {
+    .confirm-lista-header {
+        padding: 1rem;
+        
+        h3 {
+            font-size: 1.125rem;
+        }
+    }
+    
+    .confirm-lista-icon {
+        font-size: 1.75rem;
+    }
+    
+    .confirm-lista-content {
+        padding: 1rem;
+    }
+    
+    .confirm-lista-message {
+        font-size: 0.938rem;
+    }
+    
+    .confirm-lista-info-item {
+        padding: 0.625rem;
+        
+        i {
+            font-size: 1.125rem;
+        }
+        
+        div {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+        }
+    }
+    
+    :host ::ng-deep {
+        .modal-confirm-orden-lista {
+            .p-dialog-footer {
+                flex-direction: column;
+                
+                button {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+/* ========== ANIMACIÓN DE ENTRADA ========== */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.confirm-lista-content {
+    animation: slideInDown 0.3s ease-out;
+}

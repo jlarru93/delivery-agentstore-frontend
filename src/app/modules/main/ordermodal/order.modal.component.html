@@ -935,3 +935,68 @@
         </button>
     </ng-template>
 </p-dialog>
+<!-- ========== MODAL CONFIRMAR ORDEN LISTA ========== -->
+<!-- Agregar después del modal de orden en main.component.html -->
+
+<p-dialog 
+    [(visible)]="showConfirmOrderReady" 
+    [modal]="true"
+    [closable]="false"
+    [style]="{width: '450px', maxWidth: '95vw'}"
+    styleClass="modal-confirm-orden-lista">
+        
+    <!-- CONTENT -->
+    <div class="confirm-lista-content">
+        <!-- Mensaje principal -->
+        <p class="confirm-lista-message">
+            ¿Confirmas que la orden <strong>#{{orderSelected?.id}}</strong> está lista para entregar?
+        </p>
+        
+        <!-- Info adicional -->
+        <div class="confirm-lista-info">
+            <div class="confirm-lista-info-item">
+                <i class="pi pi-user"></i>
+                <div>
+                    <span class="label">Cliente:</span>
+                    <span class="value">{{orderSelected?.user?.fullName}}</span>
+                </div>
+            </div>
+                        
+            <div class="confirm-lista-info-item" *ngIf="orderSelected?.products?.length">
+                <i class="pi pi-box"></i>
+                <div>
+                    <span class="label">Productos:</span>
+                    <span class="value">{{orderSelected?.products?.length}} items</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Aviso -->
+        <div class="confirm-lista-aviso">
+            <i class="pi pi-info-circle"></i>
+            <p>El cliente y el repartidor (si aplica) serán notificados que la orden está lista.</p>
+        </div>
+    </div>
+    
+    <!-- FOOTER -->
+    <ng-template pTemplate="footer">
+        <button 
+            pButton 
+            type="button" 
+            label="Cancelar" 
+            icon="pi pi-times"
+            class="p-button-text p-button-secondary"
+            [disabled]="loadingButtonOrderReady"
+            (click)="cancelarConfirmacionOrdenLista()">
+        </button>
+        <button 
+            pButton 
+            type="button" 
+            label="Sí, orden lista" 
+            icon="pi pi-check"
+            class="p-button-success confirm-lista-btn-confirmar"
+            [loading]="loadingButtonOrderReady"
+            (click)="confirmarOrdenLista()">
+        </button>
+    </ng-template>
+</p-dialog>
