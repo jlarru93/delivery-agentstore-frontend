@@ -84,7 +84,11 @@
                   </div>
 
                   <!-- OVERLAY CHAT (mantener igual que antes) -->
-                  <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                  <div [attr.id]="'undoBtn'+i" 
+                     class="overlay-chat" 
+                     *ngIf="order.showButton" 
+                     [@enterAnimation]
+                     (click)="$event.stopPropagation()">
                      <ng-container *ngIf="order.showChat">
                         <app-chat 
                            [isLoading]="order.isLoadingChat"
@@ -120,7 +124,7 @@
             <div class="p-p-2">
                
                <!-- CARD COMPACTA -->
-               <div class="card-order-compact en-preparacion" (click)="openOrderDialog(order)">
+               <div class="card-order-compact en-preparacion" (click)="!order.showButton && openOrderDialog(order)">
                   
                   <!-- HEADER: Nombre + Badges + Total + Pago -->
                   <div class="card-header-compact">
@@ -216,7 +220,11 @@
                   </div>
 
                   <!-- OVERLAY CHAT -->
-                  <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                  <div [attr.id]="'undoBtn'+i" 
+                     class="overlay-chat" 
+                     *ngIf="order.showButton"
+                     [@enterAnimation]
+                     (click)="$event.stopPropagation()">
                      <ng-container *ngIf="order.showChat">
                         <app-chat 
                            [isLoading]="order.isLoadingChat"
@@ -347,7 +355,11 @@
                   </div>
 
                   <!-- OVERLAY CHAT -->
-                  <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                  <div [attr.id]="'undoBtn'+i" 
+                     class="overlay-chat" 
+                     *ngIf="order.showButton" 
+                     [@enterAnimation]
+                     (click)="$event.stopPropagation()">
                      <ng-container *ngIf="order.showChat">
                         <app-chat 
                            [isLoading]="order.isLoadingChat"
@@ -466,7 +478,11 @@
                   </div>
 
                   <!-- OVERLAY CHAT -->
-                  <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                  <div [attr.id]="'undoBtn'+i" 
+                     class="overlay-chat" 
+                     *ngIf="order.showButton" 
+                     [@enterAnimation]
+                     (click)="$event.stopPropagation()">
                      <ng-container *ngIf="order.showChat">
                         <app-chat 
                            [isLoading]="order.isLoadingChat"
@@ -584,7 +600,11 @@
                   </div>
 
                   <!-- OVERLAY CHAT -->
-                  <div [attr.id]="'undoBtn'+i" class="overlay-chat" *ngIf="order.showButton" [@enterAnimation]>
+                  <div [attr.id]="'undoBtn'+i" 
+                     class="overlay-chat" 
+                     *ngIf="order.showButton" 
+                     [@enterAnimation]
+                     (click)="$event.stopPropagation()">
                      <ng-container *ngIf="order.showChat">
                         <app-chat 
                            [isLoading]="order.isLoadingChat"

@@ -458,11 +458,11 @@ section{
     width: 100%;
     flex: auto;
 }
-.overlay-chat{
+.overlay-chat {
     top: 0;
     left: 1%;
     position: absolute;
-    z-index: 1001;
+    z-index: 99999 !important;  // ⭐ CORREGIDO
     transform-origin: center top;
     --overlayArrowLeft: 0px;
     opacity: 1;
@@ -474,7 +474,16 @@ section{
         width: 336px;
     }
 }
-
+/* AGREGAR TAMBIÉN (si no existe): */
+:host ::ng-deep {
+    .order-dialog .p-dialog {
+        z-index: 10000 !important;  // Modal por encima del chat
+    }
+    
+    .p-dialog-mask {
+        z-index: 9998 !important;  // Overlay del modal
+    }
+}
 h5{
     font-size: 1.25rem;
     font-family: inherit;
