@@ -437,6 +437,81 @@
     </div>
 
 
+    <!-- ==================== BOTONES DE ACCIÓN ==================== -->
+    <!-- Agregar al final del template #infoTemplate, antes del cierre -->
+
+    <div class="orden-botones-accion">
+        
+        <!-- ========== BOTÓN: ACEPTAR ORDEN (status = 'open') ========== -->
+        <button 
+            *ngIf="orderSelected.status == 'open'"
+            pButton 
+            type="button" 
+            label="Aceptar Orden" 
+            icon="pi pi-check"
+            class="p-button-success orden-btn-principal"
+            [loading]="loadingButtonAcept"
+            (click)="aceptOrder()">
+        </button>
+        
+        <!-- ========== BOTÓN: ORDEN LISTA (status = 'preparingOrder') ========== -->
+        <button 
+            *ngIf="orderSelected.status == 'preparingOrder'"
+            pButton 
+            type="button" 
+            label="Orden Lista" 
+            icon="pi pi-check-circle"
+            class="p-button-success orden-btn-principal"
+            [loading]="loadingButtonOrderReady"
+            (click)="markOrderReady()">
+        </button>
+        
+        <!-- ========== BOTÓN: TERMINAR ORDEN (selfManaged) ========== -->
+        <button 
+            *ngIf="orderSelected.status == 'orderReady' && orderSelected.isSelfManaged"
+            pButton 
+            type="button" 
+            label="Terminar Orden" 
+            icon="pi pi-flag"
+            class="p-button-success orden-btn-principal"
+            [loading]="loadingButtonFinish"
+            (click)="finishOrder()">
+        </button>
+        
+        <!-- ========== BOTÓN: AUTOGESTIONAR (isApprovedSelfManaged) ========== -->
+        <button 
+            *ngIf="orderSelected.status == 'orderReady' && 
+                orderSelected.isApprovedSelfManaged && 
+                !orderSelected.isSelfManaged"
+            pButton 
+            type="button" 
+            label="Autogestionar Orden" 
+            icon="pi pi-car"
+            class="p-button-success orden-btn-principal"
+            [loading]="loadingButtonSelfManage"
+            (click)="selfManagedOrder()">
+        </button>
+        
+        <!-- ========== BOTÓN: RECHAZAR ORDEN ========== -->
+        <button 
+            *ngIf="!['done', 'inRoute', 'cancel', 'preparingOrder', 'orderReady'].includes(orderSelected.statusForAgentStore)"
+            pButton 
+            type="button" 
+            label="Rechazar Orden" 
+            icon="pi pi-times"
+            class="p-button-danger p-button-outlined orden-btn-rechazar"
+            (click)="openRejectDialog()">
+        </button>
+        
+        <!-- ========== NOTA INFORMATIVA (si no hay botones) ========== -->
+        <div 
+            *ngIf="!shouldShowActionButtons()" 
+            class="orden-info-message">
+            <i class="pi pi-info-circle"></i>
+            <span>No hay acciones disponibles para esta orden</span>
+        </div>
+    </div>
+
 </ng-template>
 
 <!-- DIALOG SCREENSHOT -->

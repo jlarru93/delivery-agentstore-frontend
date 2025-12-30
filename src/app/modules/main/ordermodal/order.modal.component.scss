@@ -967,3 +967,199 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
         display: block !important;
     }
 }
+
+/* ========== BOTONES DE ACCIÓN ========== */
+/* Agregar al final del archivo order.modal.component.scss */
+
+.orden-botones-accion {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ========== BOTÓN PRINCIPAL (Verde) ========== */
+.orden-btn-principal {
+    width: 100%;
+    padding: 0.875rem 1.5rem !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    background: linear-gradient(135deg, $orden-primary-color 0%, $orden-primary-dark 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(71, 172, 52, 0.3) !important;
+    transition: all 0.3s ease !important;
+    
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, $orden-primary-dark 0%, $orden-green-700 100%) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 16px rgba(71, 172, 52, 0.4) !important;
+    }
+    
+    &:active:not(:disabled) {
+        transform: translateY(0) !important;
+        box-shadow: 0 2px 8px rgba(71, 172, 52, 0.3) !important;
+    }
+    
+    &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(71, 172, 52, 0.3) !important;
+    }
+    
+    .pi {
+        font-size: 1.125rem;
+        margin-right: 0.5rem;
+    }
+}
+
+/* ========== BOTÓN RECHAZAR (Rojo Outlined) ========== */
+.orden-btn-rechazar {
+    width: 100%;
+    padding: 0.875rem 1.5rem !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    border: 2px solid #E74C3C !important;
+    color: #E74C3C !important;
+    background: white !important;
+    transition: all 0.3s ease !important;
+    
+    &:hover:not(:disabled) {
+        background: #E74C3C !important;
+        color: white !important;
+        border-color: #E74C3C !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3) !important;
+    }
+    
+    &:active:not(:disabled) {
+        transform: translateY(0) !important;
+    }
+    
+    &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(231, 76, 60, 0.2) !important;
+    }
+    
+    .pi {
+        font-size: 1.125rem;
+        margin-right: 0.5rem;
+    }
+}
+
+/* ========== MENSAJE INFORMATIVO ========== */
+.orden-info-message {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: $orden-green-50;
+    border-left: 3px solid $orden-primary-color;
+    border-radius: 8px;
+    color: $orden-text-secondary;
+    font-size: 0.875rem;
+    
+    .pi {
+        font-size: 1.25rem;
+        color: $orden-primary-color;
+        flex-shrink: 0;
+    }
+}
+
+/* ========== ESTADOS DE LOADING ========== */
+.orden-btn-principal[disabled],
+.orden-btn-rechazar[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* ========== RESPONSIVE ========== */
+@media screen and (max-width: 768px) {
+    .orden-botones-accion {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 0;
+        margin: 0;
+        z-index: 10;
+    }
+    
+    .orden-btn-principal,
+    .orden-btn-rechazar {
+        padding: 1rem 1.5rem !important;
+        font-size: 1.125rem !important;
+    }
+}
+
+/* ========== ANIMACIÓN DE CARGA ========== */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.orden-btn-principal .p-button-loading-icon,
+.orden-btn-rechazar .p-button-loading-icon {
+    animation: spin 1s linear infinite;
+}
+
+/* ========== VARIANTES DE BOTONES ========== */
+
+/* Botón Success (Verde) - Ya aplicado en .orden-btn-principal */
+
+/* Botón Warning (Naranja) - Para acciones intermedias */
+.orden-btn-warning {
+    background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3) !important;
+    
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #FF8C00 0%, #FF7F00 100%) !important;
+        box-shadow: 0 6px 16px rgba(255, 165, 0, 0.4) !important;
+    }
+}
+
+/* Botón Info (Azul) - Para acciones informativas */
+.orden-btn-info {
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important;
+    
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%) !important;
+        box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4) !important;
+    }
+}
+
+/* ========== SEPARADOR VISUAL (si hay múltiples botones) ========== */
+.orden-botones-separador {
+    width: 100%;
+    height: 1px;
+    background: $orden-surface-border;
+    margin: 0.5rem 0;
+}
+
+/* ========== GRUPO DE BOTONES (si hay botones secundarios) ========== */
+.orden-botones-grupo {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    
+    button {
+        flex: 1;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .orden-botones-grupo {
+        flex-direction: column;
+        
+        button {
+            width: 100%;
+        }
+    }
+}

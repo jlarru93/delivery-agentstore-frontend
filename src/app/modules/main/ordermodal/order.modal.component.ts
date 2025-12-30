@@ -308,4 +308,32 @@ export class OrderModalComponent implements OnInit {
         const url = `https://wa.me/${phoneNumber}`;
         window.open(url, '_blank');
     }
+
+
+
+    /**ACCIONES */
+    loadingButtonAcept: boolean = false;
+    loadingButtonOrderReady: boolean = false;
+    loadingButtonFinish: boolean = false;
+    loadingButtonSelfManage: boolean = false;
+    shouldShowActionButtons(): boolean {
+        const status = this.orderSelected?.status;
+        const statusAgent = this.orderSelected?.statusForAgentStore;
+        
+        // Si tiene algún botón principal
+        if (status === 'open') return true;
+        if (status === 'preparingOrder') return true;
+        if (status === 'orderReady' && this.orderSelected.isSelfManaged) return true;
+        if (status === 'orderReady' && this.orderSelected.isApprovedSelfManaged && !this.orderSelected.isSelfManaged) return true;
+        
+        // O si puede rechazar
+        if (!['done', 'inRoute', 'cancel', 'preparingOrder', 'orderReady'].includes(statusAgent)) return true;
+        
+        return false;
+    }
+    aceptOrder(){}
+    markOrderReady(){}
+    finishOrder(){}
+    selfManagedOrder(){}
+    openRejectDialog(){}
 }
