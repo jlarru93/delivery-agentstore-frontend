@@ -1064,6 +1064,11 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     
     // Ocultar botón imprimir del header en móvil
     .btn-imprimir-desktop {
+        display: inline-flex !important;
+        padding: 0.5rem 1rem !important;
+        font-size: 0.875rem !important;
+    }
+    .orden-fab-imprimir {
         display: none !important;
     }
     

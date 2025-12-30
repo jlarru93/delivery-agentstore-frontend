@@ -20,7 +20,7 @@
                     pButton 
                     type="button" 
                     icon="pi pi-print" 
-                    label="Imprimir comanda" 
+                    [label]="isMobile ? '' : 'Imprimir comanda'"
                     class="p-button-outlined btn-imprimir-modal btn-imprimir-desktop"
                     (click)="printToPDF()">
                 </button>
@@ -254,6 +254,12 @@
                 <p-tabPanel header="Resumen">
                     <div class="orden-mobile-tab-content">
                         <div class="orden-resumen-grid-mobile">
+                            <div class="orden-resumen-item">
+                                <div class="orden-resumen-item-label">Piwi Coins</div>
+                                <div class="orden-resumen-item-valor">
+                                    {{orderSelected.getPiwiCoinAndCurrency()}}
+                                </div>
+                            </div>
                             <div class="orden-resumen-item">
                                 <div class="orden-resumen-item-label">Domicilio</div>
                                 <div class="orden-resumen-item-valor">

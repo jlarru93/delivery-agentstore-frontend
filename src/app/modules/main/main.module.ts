@@ -38,6 +38,7 @@ import {KnobModule} from 'primeng/knob';
 import { TooltipModule } from "primeng/tooltip";
 import { DropdownModule } from "primeng/dropdown";
 import { OrderModalComponent } from "./ordermodal/order.modal.component";
+import { TabViewModule } from "primeng/tabview";
 
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent,OrderModalComponent],
@@ -74,7 +75,8 @@ import { OrderModalComponent } from "./ordermodal/order.modal.component";
       InputSwitchModule,
       KnobModule,
       TooltipModule,
-      DropdownModule
+      DropdownModule,
+      TabViewModule
     ],
     providers:[OrderService]
   })
