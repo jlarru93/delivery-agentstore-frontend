@@ -311,6 +311,58 @@ export class OrderBean {
         }
         return `⏲️ ${this.readyToDmMinutesAt}min`;
     }
+    onGetMethodType(): string {
+        let methodConverted: string;
+        switch(this.payment?.method?.type) {
+            case 'CARD': 
+            methodConverted = 'Tarjeta de crédito'; 
+            break;
+            case 'CASH': 
+            methodConverted = 'Efectivo'; 
+            break;
+            case 'BANK': 
+            methodConverted = this.payment.method.name; 
+            break;
+            case 'E-WALLET': 
+            methodConverted = this.payment.method.name; 
+            break;
+            case 'PAYMENT-BUTTON': 
+            methodConverted = 'PSE'; 
+            break;
+            case 'PAY_IN_STORE': 
+            methodConverted = 'Pago en tienda'; 
+            break;
+            case 'CREDIT': 
+            methodConverted = 'Crédito del comercio'; 
+            break;
+            default:
+            methodConverted = 'Otro método';
+            break;
+        }
+        return methodConverted;
+    }
+    getPaymentIcon(): string {
+        switch(this.payment?.method?.type) {
+            case 'CARD': 
+            return 'pi-credit-card';
+            case 'CASH': 
+            return 'pi-money-bill';
+            case 'BANK': 
+            return 'pi-building';
+            case 'E-WALLET': 
+            return 'pi-wallet';
+            case 'PAY_IN_STORE': 
+            return 'pi-shopping-cart';
+            case 'CREDIT': 
+            return 'pi-file';
+            default:
+            return 'pi-wallet';
+        }
+    }
+    hasPaymentEvidence(): boolean {
+        const method: string=this.payment?.method?.type
+        return method === 'E-WALLET' || method === 'BANK';
+    }
 }
 export interface StatusOpenStoreBean{
     id:number

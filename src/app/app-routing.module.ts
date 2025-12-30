@@ -95,7 +95,7 @@ const routes: Routes = [
     { path: 'error', component: AppErrorComponent },
     { path: 'accessdenied', component: AppAccessdeniedComponent },
     { path: 'notfound', component: AppNotfoundComponent },
-    // { path: 'print', component: PrintTemplateComponent },
+    { path: 'print', component: PrintTemplateComponent },
     { path: 'login', component: SignInComponent, canActivate: [IsNotAuthenticated]}, 
     { path: '**', redirectTo: '/notfound' }
 ]

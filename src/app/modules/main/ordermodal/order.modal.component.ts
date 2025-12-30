@@ -30,10 +30,15 @@ export class OrderModalComponent implements OnInit {
         private http: HttpClient,
     ) { }
     ngOnInit(): void {
-        
+        this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
     }
 
     init() {
+        this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
+        this.readyToDmMinutesAt=null
+        if(this.orderSelected.status=="open"){
+            this.readyToDmAt=15
+        }
         if (this.orderSelected.readyToDmAt) {
             this.readyToDmAt = this.orderSelected.readyToDmAt;
         }
@@ -41,7 +46,7 @@ export class OrderModalComponent implements OnInit {
         if (this.orderSelected.readyToDmMinutesAt) {
             this.readyToDmMinutesAt = this.orderSelected.readyToDmMinutesAt;
         } else {
-            this.readyToDmMinutesAt = 0;
+            this.readyToDmMinutesAt = 10;
         }
 
         //this.displayOrder = true;
@@ -295,5 +300,12 @@ export class OrderModalComponent implements OnInit {
       setTimeout(() => {
         printWindow.print();
       },1000) 
+    }
+    sendMessageWhatsApp(phoneNumber:string){
+        if(!phoneNumber){
+        return
+        }
+        const url = `https://wa.me/${phoneNumber}`;
+        window.open(url, '_blank');
     }
 }

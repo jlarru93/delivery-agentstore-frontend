@@ -140,6 +140,12 @@
                 <div class="orden-modal-resumen-fijo">
                     <div class="orden-resumen-grid">
                         <div class="orden-resumen-item">
+                            <div class="orden-resumen-item-label">Piwi Coins</div>
+                            <div class="orden-resumen-item-valor">
+                                {{orderSelected.getPiwiCoinAndCurrency()}}
+                            </div>
+                        </div>
+                        <div class="orden-resumen-item">
                             <div class="orden-resumen-item-label">Domicilio</div>
                             <div class="orden-resumen-item-valor">
                                 <ng-container *ngIf="orderSelected.deliveryPriceDiscount">
@@ -211,7 +217,9 @@
                                         <div *ngFor="let sub of option.subOptions" class="orden-opcion-item">
                                             <span>• {{sub.name}}</span>
                                             <i class="pi pi-check orden-opcion-check" *ngIf="sub.selected && !sub.quantity"></i>
-                                            <span class="orden-opcion-cantidad" *ngIf="sub.quantity && sub.quantity > 0">x{{sub.quantity}}</span>
+                                            <span class="orden-opcion-cantidad" *ngIf="sub.quantity && sub.quantity > 0">x{{sub.quantity}} 
+                                                <ng-container *ngIf="sub?.price?.value > 0"> {{sub.getPriceAndCurrency()}}</ng-container>
+                                            </span>
                                             <span class="orden-opcion-no-seleccionada" *ngIf="!sub.selected && (!sub.quantity || sub.quantity === 0)">-</span>
                                         </div>
                                     </div>
@@ -283,5 +291,192 @@
             </button>
         </div>
         
+    </ng-template>
+</p-dialog>
+
+<!-- ==================== TEMPLATE REUTILIZABLE: INFO ==================== -->
+<ng-template #infoTemplate>
+    <!-- MÉTODO DE PAGO -->
+    <div class="orden-info-card">
+        <h4 class="orden-info-card-titulo">Método de Pago</h4>
+        <div class="orden-metodo-pago">
+            <i class="pi orden-metodo-icono" [ngClass]="orderSelected.getPaymentIcon()"></i>
+            <div class="orden-metodo-info">
+                <div class="orden-metodo-nombre">{{paymentName}}</div>
+                <div class="orden-metodo-tipo">
+                    <span>{{orderSelected.onGetMethodType()}}</span>
+                </div>
+            </div>
+            <button 
+                *ngIf="orderSelected.hasPaymentEvidence()"
+                pButton
+                type="button"
+                icon="pi pi-eye"
+                class="p-button-rounded p-button-text orden-btn-ver-evidencia"
+                pTooltip="Ver comprobante de pago"
+                tooltipPosition="left"
+                (click)="openDialogScreenShoot()">
+            </button>
+        </div>
+    </div>
+    
+    <!-- CLIENTE -->
+    <div class="orden-info-card">
+        <h4 class="orden-info-card-titulo">Cliente</h4>
+        <div class="orden-cliente-info">
+            <div>
+                <div class="orden-cliente-nombre">{{orderSelected?.user?.fullName}}</div>
+                <div class="orden-cliente-telefono">
+                    <i class="pi pi-phone"></i>
+                    <span>{{orderSelected?.user?.phone}}</span>
+                </div>
+                <div class="orden-cliente-telefono">
+                    <i class="pi pi-id-card"></i>
+                    <span>{{orderSelected?.user?.documentType}}: {{orderSelected?.user?.documentValue}}</span>
+                </div>
+            </div>
+            <button 
+                class="orden-btn-whatsapp" 
+                (click)="sendMessageWhatsApp(orderSelected.user.phone)">
+                <i class="pi pi-whatsapp"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- TIEMPO DE PREPARACIÓN (si status es 'open') -->
+    <div *ngIf="orderSelected.status=='open'" class="orden-info-card">
+        <h4 class="orden-info-card-titulo">Tiempo de Preparación ---</h4>
+        <div class="orden-tiempo-prep">
+            <div class="orden-tiempo-counter">
+                <button pButton pRipple type="button" icon="pi pi-minus" 
+                        class="p-button-rounded p-button-text orden-btn-counter" 
+                        (click)="onDecrement()"></button>
+                <span class="orden-tiempo-valor">
+                    {{readyToDmAt}}<br>
+                    <span class="orden-tiempo-min">min</span>
+                </span>
+                <button pButton pRipple type="button" icon="pi pi-plus" 
+                        class="p-button-rounded p-button-text orden-btn-counter" 
+                        (click)="onIncrement()"></button>
+            </div>
+        </div>
+        <div class="orden-tiempo-sugerido">
+            <span>Tiempo sugerido para esta orden</span>
+        </div>
+    </div>
+    
+    <!-- REPARTIDOR ASIGNADO -->
+    <div *ngIf="orderSelected.deliveryMan" class="orden-info-card">
+        <h4 class="orden-info-card-titulo">Repartidor Asignado</h4>
+        <div class="orden-repartidor-info">
+            <p-avatar [image]="orderSelected.deliveryMan.picture.profile" 
+                      styleClass="orden-repartidor-avatar" size="xlarge" shape="circle"></p-avatar>
+            <div class="orden-repartidor-detalles">
+                <div class="orden-repartidor-nombre">{{orderSelected.deliveryMan.name.toUpperCase()}}</div>
+                <div class="orden-repartidor-telefono">{{orderSelected.deliveryMan.phone}}</div>
+            </div>
+            <span class="orden-repartidor-estado orden-estado-en-camino" 
+                  *ngIf="orderSelected?.deliveryMan?.status == 'toStore'">En camino</span>
+            <span class="orden-repartidor-estado orden-estado-en-tienda" 
+                  *ngIf="orderSelected?.deliveryMan?.status == 'inStore'">En tienda</span>
+        </div>
+    </div>
+    
+    <!-- BUSCANDO REPARTIDOR -->
+    <div *ngIf="orderSelected.status != 'open' && !orderSelected.deliveryMan" 
+         class="orden-info-card">
+        <h4 class="orden-info-card-titulo">Repartidor</h4>
+        <div class="orden-buscando-repartidor">
+            <div class="orden-spinner"></div>
+            <div>
+                <div class="orden-buscando-titulo">Buscando repartidor...</div>
+                <div class="orden-buscando-subtitulo">
+                    Estamos buscando al repartidor más adecuado para recoger esta orden
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- TIEMPO PREPARACIÓN (otros estados) -->
+    <div *ngIf="(orderSelected.status=='preparingOrder' && !orderSelected.deliveryMan) || 
+                (orderSelected.status=='orderReady' && !orderSelected.deliveryMan)" 
+         class="orden-info-card">
+        <h4 class="orden-info-card-titulo">Tiempo de Preparación</h4>
+        <div class="orden-tiempo-prep">
+            <div class="orden-tiempo-counter">
+                <button pButton pRipple type="button" icon="pi pi-minus" 
+                        class="p-button-rounded p-button-text orden-btn-counter" 
+                        (click)="onDecrement()"></button>
+                <span class="orden-tiempo-valor">
+                    {{readyToDmMinutesAt}}<br>
+                    <span class="orden-tiempo-min">min</span>
+                </span>
+                <button pButton pRipple type="button" icon="pi pi-plus" 
+                        class="p-button-rounded p-button-text orden-btn-counter" 
+                        (click)="onIncrement()"></button>
+            </div>
+            <button pButton type="button" label="Actualizar hora" 
+                    class="p-button-outlined orden-btn-actualizar" 
+                    [loading]="loadingButtonUpdateTime" 
+                    (click)="updateTimes(orderSelected)"
+                    *ngIf="orderSelected.status=='preparingOrder' || orderSelected.status=='orderReady'">
+            </button>
+        </div>
+    </div>
+    
+    <!-- ESTADO REPARTIDOR -->
+    <div *ngIf="orderSelected.deliveryMan" class="orden-info-card">
+        <div class="orden-delivery-status" *ngIf="orderSelected?.deliveryMan?.status == 'toStore'">
+            <img src="assets/images/icon-bike.svg" alt="bike" width="20">
+            <p class="orden-delivery-text-warning">DM está en camino a la Tienda</p>
+        </div>
+        <div class="orden-delivery-status" *ngIf="orderSelected?.deliveryMan?.status == 'inStore'">
+            <img src="assets/images/icon-store.svg" alt="store" width="20">
+            <p class="orden-delivery-text-success">DM está en la tienda</p>
+        </div>
+    </div>
+
+
+</ng-template>
+
+<!-- DIALOG SCREENSHOT -->
+<p-dialog 
+    header="Comprobante de Pago" 
+    [(visible)]="dialogScreenshoot" 
+    [modal]="true"
+    [draggable]="false" 
+    [resizable]="false" 
+    [style]="{width: '90vw', maxWidth: '800px'}"
+    [contentStyle]="{padding: '0', overflow: 'hidden', maxHeight: '80vh'}"
+    styleClass="dialog-comprobante"
+    (onHide)="dialogScreenshoot = false">
+    
+    <ng-template pTemplate="content">
+        <div class="comprobante-container">
+            <img 
+                [src]="imagenURL" 
+                alt="Comprobante de pago"
+                class="comprobante-imagen">
+        </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+        <button 
+            pButton 
+            type="button"
+            label="Cerrar" 
+            icon="pi pi-times"
+            class="p-button-text"
+            (click)="dialogScreenshoot = false">
+        </button>
+        <a 
+            [href]="imagenURL" 
+            target="_blank" 
+            pButton 
+            type="button"
+            label="Descargar" 
+            icon="pi pi-external-link"
+            class="p-button-outlined">
+        </a>
     </ng-template>
 </p-dialog>
