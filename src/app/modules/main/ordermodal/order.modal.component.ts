@@ -46,6 +46,7 @@ export class OrderModalComponent implements OnInit {
 
     init() {
         this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
+        this.flagOpenReceiptDialog=false
         this.readyToDmMinutesAt=null
         if(this.orderSelected.status=="open"){
             this.readyToDmAt=15
@@ -105,6 +106,7 @@ export class OrderModalComponent implements OnInit {
                 detail: 'No hay comprobante de pago disponible'
             });
         }
+        this.flagOpenReceiptDialog=true
     }
 
     // ========== MÉTODO 2: Incrementar tiempo ==========
@@ -342,7 +344,66 @@ export class OrderModalComponent implements OnInit {
         
         return false;
     }
-    aceptOrder(){}
+    flagOpenReceiptDialog: boolean = false
+
+    aceptOrder(){
+      let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
+      orderRequest.readyToDmAt=this.readyToDmAt
+      this.loadingButtonAcept=true
+
+      if(['CARD','CASH','PAY_IN_STORE','PAYMENT-BUTTON'].includes(orderRequest.payment.method.type)){
+        this.orderRepository.aceptOder(orderRequest.uuid,orderRequest.readyToDmAt).subscribe((resp)=>{
+        this.visible=false
+        this.loadingButtonAcept=false
+        this.dialogScreenshoot=false
+        this.messageService.add({
+                    severity: 'success',
+                    summary: '',
+                    detail: 'Operación realizado con exito'
+        });
+
+        },(error)=>{
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.error.messages[0].message
+            });
+          this.loadingButtonAcept=false
+          this.dialogScreenshoot=false
+        })
+      } else {
+        if(!this.flagOpenReceiptDialog){
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Por favor revise el comprobante de pago primero, Dar click en el boton del ojo'
+            });
+          this.loadingButtonAcept = false
+          this.dialogScreenshoot=false
+          this.openDialogScreenShoot()
+        } else {
+          this.orderRepository.aceptOder(orderRequest.uuid,orderRequest.readyToDmAt).subscribe((resp)=>{
+            this.visible=false
+            this.loadingButtonAcept=false
+            this.dialogScreenshoot=false
+            this.messageService.add({
+                    severity: 'success',
+                    summary: '',
+                    detail: 'Operación realizado con exito'
+                });
+          },(error)=>{
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.error.messages[0].message
+            });
+            this.loadingButtonAcept=false
+            this.dialogScreenshoot=false
+          })
+        }
+      }
+
+    }
     markOrderReady(){}
     finishOrder(){}
     selfManagedOrder(){}

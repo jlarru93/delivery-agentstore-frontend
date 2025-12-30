@@ -742,6 +742,17 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     }
 }
 
+:host ::ng-deep {
+    .dialog-comprobante {
+        /* Header del dialog */        
+        /* Footer */
+        .p-dialog-footer {
+            padding: 1rem 1.5rem !important;
+            background: white !important;
+            border-top: 1px solid #E0E0E0 !important;
+        }
+    }
+}
 .comprobante-container {
     display: flex;
     align-items: center;
@@ -784,16 +795,176 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     background: white;
     display: block;
 }
+.comprobante-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
 
+.comprobante-footer-secondary {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.comprobante-footer-primary {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+.comprobante-footer-secondary {
+    .p-button-text {
+        color: #666 !important;
+        
+        &:hover {
+            background: rgba(0, 0, 0, 0.04) !important;
+            color: #333 !important;
+        }
+    }
+}
+
+/* ========== BOTÓN DESCARGAR ========== */
+.comprobante-btn-descargar {
+    border-color: #666 !important;
+    color: #666 !important;
+    
+    &:hover {
+        background: #666 !important;
+        color: white !important;
+        border-color: #666 !important;
+    }
+    
+    .pi {
+        font-size: 1rem;
+    }
+}
+
+/* ========== BOTÓN ACEPTAR ORDEN (VERDE) ========== */
+.comprobante-btn-aceptar {
+    background: linear-gradient(135deg, #47AC34 0%, #3a8c2a 100%) !important;
+    border: none !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 600 !important;
+    box-shadow: 0 3px 10px rgba(71, 172, 52, 0.3) !important;
+    transition: all 0.3s ease !important;
+    
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #3a8c2a 0%, #2d6b21 100%) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 5px 15px rgba(71, 172, 52, 0.4) !important;
+    }
+    
+    &:active:not(:disabled) {
+        transform: translateY(0) !important;
+    }
+    
+    &:disabled {
+        opacity: 0.6 !important;
+        cursor: not-allowed !important;
+    }
+    
+    .pi {
+        font-size: 1.125rem;
+        margin-right: 0.5rem;
+    }
+}
 // Responsive móvil
 @media (max-width: 768px) {
     .comprobante-container {
-        max-height: 60vh;
         padding: 0.5rem;
+        min-height: 200px;
     }
     
     .comprobante-imagen {
-        max-height: 55vh;
+        max-height: calc(80vh - 250px);
+    }
+    
+    /* Footer en columna en móvil */
+    .comprobante-footer {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .comprobante-footer-secondary,
+    .comprobante-footer-primary {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Botones full width en móvil */
+    .comprobante-footer-secondary {
+        order: 2;
+        
+        button,
+        a {
+            flex: 1;
+        }
+    }
+    
+    .comprobante-footer-primary {
+        order: 1;
+        
+        button {
+            width: 100%;
+        }
+    }
+}
+@media screen and (max-width: 480px) {
+    :host ::ng-deep {
+        .dialog-comprobante {
+            .p-dialog-header {
+                padding: 1rem !important;
+                
+                .p-dialog-title {
+                    font-size: 1.125rem !important;
+                }
+            }
+            
+            .p-dialog-footer {
+                padding: 0.75rem 1rem !important;
+            }
+        }
+    }
+    
+    .comprobante-footer-secondary {
+        flex-direction: column;
+        width: 100%;
+        
+        button,
+        a {
+            width: 100%;
+        }
+    }
+    
+    .comprobante-btn-aceptar {
+        padding: 0.875rem 1rem !important;
+        font-size: 1rem !important;
+    }
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.comprobante-imagen {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ========== ZOOM EN HOVER (OPCIONAL) ========== */
+.comprobante-imagen {
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+    
+    &:hover {
+        transform: scale(1.02);
     }
 }
 
@@ -1163,3 +1334,5 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
         }
     }
 }
+
+

@@ -536,23 +536,44 @@
     </ng-template>
     
     <ng-template pTemplate="footer">
-        <button 
-            pButton 
-            type="button"
-            label="Cerrar" 
-            icon="pi pi-times"
-            class="p-button-text"
-            (click)="dialogScreenshoot = false">
-        </button>
-        <a 
-            [href]="imagenURL" 
-            target="_blank" 
-            pButton 
-            type="button"
-            label="Descargar" 
-            icon="pi pi-external-link"
-            class="p-button-outlined">
-        </a>
+       <div class="comprobante-footer">
+            <!-- Botones secundarios (izquierda) -->
+            <div class="comprobante-footer-secondary">
+                <button 
+                    pButton 
+                    type="button"
+                    label="Cerrar" 
+                    icon="pi pi-times"
+                    class="p-button-text p-button-secondary"
+                    (click)="dialogScreenshoot = false">
+                </button>
+                <a 
+                    [href]="imagenURL" 
+                    target="_blank" 
+                    download
+                    pButton 
+                    type="button"
+                    label="Descargar" 
+                    icon="pi pi-download"
+                    class="p-button-outlined p-button-secondary comprobante-btn-descargar">
+                </a>
+            </div>
+            
+            <!-- Botón principal (derecha) -->
+            <div class="comprobante-footer-primary">
+                <button 
+                    *ngIf="orderSelected?.status === 'open'"
+                    pButton
+                    type="button"
+                    label="Aceptar Orden"
+                    icon="pi pi-check"
+                    class="p-button-success comprobante-btn-aceptar"
+                    [loading]="loadingButtonAcept"
+                    (click)="aceptOrder()">
+                </button>
+            </div>
+        </div>
+
     </ng-template>
 </p-dialog>
 
