@@ -1,0 +1,766 @@
+/* ========== MODAL DE RECHAZO DE ORDEN (ACTUALIZADO) ========== */
+/* Agregar al final del archivo SCSS principal */
+
+:host ::ng-deep {
+    .modal-rechazo-orden {
+        .p-dialog-header {
+            padding: 0 !important;
+            //background: transparent !important;
+            border: none !important;
+        }
+        .p-dialog-header-icon {
+            display: none !important;
+        }
+        
+        .p-dialog-content {
+            padding: 0 !important;
+            border-radius: 0 !important;
+        }
+        
+        .p-dialog-footer {
+            padding: 1rem 1.5rem !important;
+            background: #F8F9FA !important;
+            border-top: 1px solid #E0E0E0 !important;
+        }
+        
+        .p-accordion {
+            .p-accordion-header {
+                margin-bottom: 0.5rem;
+            }
+            
+            .p-accordion-header-link {
+                background: white !important;
+                border: 1px solid #E0E0E0 !important;
+                border-radius: 8px !important;
+                padding: 1rem !important;
+                transition: all 0.3s ease !important;
+                
+                &:hover {
+                    border-color: #E74C3C !important;
+                    background: #FFF5F5 !important;
+                }
+            }
+            
+            .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
+                background: #FFEBEE !important;
+                border-color: #E74C3C !important;
+                color: #C62828 !important;
+            }
+            
+            .p-accordion-content {
+                border: none !important;
+                //background: transparent !important;
+                padding: 1rem 0.5rem !important;
+            }
+        }
+    }
+}
+
+/* ========== HEADER DEL MODAL ========== */
+.rechazo-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%) !important;;
+    color: white;
+    width: 100%;
+}
+
+.rechazo-header-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    animation: pulse-warning 2s infinite;
+}
+
+@keyframes pulse-warning {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.rechazo-header-text {
+    flex: 1;
+    
+    h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+    
+    p {
+        margin: 0.25rem 0 0 0;
+        font-size: 0.875rem;
+        opacity: 0.9;
+    }
+}
+
+/* ========== CONTENIDO ========== */
+.rechazo-content {
+    padding: 1.5rem;
+}
+
+/* ========== AVISO IMPORTANTE ========== */
+.rechazo-aviso-importante {
+    display: flex;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+    border-left: 4px solid #FF9800;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.15);
+}
+
+.rechazo-aviso-icon {
+    flex-shrink: 0;
+    
+    i {
+        font-size: 2rem;
+        color: #F57C00;
+        animation: ring 3s infinite;
+    }
+}
+
+@keyframes ring {
+    0%, 100% { transform: rotate(0deg); }
+    5%, 15% { transform: rotate(-15deg); }
+    10%, 20% { transform: rotate(15deg); }
+}
+
+.rechazo-aviso-texto {
+    flex: 1;
+    
+    h4 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1rem;
+        color: #E65100;
+        font-weight: 600;
+    }
+    
+    p {
+        margin: 0 0 1rem 0;
+        font-size: 0.875rem;
+        color: #5D4037;
+        line-height: 1.5;
+        
+        strong {
+            color: #E65100;
+        }
+    }
+}
+
+/* ========== BOTONES DE CONTACTO ========== */
+.rechazo-botones-contacto {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.rechazo-btn-contacto {
+    flex: 1;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.938rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    
+    &:hover:not(:disabled) {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    &:active:not(:disabled) {
+        transform: translateY(0) !important;
+    }
+    
+    .pi {
+        font-size: 1.125rem;
+        margin-right: 0.5rem;
+    }
+}
+
+.rechazo-btn-llamar {
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%) !important;
+    border: none !important;
+    
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%) !important;
+    }
+    
+    &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.3) !important;
+    }
+}
+
+.rechazo-btn-whatsapp {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%) !important;
+    border: none !important;
+    
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #128C7E 0%, #075E54 100%) !important;
+    }
+    
+    &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(37, 211, 102, 0.3) !important;
+    }
+}
+
+/* ========== INFO DEL CLIENTE ========== */
+.rechazo-info-cliente {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    border: 1px solid rgba(230, 81, 0, 0.2);
+    
+    i {
+        font-size: 1.25rem;
+        color: #F57C00;
+        flex-shrink: 0;
+    }
+    
+    div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        flex: 1;
+        
+        strong {
+            font-size: 0.875rem;
+            color: #E65100;
+            font-weight: 600;
+        }
+        
+        span {
+            font-size: 0.813rem;
+            color: #5D4037;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            
+            &:before {
+                content: '📱';
+                font-size: 0.75rem;
+            }
+        }
+    }
+}
+
+/* ========== OPCIONES DE RECHAZO ========== */
+.rechazo-opciones {
+    margin-top: 1rem;
+}
+
+.rechazo-opcion-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.rechazo-opcion-icon {
+    font-size: 1.5rem;
+    color: #E74C3C;
+    flex-shrink: 0;
+}
+
+.rechazo-opcion-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.rechazo-opcion-titulo {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #333;
+}
+
+.rechazo-opcion-subtitulo {
+    font-size: 0.813rem;
+    color: #666;
+}
+
+/* ========== BODY DE OPCIÓN ========== */
+.rechazo-opcion-body {
+    padding: 1rem;
+    background: #FAFAFA;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+
+.rechazo-opcion-recomendacion {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem;
+    background: #E3F2FD;
+    border-left: 3px solid #2196F3;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #1565C0;
+    
+    i {
+        font-size: 1.125rem;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+    }
+    
+    strong {
+        color: #0D47A1;
+    }
+}
+
+/* ========== INPUT CONTAINER ========== */
+.rechazo-input-container {
+    margin-bottom: 1rem;
+    
+    label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+}
+
+.rechazo-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #E0E0E0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    resize: vertical;
+    min-height: 80px;
+    
+    &:focus {
+        outline: none;
+        border-color: #E74C3C;
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+    
+    &::placeholder {
+        color: #999;
+    }
+}
+
+/* ========== BOTÓN CONFIRMAR ========== */
+.rechazo-btn-confirmar {
+    width: 100%;
+    padding: 0.875rem 1.5rem !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    
+    &:not(:disabled):hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 16px rgba(231, 76, 60, 0.3) !important;
+    }
+    
+    &:disabled {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+    }
+}
+
+/* ========== FOOTER ========== */
+.rechazo-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.rechazo-footer-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.813rem;
+    color: #666;
+    
+    i {
+        color: #999;
+    }
+}
+
+/* ========== RESPONSIVE ========== */
+@media screen and (max-width: 768px) {
+    .rechazo-header {
+        padding: 1rem;
+        
+        h3 {
+            font-size: 1.125rem;
+        }
+    }
+    
+    .rechazo-content {
+        padding: 1rem;
+    }
+    
+    .rechazo-aviso-importante {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .rechazo-aviso-icon i {
+        font-size: 1.75rem;
+    }
+    
+    /* Botones de contacto en columna en móvil */
+    .rechazo-botones-contacto {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .rechazo-btn-contacto {
+        width: 100%;
+    }
+    
+    .rechazo-opcion-header {
+        gap: 0.75rem;
+    }
+    
+    .rechazo-opcion-icon {
+        font-size: 1.25rem;
+    }
+    
+    .rechazo-opcion-titulo {
+        font-size: 0.938rem;
+    }
+    
+    .rechazo-opcion-subtitulo {
+        font-size: 0.75rem;
+    }
+    
+    .rechazo-footer {
+        flex-direction: column;
+        align-items: stretch;
+        
+        button {
+            width: 100%;
+            order: 2;
+        }
+    }
+    
+    .rechazo-footer-info {
+        order: 1;
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .rechazo-header-icon {
+        font-size: 1.5rem;
+    }
+    
+    .rechazo-aviso-texto h4 {
+        font-size: 0.938rem;
+    }
+    
+    .rechazo-aviso-texto p {
+        font-size: 0.813rem;
+    }
+    
+    .rechazo-btn-contacto {
+        padding: 0.625rem 0.75rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    .rechazo-opcion-body {
+        padding: 0.75rem;
+    }
+    
+    .rechazo-opcion-recomendacion {
+        padding: 0.75rem;
+        font-size: 0.813rem;
+    }
+}
+
+/* ========== ANIMACIONES ADICIONALES ========== */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.rechazo-aviso-importante {
+    animation: slideInDown 0.5s ease-out;
+}
+
+/* ========== PULSO EN BOTONES DE CONTACTO ========== */
+@keyframes pulse-cta {
+    0%, 100% { 
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    50% { 
+        box-shadow: 0 4px 16px rgba(33, 150, 243, 0.4);
+    }
+}
+
+.rechazo-btn-llamar {
+    animation: pulse-cta 3s infinite;
+}
+
+/* ========== ESTADOS DE HOVER EN ACORDEÓN ========== */
+:host ::ng-deep {
+    .modal-rechazo-orden {
+        .p-accordion-header:not(.p-disabled) .p-accordion-header-link:hover {
+            .rechazo-opcion-icon {
+                transform: scale(1.1);
+                transition: transform 0.3s ease;
+            }
+        }
+    }
+}
+
+/* ========== BOTÓN CERRAR BLANCO ========== */
+.rechazo-btn-cerrar {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    padding: 0;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+    }
+    
+    &:active {
+        transform: rotate(90deg) scale(0.95);
+    }
+    
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.3);
+    }
+    
+    i {
+        color: white;
+        font-size: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .rechazo-header {
+        padding: 1rem;
+        padding-right: 3rem; /* Espacio para el botón cerrar */
+        
+        h3 {
+            font-size: 1.125rem;
+        }
+    }
+    
+    .rechazo-btn-cerrar {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1.25rem;
+        
+        i {
+            font-size: 1.25rem;
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .rechazo-header-icon {
+        font-size: 1.5rem;
+    }
+    
+    .rechazo-header-text h3 {
+        font-size: 1rem;
+    }
+    
+    .rechazo-header-text p {
+        font-size: 0.75rem;
+    }
+}
+
+/* ========== ESTILOS MODAL DE CONFIRMACIÓN ========== */
+/* Agregar al final del archivo SCSS */
+
+:host ::ng-deep {
+    .modal-confirm-rechazo {
+        
+        .p-dialog-content {
+            padding: 0 !important;
+        }
+        
+        .p-dialog-header-icon {
+            display: none !important;
+        }
+        .p-dialog-footer {
+            padding: 1rem 1.5rem !important;
+            border-top: 1px solid #E0E0E0 !important;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+    }
+}
+
+
+@keyframes pulse-confirm {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* Content */
+.confirm-content {
+    padding: 1.5rem;
+}
+
+.confirm-message {
+    font-size: 1rem;
+    color: #333;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.5;
+    
+    strong {
+        color: #E74C3C;
+        font-weight: 700;
+    }
+}
+
+.confirm-submessage {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.5;
+}
+
+/* Motivo */
+.confirm-reason {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #F5F5F5;
+    border-left: 3px solid #2196F3;
+    border-radius: 6px;
+    
+    i {
+        font-size: 1.25rem;
+        color: #2196F3;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+    }
+    
+    div {
+        flex: 1;
+        
+        strong {
+            display: block;
+            font-size: 0.875rem;
+            color: #0D47A1;
+            margin-bottom: 0.25rem;
+        }
+        
+        span {
+            display: block;
+            font-size: 0.875rem;
+            color: #666;
+            line-height: 1.5;
+        }
+    }
+}
+
+/* Footer Buttons */
+:host ::ng-deep {
+    .modal-confirm-rechazo {
+        .p-dialog-footer {
+            .p-button-secondary {
+                &:hover {
+                    background: rgba(0, 0, 0, 0.04);
+                }
+            }
+            
+            .p-button-danger {
+                background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+                border: none;
+                box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+                transition: all 0.3s ease;
+                
+                &:hover:not(:disabled) {
+                    background: linear-gradient(135deg, #C0392B 0%, #A93226 100%);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+                }
+                
+                &:active:not(:disabled) {
+                    transform: translateY(0);
+                }
+                
+                &:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+}
+
+/* Responsive */
+@media screen and (max-width: 480px) {
+    .confirm-icon {
+        font-size: 1.75rem;
+    }
+    
+    .confirm-content {
+        padding: 1rem;
+    }
+    
+    .confirm-message {
+        font-size: 0.938rem;
+    }
+    
+    .confirm-submessage {
+        font-size: 0.813rem;
+    }
+    
+    :host ::ng-deep {
+        .modal-confirm-rechazo {
+            .p-dialog-footer {
+                flex-direction: column;
+                
+                button {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

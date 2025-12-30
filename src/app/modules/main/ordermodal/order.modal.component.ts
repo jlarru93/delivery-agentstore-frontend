@@ -3,11 +3,12 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { DialogService } from "primeng/dynamicdialog";
 import { OrderBean, PaymentBean, ProductBean } from "../data";
 import { HttpClient } from "@angular/common/http";
+import { OrderRepository } from "../service/order.repository";
 
 @Component({
     selector: 'order-modal',
     templateUrl: './order.modal.component.html',
-    styleUrls: ['./order.modal.component.scss'],
+    styleUrls: ['./order.modal.component.scss','./order.modal.rechazo.component.scss'],
     providers: [ConfirmationService, MessageService, DialogService],
 })
 export class OrderModalComponent implements OnInit {
@@ -25,9 +26,19 @@ export class OrderModalComponent implements OnInit {
     paymentName: string
     styleString:string
 
+
+    displayOrderReject: boolean = false;
+    showConfirmReject: boolean = false;
+    loadingButtonCancel: boolean = false;
+    otherReasonOrder: string = '';
+    reasonToReject: string = ''; 
+    selectedTab: boolean = true;
+
     constructor(
         private messageService: MessageService,
         private http: HttpClient,
+        private confirmationService: ConfirmationService,
+        private orderRepository: OrderRepository,
     ) { }
     ngOnInit(): void {
         this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
@@ -335,5 +346,124 @@ export class OrderModalComponent implements OnInit {
     markOrderReady(){}
     finishOrder(){}
     selfManagedOrder(){}
-    openRejectDialog(){}
+    openRejectDialog() {
+        // Resetear valores
+        this.selectedTab = true;
+        this.otherReasonOrder = '';
+        
+        // Verificar que hay orden seleccionada
+        if (!this.orderSelected) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No hay orden seleccionada'
+            });
+            return;
+        }
+        
+        // Verificar que tiene teléfono
+        if (!this.orderSelected.user?.phone) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Esta orden no tiene teléfono del cliente registrado'
+            });
+        }
+        
+        // Abrir modal
+        this.displayOrderReject = true;
+    }
+    llamarCliente(phoneNumber: string) {
+        if (!phoneNumber) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'No hay número de teléfono disponible'
+            });
+            return;
+        }
+        
+        // Limpiar el número (quitar espacios, guiones, etc.)
+        const cleanPhone = phoneNumber.replace(/\D/g, '');
+        
+        // Abrir marcador telefónico
+        // En desktop abrirá la aplicación predeterminada
+        // En móvil abrirá el marcador nativo
+        window.location.href = `tel:${cleanPhone}`;
+        
+        // Opcional: Tracking o log
+        console.log(`Iniciando llamada a: ${cleanPhone}`);
+        
+        // Opcional: Cerrar modal después de iniciar llamada
+        // setTimeout(() => {
+        //     this.displayOrderReject = false;
+        // }, 500);
+    }
+    // ========== MÉTODO 4: Cerrar Modal ==========
+    closeModalOrderCancel() {
+        this.displayOrderReject = false;
+        this.otherReasonOrder = '';
+    }
+
+    cancelOrder(reason: string) {
+        // Validar razón
+        if (!reason || reason.trim().length < 5) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debes especificar un motivo válido (mínimo 5 caracteres)'
+            });
+            return;
+        }
+        
+        // Guardar razón y mostrar modal de confirmación
+        this.reasonToReject = reason.trim();
+        this.showConfirmReject = true;
+    }
+
+    confirmarRechazo() {
+        this.loadingButtonCancel = true;
+        
+        const orderRequest = {
+            uuid: this.orderSelected.uuid,
+            reason: this.reasonToReject
+        };
+        
+        this.orderRepository.cancelOrder(orderRequest.uuid, orderRequest.reason).subscribe({
+            next: (response) => {
+                this.loadingButtonCancel = false;
+                this.showConfirmReject = false;
+                this.displayOrderReject = false;
+                
+                // Actualizar lista de órdenes
+                //this.getOrders();
+                
+                // Mensaje de éxito
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Orden Rechazada',
+                    detail: 'El cliente ha sido notificado del rechazo'
+                });
+                
+                // Log opcional
+                console.log(`Orden ${this.orderSelected.id} rechazada por: ${this.reasonToReject}`);
+            },
+            error: (error) => {
+                this.loadingButtonCancel = false;
+                
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudo rechazar la orden. Intenta nuevamente.'
+                });
+                
+                console.error('Error al rechazar orden:', error);
+            }
+        });
+    }
+    cancelarConfirmacion() {
+        this.showConfirmReject = false;
+        this.reasonToReject = '';
+        this.closeModalOrderCancel()
+    }
 }

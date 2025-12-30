@@ -555,3 +555,362 @@
         </a>
     </ng-template>
 </p-dialog>
+
+
+<p-dialog 
+    [(visible)]="displayOrderReject" 
+    [modal]="true"
+    [closable]="true"
+    [breakpoints]="{'960px': '90vw', '640px': '95vw'}" 
+    [style]="{width: '600px', maxWidth: '95vw'}"
+    [contentStyle]="{padding: '0'}"
+    styleClass="modal-rechazo-orden"
+    (onHide)="closeModalOrderCancel()">
+    
+    <!-- HEADER -->
+    <ng-template pTemplate="header">
+        <div class="rechazo-header">
+            <i class="pi pi-exclamation-triangle rechazo-header-icon"></i>
+            <div class="rechazo-header-text">
+                <h3>Rechazar Orden #{{orderSelected?.id}}</h3>
+                <p>Seleccione el motivo del rechazo</p>
+            </div>
+            <button 
+                type="button"
+                class="rechazo-btn-cerrar"
+                (click)="closeModalOrderCancel()">
+                <i class="pi pi-times"></i>
+            </button>
+        </div>
+    </ng-template>
+    
+    <!-- BODY -->
+    <ng-template pTemplate="content">
+        <div class="rechazo-content">
+            
+            <!-- MENSAJE RECORDATORIO CON BOTONES DE CONTACTO -->
+            <div class="rechazo-aviso-importante">
+                <div class="rechazo-aviso-icon">
+                    <i class="pi pi-phone"></i>
+                </div>
+                <div class="rechazo-aviso-texto">
+                    <h4>⚠️ Antes de rechazar esta orden</h4>
+                    <p><strong>Los clientes prefieren que les llames primero.</strong> Intenta ofrecerles alternativas antes de cancelar su pedido. Una llamada puede salvar la orden y mejorar la experiencia del cliente.</p>
+                    
+                    <!-- BOTONES DE CONTACTO -->
+                    <div class="rechazo-botones-contacto">
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-phone" 
+                            label="Llamar al Cliente"
+                            class="p-button-success rechazo-btn-contacto rechazo-btn-llamar"
+                            (click)="llamarCliente(orderSelected?.user?.phone)">
+                        </button>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-whatsapp" 
+                            label="WhatsApp"
+                            class="p-button-success rechazo-btn-contacto rechazo-btn-whatsapp"
+                            (click)="sendMessageWhatsApp(orderSelected?.user?.phone)">
+                        </button>
+                    </div>
+                    
+                    <!-- INFO DEL CLIENTE -->
+                    <div class="rechazo-info-cliente">
+                        <i class="pi pi-user"></i>
+                        <div>
+                            <strong>{{orderSelected?.user?.fullName}}</strong>
+                            <span>{{orderSelected?.user?.phone}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OPCIONES DE RECHAZO -->
+            <div class="rechazo-opciones">
+                <p-accordion (onOpen)="onTabOpen($event)">
+                    
+                    <!-- Opción 1: Producto agotado -->
+                    <p-accordionTab [selected]="selectedTab">
+                        <ng-template pTemplate="header">
+                            <div class="rechazo-opcion-header">
+                                <i class="pi pi-box rechazo-opcion-icon"></i>
+                                <div class="rechazo-opcion-info">
+                                    <span class="rechazo-opcion-titulo">Producto agotado temporalmente</span>
+                                    <span class="rechazo-opcion-subtitulo">El producto no está disponible en este momento</span>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <div class="rechazo-opcion-body">
+                            <p class="rechazo-opcion-recomendacion">
+                                <i class="pi pi-info-circle"></i>
+                                <strong>Recomendación:</strong> Llama al cliente y ofrécele productos similares disponibles.
+                            </p>
+                            <button 
+                                pButton 
+                                type="button" 
+                                label="Confirmar Rechazo" 
+                                icon="pi pi-check"
+                                class="p-button-danger rechazo-btn-confirmar"
+                                [loading]="loadingButtonCancel"
+                                (click)="cancelOrder('Producto agotado temporalmente')">
+                            </button>
+                        </div>
+                    </p-accordionTab>
+                    
+                    <!-- Opción 2: Mal configurado -->
+                    <p-accordionTab [selected]="false">
+                        <ng-template pTemplate="header">
+                            <div class="rechazo-opcion-header">
+                                <i class="pi pi-cog rechazo-opcion-icon"></i>
+                                <div class="rechazo-opcion-info">
+                                    <span class="rechazo-opcion-titulo">Producto mal configurado</span>
+                                    <span class="rechazo-opcion-subtitulo">Error en precio u horario</span>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <div class="rechazo-opcion-body">
+                            <p class="rechazo-opcion-recomendacion">
+                                <i class="pi pi-info-circle"></i>
+                                <strong>Recomendación:</strong> Contacta al cliente para ajustar el precio o confirmar disponibilidad.
+                            </p>
+                            <button 
+                                pButton 
+                                type="button" 
+                                label="Confirmar Rechazo" 
+                                icon="pi pi-check"
+                                class="p-button-danger rechazo-btn-confirmar"
+                                [loading]="loadingButtonCancel"
+                                (click)="cancelOrder('Producto mal configurado (precio, horario)')">
+                            </button>
+                        </div>
+                    </p-accordionTab>
+                    
+                    <!-- Opción 3: Ya no manejo -->
+                    <p-accordionTab [selected]="false">
+                        <ng-template pTemplate="header">
+                            <div class="rechazo-opcion-header">
+                                <i class="pi pi-ban rechazo-opcion-icon"></i>
+                                <div class="rechazo-opcion-info">
+                                    <span class="rechazo-opcion-titulo">Ya no manejo este producto</span>
+                                    <span class="rechazo-opcion-subtitulo">El producto fue descontinuado</span>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <div class="rechazo-opcion-body">
+                            <p class="rechazo-opcion-recomendacion">
+                                <i class="pi pi-info-circle"></i>
+                                <strong>Recomendación:</strong> Sugiere productos similares de tu menú actual.
+                            </p>
+                            <button 
+                                pButton 
+                                type="button" 
+                                label="Confirmar Rechazo" 
+                                icon="pi pi-check"
+                                class="p-button-danger rechazo-btn-confirmar"
+                                [loading]="loadingButtonCancel"
+                                (click)="cancelOrder('Ya no manejo este producto')">
+                            </button>
+                        </div>
+                    </p-accordionTab>
+                    
+                    <!-- Opción 4: Problemas operativos -->
+                    <p-accordionTab [selected]="false">
+                        <ng-template pTemplate="header">
+                            <div class="rechazo-opcion-header">
+                                <i class="pi pi-exclamation-circle rechazo-opcion-icon"></i>
+                                <div class="rechazo-opcion-info">
+                                    <span class="rechazo-opcion-titulo">Problemas operativos</span>
+                                    <span class="rechazo-opcion-subtitulo">Inconvenientes internos del negocio</span>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <div class="rechazo-opcion-body">
+                            <p class="rechazo-opcion-recomendacion">
+                                <i class="pi pi-info-circle"></i>
+                                <strong>Recomendación:</strong> Informa al cliente el motivo y ofrece una solución alternativa.
+                            </p>
+                            <button 
+                                pButton 
+                                type="button" 
+                                label="Confirmar Rechazo" 
+                                icon="pi pi-check"
+                                class="p-button-danger rechazo-btn-confirmar"
+                                [loading]="loadingButtonCancel"
+                                (click)="cancelOrder('Problemas operativos')">
+                            </button>
+                        </div>
+                    </p-accordionTab>
+                    
+                    <!-- Opción 5: Tienda saturada -->
+                    <p-accordionTab [selected]="false">
+                        <ng-template pTemplate="header">
+                            <div class="rechazo-opcion-header">
+                                <i class="pi pi-clock rechazo-opcion-icon"></i>
+                                <div class="rechazo-opcion-info">
+                                    <span class="rechazo-opcion-titulo">Tienda saturada</span>
+                                    <span class="rechazo-opcion-subtitulo">Alto volumen de pedidos en este momento</span>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <div class="rechazo-opcion-body">
+                            <p class="rechazo-opcion-recomendacion">
+                                <i class="pi pi-info-circle"></i>
+                                <strong>Recomendación:</strong> Ofrece un tiempo de preparación más largo en vez de cancelar.
+                            </p>
+                            <button 
+                                pButton 
+                                type="button" 
+                                label="Confirmar Rechazo" 
+                                icon="pi pi-check"
+                                class="p-button-danger rechazo-btn-confirmar"
+                                [loading]="loadingButtonCancel"
+                                (click)="cancelOrder('Tienda saturada')">
+                            </button>
+                        </div>
+                    </p-accordionTab>
+                    
+                    <!-- Opción 6: Cerramos temprano -->
+                    <p-accordionTab [selected]="false">
+                        <ng-template pTemplate="header">
+                            <div class="rechazo-opcion-header">
+                                <i class="pi pi-moon rechazo-opcion-icon"></i>
+                                <div class="rechazo-opcion-info">
+                                    <span class="rechazo-opcion-titulo">Cerramos temprano</span>
+                                    <span class="rechazo-opcion-subtitulo">El negocio cerró antes del horario habitual</span>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <div class="rechazo-opcion-body">
+                            <p class="rechazo-opcion-recomendacion">
+                                <i class="pi pi-info-circle"></i>
+                                <strong>Recomendación:</strong> Informa al cliente el horario de apertura para mañana.
+                            </p>
+                            <button 
+                                pButton 
+                                type="button" 
+                                label="Confirmar Rechazo" 
+                                icon="pi pi-check"
+                                class="p-button-danger rechazo-btn-confirmar"
+                                [loading]="loadingButtonCancel"
+                                (click)="cancelOrder('Cerramos temprano')">
+                            </button>
+                        </div>
+                    </p-accordionTab>
+                    
+                    <!-- Opción 7: Otro motivo -->
+                    <p-accordionTab [selected]="false">
+                        <ng-template pTemplate="header">
+                            <div class="rechazo-opcion-header">
+                                <i class="pi pi-pencil rechazo-opcion-icon"></i>
+                                <div class="rechazo-opcion-info">
+                                    <span class="rechazo-opcion-titulo">Otro motivo</span>
+                                    <span class="rechazo-opcion-subtitulo">Especifica una razón diferente</span>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <div class="rechazo-opcion-body">
+                            <div class="rechazo-input-container">
+                                <label for="otroMotivo">Escribe el motivo del rechazo:</label>
+                                <textarea 
+                                    id="otroMotivo"
+                                    [(ngModel)]="otherReasonOrder" 
+                                    pInputTextarea 
+                                    rows="3"
+                                    placeholder="Ejemplo: Ingrediente principal no disponible..."
+                                    class="rechazo-textarea">
+                                </textarea>
+                            </div>
+                            <p class="rechazo-opcion-recomendacion">
+                                <i class="pi pi-info-circle"></i>
+                                <strong>Recomendación:</strong> Sé específico y profesional en tu explicación.
+                            </p>
+                            <button 
+                                pButton 
+                                type="button" 
+                                label="Confirmar Rechazo" 
+                                icon="pi pi-check"
+                                class="p-button-danger rechazo-btn-confirmar"
+                                [loading]="loadingButtonCancel"
+                                [disabled]="!otherReasonOrder || otherReasonOrder.trim().length < 5"
+                                (click)="cancelOrder(otherReasonOrder)">
+                            </button>
+                        </div>
+                    </p-accordionTab>
+                    
+                </p-accordion>
+            </div>
+        </div>
+    </ng-template>
+    
+    <!-- FOOTER -->
+    <ng-template pTemplate="footer">
+        <div class="rechazo-footer">
+            <button 
+                pButton 
+                type="button"
+                label="Cerrar"
+                icon="pi pi-times"
+                class="p-button-text p-button-secondary"
+                (click)="closeModalOrderCancel()">
+            </button>
+            <div class="rechazo-footer-info">
+                <i class="pi pi-info-circle"></i>
+                <span>El cliente será notificado del rechazo</span>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog 
+    [(visible)]="showConfirmReject" 
+    [modal]="true"
+    [closable]="false"
+    [style]="{width: '450px', maxWidth: '95vw'}"
+    styleClass="modal-confirm-rechazo">
+    
+    <!-- HEADER -->
+    
+    <!-- CONTENT -->
+    <div class="confirm-content">
+        <p class="confirm-message">
+            ¿Estás seguro de rechazar la orden <strong>#{{orderSelected?.id}}</strong>?
+        </p>
+        <p class="confirm-submessage">
+            El cliente será notificado del rechazo. Esta acción no se puede deshacer.
+        </p>
+        
+        <!-- Mostrar el motivo seleccionado -->
+        <div class="confirm-reason">
+            <i class="pi pi-info-circle"></i>
+            <div>
+                <strong>Motivo:</strong>
+                <span>{{reasonToReject}}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FOOTER -->
+    <ng-template pTemplate="footer">
+        <button 
+            pButton 
+            type="button" 
+            label="Cancelar" 
+            icon="pi pi-times"
+            class="p-button-text p-button-secondary"
+            [disabled]="loadingButtonCancel"
+            (click)="cancelarConfirmacion()">
+        </button>
+        <button 
+            pButton 
+            type="button" 
+            label="Sí, rechazar orden" 
+            icon="pi pi-check"
+            class="p-button-danger"
+            [loading]="loadingButtonCancel"
+            (click)="confirmarRechazo()">
+        </button>
+    </ng-template>
+</p-dialog>
