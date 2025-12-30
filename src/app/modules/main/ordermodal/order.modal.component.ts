@@ -130,46 +130,46 @@ export class OrderModalComponent implements OnInit {
     }
 
     // ========== MÉTODO 4: Actualizar tiempo de orden ==========
-    updateTimes(order: OrderBean) {
-        this.loadingButtonUpdateTime = true;
+    updateTimes(item: OrderBean) {
+        this.loadingButtonUpdateTime = true
+        var json = {
+            uuid: item.uuid,
+            readyToDmAt: this.orderSelected.createdAt + (this.readyToDmMinutesAt * 60),
+            readyToDmMinutesAt: this.readyToDmMinutesAt
+        }
 
-        // TODO: Reemplazar con tu servicio real
-        // Ejemplo:
-        /*
-        const request = {
-          orderId: order.id,
-          readyTime: this.readyToDmMinutesAt
-        };
-        
-        this.dynamicReportService.updateOrderTime(request).subscribe(
-          (response) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Tiempo actualizado correctamente'
-            });
-            this.loadingButtonUpdateTime = false;
-          },
-          (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'No se pudo actualizar el tiempo'
-            });
-            this.loadingButtonUpdateTime = false;
-          }
-        );
-        */
+        if(this.readyToDmMinutesAt >= item.readyToDmMinutesAt){
+            this.orderRepository.updateReadyToDm(json).subscribe((response) => {
+                setTimeout(() => {
+                this.onVisibleChange(false)
+                }, 1500);
 
-        // Simulación por ahora (ELIMINAR cuando tengas el servicio real)
-        setTimeout(() => {
-            this.loadingButtonUpdateTime = false;
+                item.readyToDmMinutesAt = this.readyToDmMinutesAt;
+                this.loadingButtonUpdateTime = false
+                console.log(response)
+                this.messageService.add({
+                    severity: 'success',
+                    summary: '¡Orden Lista!',
+                    detail: 'El tiempo estimada modificado',
+                    life: 3000
+                });
+            }, (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.messages[0].message
+                });
+                this.loadingButtonUpdateTime = false
+            })
+        }
+        else{
             this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Tiempo de preparación actualizado a ' + this.readyToDmMinutesAt + ' minutos'
+                severity: 'error',
+                summary: 'Error',
+                detail: 'El tiempo de preparacion debe ser mayor que el tiempo actual'
             });
-        }, 1000);
+            this.loadingButtonUpdateTime = false
+        }
     }
 
     // ========== MÉTODO 5: Transformar datos de orden (OPCIONAL) ==========
