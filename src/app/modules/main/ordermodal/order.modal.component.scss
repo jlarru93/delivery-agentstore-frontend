@@ -276,19 +276,23 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
 }
 
 .orden-opcion-titulo {
-    font-weight: 500;
-    color: $orden-text-secondary;
+    font-weight: 600;
+    color: white;
     margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
+    background: $orden-primary-color;
+    padding: 0.4rem 0.75rem;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
 }
 
 .orden-opcion-icono {
-    color: #9E9E9E;
-    font-size: 1rem;
+    color: white;
+    font-size: 0.875rem;
 }
 
 .orden-badge-tipo {
@@ -1592,4 +1596,15 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
 
 .confirm-lista-content {
     animation: slideInDown 0.3s ease-out;
+}
+.orden-opcion-cantidad-inline {
+    color: $orden-primary-color;
+    font-weight: 600;
+    margin-right: 0.25rem;
+}
+
+.orden-opcion-precio {
+    color: $orden-primary-color;
+    font-weight: 600;
+    font-size: 0.875rem;
 }

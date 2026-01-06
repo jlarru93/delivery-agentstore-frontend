@@ -104,15 +104,21 @@
                                     </div>
                                     
                                     <div *ngFor="let sub of option.subOptions" class="orden-opcion-item">
-                                        <span>• {{sub.name}}</span>
+                                        <span>
+                                            • 
+                                            <ng-container *ngIf="sub.quantity && sub.quantity > 0">
+                                                <span class="orden-opcion-cantidad-inline">x{{sub.quantity}}</span>
+                                            </ng-container>
+                                            {{sub.name}}
+                                        </span>
                                         <i class="pi pi-check orden-opcion-check" 
-                                           *ngIf="sub.selected && !sub.quantity"></i>
-                                        <span class="orden-opcion-cantidad" 
-                                              *ngIf="sub.quantity && sub.quantity > 0">x{{sub.quantity}} 
-                                            <ng-container *ngIf="sub?.price?.value > 0"> {{sub.getPriceAndCurrency()}}</ng-container>
+                                        *ngIf="sub.selected && !sub.quantity"></i>
+                                        <span class="orden-opcion-precio" 
+                                            *ngIf="sub.quantity && sub.quantity > 0 && sub?.price?.value > 0">
+                                            {{sub.getPriceAndCurrency()}}
                                         </span>
                                         <span class="orden-opcion-no-seleccionada" 
-                                              *ngIf="!sub.selected && (!sub.quantity || sub.quantity === 0)">-</span>
+                                            *ngIf="!sub.selected && (!sub.quantity || sub.quantity === 0)">-</span>
                                     </div>
                                 </div>
                             </div>
@@ -216,12 +222,21 @@
                                             <span class="orden-badge-tipo orden-badge-sumable" *ngIf="option.type === 'sumable'">SUMABLE</span>
                                         </div>
                                         <div *ngFor="let sub of option.subOptions" class="orden-opcion-item">
-                                            <span>• {{sub.name}}</span>
-                                            <i class="pi pi-check orden-opcion-check" *ngIf="sub.selected && !sub.quantity"></i>
-                                            <span class="orden-opcion-cantidad" *ngIf="sub.quantity && sub.quantity > 0">x{{sub.quantity}} 
-                                                <ng-container *ngIf="sub?.price?.value > 0"> {{sub.getPriceAndCurrency()}}</ng-container>
+                                            <span>
+                                                • 
+                                                <ng-container *ngIf="sub.quantity && sub.quantity > 0">
+                                                    <span class="orden-opcion-cantidad-inline">x{{sub.quantity}}</span>
+                                                </ng-container>
+                                                {{sub.name}}
                                             </span>
-                                            <span class="orden-opcion-no-seleccionada" *ngIf="!sub.selected && (!sub.quantity || sub.quantity === 0)">-</span>
+                                            <i class="pi pi-check orden-opcion-check" 
+                                            *ngIf="sub.selected && !sub.quantity"></i>
+                                            <span class="orden-opcion-precio" 
+                                                *ngIf="sub.quantity && sub.quantity > 0 && sub?.price?.value > 0">
+                                                {{sub.getPriceAndCurrency()}}
+                                            </span>
+                                            <span class="orden-opcion-no-seleccionada" 
+                                                *ngIf="!sub.selected && (!sub.quantity || sub.quantity === 0)">-</span>
                                         </div>
                                     </div>
                                 </div>
