@@ -45,6 +45,7 @@
                         ],
                         "scripts": [
                             "node_modules/prismjs/prism.js",
+                            "node_modules/html2pdf.js/dist/html2pdf.bundle.min.js",
                             "node_modules/prismjs/components/prism-typescript.js"
                         ],
                         "allowedCommonJsDependencies": [

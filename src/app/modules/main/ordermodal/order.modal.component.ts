@@ -6,6 +6,8 @@ import { HttpClient } from "@angular/common/http";
 import { OrderRepository } from "../service/order.repository";
 import { AceptOrderRequest } from "../service/data/request";
 import * as CONSTANTES from "src/app/utils/constant";
+import { PrintService } from 'src/app/utils/print.service';
+
 
 @Component({
     selector: 'order-modal',
@@ -41,6 +43,7 @@ export class OrderModalComponent implements OnInit {
         private http: HttpClient,
         private confirmationService: ConfirmationService,
         private orderRepository: OrderRepository,
+        private printService: PrintService
     ) { }
     ngOnInit(): void {
         this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
@@ -306,15 +309,34 @@ export class OrderModalComponent implements OnInit {
         return tieneOpciones || tieneComentarios;
     }
 
-    printToPDF(){
-      const printArea: HTMLElement = document.getElementById('pdf');
-      const printWindow = window.open('','PRINT')!;
-      printWindow.document.write(`<html><head><style>${this.styleString}</style></head><body>${printArea.innerHTML}</body></html>`)
-      printWindow.document.close();
-      printWindow.focus();
-      setTimeout(() => {
-        printWindow.print();
-      },1000) 
+    async printToPDF(): Promise<void> {
+        const printArea: HTMLElement = document.getElementById('pdf');
+        
+        if (!printArea) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No se encontró el área de impresión'
+            });
+            return;
+        }
+
+        const fileName = `comanda-${this.orderSelected.id}`;
+        
+        try {
+            await this.printService.print(
+                printArea.innerHTML,
+                this.styleString,
+                fileName
+            );
+        } catch (error) {
+            console.error('Error al imprimir:', error);
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No se pudo generar la impresión'
+            });
+        }
     }
     sendMessageWhatsApp(phoneNumber:string){
         if(!phoneNumber){
