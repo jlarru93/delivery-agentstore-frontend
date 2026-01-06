@@ -335,7 +335,7 @@
                 <div class="orden-cliente-nombre">{{orderSelected?.user?.fullName}}</div>
                 <div class="orden-cliente-telefono">
                     <i class="pi pi-phone"></i>
-                    <span>{{orderSelected?.user?.phone}}</span>
+                    <span>{{formatPhone(orderSelected?.user?.phone)}}</span>
                 </div>
                 <div class="orden-cliente-telefono">
                     <i class="pi pi-id-card"></i>
@@ -650,7 +650,7 @@
                         <i class="pi pi-user"></i>
                         <div>
                             <strong>{{orderSelected?.user?.fullName}}</strong>
-                            <span>{{orderSelected?.user?.phone}}</span>
+                            <span>{{formatPhone(orderSelected?.user?.phone)}}</span>
                         </div>
                     </div>
                 </div>

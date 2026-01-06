@@ -599,4 +599,80 @@ export class OrderModalComponent implements OnInit {
         this.reasonToReject = '';
         this.closeModalOrderCancel()
     }
+    // ========== FORMATEAR TELÉFONO (INTERNACIONAL) ==========
+    formatPhone(phone: string): string {
+        if (!phone) return '';
+        
+        // Limpiar el número (quitar espacios, guiones, paréntesis)
+        const cleaned = phone.replace(/\D/g, '');
+        
+        // Si está vacío después de limpiar
+        if (!cleaned) return phone;
+        
+        // ========== NÚMEROS PERUANOS ==========
+        // +51 + 9 dígitos = 11 dígitos total
+        if (cleaned.startsWith('51') && cleaned.length === 11) {
+            return `+51 ${cleaned.slice(2, 5)} ${cleaned.slice(5, 8)} ${cleaned.slice(8)}`;
+        }
+        
+        // Solo 9 dígitos (peruano sin código)
+        if (cleaned.length === 9 && cleaned.startsWith('9')) {
+            return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6)}`;
+        }
+        
+        // ========== NÚMEROS INTERNACIONALES ==========
+        // Si tiene código de país (10+ dígitos)
+        if (cleaned.length >= 10) {
+            // Detectar código de país (1-3 dígitos)
+            let countryCode = '';
+            let nationalNumber = '';
+            
+            // Códigos de 1 dígito: USA (+1)
+            if (cleaned.startsWith('1') && cleaned.length === 11) {
+                countryCode = '1';
+                nationalNumber = cleaned.slice(1);
+                return `+${countryCode} ${nationalNumber.slice(0, 3)} ${nationalNumber.slice(3, 6)} ${nationalNumber.slice(6)}`;
+            }
+            
+            // Códigos de 2 dígitos comunes (México +52, Colombia +57, Argentina +54, etc.)
+            const twoDigitCodes = ['52', '57', '54', '56', '55', '58', '53', '34', '44', '49', '33', '39'];
+            for (const code of twoDigitCodes) {
+                if (cleaned.startsWith(code)) {
+                    countryCode = code;
+                    nationalNumber = cleaned.slice(2);
+                    break;
+                }
+            }
+            
+            // Si encontró código de 2 dígitos
+            if (countryCode) {
+                // Formatear según longitud
+                if (nationalNumber.length === 10) {
+                    return `+${countryCode} ${nationalNumber.slice(0, 3)} ${nationalNumber.slice(3, 6)} ${nationalNumber.slice(6)}`;
+                }
+                if (nationalNumber.length === 9) {
+                    return `+${countryCode} ${nationalNumber.slice(0, 3)} ${nationalNumber.slice(3, 6)} ${nationalNumber.slice(6)}`;
+                }
+                // Formato genérico
+                return `+${countryCode} ${nationalNumber.replace(/(\d{3})(?=\d)/g, '$1 ')}`;
+            }
+            
+            // Si no se detectó código conocido, formato genérico
+            // Asumir primeros 2-3 dígitos como código de país
+            if (cleaned.length > 10) {
+                const possibleCode = cleaned.slice(0, 2);
+                const rest = cleaned.slice(2);
+                return `+${possibleCode} ${rest.replace(/(\d{3})(?=\d)/g, '$1 ')}`;
+            }
+        }
+        
+        // ========== FALLBACK ==========
+        // Para cualquier otro caso, separar cada 3 dígitos
+        if (cleaned.length > 6) {
+            return cleaned.replace(/(\d{3})(?=\d)/g, '$1 ');
+        }
+        
+        // Si es muy corto, devolver como está
+        return phone;
+    }
 }
