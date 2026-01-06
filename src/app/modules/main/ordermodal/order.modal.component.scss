@@ -998,6 +998,7 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     height: 100%;
     overflow-y: auto;
     padding: 1rem;
+    padding-bottom: 120px;
     
     &::-webkit-scrollbar {
         width: 8px;
@@ -1255,14 +1256,13 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
 /* ========== RESPONSIVE ========== */
 @media screen and (max-width: 768px) {
     .orden-botones-accion {
-        position: sticky;
-        bottom: 0;
+        /* SIN position sticky - fluye normal al final del contenido */
+        position: relative;
         background: white;
         padding: 1rem;
-        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
-        border-radius: 0;
-        margin: 0;
-        z-index: 10;
+        margin-top: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
     
     .orden-btn-principal,
