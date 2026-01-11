@@ -50,9 +50,35 @@ export class OrderModalComponent implements OnInit {
     }
 
     init() {
-        this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
+        this.readyToDmAt = null
+        this.readyToDmMinutesAt = null
+
+        this.payment = null
+        this.paymentName = null
+        this.styleString = null
+
+
+        this.displayOrderReject = false;
+        this.showConfirmReject = false;
+        this.loadingButtonCancel = false;
+        this.otherReasonOrder = '';
+        this.reasonToReject = ''; 
+        this.selectedTab = true;
         this.flagOpenReceiptDialog=false
-        this.readyToDmMinutesAt=null
+
+        this.dialogScreenshoot = false;
+        this.loadingButtonUpdateTime = false;
+        this.storeDataStorage = null
+        this.imagenURL = null
+
+        this.loadingButtonAcept = false;
+        this.loadingButtonOrderReady = false;
+        this.loadingButtonFinish = false;
+        this.loadingButtonSelfManage = false;
+        this.showConfirmOrderReady = false;
+        
+        this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
+        
         if(this.orderSelected.status=="open"){
             this.readyToDmAt=15
         }
