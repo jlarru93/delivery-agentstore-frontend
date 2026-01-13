@@ -404,7 +404,7 @@ export class OrderModalComponent implements OnInit {
 
       if(['CARD','CASH','PAY_IN_STORE','PAYMENT-BUTTON'].includes(orderRequest.payment.method.type)){
         this.orderRepository.aceptOder(orderRequest.uuid,orderRequest.readyToDmAt).subscribe((resp)=>{
-        this.visible=false
+        this.onVisibleChange(false)
         this.loadingButtonAcept=false
         this.dialogScreenshoot=false
         this.messageService.add({
@@ -434,7 +434,7 @@ export class OrderModalComponent implements OnInit {
           this.openDialogScreenShoot()
         } else {
           this.orderRepository.aceptOder(orderRequest.uuid,orderRequest.readyToDmAt).subscribe((resp)=>{
-            this.visible=false
+            this.onVisibleChange(false)
             this.loadingButtonAcept=false
             this.dialogScreenshoot=false
             this.messageService.add({
