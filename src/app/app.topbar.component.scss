@@ -1,4 +1,13 @@
-
+$primary-green: #4CAF50;
+$primary-green-light: #81C784;
+$primary-green-dark: #2E7D32;
+$bg-dark: #2D2D2D;
+$bg-dark-secondary: #1a1a1a;
+$text-primary: #ffffff;
+$text-secondary: #888888;
+$text-muted: #666666;
+$border-subtle: rgba(255, 255, 255, 0.1);
+$danger-red: #ff5252;
 .search-img{
   height: 50px;
   width: 45px;
@@ -188,4 +197,48 @@ margin-top: 2px;
 .submenu-icons{
   display: flex;
   align-items: center;
+}
+
+.quick-actions-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: $text-secondary !important;
+    position: relative;
+    transition: all 0.2s ease !important;
+
+    &:hover {
+        background: rgba($primary-green, 0.15) !important;
+        border-color: rgba($primary-green, 0.3) !important;
+        color: $primary-green !important;
+    }
+
+    &:focus {
+        box-shadow: none !important;
+    }
+
+    .pi-bolt {
+        font-size: 18px;
+    }
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+        background: rgba($primary-green, 0.1);
+    }
 }

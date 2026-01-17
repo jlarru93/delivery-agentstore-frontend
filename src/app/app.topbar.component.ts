@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppMainComponent } from './app.main.component';
 import { AuthService } from './utils/auth.service';
@@ -16,111 +16,122 @@ import { AlertServices } from './modules/service/alert.service';
 import { PwaInstallService } from './modules/service/pwa-install.service';
 import { WokerHandler } from './modules/service/worker.service';
 import { AudioBackgroundService } from './modules/service/audio.background.service';
-import { url } from 'inspector';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-topbar',
-    templateUrl:'app.topbar.component.html',
+    templateUrl: 'app.topbar.component.html',
     styleUrls: ['./app.topbar.component.scss'],
-    providers:[]
+    providers: []
 })
-export class AppTopBarComponent implements OnInit, AfterViewInit{
-    displayOpenStore:boolean=false
+export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
+    // ==================== VARIABLES ORIGINALES (sin cambios) ====================
+    displayOpenStore: boolean = false;
     activeItem: number;
-    storesOpen:StatusOpenStoreBean[]=[]
-    storeOpenSelected:StatusOpenStoreBean
-    //isOpenStore:boolean=false
-    isAllLoadingOpenStatusStore:boolean=false
+    storesOpen: StatusOpenStoreBean[] = [];
+    storeOpenSelected: StatusOpenStoreBean;
+    isAllLoadingOpenStatusStore: boolean = false;
     isMobile: boolean = false;
-
     value: any;
-
-
-    userDetails: any
-    userName: string
-    //IdAgent:any
-    isConnectMqtt:boolean=false
-    isDoneGetStatusOpenStore:boolean=false
-    stores: AgentStoreStoreResponse[]
-    selectedStore: Store[]=[]
-    selectStore:number[]=[]
-    brand:Brand
-    origenIcon: any ="assets/images/TRACKING COMERCIO.png";
-    listInvoice:any[]=[]
-    isShowDialog:boolean = false
+    userDetails: any;
+    userName: string;
+    isConnectMqtt: boolean = false;
+    isDoneGetStatusOpenStore: boolean = false;
+    stores: AgentStoreStoreResponse[];
+    selectedStore: Store[] = [];
+    selectStore: number[] = [];
+    brand: Brand;
+    origenIcon: any = "assets/images/TRACKING COMERCIO.png";
+    listInvoice: any[] = [];
+    isShowDialog: boolean = false;
     audioEnabled: boolean;
     invoiceMap = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
-    dataReady:boolean=false
+    dataReady: boolean = false;
     listInvoices: any[] = [];
     listInvoicesAfterPay: any[] = [];
     listInvoicesBeforeTwoDays: any[] = [];
     invoiceMapAfterPay = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
     invoiceMapBeforeTwoDays = new Map<string, { paymentLink?: string; reportLink?: string }[]>();
-    invoices: any
-    iterator:number = 1
-
+    invoices: any;
+    iterator: number = 1;
     items: MenuItem[] | undefined;
-    statusMsg:string
+    statusMsg: string;
+    isWelcomeDialogOpen: boolean = true;
+    isFirstLogin: boolean = true;
+    isVisibleLeyend: boolean = false;
+
+    @ViewChild('op') overlayPanel: OverlayPanel;
+    @ViewChild('audioPlayer') audioPlayerRef!: ElementRef<HTMLAudioElement>;
+    @ViewChild('quickActionsPanel') quickActionsPanel: OverlayPanel;
+
+    private openStoreDialogSubscription: Subscription;
+
     constructor(
         private auth: AuthService,
         private router: Router,
         public appMain: AppMainComponent,
-        private workerHandler:WokerHandler,
+        private workerHandler: WokerHandler,
         private service: MenuService,
-        private dataShared:DataSharedService,
-        private audioService:AudioService,
-        private openStoreHanlder:OpenStoreHandler,
+        private dataShared: DataSharedService,
+        private audioService: AudioService,
+        private openStoreHanlder: OpenStoreHandler,
         private push: PushService,
-        private readonly pwaInstallService:PwaInstallService,
-        private messageService:AlertServices,
-        private audio: AudioBackgroundService, 
+        private readonly pwaInstallService: PwaInstallService,
+        private messageService: AlertServices,
+        private audio: AudioBackgroundService,
+        
         private zone: NgZone
-    ) {
-    }
-    isWelcomeDialogOpen: boolean = true
-    @ViewChild('op') overlayPanel: OverlayPanel;
-    @ViewChild('audioPlayer') audioPlayerRef!: ElementRef<HTMLAudioElement>;
-    
+        
+    ) { }
+
+    // ==================== LIFECYCLE HOOKS ====================
     ngOnInit(): void {
-        this.getFirstLogin()
-        this.checkDevice(); 
-        window.addEventListener('resize', () => this.checkDevice()); 
-        
-        var flagAudio = JSON.parse(localStorage.getItem('audioEnabled'))
-        var lstIdStore= JSON.parse(localStorage.getItem('lstIdStore'))
-        if(flagAudio != undefined){
-            this.audioEnabled = flagAudio
+        this.getFirstLogin();
+        this.checkDevice();
+        window.addEventListener('resize', () => this.checkDevice());
+
+        var flagAudio = JSON.parse(localStorage.getItem('audioEnabled'));
+        var lstIdStore = JSON.parse(localStorage.getItem('lstIdStore'));
+        if (flagAudio != undefined) {
+            this.audioEnabled = flagAudio;
         }
-        this.getStatusOpenStore()
-        this.openStoreHanlder._data.subscribe((resp)=>{
-            if(!resp){return}
-            //console.log(resp)
-            const data=resp.data
-            const indexUpdate=this.storesOpen.findIndex(s=>s.id===data.id)
-            if(indexUpdate>=0){
-                this.storesOpen[indexUpdate].isOpen=data.isOpen
+
+        // ⚡ CRÍTICO: Obtener estado de tiendas
+        this.getStatusOpenStore();
+
+        // ⚡ CRÍTICO: Suscribirse a cambios de estado de tiendas
+        this.openStoreHanlder._data.subscribe((resp) => {
+            if (!resp) { return; }
+            const data = resp.data;
+            const indexUpdate = this.storesOpen.findIndex(s => s.id === data.id);
+            if (indexUpdate >= 0) {
+                this.storesOpen[indexUpdate].isOpen = data.isOpen;
             }
-        })
-        
-        this.workerHandler._onConnectWorker.subscribe((isConnect)=>{
-            this.isConnectMqtt=isConnect
-            this.validateConnectMqttAndGetStatus()
-        })
-        this.auth.getUserDetails().then((data) => {
-                this.userDetails = data
-                //console.log(this.userDetails)
-                let username = this.userDetails.find(user => user.Name == 'name')
-                this.userName = username.Value
-                this.lstAgentStore()
         });
+
+        // ⚡ CRÍTICO: Suscribirse a conexión MQTT
+        this.workerHandler._onConnectWorker.subscribe((isConnect) => {
+            this.isConnectMqtt = isConnect;
+            this.validateConnectMqttAndGetStatus();
+        });
+
+        // Obtener detalles del usuario
+        this.auth.getUserDetails().then((data) => {
+            this.userDetails = data;
+            let username = this.userDetails.find(user => user.Name == 'name');
+            this.userName = username.Value;
+            this.lstAgentStore();
+        });
+
+        // Service Worker para audio
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.addEventListener('message', (event: MessageEvent) => {
-                console.log("serviceWorker::message:::event",event)
+                console.log("serviceWorker::message:::event", event);
                 const data = event.data || {};
-                this.zone.run(() => { // asegurar cambio dentro de Angular
+                this.zone.run(() => {
                     if (data.type === 'PLAY_AUDIO' && data.audioUrl) {
-                        const audioUrl=data.audioUrl??"assets/audio/audio.mp3"
-                        this.audio.play(audioUrl, data.metadata);  
+                        const audioUrl = data.audioUrl ?? "assets/audio/audio.mp3";
+                        this.audio.play(audioUrl, data.metadata);
                     }
                     if (data.type === 'PAUSE_AUDIO') {
                         this.audio.pause();
@@ -128,51 +139,219 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
                 });
             });
         }
+
+        this.openStoreDialogSubscription = this.dataShared.openStoreDialog$.subscribe((store) => {
+            if (store) {
+                this.showDialogOpenStore(store);
+            }
+        });
     }
 
-    setStoreToWindows(){
-        try{
-            this.service.setFileAgentStore(this.selectStore).subscribe(resp=>{
-                if(!resp.success){
-                    console.log("No se pudo registrar en el archivo",resp.error)
-                }
-            })
+    ngAfterViewInit() { }
+
+    // ==================== MÉTODOS CRÍTICOS (sin cambios en lógica) ====================
+
+    /**
+     * ⚡ CRÍTICO: Valida conexión MQTT y estado de tiendas
+     * Solo procede cuando AMBOS flags están activos
+     */
+    validateConnectMqttAndGetStatus() {
+        if (this.isConnectMqtt && this.isDoneGetStatusOpenStore) {
+            this.storesOpen.forEach(s => {
+                this.processSubsCribeStore(s.id);
+                this.processSubsCribeOpenStore(s.id);
+            });
         }
-        catch(error){}
     }
+
+    /**
+     * ⚡ CRÍTICO: Suscribe/desuscribe a canal de tienda según estado
+     */
+    processSubsCribeStore(id?: any) {
+        var chanelStore = "store/" + id;
+        const store = this.storesOpen.find(s => s.id == id);
+        if (store.isOpen) {
+            this.workerHandler.subscribe(chanelStore);
+        } else {
+            this.workerHandler.unsubscribe(chanelStore);
+        }
+    }
+
+    /**
+     * ⚡ CRÍTICO: Suscribe al canal de apertura de tienda
+     */
+    processSubsCribeOpenStore(id?: any) {
+        var chanelStore = "open/store/" + id;
+        this.workerHandler.subscribe(chanelStore);
+    }
+
+    /**
+     * ⚡ CRÍTICO: Obtiene estado de apertura de todas las tiendas
+     * Setea isDoneGetStatusOpenStore = true cuando termina
+     */
+    getStatusOpenStore() {
+        this.isAllLoadingOpenStatusStore = true;
+        this.appMain.getStatusOpen().subscribe((resp) => {
+            this.storesOpen = resp.data;
+            if (this.storesOpen) {
+                this.items = this.storesOpen.map(storeOpen => ({
+                    label: storeOpen.name ?? 'Tienda',
+                    icon: storeOpen.isOpen ? 'pi pi-check-circle' : 'pi pi-times-circle',
+                    styleClass: storeOpen.isOpen ? 'open-store' : 'closed-store',
+                    command: () => this.showDialogOpenStore(storeOpen)
+                }));
+            }
+            this.isAllLoadingOpenStatusStore = false;
+            this.isDoneGetStatusOpenStore = true;  // ⚡ FLAG CRÍTICO
+            this.validateConnectMqttAndGetStatus();
+
+            // Compartir estado con el menú lateral
+            this.dataShared.setStoresOpenStatus(this.storesOpen);
+        }, (error) => {
+            this.isAllLoadingOpenStatusStore = false;
+        }, () => { });
+    }
+
+    changeStatusOpenStore() {
+        const request: OpenStoreRequest = {
+            id: this.storeOpenSelected.id,
+            status: !this.storeOpenSelected.isOpen
+        };
+
+        this.displayOpenStore = false;
+        this.storeOpenSelected.isLoadingOpenStatusStore = true;
+
+        this.appMain.changeStatusOpenStore(request).subscribe((resp) => {
+            const data = resp.data;
+            this.storeOpenSelected.isOpen = data.isOpen;
+            this.updateMenuItems();
+            this.processSubsCribeStore(data.id);
+            this.storeOpenSelected.isLoadingOpenStatusStore = false;
+
+            // Actualizar estado compartido
+            this.dataShared.setStoresOpenStatus(this.storesOpen);
+        }, (error) => {
+            this.storeOpenSelected.isLoadingOpenStatusStore = false;
+        }, () => { });
+    }
+
+    updateMenuItems() {
+        this.items = this.storesOpen.map(storeOpen => ({
+            label: storeOpen.name ?? 'Tienda',
+            icon: storeOpen.isOpen ? 'pi pi-check-circle' : 'pi pi-times-circle',
+            styleClass: storeOpen.isOpen ? 'open-store' : 'closed-store',
+            command: () => this.showDialogOpenStore(storeOpen)
+        }));
+    }
+
+    // ==================== MÉTODOS DE TIENDAS/AGENTE ====================
+
+    lstAgentStore() {
+        this.service.getStoreByIdAgent().subscribe((data) => {
+            this.selectStore = data.data.map(s => s.store_id);
+            this.stores = data.data;
+            console.log("this.stores", this.stores);
+            console.log("this.selectStore", this.selectStore);
+
+            localStorage.setItem('lstIdStore', JSON.stringify(this.selectStore));
+            this.dataShared.updateListStore(this.selectStore);
+            this.dataShared.setStoreAviliable(this.stores);
+            this.setStoreToWindows();
+            this.stores.forEach(s => this.processSubsCribeStore(s.store_id));
+        });
+    }
+
+    setStoreId(store: Store, id: any, event: any) {
+        this.dataShared.updateListStore(this.selectStore);
+        console.log("this.selectStore", this.selectStore);
+        console.log("ID", id);
+        console.log("STORES", store);
+        this.setStoreToWindows();
+        localStorage.setItem('lstIdStore', JSON.stringify(this.selectStore));
+        this.processSubsCribeStore(id);
+    }
+
+    setStoreToWindows() {
+        try {
+            this.service.setFileAgentStore(this.selectStore).subscribe(resp => {
+                if (!resp.success) {
+                    console.log("No se pudo registrar en el archivo", resp.error);
+                }
+            });
+        } catch (error) { }
+    }
+
+    // ==================== MÉTODOS DE UI ====================
 
     checkDevice() {
-        this.isMobile = window.innerWidth <= 768; 
+        this.isMobile = window.innerWidth <= 768;
     }
 
-    ngAfterViewInit() {
-        // setTimeout(() => {
-        //     var button2 = document.getElementById('btnHidden')
-        //     button2.click()
-        //   }, 500)
+    mobileMegaMenuItemClick(index) {
+        this.appMain.megaMenuMobileClick = true;
+        this.activeItem = this.activeItem === index ? null : index;
     }
+
+    showDialogOpenStore(storeOpen: StatusOpenStoreBean) {
+        this.displayOpenStore = true;
+        this.listBrands();
+        this.storeOpenSelected = storeOpen;
+    }
+
+    showLeyend() {
+        this.isVisibleLeyend = true;
+    }
+
+    // ==================== MÉTODOS DE AUDIO/NOTIFICACIONES ====================
+
+    onChangeFlagAudio() {
+        this.audioService.audioEnabled = this.audioEnabled;
+        this.audioService.storeAudioEnabledStateInLocalStorage();
+    }
+
+    onPlayAudioOnDialog() {
+        this.audioService.onPlayAudioFirstLoad();
+        this.isWelcomeDialogOpen = false;
+    }
+
+    async permitToNotify() {
+        console.log("permitToNotify");
+        this.audio.play("assets/audio/audio.mp3");
+        try {
+            const resp = await this.push.requestPermissionAndToken();
+            if (resp.perm != 'granted') { }
+            if (resp?.error) {
+                this.messageService.showError('Error', resp.error);
+            }
+        } catch (error) {
+            console.log("Error", error);
+            this.messageService.showError('Error', error);
+        }
+    }
+
+    // ==================== MÉTODOS DE FACTURAS ====================
 
     startDataFetch() {
         this.listBrands();
         const intervalFiveMinutes = 5 * 60 * 1000;
         setInterval(() => {
             this.listBrands();
-            this.iterator++
-            console.log("ITERATOR:::",this.iterator)
-        }, intervalFiveMinutes); 
+            this.iterator++;
+            console.log("ITERATOR:::", this.iterator);
+        }, intervalFiveMinutes);
     }
 
-    listBrands(){
+    listBrands() {
         this.service.getBrandsInvoice().subscribe(async (resp) => {
             //await this.getLastInvoiceFromABrand(resp.data);
         },
-        (_error) => {},
-        () => {});
+            (_error) => { },
+            () => { });
     }
 
     async getLastInvoiceFromABrand(brands: Brand[]) {
         try {
-            if(this.listInvoicesAfterPay.length > 0){
+            if (this.listInvoicesAfterPay.length > 0) {
                 this.isShowDialog = false;
             }
 
@@ -183,7 +362,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
 
             const statusFilters = ['pending', 'intent', 'failed'];
             const date = new Date();
-            const timestampInSeconds = Number(date.getTime().toString().substring(0,10));
+            const timestampInSeconds = Number(date.getTime().toString().substring(0, 10));
 
             const processInvoices = (data: any[], map: Map<string, { paymentLink?: string; reportLink?: string }[]>, condition: (invoice: any) => boolean) => {
                 data.filter(condition).forEach(invoice => {
@@ -211,11 +390,11 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
             responses.forEach((response: any) => {
                 this.invoices = response.data;
 
-                processInvoices(this.invoices, this.invoiceMapAfterPay, invoice => 
+                processInvoices(this.invoices, this.invoiceMapAfterPay, invoice =>
                     statusFilters.includes(invoice.status) && timestampInSeconds > invoice.due_date
                 );
-                
-                processInvoices(this.invoices, this.invoiceMapBeforeTwoDays, invoice => 
+
+                processInvoices(this.invoices, this.invoiceMapBeforeTwoDays, invoice =>
                     statusFilters.includes(invoice.status) && timestampInSeconds >= (invoice.due_date - (2 * 24 * 60 * 60)) && timestampInSeconds < invoice.due_date
                 );
             });
@@ -225,10 +404,9 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
 
             this.dataReady = true;
             if (this.dataReady && (this.listInvoicesAfterPay.length || this.listInvoicesBeforeTwoDays.length)) {
-                if(this.iterator > 1 && this.listInvoicesBeforeTwoDays.length > 0){
-                    this.isShowDialog = false
-                }
-                else{
+                if (this.iterator > 1 && this.listInvoicesBeforeTwoDays.length > 0) {
+                    this.isShowDialog = false;
+                } else {
                     this.isShowDialog = true;
                 }
                 this.dataReady = false;
@@ -238,180 +416,40 @@ export class AppTopBarComponent implements OnInit, AfterViewInit{
         }
     }
 
-    isFirstLogin: boolean = true
-    getFirstLogin(){
-        
-        let firstLogin = JSON.parse(localStorage.getItem('isFirstLogin'))
-        if(firstLogin) {
-            this.isWelcomeDialogOpen = false
+    // ==================== OTROS MÉTODOS ====================
+
+    getFirstLogin() {
+        let firstLogin = JSON.parse(localStorage.getItem('isFirstLogin'));
+        if (firstLogin) {
+            this.isWelcomeDialogOpen = false;
         } else {
-            localStorage.setItem('isFirstLogin',JSON.stringify(this.isFirstLogin))
-            this.isWelcomeDialogOpen = true
+            localStorage.setItem('isFirstLogin', JSON.stringify(this.isFirstLogin));
+            this.isWelcomeDialogOpen = true;
         }
     }
 
-    validateConnectMqttAndGetStatus(){
-        if(this.isConnectMqtt && this.isDoneGetStatusOpenStore){
-            this.storesOpen.forEach(s=>{
-                this.processSubsCribeStore(s.id)
-                this.processSubsCribeOpenStore(s.id)
-            })
-        }
-    }
-
-    processSubsCribeStore(id?:any){
-        var chanelStore = "store/"+id
-        const store=this.storesOpen.find(s=>s.id==id)
-        if(store.isOpen){
-            this.workerHandler.subscribe(chanelStore)
-        }else{
-            this.workerHandler.unsubscribe(chanelStore)
-        }
-    }
-    processSubsCribeOpenStore(id?:any){
-        var chanelStore = "open/store/"+id
-        this.workerHandler.subscribe(chanelStore)
-       
-    }
-    
-    mobileMegaMenuItemClick(index) {
-        this.appMain.megaMenuMobileClick = true;
-        this.activeItem = this.activeItem === index ? null : index;
-    }
-	async logout(){
-		await this.auth.signOut();
-        localStorage.clear()
-        try{
-            this.service.deleteContentFileAgentStore().subscribe((resp)=>{
-                if(!resp.success){
-                    console.log("Error en la limpieza del archivo",resp.error)
-                }
-            })
-        }catch(error){}
-		this.router.navigate(['/login']);
-	}
-
-    getStatusOpenStore(){
-        this.isAllLoadingOpenStatusStore=true
-        this.appMain.getStatusOpen().subscribe((resp)=>{
-            this.storesOpen=resp.data
-            if(this.storesOpen){
-                this.items = this.storesOpen.map(storeOpen => ({
-                    label: storeOpen.name ?? 'Tienda',
-                    icon: storeOpen.isOpen ? 'pi pi-check-circle' : 'pi pi-times-circle',
-                    styleClass: storeOpen.isOpen ? 'open-store' : 'closed-store',
-                    command: () => this.showDialogOpenStore(storeOpen)
-                  }));
-            }
-            ///this.isOpenStore=resp.data.status
-            this.isAllLoadingOpenStatusStore=false
-            this.isDoneGetStatusOpenStore=true
-            this.validateConnectMqttAndGetStatus()
-        },(error)=>{
-            this.isAllLoadingOpenStatusStore=false
-        },()=>{})
-    }
-
-    changeStatusOpenStore(){
-        
-        const request:OpenStoreRequest={
-            id:this.storeOpenSelected.id,
-            status:!this.storeOpenSelected.isOpen
-        }
-
-        this.displayOpenStore=false
-        this.storeOpenSelected.isLoadingOpenStatusStore=true;
-
-        this.appMain.changeStatusOpenStore(request).subscribe((resp)=>{
-            const data=resp.data
-            this.storeOpenSelected.isOpen=data.isOpen
-            this.updateMenuItems();
-
-            this.processSubsCribeStore(data.id)
-            this.storeOpenSelected.isLoadingOpenStatusStore=false
-        },(error)=>{
-            this.storeOpenSelected.isLoadingOpenStatusStore=false
-        },()=>{})
-    }
-
-    updateMenuItems() {
-        this.items = this.storesOpen.map(storeOpen => ({
-          label: storeOpen.name ?? 'Tienda',
-          icon: storeOpen.isOpen ? 'pi pi-check-circle' : 'pi pi-times-circle', // Cambia icono según estado
-          styleClass: storeOpen.isOpen ? 'open-store' : 'closed-store',
-          command: () => this.showDialogOpenStore(storeOpen)
-        }));
-      }
-
-    lstAgentStore(){
-        
-        //console.log(this.IdAgent)
-        this.service.getStoreByIdAgent().subscribe((data)=>{
-            this.selectStore=data.data.map(s=>s.store_id)
-            this.stores=data.data
-            console.log("this.stores",this.stores)
-            console.log("this.selectStore",this.selectStore)
-            
-            localStorage.setItem('lstIdStore',JSON.stringify(this.selectStore))  
-            this.dataShared.updateListStore(this.selectStore)
-            this.dataShared.setStoreAviliable(this.stores)
-            this.setStoreToWindows()
-            this.stores.forEach(s=>this.processSubsCribeStore(s.store_id)) 
-        })
-    }
-    setStoreId(store:Store,id:any,event:any){
-        this.dataShared.updateListStore(this.selectStore)                   
-        /*if(this.selectStore.findIndex((eve)=>eve==id)==-1){
-            this.isOpenStore=false
-        }*/
-       console.log("this.selectStore",this.selectStore)
-        console.log("ID",id)
-        console.log("STORES",store)
-        this.setStoreToWindows()
-
-        localStorage.setItem('lstIdStore',JSON.stringify(this.selectStore))       
-        this.processSubsCribeStore(id) 
-    }
-
-    onChangeFlagAudio(){
-         // Actualiza el estado en el servicio StoreHandler
-    this.audioService.audioEnabled = this.audioEnabled;
-
-    // Almacena el estado en el localStorage
-    this.audioService.storeAudioEnabledStateInLocalStorage();
-    }
-
-    onPlayAudioOnDialog(){
-        this.audioService.onPlayAudioFirstLoad()
-        this.isWelcomeDialogOpen = false
-    }
-
-    isVisibleLeyend:boolean=false
-    showLeyend(){
-        this.isVisibleLeyend = true
-    }
-    
-    showDialogOpenStore(storeOpen:StatusOpenStoreBean){
-        this.displayOpenStore=true;
-        this.listBrands()
-        this.storeOpenSelected=storeOpen
-    }
-    async permitToNotify() {
-        console.log("permitToNotify")
-        this.audio.play("assets/audio/audio.mp3");
+    async logout() {
+        await this.auth.signOut();
+        localStorage.clear();
         try {
-            const resp=await this.push.requestPermissionAndToken()
-            if(resp.perm!='granted'){
-                
-            }
-            if(resp?.error){
-                this.messageService.showError('Error', resp.error);
-            }
-            //this.messageService.showError('Error',JSON.stringify(resp.perm))
-        } catch (error) {
-            console.log("Error",error)
-            this.messageService.showError('Error', error);
-        }
+            this.service.deleteContentFileAgentStore().subscribe((resp) => {
+                if (!resp.success) {
+                    console.log("Error en la limpieza del archivo", resp.error);
+                }
+            });
+        } catch (error) { }
+        this.router.navigate(['/login']);
     }
 
+    // ==================== GETTER PARA NOTIFICACIONES ====================
+    get hasNotifications(): boolean {
+        // Puedes implementar lógica real aquí
+        return this.listInvoicesAfterPay?.length > 0 || this.listInvoicesBeforeTwoDays?.length > 0;
+    }
+
+    ngOnDestroy(): void {
+        if (this.openStoreDialogSubscription) {
+            this.openStoreDialogSubscription.unsubscribe();
+        }
+    }
 }

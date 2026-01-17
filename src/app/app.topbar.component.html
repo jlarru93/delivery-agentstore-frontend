@@ -3,7 +3,7 @@
         <div class="layout-topbar-left" style="gap: 10px;">
             <!--p-button (onClick)="menu.toggle($event)" icon="pi pi-ellipsis-v" label="Opciones"></p-button-->
             <!--p-menu #menu [model]="items" [popup]="true" /-->
-            <ng-container *ngIf="!isMobile">
+            <!-- <ng-container *ngIf="!isMobile">
             <ng-container *ngFor="let storeOpen of storesOpen">
                 <div class="layout-megamenu-wrapper" (click)="showDialogOpenStore(storeOpen)">
                 <button
@@ -27,7 +27,7 @@
                 (click)="storesMenu.toggle($event)">
             </button>
             <p-menu #storesMenu [model]="items" [popup]="true"></p-menu>
-            </ng-container>
+            </ng-container> -->
 
             <ng-container *ngIf="isAllLoadingOpenStatusStore">
                 <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="1"></p-progressSpinner>
@@ -46,16 +46,15 @@
                 <i class="pi pi-ellipsis-v" style="color: #FFFFFF;"></i>
             </a>
         </div>
-        <div class="tristate">
+        <!-- <div class="tristate">
 
             <p-triStateCheckbox [(ngModel)]="audioEnabled" label="Alarma" (onChange)="onChangeFlagAudio()"></p-triStateCheckbox>
-        </div>
+        </div> -->
         <div class="layout-topbar-right fadeInDown">
             <ul class="layout-topbar-actions">
                 <li #message class="topbar-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === message}">
-                    <a href="#" class="space-between" (click)="appMain.onTopbarItemClick($event,message)">
+                    <!-- <a href="#" class="space-between" (click)="appMain.onTopbarItemClick($event,message)">
                         <img src="{{ origenIcon }}" class="search-img marker" alt=""/>
-                        <!-- <i class="topbar-icon pi pi-desktop" style="color: #FFFFFF;"></i> -->
                     </a>
                     <a href="#" class="space-between" (click)="showLeyend()" pTooltip="Leyenda" tooltipPosition="bottom">
                         <i class="pi pi-book"></i>
@@ -67,8 +66,8 @@
                         rel="noopener noreferrer" 
                         class="p-button font-bold">
                         Tutoriales</a>
-                    <button class="p-button font-bold" (click)="permitToNotify()">Notificaciones</button>
-                    <ul class="fadeInDown scrollable-menu">
+                    <button class="p-button font-bold" (click)="permitToNotify()">Notificaciones</button> -->
+                    <!-- <ul class="fadeInDown scrollable-menu">
                         <li class="layout-submenu-header">
                             <h1 style="color: #202020;">Tiendas Disponibles</h1>
                             <span style="color: #757575;">Seleccione las Tiendas disponibles</span>
@@ -79,54 +78,95 @@
                                     <img src="assets/images/ICON STORE.svg" class="search-img marker" alt=""/>
                                     <p>{{store?.store_name?.toUpperCase()??"Tienda"}}</p>
                                 </div>
-                                <!--div>
-                                    <p-checkbox name="{{store.id}}" value="{{store.store_id}}" [(ngModel)]="selectStore" inputId="ny" class="float-right" (onChange)="setStoreId(store,store.store_id,$event)"></p-checkbox>
-                                </div-->
                             </div>
-                            <!-- <div class="p-col-12">
-                                <div class="p-grid">
-                                    <div class="p-col-2">
-                                    </div>
-                                    <div class="p-col-7">
-                                        <div class="menu-text">
-                                        </div>
-                                    </div>
-                                    <div class="p-col-2">
-                                    </div>
-                                </div>
-                            </div> -->
                         </li>        
-                    </ul>
+                    </ul> -->
                 </li>
                 <li #profile class="topbar-item profile-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === profile}">
-                    <a href="#" (click)="appMain.onTopbarItemClick($event,profile)">
-                        <span class="profile-image-wrapper">
-                            <p-avatar styleClass="mr-2" size="large" shape="circle" image="assets/images/USER 2.png"></p-avatar>
+                    <a href="#" (click)="appMain.onTopbarItemClick($event,profile)" style="padding: 0; margin: 0;">
+                        <span class="profile-image-wrapper p-mr-2">
+                            <div class="quick-actions-btn p-button-text">
+                                <i class="pi pi-bolt"></i>
+                            </div>
+                            
                         </span>
-                        <span class="profile-info-wrapper">
-                        <h3>{{userName | titlecase}}</h3>
-                        <span>Agente</span>
-                    </span>
+                        
+                        <!-- <span class="profile-info-wrapper">
+                            <h3>{{userName | titlecase}}</h3>
+                            <span>Agente</span>
+                        </span> -->
                     </a>
                     <ul class="profile-item-submenu fadeInDown">
-                        <li class="profile-submenu-header">
-                            <div class="performance">
-                                <!-- <span>Weekly Performance</span>
-                                <img src="assets/layout/images/topbar/asset-bars.svg" alt="mirage-layout" /> -->
-                            </div>
+                        <!-- <li class="profile-submenu-header">
                             <div class="profile" style="align-items: center;">
                                 <img src="assets/images/user.png" alt="mirage-layout"
                                                 width="40" />
                                 <h1>{{userName | titlecase}}</h1>
                                 <span>Agente</span>
                             </div>
-                        </li>
+                        </li> -->
 
                         <li class="layout-submenu-footer" style="padding: 8px;">
-                            <button class="signout-button" (click)="logout()">Cerrar Sesión</button>
+                            <div class="actions-header">
+                                <strong>Acciones Rápidas</strong>
+                            </div>
                         </li>
+                        <li>
+                            <div class="action-item">
+                                <div class="action-icon alarm-icon">
+                                    <i class="pi pi-volume-up"></i>
+                                </div>
+                                <span class="action-label">Alarma de pedidos</span>
+                                <p-triStateCheckbox 
+                                    [(ngModel)]="audioEnabled" 
+                                    (onChange)="onChangeFlagAudio()"
+                                    (click)="$event.stopPropagation()">
+                                </p-triStateCheckbox>
+                            </div>
+                        </li>
+                        <li class="layout-submenu-footer">
+                            <div class="action-item" (click)="showLeyend(); quickActionsPanel.hide()">
+                                <div class="action-icon">
+                                    <i class="pi pi-book"></i>
+                                </div>
+                                <span class="action-label">Leyenda</span>
+                                <i class="pi pi-angle-right action-arrow"></i>
+                            </div>
+                        </li>
+                        <li class="layout-submenu-footer">
+                            <a class="action-item" 
+                            href="https://drive.google.com/drive/folders/1LEJ-r2VD7-YupLr73X2nQRDG4rMzk8CZ?usp=sharing" 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            (click)="quickActionsPanel.hide()">
+                                <div class="action-icon tutorials-icon">
+                                    <i class="pi pi-play-circle"></i>
+                                </div>
+                                <span class="action-label">Tutoriales</span>
+                                <i class="pi pi-external-link action-arrow"></i>
+                            </a>
+                        </li>
+                        <li class="layout-submenu-footer">
+                            <div class="action-item" (click)="permitToNotify(); quickActionsPanel.hide()">
+                                <div class="action-icon notif-icon">
+                                    <i class="pi pi-bell"></i>
+                                </div>
+                                <span class="action-label">Activar Notificaciones</span>
+                                <i class="pi pi-angle-right action-arrow"></i>
+                            </div>
+                        </li>
+                        <!-- <li class="layout-submenu-footer" style="padding: 8px;">
+                            <button class="signout-button" (click)="logout()">Cerrar Sesión</button>
+                        </li> -->
                     </ul>
                 </li>   
+                <li>
+                    <span class="profile-image-wrapper">
+                        <div class="quick-actions-btn p-button-text" (click)="logout()" pTooltip="Cerrar Sesión" tooltipPosition="left" >
+                            <i class="pi pi-sign-out"></i>
+                        </div>
+                    </span>
+                </li>
             </ul>
 
             <ul class="profile-mobile-wrapper">
@@ -158,6 +198,7 @@
         </div>
     </div>
 </div>
+
 <p-dialog [(visible)]="displayOpenStore" [modal]="true" header="Opciones de la tienda">
     <ng-template pTemplate="content">
         <h5 class="p-p-5 p-m-auto">La tienda esta {{storeOpenSelected.isOpen?'Abierta':'Cerrada'}}</h5  >

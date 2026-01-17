@@ -1,5 +1,11 @@
-<div class="layout-sidebar" [ngClass]="{'layout-sidebar-active': appMain.sidebarActive}" (click)="appMain.onSidebarClick($event)" style="z-index: 1004;"
-     (mouseover)="appMain.sidebarActive=true" (mouseleave)="appMain.sidebarActive=false">
+<div #sideRef class="layout-sidebar" 
+     [ngClass]="{'layout-sidebar-active': appMain.sidebarActive}" 
+     (click)="appMain.onSidebarClick($event)" 
+     style="z-index: 1004;"
+     (mouseover)="appMain.sidebarActive=true" 
+     (mouseleave)="onSidebarMouseLeave($event)">
+    
+    <!-- Header del Sidebar -->
     <div class="sidebar-logo">
         <a href="#" class="sidebar-pin" title="Toggle Menu" (click)="appMain.onToggleMenuClick($event)">
             <i class="pi pi-lock" *ngIf="appMain.staticMenuActive"></i>
@@ -7,16 +13,68 @@
         </a>
         <a>
             <img alt="logo" src="assets/images/icono-piwi.png" />
-            <span class="app-name" style="color: #ffffff;">
-                Admin 
-            </span><br>
-            <!--small class="app-name" style="color: #ffffff; font-size: 11.5px; margin-left: 54px;">{{storeFullName}}</small-->
+            <span class="app-name">Admin</span>
         </a>
     </div>
+
+    <!-- ==================== Selector de Tienda ==================== -->
+    <div class="store-selector-container" *ngIf="storesOpen?.length > 0">
+        <label class="store-selector-label">Tienda activa</label>
+        
+        <p-dropdown 
+            #storeDropdown
+            [options]="storesOpen" 
+            [(ngModel)]="selectedStoreOpen"
+            optionLabel="name"
+            [styleClass]="'store-dropdown'"
+            [panelStyleClass]="'store-dropdown-panel'"
+            placeholder="Seleccionar tienda"
+            [appendTo]="sideRef"
+            (onHide)="storesOpen?.length === 1 && selectedStoreOpen && onStoreItemClick(selectedStoreOpen, storeDropdown)"
+            >
+            
+            <!-- Template para item seleccionado -->
+            <ng-template pTemplate="selectedItem">
+                <div class="store-selected-item" *ngIf="selectedStoreOpen">
+                    <i class="pi" 
+                       [ngClass]="selectedStoreOpen.isOpen ? 'pi-check-circle' : 'pi-times-circle'"
+                       [class.status-open]="selectedStoreOpen.isOpen"
+                       [class.status-closed]="!selectedStoreOpen.isOpen">
+                    </i>
+                    <span class="store-name">{{ selectedStoreOpen.name }}</span>
+                </div>
+            </ng-template>
+            
+            <!-- Template para cada opción - CON CLICK -->
+            <ng-template let-store pTemplate="item">
+                <div class="store-option-item" (click)="onStoreItemClick(store, storeDropdown); $event.stopPropagation()">
+                    <i class="pi" 
+                       [ngClass]="store.isOpen ? 'pi-check-circle' : 'pi-times-circle'"
+                       [class.status-open]="store.isOpen"
+                       [class.status-closed]="!store.isOpen">
+                    </i>
+                    <span class="store-option-name">{{ store.name }}</span>
+                    <span class="store-option-badge" 
+                          [class.open]="store.isOpen"
+                          [class.closed]="!store.isOpen">
+                        {{ store.isOpen ? 'Abierta' : 'Cerrada' }}
+                    </span>
+                </div>
+            </ng-template>
+        </p-dropdown>
+    </div>
+    <!-- ==================== FIN Selector de Tienda ==================== -->
+
+    <!-- Menú de navegación -->
     <div class="layout-menu-container" (click)="onMenuClick()">
         <ul class="layout-menu">
             <li app-menuitem *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true"></li>
         </ul>
-        <img src="assets/images/LOGOTIPO 1.png" alt="" [ngClass]="{'close' : !appMain.staticMenuActive, 'close-img': appMain.sidebarActive}" style="position: absolute; width: 280px; margin-bottom: 30px; bottom: 0; margin-left: -31px; z-index: -1; transition: All 0.3s ease;">
+        
+        <!-- Logo de fondo -->
+        <img src="assets/images/LOGOTIPO 1.png" 
+             alt="" 
+             [ngClass]="{'close' : !appMain.staticMenuActive, 'close-img': appMain.sidebarActive}" 
+             class="sidebar-bg-logo">
     </div>
 </div>

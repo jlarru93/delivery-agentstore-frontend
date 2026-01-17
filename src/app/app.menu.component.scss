@@ -1,9 +1,217 @@
-.layout-sidebar{
-    background-color: #2D2D2D;
+// Variables
+$primary-green: #4CAF50;
+$primary-green-light: #81C784;
+$primary-green-dark: #2E7D32;
+$store-yellow: #FFC107;
+$store-yellow-dark: #FFA000;
+$danger-red: #ff5252;
+$bg-dark: #2D2D2D;
+$bg-dark-secondary: #252525;
+$bg-dark-tertiary: #1a1a1a;
+$text-primary: #ffffff;
+$text-secondary: #aaaaaa;
+$text-muted: #666666;
+$border-subtle: rgba(255, 255, 255, 0.1);
+
+// ==================== SIDEBAR BASE ====================
+.layout-sidebar {
+    background-color: $bg-dark;
 }
-.close{
+
+.sidebar-logo {
+    .app-name {
+        color: $text-primary;
+    }
+}
+
+// ==================== SELECTOR DE TIENDA ====================
+.store-selector-container {
+    padding: 12px 16px;
+    border-bottom: 1px solid $border-subtle;
+    margin-bottom: 8px;
+}
+
+.store-selector-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: $text-muted;
+    margin-bottom: 8px;
+}
+
+// ==================== DROPDOWN DE TIENDAS ====================
+:host ::ng-deep {
+    .store-dropdown {
+        width: 100%;
+        
+        &.p-dropdown {
+            background: rgba($store-yellow, 0.1);
+            border: 1px solid rgba($store-yellow, 0.3);
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            
+            &:not(.p-disabled):hover {
+                border-color: rgba($store-yellow, 0.5);
+                background: rgba($store-yellow, 0.15);
+            }
+
+            &:not(.p-disabled).p-focus {
+                border-color: $store-yellow;
+                box-shadow: 0 0 0 2px rgba($store-yellow, 0.2);
+            }
+
+            .p-dropdown-label {
+                color: $text-primary;
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .p-dropdown-trigger {
+                color: $store-yellow;
+                width: 2.5rem;
+            }
+        }
+    }
+
+    .store-dropdown-panel {
+        background: $bg-dark-tertiary !important;
+        border: 1px solid rgba($store-yellow, 0.3) !important;
+        border-radius: 10px !important;
+        margin-top: 4px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+
+        .p-dropdown-items-wrapper {
+            max-height: 250px !important;
+        }
+
+        .p-dropdown-items {
+            padding: 6px !important;
+
+            .p-dropdown-item {
+                padding: 0 !important;
+                border-radius: 8px !important;
+                margin-bottom: 2px !important;
+
+                &:hover {
+                    background: rgba($store-yellow, 0.1) !important;
+                }
+
+                &.p-highlight {
+                    background: rgba($store-yellow, 0.2) !important;
+                }
+            }
+        }
+    }
+}
+
+// ==================== ITEMS DEL DROPDOWN ====================
+.store-selected-item,
+.store-option-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    width: 100%;
+}
+
+.store-name,
+.store-option-name {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    color: $text-primary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+// Iconos de estado
+.status-open {
+    color: $primary-green !important;
+}
+
+.status-closed {
+    color: $danger-red !important;
+}
+
+// Badges de estado
+.store-status-badge,
+.store-option-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &.open {
+        background: rgba($primary-green, 0.2);
+        color: $primary-green-light;
+    }
+
+    &.closed {
+        background: rgba($danger-red, 0.2);
+        color: lighten($danger-red, 15%);
+    }
+}
+
+// ==================== CONTADOR DE TIENDAS ====================
+.stores-count {
+    margin-top: 8px;
+    text-align: center;
+
+    small {
+        font-size: 11px;
+        color: $text-muted;
+    }
+}
+
+// ==================== LOGO DE FONDO ====================
+.sidebar-bg-logo {
+    position: absolute;
+    width: 280px;
+    margin-bottom: 30px;
+    bottom: 0;
+    margin-left: -31px;
+    z-index: -1;
+    transition: all 0.3s ease;
+    opacity: 1;
+}
+
+.close {
     opacity: 0;
 }
-.close-img{
+
+.close-img {
     opacity: 1;
+}
+
+// ==================== RESPONSIVE ====================
+@media (max-width: 991px) {
+    .store-selector-container {
+        padding: 10px 12px;
+    }
+
+    .store-status-badge,
+    .store-option-badge {
+        display: none;
+    }
+}
+
+// ==================== ANIMACIONES ====================
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.store-selector-container {
+    animation: fadeIn 0.3s ease;
 }
