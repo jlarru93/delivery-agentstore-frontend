@@ -24,6 +24,9 @@ export class DataSharedService{
     private openStoreDialogSubject = new Subject<StatusOpenStoreBean>();
     public openStoreDialog$ = this.openStoreDialogSubject.asObservable();
 
+    private changeStoreStatusSubject = new Subject<StatusOpenStoreBean>();
+    public changeStoreStatus$ = this.changeStoreStatusSubject.asObservable();
+
     updateListStore(lst:number[]){
         this.listStore.next(lst)
     }
@@ -70,5 +73,9 @@ export class DataSharedService{
 
     requestOpenStoreDialog(store: StatusOpenStoreBean): void {
         this.openStoreDialogSubject.next(store);
+    }
+
+    requestChangeStoreStatus(store: StatusOpenStoreBean): void {
+        this.changeStoreStatusSubject.next(store);
     }
 }

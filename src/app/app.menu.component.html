@@ -19,49 +19,76 @@
 
     <!-- ==================== Selector de Tienda ==================== -->
     <div class="store-selector-container" *ngIf="storesOpen?.length > 0">
-        <label class="store-selector-label">Tienda activa</label>
+
+        <ng-container *ngIf="storesOpen.length === 1">
+            <div class="store-single-container">
+                <div class="store-single-info">
+                    <i class="pi pi-home store-single-icon"></i>
+                    <div class="store-single-details">
+                        <span class="store-single-name">{{ storesOpen[0].name }}</span>
+                        <span class="store-single-status" 
+                              [class.open]="storesOpen[0].isOpen"
+                              [class.closed]="!storesOpen[0].isOpen">
+                            {{ storesOpen[0].isOpen ? 'Recibiendo pedidos' : 'Cerrada' }}
+                        </span>
+                    </div>
+                </div>
+                <p-inputSwitch 
+                    [(ngModel)]="storesOpen[0].isOpen"
+                    (onChange)="onSingleStoreToggle(storesOpen[0])"
+                    [styleClass]="'store-switch'">
+                </p-inputSwitch>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="storesOpen.length > 1">
+            <label class="store-selector-label">Tienda activa</label>
+
+            <p-dropdown 
+                #storeDropdown
+                [options]="storesOpen" 
+                [(ngModel)]="selectedStoreOpen"
+                optionLabel="name"
+                [styleClass]="'store-dropdown'"
+                [panelStyleClass]="'store-dropdown-panel'"
+                placeholder="Seleccionar tienda"
+                [autoZIndex]="true"
+                [baseZIndex]="1100"
+                [appendTo]="sideRef"
+                (onHide)="storesOpen?.length === 1 && selectedStoreOpen && onStoreItemClick(selectedStoreOpen, storeDropdown)"
+                >
+                
+                <!-- Template para item seleccionado -->
+                <ng-template pTemplate="selectedItem">
+                    <div class="store-selected-item" *ngIf="selectedStoreOpen">
+                        <i class="pi" 
+                           [ngClass]="selectedStoreOpen.isOpen ? 'pi-check-circle' : 'pi-times-circle'"
+                           [class.status-open]="selectedStoreOpen.isOpen"
+                           [class.status-closed]="!selectedStoreOpen.isOpen">
+                        </i>
+                        <span class="store-name">{{ selectedStoreOpen.name }}</span>
+                    </div>
+                </ng-template>
+                
+                <!-- Template para cada opción - CON CLICK -->
+                <ng-template let-store pTemplate="item">
+                    <div class="store-option-item" (click)="onStoreItemClick(store, storeDropdown); $event.stopPropagation()">
+                        <i class="pi" 
+                           [ngClass]="store.isOpen ? 'pi-check-circle' : 'pi-times-circle'"
+                           [class.status-open]="store.isOpen"
+                           [class.status-closed]="!store.isOpen">
+                        </i>
+                        <span class="store-option-name">{{ store.name }}</span>
+                        <span class="store-option-badge" 
+                              [class.open]="store.isOpen"
+                              [class.closed]="!store.isOpen">
+                            {{ store.isOpen ? 'Abierta' : 'Cerrada' }}
+                        </span>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+        </ng-container>
         
-        <p-dropdown 
-            #storeDropdown
-            [options]="storesOpen" 
-            [(ngModel)]="selectedStoreOpen"
-            optionLabel="name"
-            [styleClass]="'store-dropdown'"
-            [panelStyleClass]="'store-dropdown-panel'"
-            placeholder="Seleccionar tienda"
-            [appendTo]="sideRef"
-            (onHide)="storesOpen?.length === 1 && selectedStoreOpen && onStoreItemClick(selectedStoreOpen, storeDropdown)"
-            >
-            
-            <!-- Template para item seleccionado -->
-            <ng-template pTemplate="selectedItem">
-                <div class="store-selected-item" *ngIf="selectedStoreOpen">
-                    <i class="pi" 
-                       [ngClass]="selectedStoreOpen.isOpen ? 'pi-check-circle' : 'pi-times-circle'"
-                       [class.status-open]="selectedStoreOpen.isOpen"
-                       [class.status-closed]="!selectedStoreOpen.isOpen">
-                    </i>
-                    <span class="store-name">{{ selectedStoreOpen.name }}</span>
-                </div>
-            </ng-template>
-            
-            <!-- Template para cada opción - CON CLICK -->
-            <ng-template let-store pTemplate="item">
-                <div class="store-option-item" (click)="onStoreItemClick(store, storeDropdown); $event.stopPropagation()">
-                    <i class="pi" 
-                       [ngClass]="store.isOpen ? 'pi-check-circle' : 'pi-times-circle'"
-                       [class.status-open]="store.isOpen"
-                       [class.status-closed]="!store.isOpen">
-                    </i>
-                    <span class="store-option-name">{{ store.name }}</span>
-                    <span class="store-option-badge" 
-                          [class.open]="store.isOpen"
-                          [class.closed]="!store.isOpen">
-                        {{ store.isOpen ? 'Abierta' : 'Cerrada' }}
-                    </span>
-                </div>
-            </ng-template>
-        </p-dropdown>
     </div>
     <!-- ==================== FIN Selector de Tienda ==================== -->
 
@@ -69,8 +96,22 @@
     <div class="layout-menu-container" (click)="onMenuClick()">
         <ul class="layout-menu">
             <li app-menuitem *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true"></li>
+            <div style="padding-bottom: 20px;"></div>
+            <li class="action-menu-items">
+                <a  href="https://drive.google.com/drive/folders/1LEJ-r2VD7-YupLr73X2nQRDG4rMzk8CZ?usp=sharing"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    <span>Tutoriales</span>
+                    <i class="pi pi-external-link"></i>
+                </a>
+            </li>
+            <li>
+                <a (click)="permitToNotify()">
+                    <span>Activar Notificaciones</span>
+                    <i class="pi pi-bell"></i>
+                </a>
+            </li>
         </ul>
-        
         <!-- Logo de fondo -->
         <img src="assets/images/LOGOTIPO 1.png" 
              alt="" 

@@ -65,6 +65,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('quickActionsPanel') quickActionsPanel: OverlayPanel;
 
     private openStoreDialogSubscription: Subscription;
+    private changeStoreStatusSubscription: Subscription;
 
     constructor(
         private auth: AuthService,
@@ -143,6 +144,12 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
         this.openStoreDialogSubscription = this.dataShared.openStoreDialog$.subscribe((store) => {
             if (store) {
                 this.showDialogOpenStore(store);
+            }
+        });
+
+        this.changeStoreStatusSubscription = this.dataShared.changeStoreStatus$.subscribe((store) => {
+            if (store) {
+                this.changeStoreStatusDirect(store);
             }
         });
     }
@@ -447,9 +454,54 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
         return this.listInvoicesAfterPay?.length > 0 || this.listInvoicesBeforeTwoDays?.length > 0;
     }
 
+    changeStoreStatusDirect(store: StatusOpenStoreBean): void {
+        const request: OpenStoreRequest = {
+            id: store.id,
+            status: store.isOpen  // El switch ya cambió el valor
+        };
+
+        // Encontrar la tienda en el array local
+        const storeIndex = this.storesOpen.findIndex(s => s.id === store.id);
+        if (storeIndex >= 0) {
+            this.storesOpen[storeIndex].isLoadingOpenStatusStore = true;
+        }
+
+        this.appMain.changeStatusOpenStore(request).subscribe(
+            (resp) => {
+                const data = resp.data;
+                
+                // Actualizar el estado local
+                if (storeIndex >= 0) {
+                    this.storesOpen[storeIndex].isOpen = data.isOpen;
+                    this.storesOpen[storeIndex].isLoadingOpenStatusStore = false;
+                }
+                
+                this.updateMenuItems();
+                this.processSubsCribeStore(data.id);
+                
+                // Actualizar estado compartido
+                this.dataShared.setStoresOpenStatus(this.storesOpen);
+            },
+            (error) => {
+                // Revertir el cambio del switch si hay error
+                if (storeIndex >= 0) {
+                    this.storesOpen[storeIndex].isOpen = !store.isOpen;
+                    this.storesOpen[storeIndex].isLoadingOpenStatusStore = false;
+                }
+                // Notificar al menú del estado revertido
+                this.dataShared.setStoresOpenStatus(this.storesOpen);
+                
+                console.error('Error al cambiar estado de tienda:', error);
+            }
+        );
+    }
+
     ngOnDestroy(): void {
         if (this.openStoreDialogSubscription) {
             this.openStoreDialogSubscription.unsubscribe();
+        }
+        if (this.changeStoreStatusSubscription) {
+            this.changeStoreStatusSubscription.unsubscribe();
         }
     }
 }

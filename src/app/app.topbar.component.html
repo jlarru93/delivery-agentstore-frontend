@@ -125,7 +125,7 @@
                             </div>
                         </li>
                         <li class="layout-submenu-footer">
-                            <div class="action-item" (click)="showLeyend(); quickActionsPanel.hide()">
+                            <div class="action-item" (click)="showLeyend()">
                                 <div class="action-icon">
                                     <i class="pi pi-book"></i>
                                 </div>
@@ -133,28 +133,16 @@
                                 <i class="pi pi-angle-right action-arrow"></i>
                             </div>
                         </li>
-                        <li class="layout-submenu-footer">
-                            <a class="action-item" 
-                            href="https://drive.google.com/drive/folders/1LEJ-r2VD7-YupLr73X2nQRDG4rMzk8CZ?usp=sharing" 
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            (click)="quickActionsPanel.hide()">
-                                <div class="action-icon tutorials-icon">
-                                    <i class="pi pi-play-circle"></i>
-                                </div>
-                                <span class="action-label">Tutoriales</span>
-                                <i class="pi pi-external-link action-arrow"></i>
-                            </a>
-                        </li>
-                        <li class="layout-submenu-footer">
-                            <div class="action-item" (click)="permitToNotify(); quickActionsPanel.hide()">
+                        
+                        <!-- <li class="layout-submenu-footer">
+                            <div class="action-item" (click)="permitToNotify()">
                                 <div class="action-icon notif-icon">
                                     <i class="pi pi-bell"></i>
                                 </div>
                                 <span class="action-label">Activar Notificaciones</span>
                                 <i class="pi pi-angle-right action-arrow"></i>
                             </div>
-                        </li>
+                        </li> -->
                         <!-- <li class="layout-submenu-footer" style="padding: 8px;">
                             <button class="signout-button" (click)="logout()">Cerrar Sesión</button>
                         </li> -->
