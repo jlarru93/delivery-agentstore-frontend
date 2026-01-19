@@ -12,11 +12,26 @@ $danger-red: #ff5252;
   height: 50px;
   width: 45px;
 }
+.logo-image{
+  margin: 0 auto;
+   @media (max-width: 991px){
+    margin-left: 0;
+   }
+}
 .image-container {
   height: 61px;
   width: auto;
+  @media (max-width: 991px){
+    height: 30px;
+  }
 }
+.display-mobile {
+    display: flex;
+    width: 100%;
+    justify-content: space-between !important;
+    padding: 0 1.5rem;
 
+}
 .layout-topbar-wrapper{
   background-color: #2D2D2D;
 }

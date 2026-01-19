@@ -36,7 +36,7 @@
 
             
             
-            <div style="margin: 0 auto;" id="logoImagen">
+            <div class="logo-image" id="logoImagen">
                 <img src="assets/images/LOGOTIPO_BLANK.png" alt="LogoPIWI" class="image-container">
             </div>
             <a href="#" class="sidebar-menu-button" (click)="appMain.onMenuButtonClick($event)">
@@ -52,8 +52,8 @@
         </div> -->
         <div class="layout-topbar-right fadeInDown">
             <ul class="layout-topbar-actions">
-                <li #message class="topbar-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === message}">
-                    <!-- <a href="#" class="space-between" (click)="appMain.onTopbarItemClick($event,message)">
+                <!--<li #message class="topbar-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === message}">
+                    <a href="#" class="space-between" (click)="appMain.onTopbarItemClick($event,message)">
                         <img src="{{ origenIcon }}" class="search-img marker" alt=""/>
                     </a>
                     <a href="#" class="space-between" (click)="showLeyend()" pTooltip="Leyenda" tooltipPosition="bottom">
@@ -66,8 +66,8 @@
                         rel="noopener noreferrer" 
                         class="p-button font-bold">
                         Tutoriales</a>
-                    <button class="p-button font-bold" (click)="permitToNotify()">Notificaciones</button> -->
-                    <!-- <ul class="fadeInDown scrollable-menu">
+                    <button class="p-button font-bold" (click)="permitToNotify()">Notificaciones</button>
+                   <ul class="fadeInDown scrollable-menu">
                         <li class="layout-submenu-header">
                             <h1 style="color: #202020;">Tiendas Disponibles</h1>
                             <span style="color: #757575;">Seleccione las Tiendas disponibles</span>
@@ -80,32 +80,17 @@
                                 </div>
                             </div>
                         </li>        
-                    </ul> -->
-                </li>
+                    </ul>
+                </li>-->
                 <li #profile class="topbar-item profile-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === profile}">
                     <a href="#" (click)="appMain.onTopbarItemClick($event,profile)" style="padding: 0; margin: 0;">
                         <span class="profile-image-wrapper p-mr-2">
                             <div class="quick-actions-btn p-button-text">
                                 <i class="pi pi-bolt"></i>
                             </div>
-                            
                         </span>
-                        
-                        <!-- <span class="profile-info-wrapper">
-                            <h3>{{userName | titlecase}}</h3>
-                            <span>Agente</span>
-                        </span> -->
                     </a>
                     <ul class="profile-item-submenu fadeInDown">
-                        <!-- <li class="profile-submenu-header">
-                            <div class="profile" style="align-items: center;">
-                                <img src="assets/images/user.png" alt="mirage-layout"
-                                                width="40" />
-                                <h1>{{userName | titlecase}}</h1>
-                                <span>Agente</span>
-                            </div>
-                        </li> -->
-
                         <li class="layout-submenu-footer" style="padding: 8px;">
                             <div class="actions-header">
                                 <strong>Acciones Rápidas</strong>
@@ -133,22 +118,13 @@
                                 <i class="pi pi-angle-right action-arrow"></i>
                             </div>
                         </li>
-                        
-                        <!-- <li class="layout-submenu-footer">
-                            <div class="action-item" (click)="permitToNotify()">
-                                <div class="action-icon notif-icon">
-                                    <i class="pi pi-bell"></i>
-                                </div>
-                                <span class="action-label">Activar Notificaciones</span>
-                                <i class="pi pi-angle-right action-arrow"></i>
-                            </div>
-                        </li> -->
-                        <!-- <li class="layout-submenu-footer" style="padding: 8px;">
-                            <button class="signout-button" (click)="logout()">Cerrar Sesión</button>
-                        </li> -->
                     </ul>
-                </li>   
-                <li>
+                </li>
+                <!-- <li #profile2 class="topbar-item profile-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === profile2}">
+                    
+                </li>    -->
+                <li [ngClass]="{'display-mobile': appMain.topbarMobileMenuActive == true}">
+                    <strong style="color: #47AC34;" *ngIf="appMain.topbarMobileMenuActive == true">Cerrar Sesión</strong>
                     <span class="profile-image-wrapper">
                         <div class="quick-actions-btn p-button-text" (click)="logout()" pTooltip="Cerrar Sesión" tooltipPosition="left" >
                             <i class="pi pi-sign-out"></i>
@@ -160,25 +136,36 @@
             <ul class="profile-mobile-wrapper">
                 
                 <li #mobileProfile class="topbar-item profile-item" [ngClass]="{'active-topmenuitem': appMain.activeTopbarItem === mobileProfile}">
-                    <a href="#" (click)="appMain.onTopbarItemClick($event,mobileProfile)">
-                    <span class="profile-image-wrapper">
-                        <img src="assets/layout/images/topbar/avatar-eklund.png" alt="mirage-layout" />
-                    </span>
-                        <span class="profile-info-wrapper">
-                        <h3 style="color: #FFFFFF;">{{userName | titlecase}}</h3>
-                        <span>Agente</span>
-                    </span>
+                    <a href="#" (click)="appMain.onTopbarItemClick($event,mobileProfile)" style="justify-content: space-between;">
+                        <strong>Acciones rápidas</strong>
+                        <span class="profile-image-wrapper p-mr-2">
+                            <div class="quick-actions-btn p-button-text">
+                                <i class="pi pi-bolt"></i>
+                            </div>
+                        </span>
                     </a>
                     <ul class="fadeInDown">
-                        <li class="profile-submenu-header">
-                            <div class="profile">
-                                <img src="assets/images/user.png" alt="mirage-layout"width="40" />
-                                <h1>{{userName | titlecase}}</h1>
-                                <span>Agente</span>
+                        <li>
+                            <div class="action-item">
+                                <div class="action-icon alarm-icon">
+                                    <i class="pi pi-volume-up"></i>
+                                </div>
+                                <span class="action-label">Alarma de pedidos</span>
+                                <p-triStateCheckbox 
+                                    [(ngModel)]="audioEnabled" 
+                                    (onChange)="onChangeFlagAudio()"
+                                    (click)="$event.stopPropagation()">
+                                </p-triStateCheckbox>
                             </div>
                         </li>
                         <li class="layout-submenu-footer">
-                            <button class="signout-button" (click)="logout()">Cerrar Sesión</button>
+                            <div class="action-item" (click)="showLeyend()">
+                                <div class="action-icon">
+                                    <i class="pi pi-book"></i>
+                                </div>
+                                <span class="action-label">Leyenda</span>
+                                <i class="pi pi-angle-right action-arrow"></i>
+                            </div>
                         </li>
                     </ul>
                 </li>
