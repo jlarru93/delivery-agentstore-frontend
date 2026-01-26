@@ -13,7 +13,7 @@ Amplify.configure({
     region: environment.region,
     userPoolId: environment.awsConfig.cognito.userPoolId,
     userPoolWebClientId: environment.userPoolWebClientId,
-    cookieStorage: environment.awsConfig.cognito.cookieStorage
+    storage: window.localStorage // localStorage persiste en PWA y no se envía a APIs
   }
 });
 platformBrowserDynamic().bootstrapModule(AppModule)
