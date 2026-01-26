@@ -37,6 +37,9 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
     userName: string;
     isConnectMqtt: boolean = false;
     isDoneGetStatusOpenStore: boolean = false;
+    isWindowsAlarmConnected: boolean = false;
+    isConnectingAlarm: boolean = false;
+    displayAlarmConfig: boolean = false;
     stores: AgentStoreStoreResponse[];
     selectedStore: Store[] = [];
     selectStore: number[] = [];
@@ -263,7 +266,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
             localStorage.setItem('lstIdStore', JSON.stringify(this.selectStore));
             this.dataShared.updateListStore(this.selectStore);
             this.dataShared.setStoreAviliable(this.stores);
-            this.setStoreToWindows();
+            //this.setStoreToWindows();
             this.stores.forEach(s => this.processSubsCribeStore(s.store_id));
         });
     }
@@ -273,9 +276,17 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log("this.selectStore", this.selectStore);
         console.log("ID", id);
         console.log("STORES", store);
-        this.setStoreToWindows();
+        
+        // ❌ ELIMINAR - ya no se llama automáticamente
+        // this.setStoreToWindows();
+        
         localStorage.setItem('lstIdStore', JSON.stringify(this.selectStore));
         this.processSubsCribeStore(id);
+        
+        // Si ya está conectada la alarma, actualizar las tiendas
+        if (this.isWindowsAlarmConnected) {
+            this.connectWindowsAlarm();
+        }
     }
 
     setStoreToWindows() {
@@ -496,6 +507,38 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
         );
     }
 
+    // Método para conectar alarma Windows
+    connectWindowsAlarm() {
+        if (this.selectStore.length === 0) {
+            this.messageService.showWarning('Advertencia', 'No hay tiendas seleccionadas');
+            return;
+        }
+        
+        this.isConnectingAlarm = true;
+        this.service.setFileAgentStore(this.selectStore).subscribe(
+            resp => {
+                this.isConnectingAlarm = false;
+                if (resp.success) {
+                    this.isWindowsAlarmConnected = true;
+                    this.messageService.showSuccess('Conectado', `Alarma configurada para ${this.selectStore.length} tienda(s)`);
+                } else {
+                    this.isWindowsAlarmConnected = false;
+                    this.messageService.showError('Error', resp.error || 'No se pudo conectar');
+                }
+            },
+            error => {
+                this.isConnectingAlarm = false;
+                this.isWindowsAlarmConnected = false;
+                // No mostrar error - el servicio simplemente no está disponible
+                console.log('Servicio de alarma Windows no disponible');
+            }
+        );
+    }
+
+    // Mostrar diálogo de configuración
+    showAlarmConfig() {
+        this.displayAlarmConfig = true;
+    }
     ngOnDestroy(): void {
         if (this.openStoreDialogSubscription) {
             this.openStoreDialogSubscription.unsubscribe();
@@ -504,4 +547,5 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
             this.changeStoreStatusSubscription.unsubscribe();
         }
     }
+    
 }
