@@ -158,6 +158,19 @@
                                 </p-triStateCheckbox>
                             </div>
                         </li>
+                        <li class="layout-submenu-footer" *ngIf="!isMobile">
+                            <div class="action-item" (click)="showAlarmConfig()">
+                                <div class="action-icon">
+                                    <ng-container *ngIf="isWindowsAlarmConnected">
+                                        <i class="pi pi-bell"></i>
+                                    </ng-container>
+                                    <ng-container *ngIf="isWindowsAlarmConnected">
+                                        <i class="pi pi-bell-slash"></i>
+                                    </ng-container>
+                                </div>
+                                <span class="action-label">{{isWindowsAlarmConnected ? 'Alarma Windows conectada' : 'Configurar Alarma Windows'}}</span>
+                            </div>
+                        </li>
                         <li class="layout-submenu-footer">
                             <div class="action-item" (click)="showLeyend()">
                                 <div class="action-icon">
@@ -336,4 +349,58 @@
         <p-button label="Cerrar" icon="pi pi-times" (click)="isVisibleLeyend=false" class="ui-button-secondary"></p-button>
     </p-footer>
 
+</p-dialog>
+
+
+<!-- Diálogo de configuración de Alarma -->
+<p-dialog header="Alarma de Pedidos (Windows)" 
+          [(visible)]="displayAlarmConfig" 
+          [modal]="true"
+          [style]="{width: '450px'}"
+          [draggable]="false">
+    
+    <div class="flex flex-column gap-3">
+        <!-- Estado actual -->
+        <div class="flex align-items-center gap-2 p-3 border-round" 
+             [ngClass]="isWindowsAlarmConnected ? 'bg-green-50' : 'bg-gray-100'">
+            <i [class]="isWindowsAlarmConnected ? 'pi pi-check-circle text-green-500' : 'pi pi-info-circle text-gray-500'" 
+               style="font-size: 1.5rem"></i>
+            <div>
+                <div class="font-semibold">
+                    {{ isWindowsAlarmConnected ? 'Alarma conectada' : 'Alarma no conectada' }}
+                </div>
+                <div class="text-sm text-500" *ngIf="isWindowsAlarmConnected">
+                    Monitoreando {{ selectStore.length }} tienda(s)
+                </div>
+            </div>
+        </div>
+        
+        <!-- Explicación -->
+        <div class="text-sm text-600">
+            <p class="mb-2">
+                <i class="pi pi-volume-up mr-2"></i>
+                La alarma de Windows te notificará con sonido cuando llegue un pedido nuevo.
+            </p>
+            <p class="mb-0">
+                <i class="pi pi-desktop mr-2"></i>
+                Asegúrate de que el programa <strong>"PIWI Alarma"</strong> esté ejecutándose en tu computadora.
+            </p>
+        </div>
+    </div>
+    
+    <ng-template pTemplate="footer">
+        <button pButton 
+                type="button"
+                label="Cancelar" 
+                icon="pi pi-times"
+                class="p-button-text"
+                (click)="displayAlarmConfig = false">
+        </button>
+        <button pButton 
+                [label]="isWindowsAlarmConnected ? 'Reconectar' : 'Conectar Alarma'" 
+                [icon]="isWindowsAlarmConnected ? 'pi pi-refresh' : 'pi pi-bell'"
+                [loading]="isConnectingAlarm"
+                (click)="connectWindowsAlarm()">
+        </button>
+    </ng-template>
 </p-dialog>

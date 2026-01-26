@@ -74,7 +74,7 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
     public isAllAuthenticated():boolean{
       this.dataToken="";
       const nameToken = this.initNameToken + this.getNameTokenId() + '.idToken';
-      this.dataToken = this.getCookieValue(nameToken) || '';
+      this.dataToken = this.getStorageValue(nameToken) || '';
 
 
       if(this.dataToken != null){
@@ -97,8 +97,8 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
     getAutorizationToken(){
       this.dataToken="";
       const nameToken = this.initNameToken + this.getNameTokenId() + '.idToken';
-      this.dataToken = this.getCookieValue(nameToken);
-      return this.getCookieValue(nameToken);
+      this.dataToken = this.getStorageValue(nameToken);
+      return this.getStorageValue(nameToken);
     }
 
     getUserDataToken(){const nameToken = this.initNameToken + this.getNameTokenId() + '.userData';
@@ -109,7 +109,7 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
 
       let nameTokenid = this.initNameToken + 'LastAuthUser';
 
-      const nameTokenId=this.getCookieValue(nameTokenid)
+      const nameTokenId=this.getStorageValue(nameTokenid)
       return nameTokenId
 
     }
@@ -136,23 +136,28 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
         return null;
       }
     }
-    async refreshToken(){
-      const currentToken = await this.getCurrentToken();
-      if (currentToken) {
-        try {
-          const user = await Auth.currentAuthenticatedUser();
-          const cognitoUser = await Auth.currentAuthenticatedUser();
-          const refreshedUser = cognitoUser.refreshSession(user.signInUserSession.refreshToken);
-          const refreshedToken = refreshedUser.signInUserSession.accessToken.jwtToken;
-          
-        } catch (error) {
-          console.log('Error al actualizar el token:', error);
+
+    async refreshToken(): Promise<boolean> {
+      try {
+        // Auth.currentSession() automáticamente refresca el token si está expirado
+        // y el refreshToken es válido
+        const session = await Auth.currentSession();
+        
+        if (session.isValid()) {
+          console.log('Token refrescado exitosamente');
+          return true;
         }
+        
+        return false;
+      } catch (error) {
+        console.error('Error al refrescar token:', error);
+        return false;
       }
     }
 
-    getCookieValue(name:string) {
-      return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
+    getStorageValue(name: string): string {
+      // Ahora lee de localStorage en vez de cookies
+      return localStorage.getItem(name) || '';
     }
 
     getUserFromToken(){
@@ -167,4 +172,3 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
       return userToken
     }
   }
-  

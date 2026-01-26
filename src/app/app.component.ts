@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { interval, map, Observable, of, switchMap } from 'rxjs';
 import { PushService } from './modules/service/push.service';
 import { WokerHandler } from './modules/service/worker.service';
+import { TokenBridgeService } from './utils/token-bridge.service';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -39,7 +40,8 @@ export class AppComponent implements OnInit{
         private _worker:WokerHandler,
         private connectionService:ConnectionService,
         private http:HttpClient,
-        private push: PushService
+        private push: PushService,
+        private tokenBridge: TokenBridgeService
     ) {}
 
     ngOnInit() {

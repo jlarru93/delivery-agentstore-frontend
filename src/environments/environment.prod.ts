@@ -26,9 +26,9 @@ export const environment = {
   microFront:{
     invoice:"https://micro-invoice.piwi.pe/#/",
     product: "https://micro-product.piwi.pe/#/",
-    multipleAssignment:"https://micro-multi-assigment.piwi.pe/#/"
+    multipleAssignment:"https://micro-multi-assigment.piwi.pe/#/",
+    report:'https://micro-report.piwi.pe/#/',
   },
-  microFronted:'https://micro-report.piwi.pe/#/',
   region: 'us-east-1',
   userPoolWebClientId: '4kh9mhumd42cnoe4l3e3603j4k',
   awsConfig:{
