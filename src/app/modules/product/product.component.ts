@@ -24,7 +24,7 @@ export class ProductComponent implements OnInit {
 
   sanitizarUrl() {
     this.url = this.sanitizer.bypassSecurityTrustResourceUrl(
-      `${environment.microFront.product}product/`
+      `${environment.microFront.product}product/?userPoolId=${environment.awsConfig.cognito.userPoolId}&userPoolWebClientId=${environment.userPoolWebClientId}`
     );
     console.log("this.url",this.url)
   }

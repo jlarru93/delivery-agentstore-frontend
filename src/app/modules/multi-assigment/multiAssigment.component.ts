@@ -15,7 +15,7 @@ export class MultiAssigmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.url = this.sanitizer.bypassSecurityTrustResourceUrl(
-      `${environment.microFront.multipleAssignment}`
+      `${environment.microFront.multipleAssignment}?userPoolId=${environment.awsConfig.cognito.userPoolId}&userPoolWebClientId=${environment.userPoolWebClientId}`
     )
   }
 
