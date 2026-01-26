@@ -15,7 +15,7 @@ export class DynamicReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.url = this.sanitizer.bypassSecurityTrustResourceUrl(
-      `${environment.microFronted}?userPoolId=${environment.awsConfig.cognito.userPoolId}&userPoolWebClientId=${environment.userPoolWebClientId}`
+      `${environment.microFront.report}?userPoolId=${environment.awsConfig.cognito.userPoolId}&userPoolWebClientId=${environment.userPoolWebClientId}`
     )
   }
 
