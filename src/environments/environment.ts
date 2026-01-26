@@ -30,9 +30,10 @@ export const environment = {
   microFront:{
     invoice:"https://dev-micro-invoice.piwi.pe/#/",
     product: "https://dev-micro-product.piwi.pe/#/",
-    multipleAssignment:"https://dev-micro-multi-assigment.piwi.pe/#/"
+    multipleAssignment:"https://dev-micro-multi-assigment.piwi.pe/#/",
+    report:'https://dev-micro-report.piwi.pe/#/',
   },
-  microFronted:'https://dev-micro-report.piwi.pe/#/',
+  
   region: 'us-west-1',
   //userPoolId: 'us-west-1_4xM3rA9gH',
   userPoolWebClientId: '4hbd17p5udfca8i18rbmk5g0dp',

@@ -32,9 +32,9 @@ export const environment = {
   microFront:{
     invoice:"https://dev-micro-invoice.piwi.pe/#/",
     product: "https://qa-micro-product.piwi.pe/#/",
-    multipleAssignment:"https://dev-micro-multi-assigment.piwi.pe/#/"
+    multipleAssignment:"https://dev-micro-multi-assigment.piwi.pe/#/",
+    report:'https://dev-micro-report.piwi.pe/#/',
   },
-  microFronted:'https://dev-micro-report.piwi.pe/#/',
   region: 'us-east-2',
   //userPoolId: 'us-east-2_bq5gZkIZ7',
   userPoolWebClientId: '2l4qjgigviuct4drm88ev16r3o',
