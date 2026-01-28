@@ -44,6 +44,7 @@ export class AppMenuComponent implements OnInit, OnDestroy {
             { label: 'Órdenes', icon: 'pi pi-fw pi-user-plus', routerLink: ['/main'] },
             { label: 'Productos', icon: 'pi pi-fw pi-flag', routerLink: ['/product'] },
             { label: 'Solicitar Viaje', icon: 'pi pi-fw pi-car', command: () => this.redirectRequestTrip() },
+            { label: 'Solicitar Viaje V2', icon: 'pi pi-fw pi-history', routerLink: ['/request-order'] },
             { label: 'Servicios en curso', icon: 'pi pi-fw pi-history', routerLink: ['/order-course'] },
             { label: 'Reporte de usuarios', icon: 'pi pi-fw pi-users', routerLink: ['/user-report'] },
             { label: 'Reporte dinamico', icon: 'pi pi-fw pi-file', routerLink: ['/dynamic-report'] }
