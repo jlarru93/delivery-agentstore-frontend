@@ -15,7 +15,7 @@ export class RequestOrderComponent implements OnInit {
 
   ngOnInit(): void {
     this.url = this.sanitizer.bypassSecurityTrustResourceUrl(
-      `${environment.microFront.report}?userPoolId=${environment.awsConfig.cognito.userPoolId}&userPoolWebClientId=${environment.userPoolWebClientId}`
+      `${environment.microFront.order}?userPoolId=${environment.awsConfig.cognito.userPoolId}&userPoolWebClientId=${environment.userPoolWebClientId}`
     )
   }
 
