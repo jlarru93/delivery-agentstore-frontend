@@ -162,11 +162,17 @@ export class RequestStore {
     phone: string;
     fullName: string;
 }
+export class BrandResponse{
+    id:number
+    name:string
+    urlLogo:string
+}
 export class StoreResponse {
     id: number
     name: string
     fullName : string
     phone : string
+    brand: BrandResponse
     //address: AddressResponse
     addressStreet: string
     location?: Point
