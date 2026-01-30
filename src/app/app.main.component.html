@@ -5,20 +5,20 @@
                 'layout-topbar-mobile-active': topbarMobileMenuActive,
                 'layout-megamenu-mobile-active': megaMenuMobileActive,
                 'layout-sidebar-mobile-active': menuMobileActive,
+                'layout-fullscreen-mode': isFullscreenMode,
                 'p-input-filled': app.inputStyle === 'filled',
                 'p-ripple-disabled': !app.ripple}" [class]="app.menuColor">
 
-    <app-menu></app-menu>
+    <app-menu *ngIf="!isFullscreenMode"></app-menu>
     <app-alert></app-alert>
     <div class="layout-main">
-        <app-topbar></app-topbar>
+        <app-topbar *ngIf="!isFullscreenMode"></app-topbar>
 
         <!-- <app-rightpanel></app-rightpanel>-->
 
-        <app-breadcrumb></app-breadcrumb> 
+        <app-breadcrumb *ngIf="!isFullscreenMode"></app-breadcrumb> 
 
-        <div class="layout-content" style="
-        background-color: #ffffff;">
+        <div class="layout-content" [ngStyle]="{'background-color': '#ffffff', 'padding': isFullscreenMode ? '0' : null}">
             <router-outlet></router-outlet>
         </div>
 

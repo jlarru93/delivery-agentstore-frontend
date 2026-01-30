@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AuthService } from './auth.service';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 /**
  * Protocolo de mensajes para comunicación padre ↔ hijo (iframe)
@@ -40,11 +41,13 @@ export class TokenBridgeService implements OnDestroy {
     'https://micro-product.piwi.pe',
     'https://micro-report.piwi.pe',
     'https://micro-multi-assigment.piwi.pe',
+    'https://micro-order.piwi.pe',
     // Dev
     'https://dev-micro-invoice.piwi.pe',
     'https://dev-micro-product.piwi.pe',
     'https://dev-micro-report.piwi.pe',
     'https://dev-micro-multi-assigment.piwi.pe',
+    'https://dev-micro-order.piwi.pe',
     // Local para desarrollo
     'http://localhost:4200',
     'http://localhost:4201',
@@ -53,6 +56,10 @@ export class TokenBridgeService implements OnDestroy {
 
   // Registro de iframes hijos para broadcast
   private childFrames: Set<MessageEventSource> = new Set();
+
+  // Estado de fullscreen mode para micro-frontends
+  private fullscreenModeSubject = new BehaviorSubject<boolean>(false);
+  public fullscreenMode$: Observable<boolean> = this.fullscreenModeSubject.asObservable();
 
   private messageHandler: (event: MessageEvent) => void;
 
@@ -78,10 +85,21 @@ export class TokenBridgeService implements OnDestroy {
       return; // Ignorar mensajes de orígenes no permitidos
     }
 
-    const message = event.data as TokenMessage;
+    const message = event.data;
     
     // Validar que sea un mensaje de nuestro protocolo
-    if (!message?.type?.startsWith('PIWI_')) {
+    if (!message?.type) {
+      return;
+    }
+
+    // Manejar mensajes de fullscreen (REQUEST_FULLSCREEN_MODE)
+    if (message.type === 'REQUEST_FULLSCREEN_MODE') {
+      this.handleFullscreenRequest(message.payload?.enabled ?? false, event);
+      return;
+    }
+
+    // Validar que sea un mensaje del protocolo de tokens
+    if (!message.type.startsWith('PIWI_')) {
       return;
     }
 
@@ -175,6 +193,29 @@ export class TokenBridgeService implements OnDestroy {
         requestId: event.data.requestId
       });
     }
+  }
+
+  /**
+   * Maneja petición de fullscreen del micro-frontend
+   */
+  private handleFullscreenRequest(enabled: boolean, event: MessageEvent): void {
+    console.log('📱 TokenBridge: Fullscreen solicitado:', enabled, 'de', event.origin);
+    this.fullscreenModeSubject.next(enabled);
+    
+    // Notificar al hijo que el fullscreen fue aplicado
+    if (event.source && 'postMessage' in event.source) {
+      (event.source as Window).postMessage({
+        type: 'FULLSCREEN_MODE_CHANGED',
+        payload: { enabled }
+      }, event.origin);
+    }
+  }
+
+  /**
+   * Getter para el estado actual de fullscreen
+   */
+  public get isFullscreenMode(): boolean {
+    return this.fullscreenModeSubject.value;
   }
 
   /**
