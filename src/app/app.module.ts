@@ -164,6 +164,7 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import { DialogUpdateWebModule } from './modules/dialogUpdateWeb/dialogUpdateWeb.module';
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
 import { PushService } from './modules/service/push.service';
+import { GeoMessageHandlerService } from './modules/service/geo.message.handler.service';
 
 
 @NgModule({
@@ -317,7 +318,7 @@ import { PushService } from './modules/service/push.service';
         PushService,
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, BreadcrumbService,
-        MqttService, MqttRoutingService, OrderHandler, StoreHandler
+        MqttService, MqttRoutingService, OrderHandler, StoreHandler,GeoMessageHandlerService
     ],
     bootstrap: [AppComponent]
 })
