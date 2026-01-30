@@ -1,4 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { Location } from '@angular/common';
 import { AuthService } from './auth.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -63,7 +64,10 @@ export class TokenBridgeService implements OnDestroy {
 
   private messageHandler: (event: MessageEvent) => void;
 
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private location: Location
+  ) {
     this.messageHandler = this.handleMessage.bind(this);
     this.initListener();
   }
@@ -95,6 +99,12 @@ export class TokenBridgeService implements OnDestroy {
     // Manejar mensajes de fullscreen (REQUEST_FULLSCREEN_MODE)
     if (message.type === 'REQUEST_FULLSCREEN_MODE') {
       this.handleFullscreenRequest(message.payload?.enabled ?? false, event);
+      return;
+    }
+
+    // Manejar mensaje de navegación hacia atrás
+    if (message.type === 'NAVIGATE_BACK') {
+      this.handleNavigateBack();
       return;
     }
 
@@ -216,6 +226,19 @@ export class TokenBridgeService implements OnDestroy {
    */
   public get isFullscreenMode(): boolean {
     return this.fullscreenModeSubject.value;
+  }
+
+  /**
+   * Maneja petición de navegación hacia atrás desde el micro-frontend
+   */
+  private handleNavigateBack(): void {
+    console.log('📱 TokenBridge: Navegación hacia atrás solicitada');
+    
+    // Desactivar fullscreen primero
+    this.fullscreenModeSubject.next(false);
+    
+    // Navegar hacia atrás
+    this.location.back();
   }
 
   /**
