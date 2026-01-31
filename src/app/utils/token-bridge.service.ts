@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -66,7 +67,8 @@ export class TokenBridgeService implements OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) {
     this.messageHandler = this.handleMessage.bind(this);
     this.initListener();
@@ -237,8 +239,8 @@ export class TokenBridgeService implements OnDestroy {
     // Desactivar fullscreen primero
     this.fullscreenModeSubject.next(false);
     
-    // Navegar hacia atrás
-    this.location.back();
+    // Navegar al inicio
+    this.router.navigate(['/']);
   }
 
   /**
