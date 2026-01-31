@@ -476,6 +476,14 @@
         </div>
     </div>
     
+    <!-- CUPÓN APLICADO (si hay coupons) - Línea compacta -->
+    <div class="orden-cupon-line" *ngIf="orderSelected?.coupons?.length > 0">
+        <i class="pi pi-ticket"></i>
+        <span class="orden-cupon-code">{{orderSelected.coupons[0].code}}</span>
+        <span class="orden-cupon-descuento">-{{orderSelected.getCurrency()}}{{orderSelected.coupons[0].discount}}</span>
+        <span class="orden-cupon-mas" *ngIf="orderSelected.coupons.length > 1">(+{{orderSelected.coupons.length - 1}})</span>
+    </div>
+    
     <!-- CLIENTE -->
     <div class="orden-info-card">
         <h4 class="orden-info-card-titulo">Cliente</h4>
