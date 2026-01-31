@@ -294,6 +294,14 @@ export class OrderBean {
         return this.user?.fullName || this.user?.name || '';
     }
     
+    // Obtener teléfono del cliente desde addresses[1]
+    getClientPhone(): string {
+        if (this.addresses && this.addresses.length > 1 && this.addresses[1]?.phone) {
+            return this.addresses[1].phone;
+        }
+        return this.user?.phone || '';
+    }
+    
     // Verificar si hay descuento en domicilio
     hasDeliveryDiscount(): boolean {
         return this.deliveryPrice !== this.deliveryPriceWithDiscount && 

@@ -357,19 +357,19 @@
         <h4 class="orden-info-card-titulo">Cliente</h4>
         <div class="orden-cliente-info">
             <div>
-                <div class="orden-cliente-nombre">{{orderSelected.getClientName()}}</div>
+                <div class="orden-cliente-nombre">{{orderSelected?.getClientName()}}</div>
                 <div class="orden-cliente-telefono">
                     <i class="pi pi-phone"></i>
-                    <span>{{formatPhone(orderSelected?.user?.phone)}}</span>
+                    <span>{{formatPhone(orderSelected.getClientPhone())}}</span>
                 </div>
-                <div class="orden-cliente-telefono">
+                <div class="orden-cliente-telefono" *ngIf="orderSelected?.user?.documentType">
                     <i class="pi pi-id-card"></i>
                     <span>{{orderSelected?.user?.documentType}}: {{orderSelected?.user?.documentValue}}</span>
                 </div>
             </div>
             <button 
                 class="orden-btn-whatsapp" 
-                (click)="sendMessageWhatsApp(orderSelected.user.phone)">
+                (click)="sendMessageWhatsApp(orderSelected.getClientPhone())">
                 <i class="pi pi-whatsapp"></i>
             </button>
         </div>
@@ -658,7 +658,7 @@
                             icon="pi pi-phone" 
                             label="Llamar al Cliente"
                             class="p-button-success rechazo-btn-contacto rechazo-btn-llamar"
-                            (click)="llamarCliente(orderSelected?.user?.phone)">
+                            (click)="llamarCliente(orderSelected.getClientPhone())">
                         </button>
                         <button 
                             pButton 
@@ -666,7 +666,7 @@
                             icon="pi pi-whatsapp" 
                             label="WhatsApp"
                             class="p-button-success rechazo-btn-contacto rechazo-btn-whatsapp"
-                            (click)="sendMessageWhatsApp(orderSelected?.user?.phone)">
+                            (click)="sendMessageWhatsApp(orderSelected.getClientPhone())">
                         </button>
                     </div>
                     
@@ -674,8 +674,8 @@
                     <div class="rechazo-info-cliente">
                         <i class="pi pi-user"></i>
                         <div>
-                            <strong>{{orderSelected.getClientName()}}</strong>
-                            <span>{{formatPhone(orderSelected?.user?.phone)}}</span>
+                            <strong>{{orderSelected?.getClientName()}}</strong>
+                            <span>{{formatPhone(orderSelected.getClientPhone())}}</span>
                         </div>
                     </div>
                 </div>
