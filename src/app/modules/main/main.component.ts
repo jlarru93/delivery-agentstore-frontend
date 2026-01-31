@@ -478,6 +478,22 @@ import { DomSanitizer } from "@angular/platform-browser";
       this.router.navigate([], { queryParams: { order: null }, queryParamsHandling: 'merge' });
     }
 
+    /**
+     * Editar orden de comercio (SendAndReciveStore)
+     * Solo disponible si no tiene motorizado asignado
+     */
+    editCommerceOrder(order: OrderBean) {
+      if (!order.canEdit()) {
+        this.messageService.showInfo('No editable', 'Esta orden ya tiene motorizado asignado. Contacte a CallCenter para modificarla.');
+        return;
+      }
+      
+      // Navegar al micro-frontend de edición de órdenes
+      // TODO: Ajustar URL según ambiente (dev/qa/prod)
+      const microFrontendUrl = `/order/edit/${order.uuid}`;
+      this.router.navigate([microFrontendUrl]);
+    }
+
     onGetMethodType(method: string){
       let methodConverted: string
       switch(method){
@@ -950,6 +966,13 @@ import { DomSanitizer } from "@angular/platform-browser";
    * Obtiene solo el primer nombre del cliente
    */
   getFirstName(order: OrderBean): string {
+    // Para órdenes de comercio, usar addresses[1].receptorName
+    const clientName = order.getClientName();
+    if (clientName) {
+      // Extraer solo el primer nombre
+      const firstName = clientName.split(' ')[0];
+      return firstName || 'Cliente';
+    }
     return order?.user?.name || 'Cliente';
   }
 

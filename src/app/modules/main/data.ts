@@ -226,7 +226,7 @@ export class OrderBean {
         this.showChat = true
     }
     getCurrency(): string {
-        return ""+this.products[0]?.price.currency
+        return ""+(this.products?.[0]?.price?.currency ?? "S/")
     }
     getProductPrice(): number {
         return this.products.reduce((accumulation, current) => { return accumulation + current.getTotalPrice() }, 0)//sumOf { it.getTotalPrice() }
@@ -277,10 +277,10 @@ export class OrderBean {
 
     //comanda
     getTotalPayUserAndCurrencyCommand(){
-        return ""+this.getCurrency()+formatCurrency(this.totalPayUser)
+        return ""+this.getCurrency()+formatCurrency(this.totalPayUser ?? this.total ?? 0)
     }
     getTotalAndCurrencyCommand(){
-        return ""+this.getCurrency()+formatCurrency(this.total)
+        return ""+this.getCurrency()+formatCurrency(this.total ?? 0)
     }
     getPiwiCoinAndCurrency(){
         return ""+this.getCurrency() + formatCurrency(this.payment?.piwiCoin??0)

@@ -272,7 +272,9 @@
             <div class="p-p-2">
                
                <!-- CARD COMPACTA -->
-               <div class="card-order-compact por-entregar" (click)="openOrderDialog(order)">
+               <div class="card-order-compact por-entregar" 
+                    [ngClass]="{'commerce': order.isCommerce()}"
+                    (click)="openOrderDialog(order)">
                   
                   <!-- HEADER: Nombre + Badges + Total + Pago -->
                   <div class="card-header-compact">
@@ -407,7 +409,9 @@
             <div class="p-p-2">
                
                <!-- CARD COMPACTA -->
-               <div class="card-order-compact en-ruta" (click)="openOrderDialog(order)">
+               <div class="card-order-compact en-ruta" 
+                    [ngClass]="{'commerce': order.isCommerce()}"
+                    (click)="openOrderDialog(order)">
                   
                   <!-- HEADER: Nombre + Badges + Total + Pago -->
                   <div class="card-header-compact">
@@ -529,7 +533,9 @@
             <div class="p-p-2">
                
                <!-- CARD COMPACTA -->
-               <div class="card-order-compact terminado" (click)="openOrderDialog(order)">
+               <div class="card-order-compact terminado" 
+                    [ngClass]="{'commerce': order.isCommerce()}"
+                    (click)="openOrderDialog(order)">
                   
                   <!-- HEADER: Nombre + Badges + Total + Pago -->
                   <div class="card-header-compact">
