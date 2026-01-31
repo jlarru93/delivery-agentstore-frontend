@@ -98,6 +98,16 @@ export class OrderModalComponent implements OnInit, OnDestroy {
         this.loadingButtonSelfManage = false;
         this.showConfirmOrderReady = false;
         
+        // Limpiar datos del mapa y tracking
+        this.motorizedTracking = null;
+        this.showMapView = false;
+        this.stopTrackingPolling();
+        if (this.leafletMap) {
+            this.leafletMap.remove();
+            this.leafletMap = null;
+            this.motorizedMarker = null;
+        }
+        
         this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
         
         if(this.orderSelected.status=="open"){
