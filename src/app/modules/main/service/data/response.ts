@@ -467,6 +467,7 @@ export class OrderResponse {
         bean.productPriceWithDiscount = self.productPriceWithDiscount
         bean.coupons = self?.coupons?.map((it)=> CouponsResponse.toBean(it))
         bean.urlTracking = self.urlTracking
+        bean.addresses = self?.addresses
         bean.statusHistory = (self?.statusHistory || []).map(history => ({
             ...history,
             executeFor: {

@@ -1,5 +1,6 @@
 import { ChatBean } from "src/app/chat/data.chat"
 import { formatCurrency } from "src/app/utils"
+import { AddressResponseLoadingOrder } from "../request-trip/data/response"
 
 
 export abstract class SubOptionBean {
@@ -215,6 +216,7 @@ export class OrderBean {
     productPriceWithDiscount?:number
     coupons?: CouponsBean[]
     urlTracking:string
+    addresses?: AddressResponseLoadingOrder[]
 
     constructor(){
         this.messagesNoReadTotal=0
@@ -283,6 +285,41 @@ export class OrderBean {
     getPiwiCoinAndCurrency(){
         return ""+this.getCurrency() + formatCurrency(this.payment?.piwiCoin??0)
     }
+    
+    // Obtener nombre del cliente desde addresses[1]
+    getClientName(): string {
+        if (this.addresses && this.addresses.length > 1 && this.addresses[1]?.receptorName) {
+            return this.addresses[1].receptorName;
+        }
+        return this.user?.fullName || this.user?.name || '';
+    }
+    
+    // Verificar si hay descuento en domicilio
+    hasDeliveryDiscount(): boolean {
+        return this.deliveryPrice !== this.deliveryPriceWithDiscount && 
+               this.deliveryPriceWithDiscount !== undefined &&
+               this.deliveryPriceWithDiscount !== null;
+    }
+    
+    // Obtener precio de domicilio con descuento
+    getDeliveryPriceWithDiscountAndCurrency(): string {
+        const value = this.deliveryPriceWithDiscount ?? this.deliveryPrice ?? 0;
+        return "" + this.getCurrency() + formatCurrency(value);
+    }
+    
+    // Verificar si hay descuento en productos
+    hasProductDiscount(): boolean {
+        return this.productPrice !== this.productPriceWithDiscount && 
+               this.productPriceWithDiscount !== undefined &&
+               this.productPriceWithDiscount !== null;
+    }
+    
+    // Obtener precio de productos con descuento
+    getProductPriceWithDiscountAndCurrency(): string {
+        const value = this.productPriceWithDiscount ?? this.productPrice ?? 0;
+        return "" + this.getCurrency() + formatCurrency(value);
+    }
+    
     calculateTime(){
         const tiempoActual = new Date();
         const tiempoCreacion = new Date(this.createdAt * 1000);

@@ -155,10 +155,10 @@
                         <div class="orden-resumen-item">
                             <div class="orden-resumen-item-label">Domicilio</div>
                             <div class="orden-resumen-item-valor">
-                                <ng-container *ngIf="orderSelected.deliveryPriceDiscount">
+                                <ng-container *ngIf="orderSelected.hasDeliveryDiscount()">
                                     <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getdeliveryPriceAndCurrency()}}</del><br>
                                 </ng-container>
-                                {{orderSelected.getdeliveryPriceDiscountAndCurrency()}}
+                                {{orderSelected.getDeliveryPriceWithDiscountAndCurrency()}}
                             </div>
                         </div>
                         <div class="orden-resumen-item">
@@ -167,7 +167,12 @@
                         </div>
                         <div class="orden-resumen-item">
                             <div class="orden-resumen-item-label">Productos</div>
-                            <div class="orden-resumen-item-valor">{{orderSelected.getProductPriceAndCurrency()}}</div>
+                            <div class="orden-resumen-item-valor">
+                                <ng-container *ngIf="orderSelected.hasProductDiscount()">
+                                    <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getProductPriceAndCurrency()}}</del><br>
+                                </ng-container>
+                                {{orderSelected.getProductPriceWithDiscountAndCurrency()}}
+                            </div>
                         </div>
                         <div class="orden-resumen-item orden-resumen-total">
                             <div class="orden-resumen-item-label">Total</div>
@@ -278,10 +283,10 @@
                             <div class="orden-resumen-item">
                                 <div class="orden-resumen-item-label">Domicilio</div>
                                 <div class="orden-resumen-item-valor">
-                                    <ng-container *ngIf="orderSelected.deliveryPriceDiscount">
+                                    <ng-container *ngIf="orderSelected.hasDeliveryDiscount()">
                                         <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getdeliveryPriceAndCurrency()}}</del><br>
                                     </ng-container>
-                                    {{orderSelected.getdeliveryPriceDiscountAndCurrency()}}
+                                    {{orderSelected.getDeliveryPriceWithDiscountAndCurrency()}}
                                 </div>
                             </div>
                             <div class="orden-resumen-item">
@@ -290,7 +295,12 @@
                             </div>
                             <div class="orden-resumen-item">
                                 <div class="orden-resumen-item-label">Productos</div>
-                                <div class="orden-resumen-item-valor">{{orderSelected.getProductPriceAndCurrency()}}</div>
+                                <div class="orden-resumen-item-valor">
+                                    <ng-container *ngIf="orderSelected.hasProductDiscount()">
+                                        <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getProductPriceAndCurrency()}}</del><br>
+                                    </ng-container>
+                                    {{orderSelected.getProductPriceWithDiscountAndCurrency()}}
+                                </div>
                             </div>
                             <div class="orden-resumen-item orden-resumen-total">
                                 <div class="orden-resumen-item-label">Total</div>
@@ -347,7 +357,7 @@
         <h4 class="orden-info-card-titulo">Cliente</h4>
         <div class="orden-cliente-info">
             <div>
-                <div class="orden-cliente-nombre">{{orderSelected?.user?.fullName}}</div>
+                <div class="orden-cliente-nombre">{{orderSelected.getClientName()}}</div>
                 <div class="orden-cliente-telefono">
                     <i class="pi pi-phone"></i>
                     <span>{{formatPhone(orderSelected?.user?.phone)}}</span>
@@ -664,7 +674,7 @@
                     <div class="rechazo-info-cliente">
                         <i class="pi pi-user"></i>
                         <div>
-                            <strong>{{orderSelected?.user?.fullName}}</strong>
+                            <strong>{{orderSelected.getClientName()}}</strong>
                             <span>{{formatPhone(orderSelected?.user?.phone)}}</span>
                         </div>
                     </div>
@@ -980,7 +990,7 @@
                 <i class="pi pi-user"></i>
                 <div>
                     <span class="label">Cliente:</span>
-                    <span class="value">{{orderSelected?.user?.fullName}}</span>
+                    <span class="value">{{orderSelected.getClientName()}}</span>
                 </div>
             </div>
                         
