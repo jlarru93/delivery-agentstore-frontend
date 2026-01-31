@@ -403,6 +403,7 @@ export class OrderResponse {
     id?: number
     uuid?: string
     zoneId?: number
+    type?: string  // 'traditional' | 'SendAndReciveStore'
     productPrice: number
     servicePrice: number
     deliveryPrice: number
@@ -438,6 +439,7 @@ export class OrderResponse {
         bean.id = self?.id
         bean.uuid = self?.uuid
         bean.zoneId = self?.zoneId
+        bean.type = self?.type
         bean.productPrice = self.productPrice
         bean.servicePrice = self.servicePrice
         bean.deliveryPrice = self.deliveryPrice

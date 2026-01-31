@@ -181,6 +181,7 @@ export class OrderBean {
     id?: number
     uuid?: string
     zoneId?: number
+    type?: string  // 'traditional' | 'SendAndReciveStore'
     productPrice: number
     servicePrice: number
     deliveryPrice: number
@@ -362,6 +363,12 @@ export class OrderBean {
     hasPaymentEvidence(): boolean {
         const method: string=this.payment?.method?.type
         return method === 'E-WALLET' || method === 'BANK';
+    }
+    isCommerce(): boolean {
+        return this.type === 'SendAndReciveStore';
+    }
+    canEdit(): boolean {
+        return this.isCommerce() && !this.deliveryMan;
     }
 }
 export interface StatusOpenStoreBean{
