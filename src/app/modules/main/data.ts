@@ -282,6 +282,17 @@ export class OrderBean {
         return ""+this.getCurrency() + formatCurrency(((this.deliveryPrice??0) - (this.deliveryPriceDiscount??0)))
     }
 
+    // Verificar si hay descuento en el total (total != totalPayUser)
+    hasTotalPayUserDiscount(): boolean {
+        if (this.totalPayUser === undefined || this.totalPayUser === null) return false;
+        return this.total !== this.totalPayUser;
+    }
+    
+    // Obtener totalPayUser formateado
+    getTotalPayUserAndCurrency(): string {
+        return "" + this.getCurrency() + formatCurrency(this.totalPayUser ?? this.total ?? 0);
+    }
+
     //comanda
     getTotalPayUserAndCurrencyCommand(){
         return ""+this.getCurrency()+formatCurrency(this.totalPayUser ?? this.total ?? 0)
