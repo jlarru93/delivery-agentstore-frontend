@@ -116,6 +116,20 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     }
 }
 
+.btn-editar-modal {
+    background: white !important;
+    color: #F59E0B !important;
+    border-color: white !important;
+    
+    &:hover {
+        background: #FEF3C7 !important;
+    }
+    
+    .pi-pencil {
+        font-weight: bold;
+    }
+}
+
 .btn-cerrar-modal {
     background: rgba(255, 255, 255, 0.2) !important;
     color: white !important;

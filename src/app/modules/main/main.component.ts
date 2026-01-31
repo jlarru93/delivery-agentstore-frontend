@@ -479,20 +479,25 @@ import { DomSanitizer } from "@angular/platform-browser";
     }
 
     /**
+     * Editar orden desde el modal
+     * Navega al módulo request-order con el UUID como query param
+     */
+    onEditOrder(order: OrderBean) {
+      if (!order || !order.uuid) return;
+      
+      // Cerrar modal si está abierto
+      this.displayOrder = false;
+      console.log("order",{ uuid: order.uuid } )
+      // Navegar al módulo con el UUID como query param
+      this.router.navigate(['/request-order'], { 
+        queryParams: { uuid: order.uuid } 
+      });
+    }
+
+    /**
      * Editar orden de comercio (SendAndReciveStore)
      * Solo disponible si no tiene motorizado asignado
      */
-    editCommerceOrder(order: OrderBean) {
-      if (!order.canEdit()) {
-        this.messageService.showInfo('No editable', 'Esta orden ya tiene motorizado asignado. Contacte a CallCenter para modificarla.');
-        return;
-      }
-      
-      // Navegar al micro-frontend de edición de órdenes
-      // TODO: Ajustar URL según ambiente (dev/qa/prod)
-      const microFrontendUrl = `/order/edit/${order.uuid}`;
-      this.router.navigate([microFrontendUrl]);
-    }
 
     onGetMethodType(method: string){
       let methodConverted: string

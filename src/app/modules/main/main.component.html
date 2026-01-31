@@ -194,7 +194,7 @@
                         <!-- Botón Editar (solo comercio sin motorizado) -->
                         <button *ngIf="order.canEdit()" 
                               class="btn-edit-commerce" 
-                              (click)="editCommerceOrder(order); $event.stopPropagation()"
+                              (click)="onEditOrder(order); $event.stopPropagation()"
                               pTooltip="Editar orden" 
                               tooltipPosition="top">
                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#3B82F6">
@@ -649,4 +649,5 @@
 <order-modal
 [orderSelected]="orderSelected"
 [(visible)]="displayOrder"
+(editOrder)="onEditOrder($event)"
 ></order-modal>

@@ -15,6 +15,18 @@
         <div class="modal-orden-header">
             <h2 class="modal-orden-titulo">Orden: #{{orderSelected.id}}</h2>
             <div class="modal-orden-acciones">
+                <!-- Botón editar solo para SendAndReciveStore -->
+                <button 
+                    *ngIf="canEditOrder()"
+                    pButton 
+                    type="button" 
+                    icon="pi pi-pencil" 
+                    [label]="isMobile ? '' : 'Editar'"
+                    class="p-button-outlined btn-editar-modal"
+                    pTooltip="Editar orden"
+                    tooltipPosition="bottom"
+                    (click)="onEditOrder()">
+                </button>
                 <!-- Botón imprimir solo en desktop -->
                 <button 
                     pButton 

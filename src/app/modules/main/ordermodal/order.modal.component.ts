@@ -24,6 +24,7 @@ export class OrderModalComponent implements OnInit, OnDestroy {
 
     @Input() visible: boolean = false;
     @Output() visibleChange = new EventEmitter<boolean>();
+    @Output() editOrder = new EventEmitter<OrderBean>();
 
     readyToDmAt: number
     readyToDmMinutesAt: number
@@ -1167,5 +1168,23 @@ export class OrderModalComponent implements OnInit, OnDestroy {
         
         // Si es muy corto, devolver como está
         return phone;
+    }
+
+    // ========== EDITAR ORDEN ==========
+    onEditOrder(): void {
+        if (!this.orderSelected) return;
+        
+        // Cerrar el modal
+        this.visible = false;
+        this.visibleChange.emit(false);
+        
+        // Emitir evento para que el padre maneje la edición
+        this.editOrder.emit(this.orderSelected);
+    }
+
+    // Verificar si la orden puede ser editada
+    canEditOrder(): boolean {
+        // Usar la misma lógica que las tarjetas del kanban
+        return this.orderSelected?.canEdit() ?? false;
     }
 }
