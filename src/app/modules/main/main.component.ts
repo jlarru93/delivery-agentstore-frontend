@@ -484,7 +484,7 @@ import { DomSanitizer } from "@angular/platform-browser";
      */
     editCommerceOrder(order: OrderBean) {
       if (!order.canEdit()) {
-        this.messageService.showInfo( 'No editable', 'Esta orden ya tiene motorizado asignado. Contacte a CallCenter para modificarla.');
+        this.messageService.showInfo('No editable', 'Esta orden ya tiene motorizado asignado. Contacte a CallCenter para modificarla.');
         return;
       }
       
@@ -1061,15 +1061,10 @@ import { DomSanitizer } from "@angular/platform-browser";
       </svg>`,
       
       'CREDIT': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-label="Crédito del comercio - Ya cobrado" role="img">
-        <!-- Fondo circular naranja -->
-        <circle cx="12" cy="12" r="11" fill="#F97316"/>
-        <!-- Tienda/Comercio -->
+        <circle cx="12" cy="12" r="11" fill="#DB2777"/>
         <path d="M6 10V17H18V10" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <!-- Techo de tienda -->
         <path d="M4 10L12 5L20 10" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- Puerta -->
         <rect x="10" y="13" width="4" height="4" fill="white" rx="0.5"/>
-        <!-- Check de cobrado -->
         <circle cx="17" cy="7" r="4" fill="#22C55E"/>
         <path d="M15 7L16.5 8.5L19 5.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>`

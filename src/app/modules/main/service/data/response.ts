@@ -399,6 +399,12 @@ export class StatusHistoryResponse{
     executeFor:ExecuteForResponse
 }
 
+export class DeliveryPriceMongoResponse {
+    overviewPolyline?: string
+    distance?: number
+    duration?: number
+}
+
 export class OrderResponse {
     id?: number
     uuid?: string
@@ -433,6 +439,7 @@ export class OrderResponse {
     productPriceWithDiscount?:number
     coupons?: CouponsResponse[]
     urlTracking:string
+    deliveryPriceMongo?: DeliveryPriceMongoResponse
 
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
@@ -468,6 +475,11 @@ export class OrderResponse {
         bean.coupons = self?.coupons?.map((it)=> CouponsResponse.toBean(it))
         bean.urlTracking = self.urlTracking
         bean.addresses = self?.addresses
+        bean.deliveryPriceMongo = self?.deliveryPriceMongo ? {
+            overviewPolyline: self.deliveryPriceMongo.overviewPolyline,
+            distance: self.deliveryPriceMongo.distance,
+            duration: self.deliveryPriceMongo.duration
+        } : undefined
         bean.statusHistory = (self?.statusHistory || []).map(history => ({
             ...history,
             executeFor: {

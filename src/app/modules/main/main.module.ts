@@ -39,6 +39,7 @@ import { TooltipModule } from "primeng/tooltip";
 import { DropdownModule } from "primeng/dropdown";
 import { OrderModalComponent } from "./ordermodal/order.modal.component";
 import { TabViewModule } from "primeng/tabview";
+import { RequestTripService } from "../request-trip/services/request-trip.service";
 
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderDialogComponent,OrderModalComponent],
@@ -78,6 +79,6 @@ import { TabViewModule } from "primeng/tabview";
       DropdownModule,
       TabViewModule
     ],
-    providers:[OrderService]
+    providers:[OrderService, RequestTripService]
   })
 export class MainModule { }

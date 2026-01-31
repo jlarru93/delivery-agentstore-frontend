@@ -178,6 +178,12 @@ export class StatusHistoryBean{
     executeFor:ExecuteForBean
 }
 
+export class DeliveryPriceMongoBean {
+    overviewPolyline?: string
+    distance?: number
+    duration?: number
+}
+
 export class OrderBean {
     id?: number
     uuid?: string
@@ -217,6 +223,7 @@ export class OrderBean {
     coupons?: CouponsBean[]
     urlTracking:string
     addresses?: AddressResponseLoadingOrder[]
+    deliveryPriceMongo?: DeliveryPriceMongoBean
 
     constructor(){
         this.messagesNoReadTotal=0

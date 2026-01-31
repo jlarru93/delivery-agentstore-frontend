@@ -43,11 +43,79 @@
         
         <!-- ==================== DESKTOP LAYOUT (60/40) ==================== -->
         <div class="orden-modal-content orden-desktop-view">
-            <!-- COLUMNA PRODUCTOS (60%) -->
+            <!-- COLUMNA PRODUCTOS/MAPA (60%) -->
             <div class="orden-modal-productos-col">
-                <!-- PRODUCTOS SCROLLEABLES -->
-                <div class="orden-modal-productos-scroll">
+                
+                <!-- TOGGLE MAPA/PRODUCTOS -->
+                <div class="orden-view-toggle" *ngIf="orderSelected?.addresses?.length >= 2">
+                    <button class="toggle-btn" 
+                            [class.active]="!showMapView" 
+                            (click)="showMapView = false">
+                        <i class="pi pi-list"></i> Productos
+                    </button>
+                    <button class="toggle-btn" 
+                            [class.active]="showMapView" 
+                            (click)="toggleMapView()">
+                        <i class="pi pi-map"></i> Mapa
+                    </button>
+                </div>
+                
+                <!-- VISTA MAPA -->
+                <div class="orden-modal-mapa-container" *ngIf="showMapView">
+                    <!-- Mapa Leaflet -->
+                    <div id="order-map-desktop" class="leaflet-map-container"></div>
+                    
+                    <!-- Botón refresh ubicación motorizado -->
+                    <button *ngIf="orderSelected?.deliveryMan?.id" 
+                            class="btn-refresh-location"
+                            (click)="refreshMotorizedLocation()"
+                            title="Actualizar ubicación del motorizado">
+                        <i class="pi pi-refresh"></i>
+                    </button>
+                    
+                    <!-- Info de direcciones debajo del mapa -->
+                    <div class="orden-direcciones-info">
+                        <div class="direccion-item origen" *ngIf="orderSelected?.addresses?.[0]">
+                            <div class="direccion-marker">A</div>
+                            <div class="direccion-detail">
+                                <span class="direccion-label">{{orderSelected.addresses[0].label || 'Recojo'}}</span>
+                                <span class="direccion-address">{{orderSelected.addresses[0].addressStreet}}</span>
+                            </div>
+                        </div>
+                        <div class="direccion-item destino" *ngIf="orderSelected?.addresses?.[1]">
+                            <div class="direccion-marker">B</div>
+                            <div class="direccion-detail">
+                                <span class="direccion-label">{{orderSelected.addresses[1].label || 'Entrega Final'}}</span>
+                                <span class="direccion-address">{{orderSelected.addresses[1].addressStreet}}</span>
+                            </div>
+                        </div>
+                        <!-- Info motorizado si existe -->
+                        <div class="direccion-item motorizado" *ngIf="motorizedTracking?.deliveryMan">
+                            <div class="direccion-marker moto">🛵</div>
+                            <div class="direccion-detail">
+                                <span class="direccion-label">{{motorizedTracking.deliveryMan.name}}</span>
+                                <span class="direccion-address">📱 {{formatPhonePeru(motorizedTracking.deliveryMan.phone)}}</span>
+                            </div>
+                            <button class="btn-whatsapp-motorizado" (click)="openMotorizedWhatsApp()" title="WhatsApp">
+                                <i class="pi pi-whatsapp"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- VISTA PRODUCTOS -->
+                <div class="orden-modal-productos-scroll" *ngIf="!showMapView">
                     <button id="btnOnClicked" (click)="accordionFunction()" style="display: none;"></button>
+                    
+                    <!-- Mensaje si no hay productos -->
+                    <div class="orden-sin-productos" *ngIf="!orderSelected?.products?.length">
+                        <i class="pi pi-inbox"></i>
+                        <p>Esta orden no tiene productos</p>
+                        <button pButton label="Ver Mapa" icon="pi pi-map" 
+                                class="p-button-outlined" 
+                                (click)="showMapView = true"
+                                *ngIf="orderSelected?.addresses?.length >= 2"></button>
+                    </div>
                     
                     <!-- PRODUCTO ITEM -->
                     <div *ngFor="let product of orderSelected.products; index as i" class="orden-producto-item">
@@ -190,7 +258,7 @@
         
         <!-- ==================== MÓVIL LAYOUT (TABS) ==================== -->
         <div class="orden-modal-content orden-mobile-view">
-            <p-tabView styleClass="orden-tabs-mobile">
+            <p-tabView styleClass="orden-tabs-mobile" (onChange)="onMobileTabChange($event)">
                 
                 <!-- TAB 1: PRODUCTOS -->
                 <p-tabPanel header="Productos">
@@ -267,6 +335,52 @@
                 <p-tabPanel header="Info">
                     <div class="orden-mobile-tab-content">
                         <ng-container *ngTemplateOutlet="infoTemplate"></ng-container>
+                    </div>
+                </p-tabPanel>
+                
+                <!-- TAB 3: MAPA -->
+                <p-tabPanel header="Mapa" *ngIf="orderSelected?.addresses?.length >= 2">
+                    <div class="orden-mobile-tab-content orden-mapa-tab">
+                        <!-- Mapa Leaflet Mobile -->
+                        <div class="mapa-mobile-wrapper">
+                            <div id="order-map-mobile" class="leaflet-map-container-mobile"></div>
+                            <!-- Botón refresh -->
+                            <button *ngIf="orderSelected?.deliveryMan?.id" 
+                                    class="btn-refresh-location"
+                                    (click)="refreshMotorizedLocation()"
+                                    title="Actualizar ubicación">
+                                <i class="pi pi-refresh"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Info de direcciones -->
+                        <div class="orden-direcciones-info-mobile">
+                            <div class="direccion-item origen" *ngIf="orderSelected?.addresses?.[0]">
+                                <div class="direccion-marker">A</div>
+                                <div class="direccion-detail">
+                                    <span class="direccion-label">{{orderSelected.addresses[0].label || 'Recojo'}}</span>
+                                    <span class="direccion-address">{{orderSelected.addresses[0].addressStreet}}</span>
+                                </div>
+                            </div>
+                            <div class="direccion-item destino" *ngIf="orderSelected?.addresses?.[1]">
+                                <div class="direccion-marker">B</div>
+                                <div class="direccion-detail">
+                                    <span class="direccion-label">{{orderSelected.addresses[1].label || 'Entrega Final'}}</span>
+                                    <span class="direccion-address">{{orderSelected.addresses[1].addressStreet}}</span>
+                                </div>
+                            </div>
+                            <!-- Info motorizado si existe -->
+                            <div class="direccion-item motorizado" *ngIf="motorizedTracking?.deliveryMan">
+                                <div class="direccion-marker moto">🛵</div>
+                                <div class="direccion-detail">
+                                    <span class="direccion-label">{{motorizedTracking.deliveryMan.name}}</span>
+                                    <span class="direccion-address">📱 {{formatPhonePeru(motorizedTracking.deliveryMan.phone)}}</span>
+                                </div>
+                                <button class="btn-whatsapp-motorizado" (click)="openMotorizedWhatsApp()" title="WhatsApp">
+                                    <i class="pi pi-whatsapp"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </p-tabPanel>
                 
@@ -360,7 +474,7 @@
                 <div class="orden-cliente-nombre">{{orderSelected?.getClientName()}}</div>
                 <div class="orden-cliente-telefono">
                     <i class="pi pi-phone"></i>
-                    <span>{{formatPhone(orderSelected.getClientPhone())}}</span>
+                    <span>{{formatPhone(orderSelected?.getClientPhone())}}</span>
                 </div>
                 <div class="orden-cliente-telefono" *ngIf="orderSelected?.user?.documentType">
                     <i class="pi pi-id-card"></i>
@@ -369,7 +483,7 @@
             </div>
             <button 
                 class="orden-btn-whatsapp" 
-                (click)="sendMessageWhatsApp(orderSelected.getClientPhone())">
+                (click)="sendMessageWhatsApp(orderSelected?.getClientPhone())">
                 <i class="pi pi-whatsapp"></i>
             </button>
         </div>
@@ -658,7 +772,7 @@
                             icon="pi pi-phone" 
                             label="Llamar al Cliente"
                             class="p-button-success rechazo-btn-contacto rechazo-btn-llamar"
-                            (click)="llamarCliente(orderSelected.getClientPhone())">
+                            (click)="llamarCliente(orderSelected?.getClientPhone())">
                         </button>
                         <button 
                             pButton 
@@ -666,7 +780,7 @@
                             icon="pi pi-whatsapp" 
                             label="WhatsApp"
                             class="p-button-success rechazo-btn-contacto rechazo-btn-whatsapp"
-                            (click)="sendMessageWhatsApp(orderSelected.getClientPhone())">
+                            (click)="sendMessageWhatsApp(orderSelected?.getClientPhone())">
                         </button>
                     </div>
                     
@@ -675,7 +789,7 @@
                         <i class="pi pi-user"></i>
                         <div>
                             <strong>{{orderSelected?.getClientName()}}</strong>
-                            <span>{{formatPhone(orderSelected.getClientPhone())}}</span>
+                            <span>{{formatPhone(orderSelected?.getClientPhone())}}</span>
                         </div>
                     </div>
                 </div>
