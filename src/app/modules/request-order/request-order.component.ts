@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { StoreResponse } from '../main/service/data/response';
 
@@ -9,11 +9,14 @@ import { StoreResponse } from '../main/service/data/response';
   templateUrl: './request-order.component.html',
   styleUrls: ['./request-order.component.scss']
 })
-export class RequestOrderComponent implements OnInit {
+export class RequestOrderComponent implements OnInit, OnDestroy {
+
+  private messageListener: (event: MessageEvent) => void;
 
   constructor(
     public sanitizer: DomSanitizer,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ){}
 
   url: SafeResourceUrl
@@ -34,6 +37,37 @@ export class RequestOrderComponent implements OnInit {
     }
     
     this.url = this.sanitizer.bypassSecurityTrustResourceUrl(iframeUrl);
+    
+    // Escuchar mensajes del micro-frontend
+    this.setupMessageListener();
+  }
+
+  ngOnDestroy(): void {
+    if (this.messageListener) {
+      window.removeEventListener('message', this.messageListener);
+    }
+  }
+
+  private setupMessageListener(): void {
+    this.messageListener = (event: MessageEvent) => {
+      if (!event.data || typeof event.data !== 'object') return;
+      
+      const { type } = event.data;
+      
+      switch (type) {
+        case 'NAVIGATE_TO_ORDERS':
+          // Navegar al listado de órdenes (order-course)
+          this.router.navigate(['/order-course']);
+          break;
+        case 'NAVIGATE_BACK':
+        case 'CLOSE_MICROFRONTEND':
+          // Volver atrás o al dashboard
+          this.router.navigate(['/order-course']);
+          break;
+      }
+    };
+    
+    window.addEventListener('message', this.messageListener);
   }
 
 }
