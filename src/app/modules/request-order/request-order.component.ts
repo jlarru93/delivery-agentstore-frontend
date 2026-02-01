@@ -57,12 +57,12 @@ export class RequestOrderComponent implements OnInit, OnDestroy {
       switch (type) {
         case 'NAVIGATE_TO_ORDERS':
           // Navegar al listado de órdenes (order-course)
-          this.router.navigate(['/order-course']);
+          this.router.navigate(['/']);
           break;
         case 'NAVIGATE_BACK':
         case 'CLOSE_MICROFRONTEND':
           // Volver atrás o al dashboard
-          this.router.navigate(['/order-course']);
+          this.router.navigate(['/']);
           break;
       }
     };
