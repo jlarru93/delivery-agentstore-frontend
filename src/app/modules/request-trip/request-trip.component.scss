@@ -347,3 +347,17 @@ $header-height: 56px;
   background: #fff !important;
   color: #333 !important;
 }
+
+// ========== CUSTOM PIN MARKERS ==========
+// Remover estilos por defecto del DivIcon de Leaflet
+::ng-deep .custom-pin-marker {
+  background: transparent !important;
+  border: none !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+::ng-deep .leaflet-div-icon {
+  background: transparent !important;
+  border: none !important;
+}

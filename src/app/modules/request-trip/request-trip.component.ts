@@ -61,8 +61,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
   private leafletMap: L.Map;
   private leafletMarkers: L.Marker[] = [];
   private leafletPolyline: L.Polyline;
-  private originIcon: L.Icon;
-  private destinationIcon: L.Icon;
+  private originIcon: L.DivIcon;
+  private destinationIcon: L.DivIcon;
   
   // Estado del mapa: 'total' | 'partial' | 'form'
   mapViewState: 'total' | 'partial' | 'form' = 'partial';
@@ -253,23 +253,57 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  // Crear icono PIN personalizado con imagen dentro
+  private createPinIcon(iconUrl: string, color: string): L.DivIcon {
+    return L.divIcon({
+      className: 'custom-pin-marker',
+      html: `
+        <div style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35));
+        ">
+          <div style="
+            width: 46px;
+            height: 46px;
+            background: #fff;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid ${color};
+          ">
+            <img src="${iconUrl}" alt="marker" style="
+              width: 26px;
+              height: 26px;
+              transform: rotate(45deg);
+              object-fit: contain;
+            " />
+          </div>
+          <div style="
+            width: 10px;
+            height: 10px;
+            background: ${color};
+            border-radius: 50%;
+            margin-top: -6px;
+            border: 2px solid #fff;
+          "></div>
+        </div>
+      `,
+      iconSize: [50, 65],
+      iconAnchor: [25, 65],
+      popupAnchor: [0, -65]
+    });
+  }
+
   private initLeafletMap(): void {
     if (this.leafletMap) return;
 
-    // Crear iconos personalizados
-    this.originIcon = L.icon({
-      iconUrl: this.origenIcon || 'assets/images/marker-origin.png',
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32]
-    });
-
-    this.destinationIcon = L.icon({
-      iconUrl: this.destinoIcon || 'assets/images/marker-destination.png',
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32]
-    });
+    // Crear iconos personalizados con forma de PIN
+    this.originIcon = this.createPinIcon(this.origenIcon, '#47AC34');
+    this.destinationIcon = this.createPinIcon(this.destinoIcon, '#eb0045');
 
     // Inicializar mapa
     this.leafletMap = L.map('leaflet-map', {

@@ -75,9 +75,9 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
   private leafletMap: L.Map;
   private leafletMarkers: L.Marker[] = [];
   private leafletPolylines: L.Polyline[] = [];
-  private originIcon: L.Icon;
-  private destinationIcon: L.Icon;
-  private driverIcon: L.Icon;
+  private originIcon: L.DivIcon;
+  private destinationIcon: L.DivIcon;
+  private driverIcon: L.DivIcon;
 
   constructor(
     private requestTripService: RequestTripService,
@@ -197,29 +197,58 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  // Crear icono PIN personalizado con imagen dentro
+  private createPinIcon(iconUrl: string, color: string): L.DivIcon {
+    return L.divIcon({
+      className: 'custom-pin-marker',
+      html: `
+        <div style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35));
+        ">
+          <div style="
+            width: 46px;
+            height: 46px;
+            background: #fff;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid ${color};
+          ">
+            <img src="${iconUrl}" alt="marker" style="
+              width: 26px;
+              height: 26px;
+              transform: rotate(45deg);
+              object-fit: contain;
+            " />
+          </div>
+          <div style="
+            width: 10px;
+            height: 10px;
+            background: ${color};
+            border-radius: 50%;
+            margin-top: -6px;
+            border: 2px solid #fff;
+          "></div>
+        </div>
+      `,
+      iconSize: [50, 65],
+      iconAnchor: [25, 65],
+      popupAnchor: [0, -65]
+    });
+  }
+
   private initLeafletMap(): void {
     if (this.leafletMap) return;
 
-    this.originIcon = L.icon({
-      iconUrl: this.origenIcon || 'assets/images/marker-origin.png',
-      iconSize: [50, 50],
-      iconAnchor: [25, 50],
-      popupAnchor: [0, -50]
-    });
-
-    this.destinationIcon = L.icon({
-      iconUrl: this.destinoIcon || 'assets/images/marker-destination.png',
-      iconSize: [50, 50],
-      iconAnchor: [25, 50],
-      popupAnchor: [0, -50]
-    });
-
-    this.driverIcon = L.icon({
-      iconUrl: this.repartidorIcon || 'assets/images/marker-driver.png',
-      iconSize: [50, 50],
-      iconAnchor: [25, 50],
-      popupAnchor: [0, -50]
-    });
+    // Crear iconos personalizados con forma de PIN
+    this.originIcon = this.createPinIcon(this.origenIcon, '#47AC34');
+    this.destinationIcon = this.createPinIcon(this.destinoIcon, '#eb0045');
+    this.driverIcon = this.createPinIcon(this.repartidorIcon, '#2196F3');
 
     this.leafletMap = L.map('leaflet-map-order', {
       center: [this.center.lat, this.center.lng],
@@ -244,7 +273,7 @@ export class OrderCourseComponent implements OnInit, OnDestroy, AfterViewInit {
     this.markers.forEach((marker, index) => {
       if (!marker.lat || !marker.lng || (marker.lat === 0 && marker.lng === 0)) return;
 
-      let icon: L.Icon;
+      let icon: L.DivIcon;
       if (marker.label === 'Repartidor') {
         icon = this.driverIcon;
       } else if (index === 0) {
