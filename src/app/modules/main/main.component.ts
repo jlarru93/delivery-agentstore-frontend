@@ -149,15 +149,8 @@ import { DomSanitizer } from "@angular/platform-browser";
                     }
                   )
                 }
-            } else {
-              
-              this.router.navigateByUrl('/')
-              // Maximizar la ventana del navegador
-              window.focus(); // Asegurarse de que la ventana esté enfocada
-              window.scrollTo(0, 0); // Desplazar hasta la parte superior de la página
-              window.innerWidth = screen.width; // Establecer el ancho de la ventana al ancho de la pantalla
-              window.innerHeight = screen.height;
             }
+            // REMOVIDO: router.navigateByUrl('/') que causaba redirección automática a main
           }
         })
         this.orderRepository.orderCancel.subscribe(order=>{
