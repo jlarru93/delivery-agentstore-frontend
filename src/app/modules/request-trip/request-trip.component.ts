@@ -200,6 +200,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     } else {
       this.isDraggabled = false
       this.request_trip.readyToDmAt = 0 
+      this.destinationFromSavedAddress = false
+      this.destinationAddressId = null
       this.request_trip.addresses = [
         {
           addressStreet: "",
@@ -215,6 +217,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           reference: "",
         },
         {
+          id: null,
           addressStreet: "",
           alias: "",
           floor: "",
@@ -528,6 +531,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   addressDestination: AddressSuggestionBean
   addressesDestination: AddressSuggestionBean[]
   addressesDestinationCopy: AddressSuggestionBean[]=[]
+  
+  // Control para no reemplazar dirección manual cuando se busca cliente
+  destinationFromSavedAddress: boolean = false
+  destinationAddressId: number = null
 
   searchAddress(e){
     this.requestTripService.onGetSuggestionAddress(e.query, this.request_trip.store.id).subscribe(
@@ -657,12 +664,20 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     //this.autocompleteInput = prediction.mainText;
     console.log("selectPredictionDestination",prediction)
     this.addressesDestinationCopy.find(a=>a.id!=null)
+    
+    // Si es dirección guardada (tiene id pero no placeId)
     if(prediction && !(prediction?.placeId) && prediction.lat && prediction.lng){
       this.addressesDestination = JSON.parse(JSON.stringify(this.addressesDestinationCopy));
-      this.setDestination(prediction.lat,prediction.lng);
+      this.destinationAddressId = prediction.id || null;  // Guardar ID de dirección guardada
+      this.destinationFromSavedAddress = !!prediction.id;
+      this.setDestination(prediction.lat, prediction.lng, prediction.id);
       this.onGetAmountOrder();
       return;
     }
+
+    // Si es búsqueda manual (tiene placeId o es texto libre)
+    this.destinationAddressId = null;
+    this.destinationFromSavedAddress = false;
 
     if(prediction){
       this.addressesDestination = []; // Limpia las predicciones una vez seleccionada
@@ -680,8 +695,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     )
   }
 
-  setDestination(lat:number,lng:number){
+  setDestination(lat:number, lng:number, addressId?: number){
     this.addressesDestination = []
+    this.request_trip.addresses[1].id = addressId || null;  // ID de dirección guardada
     this.request_trip.addresses[1].point.type = "Point";
     this.request_trip.addresses[1].floor = "";
     this.request_trip.addresses[1].alias = "";
@@ -1465,10 +1481,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         const addresses=resp.data
         const defaultAddress=addresses.find(a=>a.default)??addresses[0]
         this.isDropDownEnable=false
-        if(!defaultAddress){
-          return
-        }
-        if(addresses?.length>1){          
+        
+        // Siempre poblar el dropdown si hay direcciones
+        if(addresses?.length>0){          
           this.addressesDestination=addresses.map(a=>{
             return {
               id: a.id,
@@ -1481,9 +1496,29 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           this.addressesDestinationCopy=JSON.parse(JSON.stringify(this.addressesDestination))
           this.isDropDownEnable=true
         }
-        this.addressDestination={mainText:defaultAddress.addressStreet}
 
-        this.setDestination(defaultAddress.lat,defaultAddress.lng);
+        // Verificar si ya hay una dirección manual ingresada
+        const hasCoordinates = this.request_trip.addresses[1]?.point?.coordinates?.[0] 
+                            && this.request_trip.addresses[1]?.point?.coordinates?.[1];
+        const hasManualDestination = hasCoordinates && !this.destinationFromSavedAddress;
+
+        if(hasManualDestination){
+          console.log('📍 Dirección manual detectada, no se reemplazará con dirección guardada');
+          return;  // No reemplazar dirección manual
+        }
+
+        if(!defaultAddress){
+          return
+        }
+
+        // Auto-seleccionar dirección guardada
+        this.addressDestination={
+          id: defaultAddress.id,
+          mainText: defaultAddress.addressStreet
+        }
+        this.destinationAddressId = defaultAddress.id;
+        this.destinationFromSavedAddress = true;
+        this.setDestination(defaultAddress.lat, defaultAddress.lng, defaultAddress.id);
         this.onGetAmountOrder();
         this.input_reference_destination=defaultAddress.reference
       },
