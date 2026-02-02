@@ -320,3 +320,49 @@
     max-width: 150px;
   }
 }
+
+/* ========== ESTILOS PARA ÓRDENES DE COMERCIO (SendAndReciveStore) ========== */
+.card-order-compact.commerce {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-color: #93c5fd;
+  border-left-color: #3B82F6;
+
+  &:hover {
+    border-color: #60a5fa;
+    box-shadow: 0px 6px 16px 0px rgba(59, 130, 246, 0.25);
+  }
+
+  .card-footer-compact {
+    border-top-color: rgba(147, 197, 253, 0.5);
+  }
+
+  .order-id-badge {
+    background: rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* Botón Editar para órdenes de comercio */
+.btn-edit-commerce {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #93c5fd;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background: white;
+    border-color: #3b82f6;
+    transform: scale(1.05);
+  }
+}

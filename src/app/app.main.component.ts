@@ -1,4 +1,4 @@
-import { Component, Renderer2, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Renderer2, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { MenuService } from './app.menu.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { PrimeNGConfig } from 'primeng/api';
@@ -9,6 +9,7 @@ import { DataSharedService } from './modules/service/data-shared.service';
 import { Subscription } from 'rxjs';
 import { StoreResponse } from './modules/main/service/data/response';
 import { WokerHandler } from './modules/service/worker.service';
+import { TokenBridgeService } from './utils/token-bridge.service';
 
 @Component({
     selector: 'app-main',
@@ -25,7 +26,7 @@ import { WokerHandler } from './modules/service/worker.service';
         ])
     ]
 })
-export class AppMainComponent implements AfterViewInit {
+export class AppMainComponent implements AfterViewInit, OnDestroy {
 
     rightPanelClick: boolean;
 
@@ -61,7 +62,12 @@ export class AppMainComponent implements AfterViewInit {
 
     configActive: boolean;
     dataSubscription: Subscription;
+    fullscreenSubscription: Subscription;
     DataStore:StoreResponse = new StoreResponse()
+    
+    // Fullscreen mode para micro-frontends
+    isFullscreenMode: boolean = false;
+    
     constructor(
         public renderer: Renderer2, 
         private menuService: MenuService,
@@ -69,12 +75,28 @@ export class AppMainComponent implements AfterViewInit {
         public app: AppComponent,
         private storeService:StoreService,
         private store:DataSharedService,
-        private worker:WokerHandler
+        private worker:WokerHandler,
+        private tokenBridge: TokenBridgeService
     ) {}
     ngAfterViewInit(): void {
         this.dataSubscription= this.store.storeBean$.subscribe((data)=>{
             this.DataStore=data as StoreResponse
         })
+        
+        // Suscribirse al estado de fullscreen del micro-frontend
+        this.fullscreenSubscription = this.tokenBridge.fullscreenMode$.subscribe((enabled) => {
+            this.isFullscreenMode = enabled;
+            console.log('📱 AppMain: Fullscreen mode:', enabled);
+        });
+    }
+    
+    ngOnDestroy(): void {
+        if (this.dataSubscription) {
+            this.dataSubscription.unsubscribe();
+        }
+        if (this.fullscreenSubscription) {
+            this.fullscreenSubscription.unsubscribe();
+        }
     }
     
 

@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild} from "@angular/core";
-import { LatLngLiteral, MouseEvent } from "src/agm/core";
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, OnDestroy, ChangeDetectorRef} from "@angular/core";
+import * as L from 'leaflet';
 import { StoreService } from "../main/service/store.service";
 import { PersonalisationMarker, PersonalisationPolyline, TypeMarkers} from "src/app/directives/informacion/data/enumMapa";
 import { AddressSuggestionBean, Viaje } from "../order-course/data";
@@ -22,6 +22,12 @@ import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 import { AddressSuggestionResponse } from "../order-course/data/response";
 import { CustomerExpressService } from "./services/customer-express.service";
 import { FilterRequest } from "../order-history/service/data/request";
+
+// Interfaces para compatibilidad
+interface LatLngLiteral {
+  lat: number;
+  lng: number;
+}
 type InputType = 'coordinates' | 'place' | 'autocomplete' | 'linkconvert';
 interface PolyLine{
   routePoints:RoutePoint[]
@@ -39,7 +45,7 @@ interface Marker {
   secondText?: string;
   iconUrl?:string
   isDraggable?:boolean
-  onDragEnd?:(e:MouseEvent)=>void
+  onDragEnd?:(e:any)=>void
 }
 
 @Component({
@@ -48,8 +54,19 @@ interface Marker {
   styleUrls: ["./request-trip.component.scss"],
   providers: [DialogService],
 })
-export class RequestTripComponent implements OnInit, AfterViewInit {
+export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild("search") searchElementRef: ElementRef;
+  
+  // Leaflet
+  private leafletMap: L.Map;
+  private leafletMarkers: L.Marker[] = [];
+  private leafletPolyline: L.Polyline;
+  private originIcon: L.DivIcon;
+  private destinationIcon: L.DivIcon;
+  
+  // Estado del mapa: 'total' | 'partial' | 'form'
+  mapViewState: 'total' | 'partial' | 'form' = 'partial';
+  
   origenIcon: any =
     "assets/empresas/" +
     environment.NAME_COMPANY +
@@ -92,12 +109,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   initMapViewAfter: boolean = false;
   flagInitMap: boolean = false;
   viaje: Viaje = new Viaje();
-  // barrnaquilla
-  // coberturePosition: RequestGeoAutocomplete = {
-  //   key_word: "",
-  //   longitude: -74.78132,
-  //   latitude: 10.96854,
-  // };
   coberturePosition: RequestGeoAutocomplete = {
       key_word: "",
       longitude: environment.centermap.lng,
@@ -154,7 +165,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   editTripData: any
   validationPhoneStore: string
   nroViaje: number = 0;
-  geocoder: google.maps.Geocoder = new google.maps.Geocoder();
   locationData: PolyLine[]
   locationDestination: any
   lat: number 
@@ -176,22 +186,470 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     private dataShared:DataSharedService,
     private appSer:MenuService,
     private main: AppMainComponent,
-    private readonly customerExpressService: CustomerExpressService
+    private readonly customerExpressService: CustomerExpressService,
+    private cdr: ChangeDetectorRef
   ) {
     this.storeSelected=JSON.parse(localStorage.getItem('storeBean'))
   }
   ngAfterViewInit(): void {
-    setTimeout( () => {
-      if(!this.stateOptions||this.stateOptions.length==0){
-        this.stateOptions=this.main.DataStore.tripSetting.paymentMethod
-      }
-    }, 1500)
+    // Esperar a que el documento esté completamente cargado
+    if (document.readyState === 'complete') {
+      this.initMapWhenReady();
+    } else {
+      window.addEventListener('load', () => {
+        this.initMapWhenReady();
+      });
+    }
   }
+  
+  private initMapWhenReady(): void {
+    // Usar requestAnimationFrame para esperar al siguiente ciclo de renderizado
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        if(!this.stateOptions||this.stateOptions.length==0){
+          this.stateOptions=this.main.DataStore.tripSetting.paymentMethod
+        }
+        
+        // Forzar el estado parcial para asegurar que el contenedor tenga altura
+        this.mapViewState = 'partial';
+        
+        // Forzar detección de cambios para que Angular actualice el DOM
+        this.cdr.detectChanges();
+        
+        // Esperar un frame más para que el CSS se aplique
+        requestAnimationFrame(() => {
+          // Intentar inicializar mapa
+          this.tryInitLeafletMap();
+          
+          // Configurar reintentos cada 300ms si no se inicializó
+          if (!this.leafletMap && !this.mapInitRetryInterval) {
+            this.mapInitRetryInterval = setInterval(() => {
+              this.tryInitLeafletMap();
+            }, 300);
+          }
+        });
+      }, 100);
+    });
+    
+    // Invalidar tamaño después de que Angular complete el render
+    setTimeout(() => {
+      if (this.leafletMap) {
+        this.leafletMap.invalidateSize();
+      }
+    }, 1500);
+  }
+
+  ngOnDestroy(): void {
+    if (this.leafletMap) {
+      this.leafletMap.remove();
+    }
+    if (this.mapInitRetryInterval) {
+      clearInterval(this.mapInitRetryInterval);
+    }
+    if (this.tileCheckInterval) {
+      clearInterval(this.tileCheckInterval);
+    }
+  }
+
+  // Intervalo para reintentar inicialización del mapa
+  private mapInitRetryInterval: any;
+  private mapInitRetries = 0;
+  private readonly MAX_RETRIES = 25; // 5 segundos máximo (25 * 200ms)
+  
+  // Validación automática de tiles cargados
+  private tileCheckInterval: any;
+  private tileCheckRetries = 0;
+  private readonly MAX_TILE_CHECK_RETRIES = 5;
+  private tilesLoaded = false;
+
+  // Verificar si el contenedor tiene dimensiones válidas
+  private isMapContainerReady(): boolean {
+    const container = document.getElementById('leaflet-map');
+    if (!container) {
+      console.log('Contenedor leaflet-map no encontrado');
+      return false;
+    }
+    
+    // Forzar reflow del DOM para obtener dimensiones correctas
+    container.offsetHeight;
+    
+    const rect = container.getBoundingClientRect();
+    const ready = rect.width > 50 && rect.height > 50;
+    
+    if (!ready) {
+      console.log(`Contenedor no listo: ${rect.width}x${rect.height}`);
+      
+      // Intentar forzar altura si el contenedor existe pero no tiene dimensiones
+      if (rect.height < 50) {
+        const parent = container.parentElement;
+        if (parent) {
+          parent.style.minHeight = '200px';
+          container.style.minHeight = '200px';
+          container.style.height = '100%';
+        }
+      }
+    }
+    return ready;
+  }
+
+  // Inicializar mapa con reintentos
+  private tryInitLeafletMap(): void {
+    if (this.leafletMap) {
+      if (this.mapInitRetryInterval) {
+        clearInterval(this.mapInitRetryInterval);
+      }
+      return;
+    }
+    
+    if (this.isMapContainerReady()) {
+      this.initLeafletMap();
+      if (this.mapInitRetryInterval) {
+        clearInterval(this.mapInitRetryInterval);
+      }
+    } else {
+      this.mapInitRetries++;
+      console.log(`Intento ${this.mapInitRetries}/${this.MAX_RETRIES} de inicializar mapa`);
+      if (this.mapInitRetries >= this.MAX_RETRIES) {
+        // Forzar inicialización después de muchos intentos
+        console.warn('Forzando inicialización del mapa después de máximos reintentos');
+        this.initLeafletMap();
+        if (this.mapInitRetryInterval) {
+          clearInterval(this.mapInitRetryInterval);
+        }
+      }
+    }
+  }
+
+  // Alternar vista del mapa (tristate: total -> partial -> form -> total)
+  toggleMapExpand(): void {
+    const previousState = this.mapViewState;
+    
+    switch (this.mapViewState) {
+      case 'partial':
+        this.mapViewState = 'total';
+        break;
+      case 'total':
+        this.mapViewState = 'form';
+        break;
+      case 'form':
+        this.mapViewState = 'partial';
+        break;
+    }
+    
+    // Si venimos del estado 'form', el mapa se vuelve visible
+    // Necesita múltiples invalidateSize para asegurar renderizado
+    if (previousState === 'form') {
+      this.refreshMap();
+    } else {
+      // Recalcular tamaño del mapa después de la animación
+      setTimeout(() => {
+        if (this.leafletMap) {
+          this.leafletMap.invalidateSize();
+        }
+      }, 350);
+    }
+  }
+
+  // Método para refrescar el mapa (útil cuando no carga correctamente)
+  refreshMap(): void {
+    if (!this.leafletMap) {
+      // Si el mapa no existe, intentar inicializarlo
+      this.tryInitLeafletMap();
+      return;
+    }
+    
+    // Forzar invalidateSize
+    this.leafletMap.invalidateSize();
+    
+    // Forzar recarga de tiles
+    this.leafletMap.eachLayer((layer: any) => {
+      if (layer.redraw) {
+        layer.redraw();
+      }
+    });
+    
+    // Múltiples invalidateSize con diferentes delays
+    [50, 150, 300, 500, 800].forEach(delay => {
+      setTimeout(() => {
+        if (this.leafletMap) {
+          this.leafletMap.invalidateSize();
+        }
+      }, delay);
+    });
+  }
+  
+  // Verificar si el mapa está cargado (para mostrar/ocultar botón refresh)
+  isMapLoaded(): boolean {
+    return this.tilesLoaded || this.checkTilesVisible();
+  }
+
+  // Obtener texto del botón según estado
+  getMapButtonText(): string {
+    switch (this.mapViewState) {
+      case 'partial': return 'Ver mapa completo';
+      case 'total': return 'Solo formulario';
+      case 'form': return 'Ver mapa';
+    }
+  }
+
+  // Obtener icono del botón según estado
+  getMapButtonIcon(): string {
+    switch (this.mapViewState) {
+      case 'partial': return 'pi-expand';
+      case 'total': return 'pi-list';
+      case 'form': return 'pi-map';
+    }
+  }
+
+  // Crear icono PIN personalizado con imagen dentro
+  private createPinIcon(iconUrl: string, color: string): L.DivIcon {
+    return L.divIcon({
+      className: 'custom-pin-marker',
+      html: `
+        <div style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35));
+        ">
+          <div style="
+            width: 46px;
+            height: 46px;
+            background: #fff;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid ${color};
+          ">
+            <img src="${iconUrl}" alt="marker" style="
+              width: 26px;
+              height: 26px;
+              transform: rotate(45deg);
+              object-fit: contain;
+            " />
+          </div>
+          <div style="
+            width: 10px;
+            height: 10px;
+            background: ${color};
+            border-radius: 50%;
+            margin-top: -6px;
+            border: 2px solid #fff;
+          "></div>
+        </div>
+      `,
+      iconSize: [50, 65],
+      iconAnchor: [25, 65],
+      popupAnchor: [0, -65]
+    });
+  }
+
+  private initLeafletMap(): void {
+    if (this.leafletMap) return;
+
+    // Verificar que el contenedor exista
+    const container = document.getElementById('leaflet-map');
+    if (!container) {
+      console.warn('Contenedor del mapa no encontrado, reintentando...');
+      return;
+    }
+
+    // Crear iconos personalizados con forma de PIN
+    this.originIcon = this.createPinIcon(this.origenIcon, '#47AC34');
+    this.destinationIcon = this.createPinIcon(this.destinoIcon, '#eb0045');
+
+    try {
+      // Inicializar mapa
+      this.leafletMap = L.map('leaflet-map', {
+        center: [this.center.lat, this.center.lng],
+        zoom: this.zoom,
+        zoomControl: true
+      });
+
+      // Agregar capa de OpenStreetMap con listener de carga
+      const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(this.leafletMap);
+
+      // Listener cuando los tiles se cargan
+      tileLayer.on('load', () => {
+        console.log('Tiles cargados correctamente');
+        this.tilesLoaded = true;
+        if (this.tileCheckInterval) {
+          clearInterval(this.tileCheckInterval);
+        }
+        if (this.leafletMap) {
+          this.leafletMap.invalidateSize();
+        }
+      });
+
+      // Listener de error en tiles
+      tileLayer.on('tileerror', (error) => {
+        console.warn('Error cargando tile:', error);
+      });
+
+      // Múltiples invalidateSize para asegurar renderizado correcto
+      [100, 300, 600, 1000, 2000].forEach(delay => {
+        setTimeout(() => {
+          if (this.leafletMap) {
+            this.leafletMap.invalidateSize();
+          }
+        }, delay);
+      });
+
+      // Listener para resize de ventana con debounce
+      let resizeTimeout: any;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (this.leafletMap) {
+            this.leafletMap.invalidateSize();
+          }
+        }, 100);
+      });
+
+      // Crear markers iniciales
+      this.updateLeafletMarkers();
+      
+      // Iniciar validación automática de carga de tiles
+      this.startTileLoadCheck();
+      
+      console.log('Mapa Leaflet inicializado correctamente');
+    } catch (error) {
+      console.error('Error al inicializar mapa Leaflet:', error);
+      // Resetear para permitir reintento
+      this.leafletMap = null;
+    }
+  }
+  
+  // Validación automática cada 2s para verificar si el mapa cargó
+  private startTileLoadCheck(): void {
+    this.tileCheckRetries = 0;
+    this.tilesLoaded = false;
+    
+    // Limpiar interval anterior si existe
+    if (this.tileCheckInterval) {
+      clearInterval(this.tileCheckInterval);
+    }
+    
+    this.tileCheckInterval = setInterval(() => {
+      this.tileCheckRetries++;
+      
+      // Verificar si hay tiles visibles en el contenedor
+      const tilesVisible = this.checkTilesVisible();
+      
+      if (tilesVisible || this.tilesLoaded) {
+        console.log('✓ Mapa cargado correctamente');
+        clearInterval(this.tileCheckInterval);
+        return;
+      }
+      
+      console.log(`Verificación ${this.tileCheckRetries}/${this.MAX_TILE_CHECK_RETRIES}: Mapa no cargado, refrescando...`);
+      this.refreshMap();
+      
+      if (this.tileCheckRetries >= this.MAX_TILE_CHECK_RETRIES) {
+        console.warn('Máximo de reintentos de carga de mapa alcanzado');
+        clearInterval(this.tileCheckInterval);
+      }
+    }, 2000); // Cada 2 segundos
+  }
+  
+  // Verificar si hay tiles cargados visualmente
+  private checkTilesVisible(): boolean {
+    const container = document.getElementById('leaflet-map');
+    if (!container) return false;
+    
+    // Verificar si hay imágenes de tiles cargadas
+    const tiles = container.querySelectorAll('.leaflet-tile-loaded');
+    return tiles.length > 0;
+  }
+
+  private updateLeafletMarkers(): void {
+    if (!this.leafletMap) return;
+
+    // Limpiar markers existentes
+    this.leafletMarkers.forEach(marker => marker.remove());
+    this.leafletMarkers = [];
+
+    // Filtrar markers válidos
+    const validMarkers = this.markers.filter(m => m.lat && m.lng && !(m.lat === 0 && m.lng === 0));
+
+    // Crear markers
+    this.markers.forEach((marker, index) => {
+      if (!marker.lat || !marker.lng || (marker.lat === 0 && marker.lng === 0)) return;
+
+      const icon = index === 0 ? this.originIcon : this.destinationIcon;
+      const leafletMarker = L.marker([marker.lat, marker.lng], {
+        icon: icon,
+        draggable: marker.isDraggable ?? false
+      }).addTo(this.leafletMap);
+
+      // Agregar popup con label
+      if (marker.label) {
+        leafletMarker.bindPopup(marker.label);
+      }
+
+      // Manejar drag
+      if (marker.isDraggable) {
+        leafletMarker.on('dragend', (e: L.DragEndEvent) => {
+          const newLatLng = (e.target as L.Marker).getLatLng();
+          this.onChangeMapMarkers({ coords: { lat: newLatLng.lat, lng: newLatLng.lng } }, marker);
+        });
+      }
+
+      this.leafletMarkers.push(leafletMarker);
+    });
+
+    // Centrar mapa según cantidad de markers
+    if (validMarkers.length === 1) {
+      // Solo un marker (tienda) - centrar en él
+      this.leafletMap.setView([validMarkers[0].lat, validMarkers[0].lng], 16);
+    } else if (validMarkers.length >= 2) {
+      // Dos o más markers - ajustar bounds para mostrar todos
+      const bounds = L.latLngBounds(validMarkers.map(m => [m.lat, m.lng] as L.LatLngTuple));
+      this.leafletMap.fitBounds(bounds, { padding: [50, 50] });
+    }
+
+    // Actualizar polyline si hay puntos
+    this.updateLeafletPolyline();
+  }
+
+  private updateLeafletPolyline(): void {
+    if (!this.leafletMap) return;
+
+    // Remover polyline existente
+    if (this.leafletPolyline) {
+      this.leafletPolyline.remove();
+    }
+
+    // Crear polyline si hay puntos
+    if (this.polyLines.length > 0 && this.polyLines[0].routePoints && this.polyLines[0].routePoints.length > 0) {
+      const points: L.LatLngExpression[] = this.polyLines[0].routePoints.map(p => [p.lat, p.lng]);
+      this.leafletPolyline = L.polyline(points, {
+        color: '#eb0045',
+        weight: 5,
+        opacity: 0.8
+      }).addTo(this.leafletMap);
+      
+      // Ajustar vista para mostrar toda la ruta
+      this.leafletMap.fitBounds(this.leafletPolyline.getBounds(), { padding: [50, 50] });
+    }
+  }
+
+  private centerLeafletMap(): void {
+    if (!this.leafletMap || this.markers.length < 2) return;
+
+    const validMarkers = this.markers.filter(m => m.lat && m.lng && !(m.lat === 0 && m.lng === 0));
+    if (validMarkers.length < 2) return;
+
+    const bounds = L.latLngBounds(validMarkers.map(m => [m.lat, m.lng] as L.LatLngTuple));
+    this.leafletMap.fitBounds(bounds, { padding: [50, 50] });
+  }
+
   ngOnInit(): void {
-    // this.center = {
-    //   lat: 10.96854,
-    //   lng: -74.78132,
-    // }
     this.editTripData = JSON.parse(localStorage.getItem('edit-trip'))
     if(this.editTripData) {
       console.log()
@@ -200,6 +658,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     } else {
       this.isDraggabled = false
       this.request_trip.readyToDmAt = 0 
+      this.destinationFromSavedAddress = false
+      this.destinationAddressId = null
       this.request_trip.addresses = [
         {
           addressStreet: "",
@@ -215,6 +675,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           reference: "",
         },
         {
+          id: null,
           addressStreet: "",
           alias: "",
           floor: "",
@@ -235,16 +696,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     }
   }
   loadDataForm(){
-    //this.enablePickUpInput()
-    
-    
     setTimeout( () => {
       console.log('edit')
-      // this.findAdress()
-      // this.findAdressOrigin()
-      
       this.onUpdateEditOrder(this.editTripData)
-      //this.input_visible_pickup = this.editTripData.addresses[0].addressStreet
       this.address = {
         mainText: this.editTripData.addresses[0].addressStreet
       }
@@ -279,9 +733,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         this.destinationMobilePhone = this.editTripData.addresses[1].phone.replace(matchedCountry.dial_code, '')
       }
       
-      //this.destinationMobilePhone = this.editTripData.addresses[1].phone
-
-      
       this.destinationReceptorName = this.editTripData.addresses[1].receptorName
       this.request_trip.description = this.editTripData.detail
 
@@ -310,8 +761,10 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.onGetAmountOrder()
     }, 1500)
   }
+  
+  // Función simplificada sin dependencia de Google Maps
   fnDetalleViajeLabelListServiceWeb(
-    latLng: google.maps.LatLng,
+    latLng: {lat: number, lng: number},
     tittle: string,
     isEstado: number,
     labelSelector: string,
@@ -320,20 +773,16 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   ): PersonalisationMarker {
     let detalle: PersonalisationMarker = new PersonalisationMarker();
 
-    detalle.posicion = latLng;
+    detalle.posicion = L.latLng(latLng.lat, latLng.lng);
     detalle.showTittle = true;
     detalle.tittle = tittle;
     detalle.tipoMarker = TypeMarkers.CONDUCTOR;
     detalle.isDragable = false;
-    // detalle.selector = ColorStatusLablelMarker.STATUS_DRIVER + isEstado;
-    // detalle.labelSelector = labelSelector + '';
     detalle.idEstado = isEstado;
-    // detalle.estado = ValorComparativo.ESTADO_CONDUCTOR;
     detalle.showInfowindow = true;
     detalle.typeServicesId = id;
-    detalle.infoWindow = new google.maps.InfoWindow({
-      content: "<b> " + "   " + tittle + "</b> ",
-    });
+    // InfoWindow ahora será manejado por Leaflet popup
+    detalle.infoWindow = null;
     detalle.view_screen_map = view_screen_map ? view_screen_map : false;
     return detalle;
   }
@@ -343,7 +792,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       if (viaje.data.position) {
         let tittle = viaje.data.deliveryMan.name;
         lstPosiciones.push(
-          this.fnDetalleViajeLabelListServiceWeb(new google.maps.LatLng(viaje.data.position.lat, viaje.data.position.lng), tittle, -1, "", "", true)
+          this.fnDetalleViajeLabelListServiceWeb({lat: viaje.data.position.lat, lng: viaje.data.position.lng}, tittle, -1, "", "", true)
         );
         this.lstPosicionConductor = lstPosiciones;
       } else {
@@ -383,7 +832,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
   isLoadingStoreAvailable=false
   private onGetLocationStore() {
-    //const storesAvailable:StoreTripResponse[]=[]
     this.appSer.getStoreByIdAgent().subscribe((store:any)=>{
       const storeId=store.data.map((sA)=>sA.store_id).join(",")
       this.isLoadingStoreAvailable=true
@@ -396,7 +844,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
             this.selectStore(this.storesAvailable[0],'',true)
           }
         }
-        //console.log('resp',resp)
       })
     },(error) => {
       this.alert.showError('Error', error.error.messages[0].message)
@@ -418,7 +865,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       console.log("resp.data.store",store.phone)
       
       this.validationPhoneStore = store.phone
-      //this.input_visible_pickup = store.addressStreet+' ('+store.fullName+')';
       this.address = {
         mainText: store.addressStreet+' ('+store.fullName+')'
       }
@@ -433,7 +879,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         store.location.coordinates[1]
       ];
   
-      // this.input_visible_pickup = this.marker.maintext
       this.markers[0].isDraggable=false
       this.markers[0].onDragEnd=(e)=>{
         console.log(e.coords)
@@ -457,10 +902,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  mapClicked($event: MouseEvent) {
-    (this.markers[0].lat = $event.coords.lat),
-      (this.markers[0].lng = $event.coords.lng);
-  }
+  
+  // mapClicked removido - no se usa con Leaflet
+  
   onChangeMapMarkers($event: any, marker: any) {
     this.flagInitMap = false;
     let latlng = {
@@ -489,7 +933,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           coords?.lng,
           coords?.lat,
           ]
-          //this.updatePosition();
           this.onGetAmountOrder();
         }
 
@@ -501,7 +944,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           this.request_trip.addresses[0].marker = "store";
           this.request_trip.addresses[0].addressStreet = address;
           this.request_trip.addresses[0].point.coordinates = [ coords?.lng, coords?.lat ]
-          //this.updatePosition();
           this.onGetAmountOrder();
 
         }
@@ -510,8 +952,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         this.alert.showInfo('','Geocoder failed');
       }
     )
-
-
   }
 
   convertPolygonToLatLngLiteral(coordinates: number[][]): LatLngLiteral[] {
@@ -520,14 +960,16 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     });
   }
 
-  autocompleteOri: google.maps.places.Autocomplete
-
   address: AddressSuggestionBean
   addresses: AddressSuggestionBean[]
 
   addressDestination: AddressSuggestionBean
   addressesDestination: AddressSuggestionBean[]
   addressesDestinationCopy: AddressSuggestionBean[]=[]
+  
+  // Control para no reemplazar dirección manual cuando se busca cliente
+  destinationFromSavedAddress: boolean = false
+  destinationAddressId: number = null
 
   searchAddress(e){
     this.requestTripService.onGetSuggestionAddress(e.query, this.request_trip.store.id).subscribe(
@@ -543,8 +985,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 
   selectPrediction(prediction: any) {
-    //this.autocompleteInput = prediction.mainText;
-    this.addresses = []; // Limpia las predicciones una vez seleccionada
+    this.addresses = [];
 
     this.requestTripService.onGeoCodeUser({placeId: prediction.placeId, storeId: this.request_trip.store.id}).subscribe(
       (resp) => {
@@ -578,7 +1019,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
           this.markers[0] = newMarkers
 
-          // this.geocodePlaceId(place);
           this.onGetMotorizedPosiitonOrigin();
           this.updatePosition();
 
@@ -654,21 +1094,27 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 
   selectPredictionDestination(prediction?: AddressSuggestionBean,address?:string) {
-    //this.autocompleteInput = prediction.mainText;
     console.log("selectPredictionDestination",prediction)
     this.addressesDestinationCopy.find(a=>a.id!=null)
+    
+    // Si es dirección guardada (tiene id pero no placeId)
     if(prediction && !(prediction?.placeId) && prediction.lat && prediction.lng){
       this.addressesDestination = JSON.parse(JSON.stringify(this.addressesDestinationCopy));
-      this.setDestination(prediction.lat,prediction.lng);
+      this.destinationAddressId = prediction.id || null;
+      this.destinationFromSavedAddress = !!prediction.id;
+      this.setDestination(prediction.lat, prediction.lng, prediction.id);
       this.onGetAmountOrder();
       return;
     }
 
+    // Si es búsqueda manual (tiene placeId o es texto libre)
+    this.destinationAddressId = null;
+    this.destinationFromSavedAddress = false;
+
     if(prediction){
-      this.addressesDestination = []; // Limpia las predicciones una vez seleccionada
+      this.addressesDestination = [];
     }
     
-
     this.requestTripService.onGeoCodeUser({address: address, placeId: prediction?.placeId, storeId: this.request_trip.store.id}).subscribe(
       (resp) => {
         this.setDestination(resp.data.lat,resp.data.lng);
@@ -680,8 +1126,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     )
   }
 
-  setDestination(lat:number,lng:number){
+  setDestination(lat:number, lng:number, addressId?: number){
     this.addressesDestination = []
+    this.request_trip.addresses[1].id = addressId || null;
     this.request_trip.addresses[1].point.type = "Point";
     this.request_trip.addresses[1].floor = "";
     this.request_trip.addresses[1].alias = "";
@@ -704,192 +1151,44 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
     this.markers[1] = newMarkers
 
-    //this.drawPolyline()
-
     this.updatePosition();
     this.centrarMapa()
   }
 
+  // Google Places removido - usando API propio
   findAdressOrigin() {
-    
-    const zoneResponse = JSON.parse(localStorage.getItem('zoneResponse'))
-    const polygonCoordinates: LatLngLiteral[] = this.convertPolygonToLatLngLiteral(zoneResponse.polygon.coordinates[0]);
-
-    const bounds = new google.maps.LatLngBounds();
-    for (const coord of polygonCoordinates) {
-      bounds.extend(coord);
-    }
-
-    const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");
-     this.autocompleteOri = new google.maps.places.Autocomplete(element, {
-      types: [],
-      fields: ["place_id"],
-      bounds: bounds,
-      componentRestrictions: {
-        country: environment.conuntryCode,
-
-      },
-      strictBounds: true
-      
-    });
-
-    //@ts-ignore
-    this.autocompleteOri.addListener("place_changed", () => {
-      
-      let place: any = this.autocompleteOri.getPlace().place_id;
-      this.geocodePlaceIdOrigin(place);
-    });
+    // No hace nada - el autocomplete usa API propio
   }
+  
   findAdress() {
-    //  google.maps.
-    
-    const zoneResponse = JSON.parse(localStorage.getItem('zoneResponse'))
-    const polygonCoordinates: LatLngLiteral[] = this.convertPolygonToLatLngLiteral(zoneResponse.polygon.coordinates[0]);
-
-    const bounds = new google.maps.LatLngBounds();
-    for (const coord of polygonCoordinates) {
-      bounds.extend(coord);
-    }
-    // let cityBounds = new google.maps.LatLngBounds(
-    //   new google.maps.LatLng(environment.cityCenterPoint.lat, environment.cityCenterPoint.lng),
-    // )
-    const element = <HTMLInputElement>document.getElementById("txtUbicacion");
-    const autocomplete = new google.maps.places.Autocomplete(element, {
-      types: [],
-      fields: ["place_id"],
-      bounds: bounds,
-      componentRestrictions: {
-        country: environment.conuntryCode,
-      },
-      strictBounds: true
-    });
-
-    //@ts-ignore
-    autocomplete.addListener("place_changed", () => {
-      let place: any = autocomplete.getPlace().place_id;
-      this.geocodePlaceIdMultidestino(place);
-      this.onPlaceSelected();
-    });
+    // No hace nada - el autocomplete usa API propio
   }
-
-
-
-  geocodePlaceIdOrigin(placeId) {
-    
-    this.geocoder.geocode({ placeId: placeId }, (results, status) => {
-      if (status === google.maps.GeocoderStatus.OK) {
-        if (results[0]) {
-          this.request_trip.addresses[0].addressStreet =
-            results[0].formatted_address;
-          this.request_trip.addresses[0].point.type = "Point";
-          this.request_trip.addresses[0].floor = "";
-          this.request_trip.addresses[0].alias = "";
-          this.request_trip.addresses[0].marker = "store";
-          this.request_trip.addresses[0].point.coordinates = [
-            results[0].geometry.location.lng(),
-            results[0].geometry.location.lat(),
-          ];
-
-          const newMarkers: Marker = {
-            lat: results[0].geometry.location.lat(),
-            lng: results[0].geometry.location.lng(),
-            iconUrl: this.globalIconOrigin,
-            label: 'Origen',
-            isDraggable: true,
-            onDragEnd: (e)=>{
-              console.log(e.coords)
-            }
-          }
-
-          this.center = {
-            lat: results[0].geometry.location.lat(),
-            lng: results[0].geometry.location.lng(),
-          }
-
-          this.markers[0] = newMarkers
-
-          // this.geocodePlaceId(place);
-          this.onGetMotorizedPosiitonOrigin();
-          this.updatePosition();
-
-          if(this.request_trip.addresses[1].point.coordinates[1] && this.request_trip.addresses[1].point.coordinates[0]){
-            this.onGetAmountOrder()
-          }
-        }
-      }
-    });
-  }
-  geocodePlaceIdMultidestino(placeId) {
-    this.geocoder.geocode({ placeId: placeId }, (results, status) => {
-      if (status === google.maps.GeocoderStatus.OK) {
-        if (results[0]) {
-          this.request_trip.addresses[1].point.type = "Point";
-          this.request_trip.addresses[1].floor = "";
-          this.request_trip.addresses[1].alias = "";
-          this.request_trip.addresses[1].marker = "store";
-          this.request_trip.addresses[1].addressStreet =
-            results[0].formatted_address;
-          this.request_trip.addresses[1].point.coordinates = [
-            results[0].geometry.location.lng(),
-            results[0].geometry.location.lat()
-          ];
-          // this.geocodePlaceId(place);
-
-
-          const newMarkers: Marker = {
-            lat: results[0].geometry.location.lat(),
-            lng: results[0].geometry.location.lng(),
-            iconUrl: this.globalIconDestination,
-            label: 'Destino',
-            isDraggable: true,
-            onDragEnd: (e)=>{
-              console.log(e.coords)
-            }
-          }
-
-          // this.center = {
-          //   lat: results[0].geometry.location.lat(),
-          //   lng: results[0].geometry.location.lng(),
-          // }
-
-          this.markers[1] = newMarkers
-
-          //this.drawPolyline()
-
-          this.updatePosition();
-          this.onGetAmountOrder();
-          this.centrarMapa()
-        }
-      }
-    });
-  }
+  
   drawPolyline(overviewPolyline: any){
-    
     this.locationData = overviewPolyline
-    // //this.locationDestination.push(overviewPolyline)
-
-    // const locationArray = this.locationData.map(
-    //   (l) => { return {
-    //     lat:l[0],
-    //     lng:l[1]
-    //   } as RoutePoint}
-    // );
-    //   console.log('polyline', locationArray)
-
     this.polyLines[0].routePoints = overviewPolyline
-   
-
+    
+    // Dibujar polyline en Leaflet
+    this.updateLeafletPolyline();
   }
+
   centrarMapa() { 
     if (this.markers.length >= 2) { 
+      const marker1 = this.markers[0];
+      const marker2 = this.markers[1];
+      
+      if (!marker1.lat || !marker1.lng || !marker2.lat || !marker2.lng) return;
+      if (marker1.lat === 0 && marker1.lng === 0) return;
+      if (marker2.lat === 0 && marker2.lng === 0) return;
 
-      const centerLat = (this.markers[0].lat + this.markers[1].lat ) / 2;
-      const centerLng = (this.markers[0].lng + this.markers[1].lng) / 2;
+      const centerLat = (marker1.lat + marker2.lat) / 2;
+      const centerLng = (marker1.lng + marker2.lng) / 2;
 
-      const distance = google.maps.geometry.spherical.computeDistanceBetween(
-        new google.maps.LatLng(this.markers[0].lat, this.markers[0].lng),
-        new google.maps.LatLng(this.markers[1].lat, this.markers[1].lng)
-      );
+      // Calcular distancia usando Leaflet
+      const latlng1 = L.latLng(marker1.lat, marker1.lng);
+      const latlng2 = L.latLng(marker2.lat, marker2.lng);
+      const distance = latlng1.distanceTo(latlng2);
+      
       const zoom = this.calcularNivelDeZoom(distance);
 
       console.log('distancia_ ', distance)
@@ -898,56 +1197,40 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.zoom = zoom;
       console.log('zoom_ ', zoom)
 
+      // Actualizar mapa de Leaflet
+      if (this.leafletMap) {
+        this.centerLeafletMap();
+      }
     } 
   }
   calcularNivelDeZoom(distance: number): number{
-    // Puedes ajustar estos valores según tus preferencias
     if (distance < 1000) {
-      return 15; // Zoom más cercano si la distancia es corta
+      return 15;
     } else if (distance < 5000) {
-      return 14; // Zoom intermedio para distancias medianas
+      return 14;
     } else {
-      return 13; // Zoom más alejado si la distancia es larga
+      return 13;
     }
   }
-  private calcularZoom(bounds: google.maps.LatLngBounds): number { 
-    const GLOBE_WIDTH = 256; // Ancho de la proyección de Google Maps 
-    const ZOOM_MAX = 21; // Nivel de zoom máximo 
-    const ZOOM_MIN = 1; // Nivel de zoom mínimo 
- 
-    const west = bounds.getSouthWest().lng(); 
-    const east = bounds.getNorthEast().lng(); 
-    const angle = east - west; 
- 
-    if (angle < 0) { 
-      return ZOOM_MAX; // El mapa completo es visible 
-    } 
- 
-    const zoom = Math.round( 
-      Math.log(window.innerWidth * 360 / angle / GLOBE_WIDTH) / Math.LN2 
-    ); 
- 
-    return Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom)); 
-  }
+  
   updatePosition() {
     var lstPosiciones: PersonalisationMarker[] = [];
-    if (this.request_trip.isCheckedStore == true) {
-      lstPosiciones.push(UtilModalViaje.fnDetalleViaje(new google.maps.LatLng(this.request_trip.addresses[0].point.coordinates[1],this.request_trip.addresses[0].point.coordinates[0]),true,"Origen",TypeMarkers.ORIGEN,this.isDraggabled,1,false));
-    } else {
-      lstPosiciones.push( UtilModalViaje.fnDetalleViaje( new google.maps.LatLng(this.markers[0].lat, this.markers[0].lng),true,"Origen",TypeMarkers.ORIGEN,this.isDraggabled,1,false));
-    }
-    if (this.request_trip.addresses[1].point.coordinates[0] != 0) {
-      lstPosiciones.push(UtilModalViaje.fnDetalleViaje(new google.maps.LatLng( this.request_trip.addresses[1].point.coordinates[1], this.request_trip.addresses[1].point.coordinates[0] ),true,"Destino",TypeMarkers.DESTINO,true,1,false));
-    }
+    // Actualizar markers de Leaflet
+    this.updateLeafletMarkers();
     this.lstPosiciones = lstPosiciones;
   }
   onUpdatePositionDriver() {
     var lstPosicionConductor: PersonalisationMarker[] = [];
     if (this.data_driver) {
       lstPosicionConductor = [];
-      // this.lstPosicionConductor = this.lstPosiciones.filter(item => item.tipoMarker != TypeMarkers.CONDUCTOR_LABEL)
       for (let item of this.data_driver) {
-        lstPosicionConductor.push( UtilModalViaje.fnDetalleViaje(new google.maps.LatLng(item.position.point.coordinates[1]!, item.position.point.coordinates[0]!), true,"Conductor", TypeMarkers.CONDUCTOR_LABEL,false,undefined,1,false));
+        let detalle: PersonalisationMarker = new PersonalisationMarker();
+        detalle.posicion = L.latLng(item.position.point.coordinates[1]!, item.position.point.coordinates[0]!);
+        detalle.showTittle = true;
+        detalle.tittle = "Conductor";
+        detalle.tipoMarker = TypeMarkers.CONDUCTOR_LABEL;
+        detalle.isDragable = false;
+        lstPosicionConductor.push(detalle);
       }
     } else {
       lstPosicionConductor.push(new PersonalisationMarker());
@@ -991,13 +1274,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.requestTripService.onGetPaymentOrderService(request).subscribe((data) => {
           this.uuid_price = data.data.uuid
           this.amount = data.data.amount;
-          // setTimeout(()=>{
-            // this.polyline_order = [
-            //   { coordinateEncoded: data.data.overviewPolyline },
-            // ];
-            this.drawPolyline(data.data.polyLine)
-          // },500)
-  
+          this.drawPolyline(data.data.polyLine)
         },
         (error) => {
           this.alert.showError('',"Ocurrió un error al obtener la tarifa");
@@ -1022,8 +1299,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       } else {
         this.creadDate = new Date()
       }
-
-
     }else{
       if(this.editTripData && this.editTripData.isOrderCalendar == false && this.request_trip.readyToDmAt>0){
         var fecha = new Date()
@@ -1152,7 +1427,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           }
         });
         this.onSaveLoading = false
-        // alert("Se guardó correctamente");
       },
       (error:HttpErrorResponse) => {
         if(error.status==400){
@@ -1270,7 +1544,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         order.addresses[1].addressStreet = item.addressStreet;
         order.addresses[1].point = item.point;
         order.addresses[1].receptorName = this.destinationReceptorName ? this.destinationReceptorName : '';
-        //order.addresses[1].uuidRoutePrice = item.uuidRoutePrice;
       }
     });
     order.isOrderCalendar=this.request_trip.isOrderCalendar
@@ -1292,7 +1565,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           }
         });
         this.onSaveLoading = false
-        // alert("Se guardó correctamente");
       },
       (error:HttpErrorResponse) => {
         if(error.status==400){
@@ -1317,12 +1589,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
   }
 
   enablePickUpInput(){
-    //const element = <HTMLInputElement>document.getElementById("txtUbicacion_origin");    
     if(this.request_trip.isCheckedStore == true){
       this.isDraggabled = true
-      //this.findAdressOrigin()
       this.updatePosition()
-      //this.onGetLocationStore(false)
       this.is_disabled_pickup = !this.is_disabled_pickup
       this.isHiddenInput = !this.isHiddenInput
     } 
@@ -1331,7 +1600,6 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       this.isHiddenInput = !this.isHiddenInput
       this.input_reference_pickup = ''
       this.request_trip.mobile = null
-      //this.input_visible_pickup=''
       
       this.onGetLocationStore();
     }
@@ -1356,15 +1624,12 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
     const gmapsUrlRegex =
     /^(?:https?:\/\/)?(?:www\.)?(?:maps\.app\.goo\.gl\/[A-Za-z0-9]+(?:[/?#][^\s]*)?|goo\.gl\/maps\/[^\s]+|(?:maps\.google\.[A-Za-z.]{2,}|google\.[A-Za-z.]{2,})\/maps(?:[/?#][^\s]*)?)$/i;
     if (gmapsUrlRegex.test(trimmed)) return 'linkconvert';
-    // 1. Coordenadas (lat, lng)
     const coordinateRegex = /^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?((1[0-7]\d|[1-9]?\d)(\.\d+)?|180(\.0+)?)$/;
     if (coordinateRegex.test(trimmed)) return 'coordinates';
 
-    // 2. Plus Code (Open Location Code)
     const plusCodeRegex = /^[23456789CFGHJMPQRVWX]{4,8}\+[23456789CFGHJMPQRVWX]{2,3}(?:\s+\w+.*)?$/i;
     if (plusCodeRegex.test(trimmed)) return 'place';
 
-    // 3. Posible dirección
     const words = trimmed.split(/\s+/);
 
     const commonAddressKeywords = [
@@ -1379,13 +1644,11 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
 
     const hasStreetNumber = /\b\d{1,5}\b/.test(trimmed);
 
-    // Solo es 'place' si tiene número y al menos 3 palabras
     const looksLikeCompleteAddress =
       hasStreetNumber && words.length >= 3;
 
     if (looksLikeCompleteAddress) return 'place';
 
-    // Todo lo demás es autocompletado
     return 'autocomplete';
   }
   
@@ -1399,30 +1662,25 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
       alert("Número inválido, debe ser un celular peruano (9 dígitos, empieza en 9).");
       return;
     }
-    this.destinationMobilePhone = formatted;   // ✅ deja el número limpio
-    input.value = formatted;  // actualiza lo que ve el usuario
+    this.destinationMobilePhone = formatted;
+    input.value = formatted;
     this.requestCustomer(this.selectCountryCode.dial_code,formatted)
   }
 
   formatPeruPhone(input: string): string | null {
     if (!input) return null;
-    // 1. Dejar solo dígitos
     let digits = input.replace(/\D+/g, "");
-    // 2. Quitar ceros iniciales extraños
     digits = digits.replace(/^0+/, "");
-    // 3. Manejar prefijos dobles "51" (ejemplo: 5151933...)
     while (digits.startsWith("51") && digits.length > 11) {
       digits = digits.slice(2);
     }
-    // 4. Quitar un único "51" si está presente
     if (digits.length === 11 && digits.startsWith("51")) {
       digits = digits.slice(2);
     }
-    // 5. Validar que sea un número peruano válido (9 dígitos, empieza en 9)
     if (/^9\d{8}$/.test(digits)) {
-      return digits; // ✅ siempre devuelve 9 dígitos
+      return digits;
     }
-    return input; // ❌ inválido
+    return input;
   }
   isLoadingRequestCustomer:boolean
   customerExpress:CustomerExpressResponse
@@ -1465,10 +1723,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
         const addresses=resp.data
         const defaultAddress=addresses.find(a=>a.default)??addresses[0]
         this.isDropDownEnable=false
-        if(!defaultAddress){
-          return
-        }
-        if(addresses?.length>1){          
+        
+        if(addresses?.length>0){          
           this.addressesDestination=addresses.map(a=>{
             return {
               id: a.id,
@@ -1481,9 +1737,27 @@ export class RequestTripComponent implements OnInit, AfterViewInit {
           this.addressesDestinationCopy=JSON.parse(JSON.stringify(this.addressesDestination))
           this.isDropDownEnable=true
         }
-        this.addressDestination={mainText:defaultAddress.addressStreet}
 
-        this.setDestination(defaultAddress.lat,defaultAddress.lng);
+        const hasCoordinates = this.request_trip.addresses[1]?.point?.coordinates?.[0] 
+                            && this.request_trip.addresses[1]?.point?.coordinates?.[1];
+        const hasManualDestination = hasCoordinates && !this.destinationFromSavedAddress;
+
+        if(hasManualDestination){
+          console.log('📍 Dirección manual detectada, no se reemplazará con dirección guardada');
+          return;
+        }
+
+        if(!defaultAddress){
+          return
+        }
+
+        this.addressDestination={
+          id: defaultAddress.id,
+          mainText: defaultAddress.addressStreet
+        }
+        this.destinationAddressId = defaultAddress.id;
+        this.destinationFromSavedAddress = true;
+        this.setDestination(defaultAddress.lat, defaultAddress.lng, defaultAddress.id);
         this.onGetAmountOrder();
         this.input_reference_destination=defaultAddress.reference
       },

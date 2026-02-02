@@ -162,11 +162,17 @@ export class RequestStore {
     phone: string;
     fullName: string;
 }
+export class BrandResponse{
+    id:number
+    name:string
+    urlLogo:string
+}
 export class StoreResponse {
     id: number
     name: string
     fullName : string
     phone : string
+    brand: BrandResponse
     //address: AddressResponse
     addressStreet: string
     location?: Point
@@ -393,10 +399,17 @@ export class StatusHistoryResponse{
     executeFor:ExecuteForResponse
 }
 
+export class DeliveryPriceMongoResponse {
+    overviewPolyline?: string
+    distance?: number
+    duration?: number
+}
+
 export class OrderResponse {
     id?: number
     uuid?: string
     zoneId?: number
+    type?: string  // 'traditional' | 'SendAndReciveStore'
     productPrice: number
     servicePrice: number
     deliveryPrice: number
@@ -426,12 +439,14 @@ export class OrderResponse {
     productPriceWithDiscount?:number
     coupons?: CouponsResponse[]
     urlTracking:string
+    deliveryPriceMongo?: DeliveryPriceMongoResponse
 
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
         bean.id = self?.id
         bean.uuid = self?.uuid
         bean.zoneId = self?.zoneId
+        bean.type = self?.type
         bean.productPrice = self.productPrice
         bean.servicePrice = self.servicePrice
         bean.deliveryPrice = self.deliveryPrice
@@ -459,6 +474,12 @@ export class OrderResponse {
         bean.productPriceWithDiscount = self.productPriceWithDiscount
         bean.coupons = self?.coupons?.map((it)=> CouponsResponse.toBean(it))
         bean.urlTracking = self.urlTracking
+        bean.addresses = self?.addresses
+        bean.deliveryPriceMongo = self?.deliveryPriceMongo ? {
+            overviewPolyline: self.deliveryPriceMongo.overviewPolyline,
+            distance: self.deliveryPriceMongo.distance,
+            duration: self.deliveryPriceMongo.duration
+        } : undefined
         bean.statusHistory = (self?.statusHistory || []).map(history => ({
             ...history,
             executeFor: {

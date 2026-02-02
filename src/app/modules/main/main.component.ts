@@ -149,15 +149,8 @@ import { DomSanitizer } from "@angular/platform-browser";
                     }
                   )
                 }
-            } else {
-              
-              this.router.navigateByUrl('/')
-              // Maximizar la ventana del navegador
-              window.focus(); // Asegurarse de que la ventana esté enfocada
-              window.scrollTo(0, 0); // Desplazar hasta la parte superior de la página
-              window.innerWidth = screen.width; // Establecer el ancho de la ventana al ancho de la pantalla
-              window.innerHeight = screen.height;
             }
+            // REMOVIDO: router.navigateByUrl('/') que causaba redirección automática a main
           }
         })
         this.orderRepository.orderCancel.subscribe(order=>{
@@ -477,6 +470,27 @@ import { DomSanitizer } from "@angular/platform-browser";
       this.flagOpenReceiptDialog = false
       this.router.navigate([], { queryParams: { order: null }, queryParamsHandling: 'merge' });
     }
+
+    /**
+     * Editar orden desde el modal
+     * Navega al módulo request-order con el UUID como query param
+     */
+    onEditOrder(order: OrderBean) {
+      if (!order || !order.uuid) return;
+      
+      // Cerrar modal si está abierto
+      this.displayOrder = false;
+      console.log("order",{ uuid: order.uuid } )
+      // Navegar al módulo con el UUID como query param
+      this.router.navigate(['/request-order'], { 
+        queryParams: { uuid: order.uuid } 
+      });
+    }
+
+    /**
+     * Editar orden de comercio (SendAndReciveStore)
+     * Solo disponible si no tiene motorizado asignado
+     */
 
     onGetMethodType(method: string){
       let methodConverted: string
@@ -950,6 +964,13 @@ import { DomSanitizer } from "@angular/platform-browser";
    * Obtiene solo el primer nombre del cliente
    */
   getFirstName(order: OrderBean): string {
+    // Para órdenes de comercio, usar addresses[1].receptorName
+    const clientName = order.getClientName();
+    if (clientName) {
+      // Extraer solo el primer nombre
+      const firstName = clientName.split(' ')[0];
+      return firstName || 'Cliente';
+    }
     return order?.user?.name || 'Cliente';
   }
 
@@ -1035,9 +1056,21 @@ import { DomSanitizer } from "@angular/platform-browser";
         <rect x="4" y="18" width="16" height="2" rx="1" fill="#1E40AF"/>
         <path d="M7 9H13L11.5 7.5" stroke="#E0E7FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         <path d="M17 14H11L12.5 15.5" stroke="#E0E7FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>`,
+      
+      'CREDIT': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-label="Crédito del comercio - Ya cobrado" role="img">
+        <circle cx="12" cy="12" r="11" fill="#DB2777"/>
+        <path d="M6 10V17H18V10" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M4 10L12 5L20 10" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="10" y="13" width="4" height="4" fill="white" rx="0.5"/>
+        <circle cx="17" cy="7" r="4" fill="#22C55E"/>
+        <path d="M15 7L16.5 8.5L19 5.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>`
     };
 
+    if(method=="CREDIT"){
+      return this.sanitizer.bypassSecurityTrustHtml(icons['CREDIT']);
+    }
     if(method=="CASH"){
       return this.sanitizer.bypassSecurityTrustHtml(icons['CASH']);
     }
@@ -1062,12 +1095,21 @@ import { DomSanitizer } from "@angular/platform-browser";
    */
   getPaymentLabel(order: OrderBean): string {
     const method = order?.payment?.method?.type?.toUpperCase() || 'CASH';
+    const aplication = order?.payment?.method?.name;
+    
+    if (method === 'E-WALLET') {
+      if (aplication === 'Yape') return 'YAPE';
+      if (aplication?.toLowerCase() === 'plin') return 'PLIN';
+      return aplication || 'BILLETERA';
+    }
+    
     const labels = {
       'CASH': 'EFECTIVO',
-      'YAPE': 'YAPE',
-      'PLIN': 'PLIN',
       'CARD': 'TARJETA',
-      'POS': 'POS'
+      'POS': 'POS',
+      'BANK': 'TRANSFERENCIA',
+      'CREDIT': 'CRÉDITO COMERCIO',
+      'PAY_IN_STORE': 'PAGO EN TIENDA'
     };
     return labels[method] || 'EFECTIVO';
   }

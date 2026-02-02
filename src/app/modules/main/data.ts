@@ -1,5 +1,6 @@
 import { ChatBean } from "src/app/chat/data.chat"
 import { formatCurrency } from "src/app/utils"
+import { AddressResponseLoadingOrder } from "../request-trip/data/response"
 
 
 export abstract class SubOptionBean {
@@ -177,10 +178,17 @@ export class StatusHistoryBean{
     executeFor:ExecuteForBean
 }
 
+export class DeliveryPriceMongoBean {
+    overviewPolyline?: string
+    distance?: number
+    duration?: number
+}
+
 export class OrderBean {
     id?: number
     uuid?: string
     zoneId?: number
+    type?: string  // 'traditional' | 'SendAndReciveStore'
     productPrice: number
     servicePrice: number
     deliveryPrice: number
@@ -214,6 +222,8 @@ export class OrderBean {
     productPriceWithDiscount?:number
     coupons?: CouponsBean[]
     urlTracking:string
+    addresses?: AddressResponseLoadingOrder[]
+    deliveryPriceMongo?: DeliveryPriceMongoBean
 
     constructor(){
         this.messagesNoReadTotal=0
@@ -223,7 +233,7 @@ export class OrderBean {
         this.showChat = true
     }
     getCurrency(): string {
-        return ""+this.products[0]?.price.currency
+        return ""+(this.products?.[0]?.price?.currency ?? "S/")
     }
     getProductPrice(): number {
         return this.products.reduce((accumulation, current) => { return accumulation + current.getTotalPrice() }, 0)//sumOf { it.getTotalPrice() }
@@ -272,16 +282,70 @@ export class OrderBean {
         return ""+this.getCurrency() + formatCurrency(((this.deliveryPrice??0) - (this.deliveryPriceDiscount??0)))
     }
 
+    // Verificar si hay descuento en el total (total != totalPayUser)
+    hasTotalPayUserDiscount(): boolean {
+        if (this.totalPayUser === undefined || this.totalPayUser === null) return false;
+        return this.total !== this.totalPayUser;
+    }
+    
+    // Obtener totalPayUser formateado
+    getTotalPayUserAndCurrency(): string {
+        return "" + this.getCurrency() + formatCurrency(this.totalPayUser ?? this.total ?? 0);
+    }
+
     //comanda
     getTotalPayUserAndCurrencyCommand(){
-        return ""+this.getCurrency()+formatCurrency(this.totalPayUser)
+        return ""+this.getCurrency()+formatCurrency(this.totalPayUser ?? this.total ?? 0)
     }
     getTotalAndCurrencyCommand(){
-        return ""+this.getCurrency()+formatCurrency(this.total)
+        return ""+this.getCurrency()+formatCurrency(this.total ?? 0)
     }
     getPiwiCoinAndCurrency(){
         return ""+this.getCurrency() + formatCurrency(this.payment?.piwiCoin??0)
     }
+    
+    // Obtener nombre del cliente desde addresses[1]
+    getClientName(): string {
+        if (this.addresses && this.addresses.length > 1 && this.addresses[1]?.receptorName) {
+            return this.addresses[1].receptorName;
+        }
+        return this.user?.fullName || this.user?.name || '';
+    }
+    
+    // Obtener teléfono del cliente desde addresses[1]
+    getClientPhone(): string {
+        if (this.addresses && this.addresses.length > 1 && this.addresses[1]?.phone) {
+            return this.addresses[1].phone;
+        }
+        return this.user?.phone || '';
+    }
+    
+    // Verificar si hay descuento en domicilio
+    hasDeliveryDiscount(): boolean {
+        return this.deliveryPrice !== this.deliveryPriceWithDiscount && 
+               this.deliveryPriceWithDiscount !== undefined &&
+               this.deliveryPriceWithDiscount !== null;
+    }
+    
+    // Obtener precio de domicilio con descuento
+    getDeliveryPriceWithDiscountAndCurrency(): string {
+        const value = this.deliveryPriceWithDiscount ?? this.deliveryPrice ?? 0;
+        return "" + this.getCurrency() + formatCurrency(value);
+    }
+    
+    // Verificar si hay descuento en productos
+    hasProductDiscount(): boolean {
+        return this.productPrice !== this.productPriceWithDiscount && 
+               this.productPriceWithDiscount !== undefined &&
+               this.productPriceWithDiscount !== null;
+    }
+    
+    // Obtener precio de productos con descuento
+    getProductPriceWithDiscountAndCurrency(): string {
+        const value = this.productPriceWithDiscount ?? this.productPrice ?? 0;
+        return "" + this.getCurrency() + formatCurrency(value);
+    }
+    
     calculateTime(){
         const tiempoActual = new Date();
         const tiempoCreacion = new Date(this.createdAt * 1000);
@@ -362,6 +426,12 @@ export class OrderBean {
     hasPaymentEvidence(): boolean {
         const method: string=this.payment?.method?.type
         return method === 'E-WALLET' || method === 'BANK';
+    }
+    isCommerce(): boolean {
+        return this.type === 'SendAndReciveStore';
+    }
+    canEdit(): boolean {
+        return this.isCommerce() && !this.deliveryMan;
     }
 }
 export interface StatusOpenStoreBean{

@@ -41,6 +41,7 @@
                         "styles": [
                             "node_modules/primeicons/primeicons.css",
                             "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+                            "node_modules/leaflet/dist/leaflet.css",
                             "src/styles.scss"
                         ],
                         "scripts": [
@@ -194,6 +195,7 @@
                         ],
                         "styles": [
                             "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+                            "node_modules/leaflet/dist/leaflet.css",
                             "src/styles.scss"
                         ],
                         "scripts": [],

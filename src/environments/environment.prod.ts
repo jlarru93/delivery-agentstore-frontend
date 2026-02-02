@@ -28,6 +28,7 @@ export const environment = {
     product: "https://micro-product.piwi.pe/#/",
     multipleAssignment:"https://micro-multi-assigment.piwi.pe/#/",
     report:'https://micro-report.piwi.pe/#/',
+    order:'https://micro-order.piwi.pe/#/'
   },
   region: 'us-east-1',
   userPoolWebClientId: '4kh9mhumd42cnoe4l3e3603j4k',

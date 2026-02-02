@@ -15,6 +15,18 @@
         <div class="modal-orden-header">
             <h2 class="modal-orden-titulo">Orden: #{{orderSelected.id}}</h2>
             <div class="modal-orden-acciones">
+                <!-- Botón editar solo para SendAndReciveStore -->
+                <button 
+                    *ngIf="canEditOrder()"
+                    pButton 
+                    type="button" 
+                    icon="pi pi-pencil" 
+                    [label]="isMobile ? '' : 'Editar'"
+                    class="p-button-outlined btn-editar-modal"
+                    pTooltip="Editar orden"
+                    tooltipPosition="bottom"
+                    (click)="onEditOrder()">
+                </button>
                 <!-- Botón imprimir solo en desktop -->
                 <button 
                     pButton 
@@ -43,11 +55,79 @@
         
         <!-- ==================== DESKTOP LAYOUT (60/40) ==================== -->
         <div class="orden-modal-content orden-desktop-view">
-            <!-- COLUMNA PRODUCTOS (60%) -->
+            <!-- COLUMNA PRODUCTOS/MAPA (60%) -->
             <div class="orden-modal-productos-col">
-                <!-- PRODUCTOS SCROLLEABLES -->
-                <div class="orden-modal-productos-scroll">
+                
+                <!-- TOGGLE MAPA/PRODUCTOS -->
+                <div class="orden-view-toggle" *ngIf="orderSelected?.addresses?.length >= 2">
+                    <button class="toggle-btn" 
+                            [class.active]="!showMapView" 
+                            (click)="showMapView = false">
+                        <i class="pi pi-list"></i> Productos
+                    </button>
+                    <button class="toggle-btn" 
+                            [class.active]="showMapView" 
+                            (click)="toggleMapView()">
+                        <i class="pi pi-map"></i> Mapa
+                    </button>
+                </div>
+                
+                <!-- VISTA MAPA -->
+                <div class="orden-modal-mapa-container" *ngIf="showMapView">
+                    <!-- Mapa Leaflet -->
+                    <div id="order-map-desktop" class="leaflet-map-container"></div>
+                    
+                    <!-- Botón refresh ubicación motorizado -->
+                    <button *ngIf="orderSelected?.deliveryMan?.id" 
+                            class="btn-refresh-location"
+                            (click)="refreshMotorizedLocation()"
+                            title="Actualizar ubicación del motorizado">
+                        <i class="pi pi-refresh"></i>
+                    </button>
+                    
+                    <!-- Info de direcciones debajo del mapa -->
+                    <div class="orden-direcciones-info">
+                        <div class="direccion-item origen" *ngIf="orderSelected?.addresses?.[0]">
+                            <div class="direccion-marker">A</div>
+                            <div class="direccion-detail">
+                                <span class="direccion-label">{{orderSelected.addresses[0].label || 'Recojo'}}</span>
+                                <span class="direccion-address">{{orderSelected.addresses[0].addressStreet}}</span>
+                            </div>
+                        </div>
+                        <div class="direccion-item destino" *ngIf="orderSelected?.addresses?.[1]">
+                            <div class="direccion-marker">B</div>
+                            <div class="direccion-detail">
+                                <span class="direccion-label">{{orderSelected.addresses[1].label || 'Entrega Final'}}</span>
+                                <span class="direccion-address">{{orderSelected.addresses[1].addressStreet}}</span>
+                            </div>
+                        </div>
+                        <!-- Info motorizado si existe -->
+                        <div class="direccion-item motorizado" *ngIf="motorizedTracking?.deliveryMan">
+                            <div class="direccion-marker moto">🛵</div>
+                            <div class="direccion-detail">
+                                <span class="direccion-label">{{motorizedTracking.deliveryMan.name}}</span>
+                                <span class="direccion-address">📱 {{formatPhonePeru(motorizedTracking.deliveryMan.phone)}}</span>
+                            </div>
+                            <button class="btn-whatsapp-motorizado" (click)="openMotorizedWhatsApp()" title="WhatsApp">
+                                <i class="pi pi-whatsapp"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- VISTA PRODUCTOS -->
+                <div class="orden-modal-productos-scroll" *ngIf="!showMapView">
                     <button id="btnOnClicked" (click)="accordionFunction()" style="display: none;"></button>
+                    
+                    <!-- Mensaje si no hay productos -->
+                    <div class="orden-sin-productos" *ngIf="!orderSelected?.products?.length">
+                        <i class="pi pi-inbox"></i>
+                        <p>Esta orden no tiene productos</p>
+                        <button pButton label="Ver Mapa" icon="pi pi-map" 
+                                class="p-button-outlined" 
+                                (click)="showMapView = true"
+                                *ngIf="orderSelected?.addresses?.length >= 2"></button>
+                    </div>
                     
                     <!-- PRODUCTO ITEM -->
                     <div *ngFor="let product of orderSelected.products; index as i" class="orden-producto-item">
@@ -155,10 +235,10 @@
                         <div class="orden-resumen-item">
                             <div class="orden-resumen-item-label">Domicilio</div>
                             <div class="orden-resumen-item-valor">
-                                <ng-container *ngIf="orderSelected.deliveryPriceDiscount">
+                                <ng-container *ngIf="orderSelected.hasDeliveryDiscount()">
                                     <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getdeliveryPriceAndCurrency()}}</del><br>
                                 </ng-container>
-                                {{orderSelected.getdeliveryPriceDiscountAndCurrency()}}
+                                {{orderSelected.getDeliveryPriceWithDiscountAndCurrency()}}
                             </div>
                         </div>
                         <div class="orden-resumen-item">
@@ -167,11 +247,21 @@
                         </div>
                         <div class="orden-resumen-item">
                             <div class="orden-resumen-item-label">Productos</div>
-                            <div class="orden-resumen-item-valor">{{orderSelected.getProductPriceAndCurrency()}}</div>
+                            <div class="orden-resumen-item-valor">
+                                <ng-container *ngIf="orderSelected.hasProductDiscount()">
+                                    <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getProductPriceAndCurrency()}}</del><br>
+                                </ng-container>
+                                {{orderSelected.getProductPriceWithDiscountAndCurrency()}}
+                            </div>
                         </div>
                         <div class="orden-resumen-item orden-resumen-total">
                             <div class="orden-resumen-item-label">Total</div>
-                            <div class="orden-resumen-item-valor">{{orderSelected.getTotalDiscountAndCurrency()}}</div>
+                            <div class="orden-resumen-item-valor">
+                                <ng-container *ngIf="orderSelected.hasTotalPayUserDiscount()">
+                                    <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getTotalAndCurrency()}}</del><br>
+                                </ng-container>
+                                {{orderSelected.getTotalPayUserAndCurrency()}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -185,7 +275,7 @@
         
         <!-- ==================== MÓVIL LAYOUT (TABS) ==================== -->
         <div class="orden-modal-content orden-mobile-view">
-            <p-tabView styleClass="orden-tabs-mobile">
+            <p-tabView styleClass="orden-tabs-mobile" (onChange)="onMobileTabChange($event)">
                 
                 <!-- TAB 1: PRODUCTOS -->
                 <p-tabPanel header="Productos">
@@ -265,6 +355,52 @@
                     </div>
                 </p-tabPanel>
                 
+                <!-- TAB 3: MAPA -->
+                <p-tabPanel header="Mapa" *ngIf="orderSelected?.addresses?.length >= 2">
+                    <div class="orden-mobile-tab-content orden-mapa-tab">
+                        <!-- Mapa Leaflet Mobile -->
+                        <div class="mapa-mobile-wrapper">
+                            <div id="order-map-mobile" class="leaflet-map-container-mobile"></div>
+                            <!-- Botón refresh -->
+                            <button *ngIf="orderSelected?.deliveryMan?.id" 
+                                    class="btn-refresh-location"
+                                    (click)="refreshMotorizedLocation()"
+                                    title="Actualizar ubicación">
+                                <i class="pi pi-refresh"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Info de direcciones -->
+                        <div class="orden-direcciones-info-mobile">
+                            <div class="direccion-item origen" *ngIf="orderSelected?.addresses?.[0]">
+                                <div class="direccion-marker">A</div>
+                                <div class="direccion-detail">
+                                    <span class="direccion-label">{{orderSelected.addresses[0].label || 'Recojo'}}</span>
+                                    <span class="direccion-address">{{orderSelected.addresses[0].addressStreet}}</span>
+                                </div>
+                            </div>
+                            <div class="direccion-item destino" *ngIf="orderSelected?.addresses?.[1]">
+                                <div class="direccion-marker">B</div>
+                                <div class="direccion-detail">
+                                    <span class="direccion-label">{{orderSelected.addresses[1].label || 'Entrega Final'}}</span>
+                                    <span class="direccion-address">{{orderSelected.addresses[1].addressStreet}}</span>
+                                </div>
+                            </div>
+                            <!-- Info motorizado si existe -->
+                            <div class="direccion-item motorizado" *ngIf="motorizedTracking?.deliveryMan">
+                                <div class="direccion-marker moto">🛵</div>
+                                <div class="direccion-detail">
+                                    <span class="direccion-label">{{motorizedTracking.deliveryMan.name}}</span>
+                                    <span class="direccion-address">📱 {{formatPhonePeru(motorizedTracking.deliveryMan.phone)}}</span>
+                                </div>
+                                <button class="btn-whatsapp-motorizado" (click)="openMotorizedWhatsApp()" title="WhatsApp">
+                                    <i class="pi pi-whatsapp"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </p-tabPanel>
+                
                 <!-- TAB 3: RESUMEN -->
                 <p-tabPanel header="Resumen">
                     <div class="orden-mobile-tab-content">
@@ -278,10 +414,10 @@
                             <div class="orden-resumen-item">
                                 <div class="orden-resumen-item-label">Domicilio</div>
                                 <div class="orden-resumen-item-valor">
-                                    <ng-container *ngIf="orderSelected.deliveryPriceDiscount">
+                                    <ng-container *ngIf="orderSelected.hasDeliveryDiscount()">
                                         <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getdeliveryPriceAndCurrency()}}</del><br>
                                     </ng-container>
-                                    {{orderSelected.getdeliveryPriceDiscountAndCurrency()}}
+                                    {{orderSelected.getDeliveryPriceWithDiscountAndCurrency()}}
                                 </div>
                             </div>
                             <div class="orden-resumen-item">
@@ -290,11 +426,21 @@
                             </div>
                             <div class="orden-resumen-item">
                                 <div class="orden-resumen-item-label">Productos</div>
-                                <div class="orden-resumen-item-valor">{{orderSelected.getProductPriceAndCurrency()}}</div>
+                                <div class="orden-resumen-item-valor">
+                                    <ng-container *ngIf="orderSelected.hasProductDiscount()">
+                                        <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getProductPriceAndCurrency()}}</del><br>
+                                    </ng-container>
+                                    {{orderSelected.getProductPriceWithDiscountAndCurrency()}}
+                                </div>
                             </div>
                             <div class="orden-resumen-item orden-resumen-total">
                                 <div class="orden-resumen-item-label">Total</div>
-                                <div class="orden-resumen-item-valor">{{orderSelected.getTotalDiscountAndCurrency()}}</div>
+                                <div class="orden-resumen-item-valor">
+                                    <ng-container *ngIf="orderSelected.hasTotalPayUserDiscount()">
+                                        <del style="font-size: 0.875rem; opacity: 0.7;">{{orderSelected.getTotalAndCurrency()}}</del><br>
+                                    </ng-container>
+                                    {{orderSelected.getTotalPayUserAndCurrency()}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -342,24 +488,32 @@
         </div>
     </div>
     
+    <!-- CUPÓN APLICADO (si hay coupons) - Línea compacta -->
+    <div class="orden-cupon-line" *ngIf="orderSelected?.coupons?.length > 0">
+        <i class="pi pi-ticket"></i>
+        <span class="orden-cupon-code">{{orderSelected.coupons[0].code}}</span>
+        <span class="orden-cupon-descuento">-{{orderSelected.getCurrency()}}{{orderSelected.coupons[0].discount}}</span>
+        <span class="orden-cupon-mas" *ngIf="orderSelected.coupons.length > 1">(+{{orderSelected.coupons.length - 1}})</span>
+    </div>
+    
     <!-- CLIENTE -->
     <div class="orden-info-card">
         <h4 class="orden-info-card-titulo">Cliente</h4>
         <div class="orden-cliente-info">
             <div>
-                <div class="orden-cliente-nombre">{{orderSelected?.user?.fullName}}</div>
+                <div class="orden-cliente-nombre">{{orderSelected?.getClientName()}}</div>
                 <div class="orden-cliente-telefono">
                     <i class="pi pi-phone"></i>
-                    <span>{{formatPhone(orderSelected?.user?.phone)}}</span>
+                    <span>{{formatPhone(orderSelected?.getClientPhone())}}</span>
                 </div>
-                <div class="orden-cliente-telefono">
+                <div class="orden-cliente-telefono" *ngIf="orderSelected?.user?.documentType">
                     <i class="pi pi-id-card"></i>
                     <span>{{orderSelected?.user?.documentType}}: {{orderSelected?.user?.documentValue}}</span>
                 </div>
             </div>
             <button 
                 class="orden-btn-whatsapp" 
-                (click)="sendMessageWhatsApp(orderSelected.user.phone)">
+                (click)="sendMessageWhatsApp(orderSelected?.getClientPhone())">
                 <i class="pi pi-whatsapp"></i>
             </button>
         </div>
@@ -648,7 +802,7 @@
                             icon="pi pi-phone" 
                             label="Llamar al Cliente"
                             class="p-button-success rechazo-btn-contacto rechazo-btn-llamar"
-                            (click)="llamarCliente(orderSelected?.user?.phone)">
+                            (click)="llamarCliente(orderSelected?.getClientPhone())">
                         </button>
                         <button 
                             pButton 
@@ -656,7 +810,7 @@
                             icon="pi pi-whatsapp" 
                             label="WhatsApp"
                             class="p-button-success rechazo-btn-contacto rechazo-btn-whatsapp"
-                            (click)="sendMessageWhatsApp(orderSelected?.user?.phone)">
+                            (click)="sendMessageWhatsApp(orderSelected?.getClientPhone())">
                         </button>
                     </div>
                     
@@ -664,8 +818,8 @@
                     <div class="rechazo-info-cliente">
                         <i class="pi pi-user"></i>
                         <div>
-                            <strong>{{orderSelected?.user?.fullName}}</strong>
-                            <span>{{formatPhone(orderSelected?.user?.phone)}}</span>
+                            <strong>{{orderSelected?.getClientName()}}</strong>
+                            <span>{{formatPhone(orderSelected?.getClientPhone())}}</span>
                         </div>
                     </div>
                 </div>
@@ -980,7 +1134,7 @@
                 <i class="pi pi-user"></i>
                 <div>
                     <span class="label">Cliente:</span>
-                    <span class="value">{{orderSelected?.user?.fullName}}</span>
+                    <span class="value">{{orderSelected?.getClientName()}}</span>
                 </div>
             </div>
                         

@@ -32,6 +32,7 @@ export const environment = {
     product: "https://dev-micro-product.piwi.pe/#/",
     multipleAssignment:"https://dev-micro-multi-assigment.piwi.pe/#/",
     report:'https://dev-micro-report.piwi.pe/#/',
+    order:'https://dev-micro-order.piwi.pe/#/',
   },
   
   region: 'us-west-1',

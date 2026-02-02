@@ -33,6 +33,10 @@ const routes: Routes = [
                 loadChildren: () => import('./modules/request-trip/request-trip.module').then(m => m.RequestTripModule), canActivate: [IsAuthenticated]
             },
             {
+                path: "request-order",
+                loadChildren: () => import('./modules/request-order/request-order.module').then(m => m.RequestOrderModule), canActivate: [IsAuthenticated]
+            },
+            {
                 path: "order-history",
                 loadChildren: () => import('./modules/order-history/order-history.module').then(m => m.OrderHistoryModule), canActivate: [IsAuthenticated]
             },

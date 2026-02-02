@@ -7,6 +7,7 @@ import { interval, map, Observable, of, switchMap } from 'rxjs';
 import { PushService } from './modules/service/push.service';
 import { WokerHandler } from './modules/service/worker.service';
 import { TokenBridgeService } from './utils/token-bridge.service';
+import { GeoMessageHandlerService } from './modules/service/geo.message.handler.service';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -41,11 +42,12 @@ export class AppComponent implements OnInit{
         private connectionService:ConnectionService,
         private http:HttpClient,
         private push: PushService,
-        private tokenBridge: TokenBridgeService
+        private tokenBridge: TokenBridgeService,
+        private geoHandler:GeoMessageHandlerService
     ) {}
 
     ngOnInit() {
-        
+        this.geoHandler.init();
         this.primengConfig.ripple = true;
         this.connectionService.isConnected$.subscribe((result)=>{
             console.log("result",result)

@@ -116,6 +116,20 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     }
 }
 
+.btn-editar-modal {
+    background: white !important;
+    color: #F59E0B !important;
+    border-color: white !important;
+    
+    &:hover {
+        background: #FEF3C7 !important;
+    }
+    
+    .pi-pencil {
+        font-weight: bold;
+    }
+}
+
 .btn-cerrar-modal {
     background: rgba(255, 255, 255, 0.2) !important;
     color: white !important;
@@ -494,6 +508,43 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     text-transform: uppercase;
     margin: 0 0 0.75rem 0;
     font-weight: 500;
+}
+
+// Estilos para cupón aplicado - Línea compacta
+.orden-cupon-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: #FEF3C7;
+    border: 1px dashed #F59E0B;
+    border-radius: 6px;
+    font-size: 0.813rem;
+    
+    i.pi-ticket {
+        color: #F59E0B;
+        font-size: 0.875rem;
+    }
+}
+
+.orden-cupon-code {
+    font-weight: 600;
+    color: #92400E;
+    background: #FDE68A;
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+}
+
+.orden-cupon-descuento {
+    margin-left: auto;
+    font-weight: 700;
+    color: #059669;
+}
+
+.orden-cupon-mas {
+    font-size: 0.75rem;
+    color: #92400E;
 }
 
 .orden-metodo-pago {
@@ -1607,4 +1658,266 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     color: $orden-primary-color;
     font-weight: 600;
     font-size: 0.875rem;
+}
+// ========== ESTILOS PARA MAPA ==========
+
+// Toggle entre Mapa y Productos
+.orden-view-toggle {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+
+    .toggle-btn {
+        flex: 1;
+        padding: 10px 16px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color: #666;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+
+        i {
+            font-size: 16px;
+        }
+
+        &:hover {
+            background: #f9f9f9;
+            border-color: #ccc;
+        }
+
+        &.active {
+            background: $orden-primary-color;
+            border-color: $orden-primary-color;
+            color: white;
+        }
+    }
+}
+
+// Contenedor del mapa
+.orden-modal-mapa-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 56px); // Restamos altura del toggle
+    position: relative;
+}
+
+// Contenedor Leaflet
+.leaflet-map-container {
+    flex: 1;
+    min-height: 300px;
+    width: 100%;
+    z-index: 1;
+}
+
+// Wrapper mobile para posicionar botón
+.mapa-mobile-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.leaflet-map-container-mobile {
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+// Botón refresh ubicación
+.btn-refresh-location {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    
+    &:hover {
+        transform: scale(1.1);
+    }
+    
+    &:active {
+        transform: scale(0.95);
+    }
+    
+    i {
+        font-size: 16px;
+        color: #3B82F6;
+    }
+}
+
+// Item motorizado en lista de direcciones
+.direccion-item.motorizado {
+    background: #EFF6FF;
+    border: 1px solid #3B82F6;
+    
+    .direccion-marker.moto {
+        background: #3B82F6;
+        font-size: 16px;
+    }
+}
+
+// Botón WhatsApp del motorizado
+.btn-whatsapp-motorizado {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #25D366;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    transition: transform 0.2s, background 0.2s;
+    
+    &:hover {
+        background: #1DA851;
+        transform: scale(1.1);
+    }
+    
+    &:active {
+        transform: scale(0.95);
+    }
+    
+    i {
+        font-size: 20px;
+        color: white;
+    }
+}
+
+// Info de direcciones debajo del mapa
+.orden-direcciones-info,
+.orden-direcciones-info-mobile {
+    padding: 16px;
+    background: white;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .direccion-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+
+        .direccion-marker {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        &.origen .direccion-marker {
+            background: $orden-primary-color;
+        }
+
+        &.destino .direccion-marker {
+            background: #E53935;
+        }
+
+        .direccion-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .direccion-label {
+                font-weight: 600;
+                font-size: 13px;
+                color: #333;
+            }
+
+            .direccion-address {
+                font-size: 13px;
+                color: #666;
+                line-height: 1.4;
+            }
+        }
+    }
+}
+
+// Mensaje cuando no hay productos
+.orden-sin-productos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: #999;
+
+    i {
+        font-size: 48px;
+        margin-bottom: 16px;
+        color: #ddd;
+    }
+
+    p {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    button {
+        margin-top: 8px;
+    }
+}
+
+// Info window del mapa
+.map-info-window {
+    padding: 8px;
+    
+    strong {
+        display: block;
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 4px;
+    }
+    
+    p {
+        font-size: 12px;
+        color: #666;
+        margin: 0;
+    }
+}
+
+// Tab de mapa en mobile
+.orden-mapa-tab {
+    padding: 0 !important;
+    
+    agm-map {
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+}
+
+.orden-direcciones-info-mobile {
+    padding: 12px 16px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    margin: 0 16px 16px;
 }

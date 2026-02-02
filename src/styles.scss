@@ -62,3 +62,48 @@ input, textarea {
     -webkit-user-select: text;
     user-select: text;
 }
+/* ============================================
+   FULLSCREEN MODE - Para micro-frontends
+   ============================================ */
+.layout-fullscreen-mode {
+    .layout-main {
+        margin-left: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    .layout-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        overflow: hidden;
+    }
+    
+    /* Asegurar que el iframe ocupe todo */
+    .layout-content iframe {
+        width: 100% !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        min-height: 100vh !important;
+        min-height: 100dvh !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+
+/* En móvil, fullscreen debe ocupar absolutamente todo */
+@media (max-width: 991px) {
+    .layout-fullscreen-mode {
+        .layout-main {
+            position: fixed !important;
+            inset: 0 !important;
+            z-index: 9999 !important;
+        }
+        
+        .layout-content {
+            position: absolute !important;
+            inset: 0 !important;
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from "@angular/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { DialogService } from "primeng/dynamicdialog";
 import { OrderBean, PaymentBean, ProductBean } from "../data";
@@ -7,6 +7,8 @@ import { OrderRepository } from "../service/order.repository";
 import { AceptOrderRequest } from "../service/data/request";
 import * as CONSTANTES from "src/app/utils/constant";
 import { PrintService } from 'src/app/utils/print.service';
+import { RequestTripService } from "../../request-trip/services/request-trip.service";
+import { ResponseTrackingMotorized } from "../../order-course/data/response";
 
 
 @Component({
@@ -15,13 +17,14 @@ import { PrintService } from 'src/app/utils/print.service';
     styleUrls: ['./order.modal.component.scss','./order.modal.rechazo.component.scss'],
     providers: [ConfirmationService, MessageService, DialogService],
 })
-export class OrderModalComponent implements OnInit {
+export class OrderModalComponent implements OnInit, OnDestroy {
 
     @Input()
     orderSelected: OrderBean
 
     @Input() visible: boolean = false;
     @Output() visibleChange = new EventEmitter<boolean>();
+    @Output() editOrder = new EventEmitter<OrderBean>();
 
     readyToDmAt: number
     readyToDmMinutesAt: number
@@ -38,15 +41,34 @@ export class OrderModalComponent implements OnInit {
     reasonToReject: string = ''; 
     selectedTab: boolean = true;
 
+    // Propiedades del mapa
+    mapCenter = { lat: -8.3791, lng: -74.5539 }; // Pucallpa por defecto
+    mapZoom = 14;
+    mapMarkers: any[] = [];
+    showMapView: boolean = false;
+    
+    // Tracking del motorizado
+    motorizedTracking: ResponseTrackingMotorized | null = null;
+    trackingInterval: any = null;
+
     constructor(
         private messageService: MessageService,
         private http: HttpClient,
         private confirmationService: ConfirmationService,
         private orderRepository: OrderRepository,
-        private printService: PrintService
+        private printService: PrintService,
+        private requestTripService: RequestTripService
     ) { }
     ngOnInit(): void {
         this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
+    }
+    
+    ngOnDestroy(): void {
+        this.stopTrackingPolling();
+        if (this.leafletMap) {
+            this.leafletMap.remove();
+            this.leafletMap = null;
+        }
     }
 
     init() {
@@ -76,6 +98,16 @@ export class OrderModalComponent implements OnInit {
         this.loadingButtonFinish = false;
         this.loadingButtonSelfManage = false;
         this.showConfirmOrderReady = false;
+        
+        // Limpiar datos del mapa y tracking
+        this.motorizedTracking = null;
+        this.showMapView = false;
+        this.stopTrackingPolling();
+        if (this.leafletMap) {
+            this.leafletMap.remove();
+            this.leafletMap = null;
+            this.motorizedMarker = null;
+        }
         
         this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
         
@@ -112,12 +144,426 @@ export class OrderModalComponent implements OnInit {
 
     onVisibleChange(v: boolean) { 
         this.visible = v; this.visibleChange.emit(v);
+        // Detener polling cuando se cierra
+        if (!v) {
+            this.onHide();
+        }
     }
     onShow(_event:any){
         this.init()
-        //this.openSetBusinessId(this.option)
+        this.initializeMap()
+        this.startTrackingPolling()
     }
     
+    // Limpiar al cerrar modal
+    onHide(): void {
+        this.stopTrackingPolling();
+        if (this.leafletMap) {
+            this.leafletMap.remove();
+            this.leafletMap = null;
+            this.motorizedMarker = null;
+        }
+    }
+    
+    // Iniciar polling de tracking (cada 10 segundos)
+    private startTrackingPolling(): void {
+        // Limpiar intervalo previo si existe
+        this.stopTrackingPolling();
+        
+        // Solo iniciar si hay motorizado asignado
+        if (this.orderSelected?.deliveryMan?.id && this.orderSelected?.uuid) {
+            this.trackingInterval = setInterval(() => {
+                this.loadMotorizedTracking();
+            }, 10000); // 10 segundos
+        }
+    }
+    
+    // Detener polling
+    private stopTrackingPolling(): void {
+        if (this.trackingInterval) {
+            clearInterval(this.trackingInterval);
+            this.trackingInterval = null;
+        }
+    }
+    
+    // ========== INICIALIZAR MAPA CON LEAFLET ==========
+    private leafletMap: any = null;
+    private leafletLoaded = false;
+    private motorizedMarker: any = null;
+    private currentMapContainerId: string = '';
+
+    async initializeMap() {
+        // Mostrar mapa por defecto si es orden de comercio (SendAndReciveStore)
+        this.showMapView = this.orderSelected?.isCommerce() || false;
+        
+        // Cargar Leaflet dinámicamente
+        await this.loadLeaflet();
+        
+        // Cargar tracking si hay motorizado asignado
+        if (this.orderSelected?.deliveryMan?.id) {
+            this.loadMotorizedTracking();
+        }
+        
+        if (!this.showMapView) return;
+        
+        // Pequeño delay para que el DOM se renderice
+        setTimeout(() => {
+            this.renderLeafletMap('order-map-desktop');
+        }, 100);
+    }
+
+    private async loadLeaflet(): Promise<void> {
+        if (this.leafletLoaded || (window as any).L) {
+            this.leafletLoaded = true;
+            return;
+        }
+
+        return new Promise((resolve) => {
+            // Cargar CSS de Leaflet
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+            document.head.appendChild(link);
+
+            // Cargar JS de Leaflet
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+            script.onload = () => {
+                this.leafletLoaded = true;
+                resolve();
+            };
+            document.body.appendChild(script);
+        });
+    }
+
+    // Cargar tracking del motorizado
+    private loadMotorizedTracking(): void {
+        if (!this.orderSelected?.uuid) return;
+        
+        this.requestTripService.onViewTrackingMotorizedService(this.orderSelected.uuid)
+            .subscribe({
+                next: (response) => {
+                    if (response?.data) {
+                        this.motorizedTracking = response.data;
+                        // Actualizar marcador en el mapa si ya está renderizado
+                        if (this.leafletMap) {
+                            this.updateMotorizedMarker();
+                        }
+                    }
+                },
+                error: (err) => {
+                    console.log('No se pudo cargar tracking del motorizado:', err);
+                }
+            });
+    }
+
+    // Actualizar marcador del motorizado
+    private updateMotorizedMarker(): void {
+        const L = (window as any).L;
+        if (!L || !this.leafletMap || !this.motorizedTracking?.position) return;
+
+        const pos = this.motorizedTracking.position;
+        
+        // Crear icono de motorizado con forma de pin (punta abajo)
+        const motorizedIcon = L.divIcon({
+            className: 'custom-leaflet-marker',
+            html: `<div style="
+                position: relative;
+                width: 40px;
+                height: 48px;
+            ">
+                <div style="
+                    width: 40px;
+                    height: 40px;
+                    background: #3B82F6;
+                    border-radius: 50% 50% 50% 0;
+                    transform: rotate(-45deg);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+                    border: 3px solid white;
+                ">
+                    <span style="
+                        transform: rotate(45deg);
+                        font-size: 18px;
+                    ">🛵</span>
+                </div>
+            </div>`,
+            iconSize: [40, 48],
+            iconAnchor: [20, 48],
+            popupAnchor: [0, -48]
+        });
+
+        // Si ya existe el marcador, actualizar posición
+        if (this.motorizedMarker) {
+            this.motorizedMarker.setLatLng([pos.lat, pos.lng]);
+        } else {
+            // Crear nuevo marcador
+            this.motorizedMarker = L.marker([pos.lat, pos.lng], { icon: motorizedIcon })
+                .addTo(this.leafletMap)
+                .bindPopup(`<b>🛵 ${this.motorizedTracking.deliveryMan?.name || 'Motorizado'}</b><br>
+                           📱 ${this.motorizedTracking.deliveryMan?.phone || ''}`);
+        }
+    }
+
+    // Decodificar polyline de Google (encoded polyline)
+    private decodePolyline(encoded: string): {lat: number, lng: number}[] {
+        if (!encoded) return [];
+        
+        const points: {lat: number, lng: number}[] = [];
+        let index = 0, lat = 0, lng = 0;
+
+        while (index < encoded.length) {
+            let b, shift = 0, result = 0;
+            
+            do {
+                b = encoded.charCodeAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            
+            const dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            
+            do {
+                b = encoded.charCodeAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            
+            const dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            points.push({
+                lat: lat / 1e5,
+                lng: lng / 1e5
+            });
+        }
+        
+        return points;
+    }
+
+    private renderLeafletMap(containerId: string): void {
+        const L = (window as any).L;
+        if (!L) return;
+
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        // Limpiar mapa previo si existe
+        if (this.leafletMap) {
+            this.leafletMap.remove();
+            this.leafletMap = null;
+            this.motorizedMarker = null;
+        }
+
+        // Limpiar contenedor
+        container.innerHTML = '';
+        this.currentMapContainerId = containerId;
+
+        // Obtener coordenadas
+        let centerLat = -8.3791; // Pucallpa por defecto
+        let centerLng = -74.5539;
+        
+        const markers: any[] = [];
+        
+        if (this.orderSelected?.addresses && this.orderSelected.addresses.length >= 2) {
+            const origen = this.orderSelected.addresses[0];
+            const destino = this.orderSelected.addresses[1];
+            
+            if (origen?.location?.coordinates) {
+                markers.push({
+                    lat: origen.location.coordinates[1],
+                    lng: origen.location.coordinates[0],
+                    label: origen.label || 'Recojo',
+                    address: origen.addressStreet,
+                    type: 'origin'
+                });
+            }
+            
+            if (destino?.location?.coordinates) {
+                markers.push({
+                    lat: destino.location.coordinates[1],
+                    lng: destino.location.coordinates[0],
+                    label: destino.label || 'Entrega Final',
+                    address: destino.addressStreet,
+                    type: 'destination'
+                });
+            }
+
+            // Centrar entre origen y destino
+            if (markers.length >= 2) {
+                centerLat = (markers[0].lat + markers[1].lat) / 2;
+                centerLng = (markers[0].lng + markers[1].lng) / 2;
+            } else if (markers.length === 1) {
+                centerLat = markers[0].lat;
+                centerLng = markers[0].lng;
+            }
+        }
+
+        // Crear mapa
+        this.leafletMap = L.map(container, {
+            center: [centerLat, centerLng],
+            zoom: 14,
+            zoomControl: true,
+            scrollWheelZoom: true
+        });
+
+        // Agregar tiles de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap',
+            maxZoom: 19
+        }).addTo(this.leafletMap);
+
+        // Agregar marcadores con iconos personalizados
+        const bounds: any[] = [];
+        
+        markers.forEach((marker, index) => {
+            const isOrigin = marker.type === 'origin';
+            const color = isOrigin ? '#47AC34' : '#E53935';
+            const letter = isOrigin ? 'A' : 'B';
+            
+            const customIcon = L.divIcon({
+                className: 'custom-leaflet-marker',
+                html: `<div style="
+                    width: 32px;
+                    height: 32px;
+                    background: ${color};
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 14px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                    border: 2px solid white;
+                ">${letter}</div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            });
+
+            const leafletMarker = L.marker([marker.lat, marker.lng], { icon: customIcon })
+                .addTo(this.leafletMap)
+                .bindPopup(`<b>${marker.label}</b><br>${marker.address || ''}`);
+            
+            bounds.push([marker.lat, marker.lng]);
+        });
+
+        // Dibujar polyline (ruta) si existe - COLOR ROJO
+        const overviewPolyline = this.orderSelected?.deliveryPriceMongo?.overviewPolyline;
+        if (overviewPolyline) {
+            const routePoints = this.decodePolyline(overviewPolyline);
+            if (routePoints.length > 0) {
+                const latLngs = routePoints.map(p => [p.lat, p.lng]);
+                L.polyline(latLngs, {
+                    color: '#E53935',
+                    weight: 4,
+                    opacity: 0.8
+                }).addTo(this.leafletMap);
+                
+                // Agregar puntos de ruta a bounds
+                routePoints.forEach(p => bounds.push([p.lat, p.lng]));
+            }
+        }
+
+        // Agregar marcador del motorizado si existe
+        if (this.motorizedTracking?.position) {
+            this.updateMotorizedMarker();
+            bounds.push([this.motorizedTracking.position.lat, this.motorizedTracking.position.lng]);
+        }
+
+        // Ajustar vista para mostrar todos los marcadores
+        if (bounds.length >= 2) {
+            this.leafletMap.fitBounds(bounds, { padding: [50, 50] });
+        }
+
+        // Invalidar tamaño después de renderizar
+        setTimeout(() => {
+            this.leafletMap?.invalidateSize();
+        }, 200);
+    }
+
+    // Renderizar mapa en mobile (llamado desde tab change)
+    renderMobileMap(): void {
+        setTimeout(async () => {
+            await this.loadLeaflet();
+            this.renderLeafletMap('order-map-mobile');
+        }, 150);
+    }
+
+    // Detectar cambio de tab en mobile
+    onMobileTabChange(event: any): void {
+        // Tab 2 es "Mapa" (índice 0=Productos, 1=Info, 2=Mapa, 3=Resumen)
+        if (event.index === 2) {
+            this.renderMobileMap();
+        }
+    }
+
+    // Alternar vista mapa/productos
+    toggleMapView() {
+        this.showMapView = !this.showMapView;
+        if (this.showMapView) {
+            setTimeout(() => {
+                this.renderLeafletMap('order-map-desktop');
+            }, 100);
+        }
+    }
+
+    // Refrescar ubicación del motorizado
+    refreshMotorizedLocation(): void {
+        this.loadMotorizedTracking();
+    }
+    
+    // Formatear teléfono peruano (+51 XXX XXX XXX)
+    formatPhonePeru(phone: string): string {
+        if (!phone) return '';
+        
+        // Limpiar el número (solo dígitos y +)
+        let cleaned = phone.replace(/[^\d+]/g, '');
+        
+        // Si empieza con +51
+        if (cleaned.startsWith('+51')) {
+            const number = cleaned.substring(3); // Quitar +51
+            if (number.length === 9) {
+                return `+51 ${number.substring(0, 3)} ${number.substring(3, 6)} ${number.substring(6, 9)}`;
+            }
+        }
+        
+        // Si empieza con 51 (sin +)
+        if (cleaned.startsWith('51') && cleaned.length === 11) {
+            const number = cleaned.substring(2);
+            return `+51 ${number.substring(0, 3)} ${number.substring(3, 6)} ${number.substring(6, 9)}`;
+        }
+        
+        // Si es solo 9 dígitos (número peruano sin código)
+        if (cleaned.length === 9 && !cleaned.startsWith('+')) {
+            return `+51 ${cleaned.substring(0, 3)} ${cleaned.substring(3, 6)} ${cleaned.substring(6, 9)}`;
+        }
+        
+        // Retornar original si no coincide con formato peruano
+        return phone;
+    }
+    
+    // Abrir WhatsApp del motorizado
+    openMotorizedWhatsApp(): void {
+        if (!this.motorizedTracking?.deliveryMan?.phone) return;
+        
+        let phone = this.motorizedTracking.deliveryMan.phone.replace(/[^\d]/g, '');
+        
+        // Asegurar que tenga código de país
+        if (phone.length === 9) {
+            phone = '51' + phone;
+        }
+        
+        const message = `Hola ${this.motorizedTracking.deliveryMan.name || ''}, sobre la orden #${this.orderSelected?.id || ''}`;
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+    }
 
     closeOptionBusinessIdDialog() { }
 
@@ -722,5 +1168,23 @@ export class OrderModalComponent implements OnInit {
         
         // Si es muy corto, devolver como está
         return phone;
+    }
+
+    // ========== EDITAR ORDEN ==========
+    onEditOrder(): void {
+        if (!this.orderSelected) return;
+        
+        // Cerrar el modal
+        this.visible = false;
+        this.visibleChange.emit(false);
+        
+        // Emitir evento para que el padre maneje la edición
+        this.editOrder.emit(this.orderSelected);
+    }
+
+    // Verificar si la orden puede ser editada
+    canEditOrder(): boolean {
+        // Usar la misma lógica que las tarjetas del kanban
+        return this.orderSelected?.canEdit() ?? false;
     }
 }
