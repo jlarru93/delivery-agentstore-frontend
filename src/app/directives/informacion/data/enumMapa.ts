@@ -1,3 +1,5 @@
+import * as L from 'leaflet';
+
 export enum FormatoDistancia {
     KILOMETROS = 'KILOMETROS',
     TYPE_PAYMENT = 'SOLES',
@@ -43,7 +45,7 @@ export enum ValorComparativo {
 export class PersonalisationMarker {
   isDragable?:boolean;
   isDragableMemory?:boolean;
-  posicion?: google.maps.LatLng;
+  posicion?: L.LatLng;  // Cambiado de google.maps.LatLng
   idDestino?: number;
   
   tipoMarker?: TypeMarkers; //..
@@ -52,7 +54,7 @@ export class PersonalisationMarker {
   tittle?: string;
   view_screen_map ?: boolean;
   showInfowindow?: boolean;
-  infoWindow?: google.maps.InfoWindow;
+  infoWindow?: L.Popup | null;  // Cambiado de google.maps.InfoWindow
   
   // typeWindow: TypeInfoWindow;
 
@@ -61,11 +63,10 @@ export class PersonalisationMarker {
   labelSelector?:string
   idEstado?: number; // VALOR DEL Q OBTIENE EL COLOR
   estado?: ValorComparativo; //OBTIENE LA LISTA DE COLORES POR ESTADO
-  typeServicesId?:number
+  typeServicesId?:any
 }
 
 export class PersonalisationPolyline {
   coordinateEncoded?:string; //coordenadas codificadas
   color?: string;
 }
-

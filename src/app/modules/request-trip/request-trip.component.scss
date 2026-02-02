@@ -1,415 +1,349 @@
-// :host ::ng-deep .grid{
-//     margin-top: -1.9rem;
-//     margin-right: -2rem;
-// }
-:host ::ng-deep .layout-content{
-    padding: 0;
-}
-.country-item{
-    display: flex;
-    align-items: center;
-}
+@import 'leaflet/dist/leaflet.css';
 
-.information-service{
-    position: relative;
-    //height: 89vh;
-    //overflow-y: auto;
-    padding: 2rem;
-    background-color: #ffffff
-}
-.input-origin-content{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-}
-.address-mainText{
-    margin: 0;
-    font-size: 12px;
-    font-weight: bold;
-}
-.address-secondText{
-    margin: 0;
-    font-size: 12px;
-}
-.autocomplete-items{
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-    flex-wrap: wrap;
-}
+// Variables
+$header-height: 56px;
 
-.search-img-origin{
-    height: 55px;
-    width: 50px;
-}
-.search-img-origin img{
-    height: 100%;
-    width: 100%;
-}
-
-.bottom-button {
-    position: absolute;
-    padding-bottom: 20px;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  h5{
-    font-size: 1.25rem;
-    font-family: inherit;
-    font-weight: 600;
-    line-height: 1.2;
-    color: inherit;
-}
-
-:host ::ng-deep .p-selectbutton .p-button.p-highlight {
-    background-color: #47AC34;
-    border: 1px solid #47AC34;
-    padding: 0.8rem;
-    color: #ffffff;
-}
-
-:host ::ng-deep .p-selectbutton .p-button {
-    background: transparent;
-    //border: 1px solid #;
-    border: 1px solid #ced4da;
-    color: #000000;
-}
-
-:host ::ng-deep .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight):hover {
-    background-color: #C8E6C9;
-    border: 1px solid #C8E6C9;
-}
-
-:host ::ng-deep .p-col-9 {
-    padding: 0 0.5rem;
-}
-
-:host ::ng-deep .p-button:focus {
-    outline: 0 none;
-    outline-offset: 0;
-    box-shadow: 0 0 0 0.2rem #C8E6C9;
-  }
-
-  .mat-mdc-form-field {
-    width: 100%;
-  }
-
-  /* TODO(mdc-migration): The following rule targets internal classes of input that may no longer apply for the MDC version.*/
-  .mat-input-custom{
-    pointer-events: none;
-    font-size: 1.5rem;
-    text-align: center;
-  }
-
-  .select-button-custom {
-    padding: 1rem;
-  }
-
-  .content-company{
-    border: 1px solid rgba(0,0,0,.12);
-    border-radius: 5px;
-    padding: 0.5rem 1.5rem;
-  }
-
-  .sign-logo{
-    height: 35px;
-  }
-  @media (max-width: 1375px) {
-    .container-map {
-        // height: calc(100vh) !important;
-        width: 70%;
-        height: 87vh;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        overflow: hidden;
-        margin: 0% 0% 0% 0%;
-        padding: 0% 0% 0% 1%;
-        /* background-color: #23507c; */
-    }
-    .container-service {
-        width: 30%;
-        padding: 1% 2%;
-        /* margin: 1%; */
-        margin-top: 0%;
-        height: 87vh;
-        overflow-y: scroll;
-        border-radius: 8px;
-        background-color: #ffffff;
-        border: 1px solid #dbd8d8;
-    }
-}
-
-@media (max-width: 1280px) {
-    .container-map {
-        // height: calc(100vh) !important;
-        width: 69%;
-        height: 87vh;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        overflow: hidden;
-        margin: 0% 0% 0% 0%;
-        padding: 0% 0% 0% 1%;
-        /* background-color: #23507c; */
-    }
-    .container-service {
-        width: 31%;
-        padding: 1% 2%;
-        /* margin: 1%; */
-        margin-top: 0%;
-        height: 87vh;
-        overflow-y: scroll;
-        border-radius: 8px;
-        background-color: #ffffff;
-        border: 1px solid #dbd8d8;
-    }
-}
-
-@media (max-width: 1235px) {
-    .container-map {
-        // height: calc(100vh) !important;
-        width: 65%;
-        height: 87vh;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        overflow: hidden;
-        margin-top: 0%;
-        /* background-color: #23507c; */
-    }
-    .container-service {
-        width: 35%;
-        padding: 1%;
-        /* margin: 1%; */
-        margin-top: 0%;
-        height: 87vh;
-        overflow-y: scroll;
-        border-radius: 10px;
-        background-color: #fcfcfc;
-        border: 1px solid #eee7e7;
-    }
-}
-
-@media (max-width: 1050px) {
-    .container-map {
-        // height: calc(100vh) !important;
-        width: 59%;
-        height: 87vh;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        overflow: hidden;
-        /* background-color: #237c61; */
-    }
-    .container-service {
-        width: 38%;
-        padding: 2%;
-        /* margin: 1%; */
-        height: 87vh;
-        overflow-y: scroll;
-        border-radius: 10px;
-        background-color: #fcfcfc;
-        border: 1px solid #eee7e7;
-    }
-}
-
-@media (max-width: 992px) {
-    .container-map {
-        // height: calc(100vh) !important;
-        width: 59%;
-        height: 87vh;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        overflow: hidden;
-        margin-top: 3%;
-        /* background-color: #237c61; */
-    }
-    .container-service {
-        width: 38%;
-        padding: 2%;
-        /* margin: 1%; */
-        margin-top: 3%;
-        height: 87vh;
-        overflow-y: scroll;
-        border-radius: 10px;
-        background-color: #fcfcfc;
-        border: 1px solid #eee7e7;
-    }
-}
-
-@media (max-width: 940px) {
-    .container-map {
-        // height: calc(100vh) !important;
-        width: 100%;
-        height: 87vh;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        overflow: hidden;
-        margin-top: 0%;
-        /* background-color: #7c3823; */
-    }
-    .container-service {
-        width: 70%;
-        padding: 1%;
-        margin: 1% 0% 5% 15%;
-        margin-top: 3%;
-        height: 87vh;
-        overflow-y: scroll;
-        border-radius: 10px;
-        background-color: #fcfcfc;
-        border: 1px solid #eee7e7;
-    }
-}
-
-@media (max-width: 780px) {
-    .container-map {
-        // height: calc(100vh) !important;
-        width: 100%;
-        height: 87vh;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        overflow: hidden;
-        margin-top: 0%;
-        /* background-color: #7c3823; */
-    }
-    .container-service {
-        width: 70%;
-        padding: 1%;
-        margin: 1% 0% 5% 15%;
-        margin-top: 3%;
-        height: 87vh;
-        overflow-y: scroll;
-        border-radius: 10px;
-        background-color: #fcfcfc;
-        border: 1px solid #eee7e7;
-    }
-}
-  .container-map {
-    
-    width: 71%;
-    height: 87vh;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    overflow: hidden;
-    margin: 0% 0% 0% 0%;
-    padding: 0% 0% 0% 1%;
-    
-}
-
-/* ----- Página: mapa a full pantalla ----- */
-.rt-page{
+.rt-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - #{$header-height});
   position: relative;
-  height: calc(100vh - 120px);   /* ocupa todo el alto visible */
-  width: 100%;
-  overflow: hidden;              /* que el mapa no cree scroll de la página */
+  overflow: hidden;
 }
 
-/* Mapa a full */
-.rt-map-wrap{
-  position: absolute;
-  inset: 0;                      /* top/right/bottom/left: 0 */
+// ========== MAPA ==========
+.rt-map-wrap {
+  position: relative;
+  transition: height 0.3s ease;
+  z-index: 1;
+  overflow: hidden;
 }
-.rt-map{
+
+.rt-map,
+#leaflet-map {
   width: 100%;
   height: 100%;
 }
 
-
-.rt-sheet{
+// Botón expandir mapa (posición absoluta respecto a rt-page)
+.btn-expand-map {
   position: absolute;
-  left: 0; right: 0;
-  bottom: 0;
-  padding: 0 12px calc(env(safe-area-inset-bottom, 0px) + 12px);
-
-  filter: drop-shadow(0 8px 24px rgba(0,0,0,.18));
-}
-
-.rt-sheet > .rt-sheet__body{
-  max-height: min(40vh, 380px);  
-  overflow: auto;                
-  padding: 12px 16px 16px;
-  background: #fff;
-  border-radius: 18px;
-}
-
-
-.rt-sheet__grabber{
-  height: 6px;
-  width: 44px;
-  margin: 8px auto 10px;
-  border-radius: 999px;
-  background: rgba(0,0,0,.15);
-}
-
-
-.rt-sheet__header{
-  position: relative;
-  z-index: 1;
-  margin: 0 16px -8px;           
-  color: #111827;
-}
-.rt-sheet__header h3{
-  margin: 0 0 2px;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-
-.field{ margin-bottom: 8px; }
-.field label{
-  display: block;
-  font-size: 13px;
-  margin: 6px 0 6px;
-  color: #374151;
-}
-
-
-.rt-sheet__footer{
+  z-index: 1000;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 8px;
-}
-.rt-sheet__footer .price{
-  font-size: 14px;
-}
-.rt-btn-primary{
-  background: #2f76ff;
+  gap: 8px;
+  padding: 10px 18px;
+  background: #fff;
   border: none;
-  color: #fff;
-  border-radius: 12px;
-  padding: 12px 18px;
-  font-weight: 600;
+  border-radius: 25px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
   cursor: pointer;
+  transition: all 0.3s ease;
+  left: 50%;
+  transform: translateX(-50%);
+
+  &:hover {
+    background: #f5f5f5;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  }
+
+  &:active {
+    transform: translateX(-50%) scale(0.97);
+  }
+
+  i {
+    font-size: 1.1rem;
+    color: #47AC34;
+  }
 }
 
+// ========== BOTTOM SHEET ==========
+.rt-sheet {
+  flex: 1;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-top: -15px;
+  position: relative;
+  z-index: 10;
+}
 
-@media (min-width: 992px){
-  .rt-page{
-    display: grid;
-    grid-template-columns: 1fr 420px; 
+.rt-sheet__grabber {
+  width: 50px;
+  height: 5px;
+  background: #ccc;
+  border-radius: 3px;
+  margin: 12px auto;
+  flex-shrink: 0;
+  cursor: pointer;
+  
+  &:hover {
+    background: #999;
   }
-  .rt-map-wrap{ position: relative; }
-  .rt-sheet{
-    position: relative;
-    padding: 0;
-    filter: none;
+}
+
+.rt-sheet__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+// ================================================
+// ESTADOS DEL MAPA (MOBILE)
+// ================================================
+
+// Estado PARCIAL (por defecto)
+.rt-page.map-partial {
+  .rt-map-wrap {
+    height: 35vh;
+    min-height: 200px;
   }
-  .rt-sheet > .rt-sheet__body{
-    height: calc(100vh - 120px);              
-    max-height: none;
+  
+  .btn-expand-map {
+    top: calc(35vh - 50px);
+  }
+}
+
+// Estado TOTAL (mapa completo)
+.rt-page.map-total {
+  .rt-map-wrap {
+    height: calc(100vh - #{$header-height} - 70px);
+  }
+  
+  .rt-sheet {
+    height: 70px;
+    min-height: 70px;
+    flex: none;
+    
+    .rt-sheet__body {
+      display: none;
+    }
+  }
+  
+  .btn-expand-map {
+    top: calc(100vh - #{$header-height} - 130px);
+  }
+}
+
+// Estado FORM (solo formulario)
+.rt-page.map-form {
+  .rt-map-wrap {
+    height: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+  
+  .btn-expand-map {
+    top: 10px;
+    background: #47AC34;
+    color: #fff;
+    
+    i {
+      color: #fff;
+    }
+  }
+  
+  .rt-sheet {
+    flex: 1;
     border-radius: 0;
-    border-left: 1px solid #eef0f3;
+    margin-top: 0;
+    padding-top: 50px;
   }
-  .rt-sheet__grabber{ display: none; }
+}
 
+// ========== CAMPOS DEL FORMULARIO ==========
+.field {
+  margin-bottom: 1rem;
+  
+  h5 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+    color: #666;
+  }
+}
+
+.input-origin-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  
+  .marker {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  
+  input, .p-inputtext, .p-autocomplete, .p-dropdown {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .p-autocomplete {
+    width: 100% !important;
+    
+    input {
+      width: 100% !important;
+    }
+  }
+}
+
+.content-company {
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+// Autocomplete items
+.autocomplete-items {
+  padding: 8px 0;
+  
+  .address-mainText {
+    font-weight: 500;
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  
+  .address-secondText {
+    color: #666;
+    font-size: 0.8rem;
+    margin: 0;
+  }
+}
+
+// Select button custom
+.select-button-custom {
+  width: 100%;
+  
+  .p-button {
+    flex: 1;
+  }
+}
+
+// ========== RESPONSIVE - DESKTOP ==========
+@media (min-width: 992px) {
+  .rt-page {
+    flex-direction: row;
+    
+    // En desktop ignorar los estados, siempre side-by-side
+    &.map-partial,
+    &.map-total,
+    &.map-form {
+      .rt-map-wrap {
+        flex: 1;
+        height: 100%;
+        min-height: auto;
+      }
+      
+      .rt-sheet {
+        width: 420px;
+        max-width: 420px;
+        min-width: 380px;
+        height: 100%;
+        flex: none;
+        border-radius: 0;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        margin-top: 0;
+        padding-top: 0;
+        
+        .rt-sheet__body {
+          display: block;
+        }
+      }
+    }
+  }
+  
+  .btn-expand-map {
+    display: none !important; // Ocultar en desktop
+  }
+  
+  .rt-sheet__grabber {
+    display: none;
+  }
+  
+  .rt-sheet__body {
+    padding: 16px;
+  }
+}
+
+// ========== RESPONSIVE - TABLET ==========
+@media (min-width: 768px) and (max-width: 991px) {
+  .rt-page.map-partial {
+    .rt-map-wrap {
+      height: 40vh;
+    }
+    
+    .btn-expand-map {
+      top: calc(40vh - 50px);
+    }
+  }
+  
+  .rt-page.map-total {
+    .rt-map-wrap {
+      height: calc(100vh - #{$header-height} - 80px);
+    }
+    
+    .btn-expand-map {
+      top: calc(100vh - #{$header-height} - 140px);
+    }
+  }
+}
+
+// ========== RESPONSIVE - MOBILE PEQUEÑO ==========
+@media (max-width: 576px) {
+  .rt-page.map-partial {
+    .rt-map-wrap {
+      height: 30vh;
+      min-height: 180px;
+    }
+    
+    .btn-expand-map {
+      top: calc(30vh - 45px);
+    }
+  }
+  
+  .rt-page.map-total .rt-map-wrap {
+    height: calc(100vh - #{$header-height} - 60px);
+  }
+  
+  .rt-page.map-total .btn-expand-map {
+    top: calc(100vh - #{$header-height} - 120px);
+  }
+  
+  .btn-expand-map {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+}
+
+// ========== FIX PARA LEAFLET ==========
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #e5e3df;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
+}
+
+.leaflet-control-zoom a {
+  background: #fff !important;
+  color: #333 !important;
 }
