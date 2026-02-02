@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, OnDestroy} from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, OnDestroy, ChangeDetectorRef} from "@angular/core";
 import * as L from 'leaflet';
 import { StoreService } from "../main/service/store.service";
 import { PersonalisationMarker, PersonalisationPolyline, TypeMarkers} from "src/app/directives/informacion/data/enumMapa";
@@ -186,35 +186,144 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
     private dataShared:DataSharedService,
     private appSer:MenuService,
     private main: AppMainComponent,
-    private readonly customerExpressService: CustomerExpressService
+    private readonly customerExpressService: CustomerExpressService,
+    private cdr: ChangeDetectorRef
   ) {
     this.storeSelected=JSON.parse(localStorage.getItem('storeBean'))
   }
   ngAfterViewInit(): void {
-    setTimeout( () => {
-      if(!this.stateOptions||this.stateOptions.length==0){
-        this.stateOptions=this.main.DataStore.tripSetting.paymentMethod
-      }
-      // Inicializar mapa de Leaflet
-      this.initLeafletMap();
-      
-      // Segundo invalidateSize después de que todo esté renderizado
+    // Esperar a que el documento esté completamente cargado
+    if (document.readyState === 'complete') {
+      this.initMapWhenReady();
+    } else {
+      window.addEventListener('load', () => {
+        this.initMapWhenReady();
+      });
+    }
+  }
+  
+  private initMapWhenReady(): void {
+    // Usar requestAnimationFrame para esperar al siguiente ciclo de renderizado
+    requestAnimationFrame(() => {
       setTimeout(() => {
-        if (this.leafletMap) {
-          this.leafletMap.invalidateSize();
+        if(!this.stateOptions||this.stateOptions.length==0){
+          this.stateOptions=this.main.DataStore.tripSetting.paymentMethod
         }
-      }, 500);
-    }, 800)
+        
+        // Forzar el estado parcial para asegurar que el contenedor tenga altura
+        this.mapViewState = 'partial';
+        
+        // Forzar detección de cambios para que Angular actualice el DOM
+        this.cdr.detectChanges();
+        
+        // Esperar un frame más para que el CSS se aplique
+        requestAnimationFrame(() => {
+          // Intentar inicializar mapa
+          this.tryInitLeafletMap();
+          
+          // Configurar reintentos cada 300ms si no se inicializó
+          if (!this.leafletMap && !this.mapInitRetryInterval) {
+            this.mapInitRetryInterval = setInterval(() => {
+              this.tryInitLeafletMap();
+            }, 300);
+          }
+        });
+      }, 100);
+    });
+    
+    // Invalidar tamaño después de que Angular complete el render
+    setTimeout(() => {
+      if (this.leafletMap) {
+        this.leafletMap.invalidateSize();
+      }
+    }, 1500);
   }
 
   ngOnDestroy(): void {
     if (this.leafletMap) {
       this.leafletMap.remove();
     }
+    if (this.mapInitRetryInterval) {
+      clearInterval(this.mapInitRetryInterval);
+    }
+    if (this.tileCheckInterval) {
+      clearInterval(this.tileCheckInterval);
+    }
+  }
+
+  // Intervalo para reintentar inicialización del mapa
+  private mapInitRetryInterval: any;
+  private mapInitRetries = 0;
+  private readonly MAX_RETRIES = 25; // 5 segundos máximo (25 * 200ms)
+  
+  // Validación automática de tiles cargados
+  private tileCheckInterval: any;
+  private tileCheckRetries = 0;
+  private readonly MAX_TILE_CHECK_RETRIES = 5;
+  private tilesLoaded = false;
+
+  // Verificar si el contenedor tiene dimensiones válidas
+  private isMapContainerReady(): boolean {
+    const container = document.getElementById('leaflet-map');
+    if (!container) {
+      console.log('Contenedor leaflet-map no encontrado');
+      return false;
+    }
+    
+    // Forzar reflow del DOM para obtener dimensiones correctas
+    container.offsetHeight;
+    
+    const rect = container.getBoundingClientRect();
+    const ready = rect.width > 50 && rect.height > 50;
+    
+    if (!ready) {
+      console.log(`Contenedor no listo: ${rect.width}x${rect.height}`);
+      
+      // Intentar forzar altura si el contenedor existe pero no tiene dimensiones
+      if (rect.height < 50) {
+        const parent = container.parentElement;
+        if (parent) {
+          parent.style.minHeight = '200px';
+          container.style.minHeight = '200px';
+          container.style.height = '100%';
+        }
+      }
+    }
+    return ready;
+  }
+
+  // Inicializar mapa con reintentos
+  private tryInitLeafletMap(): void {
+    if (this.leafletMap) {
+      if (this.mapInitRetryInterval) {
+        clearInterval(this.mapInitRetryInterval);
+      }
+      return;
+    }
+    
+    if (this.isMapContainerReady()) {
+      this.initLeafletMap();
+      if (this.mapInitRetryInterval) {
+        clearInterval(this.mapInitRetryInterval);
+      }
+    } else {
+      this.mapInitRetries++;
+      console.log(`Intento ${this.mapInitRetries}/${this.MAX_RETRIES} de inicializar mapa`);
+      if (this.mapInitRetries >= this.MAX_RETRIES) {
+        // Forzar inicialización después de muchos intentos
+        console.warn('Forzando inicialización del mapa después de máximos reintentos');
+        this.initLeafletMap();
+        if (this.mapInitRetryInterval) {
+          clearInterval(this.mapInitRetryInterval);
+        }
+      }
+    }
   }
 
   // Alternar vista del mapa (tristate: total -> partial -> form -> total)
   toggleMapExpand(): void {
+    const previousState = this.mapViewState;
+    
     switch (this.mapViewState) {
       case 'partial':
         this.mapViewState = 'total';
@@ -227,12 +336,51 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
     }
     
-    // Recalcular tamaño del mapa después de la animación
-    setTimeout(() => {
-      if (this.leafletMap) {
-        this.leafletMap.invalidateSize();
+    // Si venimos del estado 'form', el mapa se vuelve visible
+    // Necesita múltiples invalidateSize para asegurar renderizado
+    if (previousState === 'form') {
+      this.refreshMap();
+    } else {
+      // Recalcular tamaño del mapa después de la animación
+      setTimeout(() => {
+        if (this.leafletMap) {
+          this.leafletMap.invalidateSize();
+        }
+      }, 350);
+    }
+  }
+
+  // Método para refrescar el mapa (útil cuando no carga correctamente)
+  refreshMap(): void {
+    if (!this.leafletMap) {
+      // Si el mapa no existe, intentar inicializarlo
+      this.tryInitLeafletMap();
+      return;
+    }
+    
+    // Forzar invalidateSize
+    this.leafletMap.invalidateSize();
+    
+    // Forzar recarga de tiles
+    this.leafletMap.eachLayer((layer: any) => {
+      if (layer.redraw) {
+        layer.redraw();
       }
-    }, 350);
+    });
+    
+    // Múltiples invalidateSize con diferentes delays
+    [50, 150, 300, 500, 800].forEach(delay => {
+      setTimeout(() => {
+        if (this.leafletMap) {
+          this.leafletMap.invalidateSize();
+        }
+      }, delay);
+    });
+  }
+  
+  // Verificar si el mapa está cargado (para mostrar/ocultar botón refresh)
+  isMapLoaded(): boolean {
+    return this.tilesLoaded || this.checkTilesVisible();
   }
 
   // Obtener texto del botón según estado
@@ -301,39 +449,122 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
   private initLeafletMap(): void {
     if (this.leafletMap) return;
 
+    // Verificar que el contenedor exista
+    const container = document.getElementById('leaflet-map');
+    if (!container) {
+      console.warn('Contenedor del mapa no encontrado, reintentando...');
+      return;
+    }
+
     // Crear iconos personalizados con forma de PIN
     this.originIcon = this.createPinIcon(this.origenIcon, '#47AC34');
     this.destinationIcon = this.createPinIcon(this.destinoIcon, '#eb0045');
 
-    // Inicializar mapa
-    this.leafletMap = L.map('leaflet-map', {
-      center: [this.center.lat, this.center.lng],
-      zoom: this.zoom,
-      zoomControl: true
-    });
+    try {
+      // Inicializar mapa
+      this.leafletMap = L.map('leaflet-map', {
+        center: [this.center.lat, this.center.lng],
+        zoom: this.zoom,
+        zoomControl: true
+      });
 
-    // Agregar capa de OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-      maxZoom: 19
-    }).addTo(this.leafletMap);
+      // Agregar capa de OpenStreetMap con listener de carga
+      const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(this.leafletMap);
 
-    // Forzar recálculo del tamaño del mapa (fix para móvil)
-    setTimeout(() => {
-      if (this.leafletMap) {
-        this.leafletMap.invalidateSize();
+      // Listener cuando los tiles se cargan
+      tileLayer.on('load', () => {
+        console.log('Tiles cargados correctamente');
+        this.tilesLoaded = true;
+        if (this.tileCheckInterval) {
+          clearInterval(this.tileCheckInterval);
+        }
+        if (this.leafletMap) {
+          this.leafletMap.invalidateSize();
+        }
+      });
+
+      // Listener de error en tiles
+      tileLayer.on('tileerror', (error) => {
+        console.warn('Error cargando tile:', error);
+      });
+
+      // Múltiples invalidateSize para asegurar renderizado correcto
+      [100, 300, 600, 1000, 2000].forEach(delay => {
+        setTimeout(() => {
+          if (this.leafletMap) {
+            this.leafletMap.invalidateSize();
+          }
+        }, delay);
+      });
+
+      // Listener para resize de ventana con debounce
+      let resizeTimeout: any;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (this.leafletMap) {
+            this.leafletMap.invalidateSize();
+          }
+        }, 100);
+      });
+
+      // Crear markers iniciales
+      this.updateLeafletMarkers();
+      
+      // Iniciar validación automática de carga de tiles
+      this.startTileLoadCheck();
+      
+      console.log('Mapa Leaflet inicializado correctamente');
+    } catch (error) {
+      console.error('Error al inicializar mapa Leaflet:', error);
+      // Resetear para permitir reintento
+      this.leafletMap = null;
+    }
+  }
+  
+  // Validación automática cada 2s para verificar si el mapa cargó
+  private startTileLoadCheck(): void {
+    this.tileCheckRetries = 0;
+    this.tilesLoaded = false;
+    
+    // Limpiar interval anterior si existe
+    if (this.tileCheckInterval) {
+      clearInterval(this.tileCheckInterval);
+    }
+    
+    this.tileCheckInterval = setInterval(() => {
+      this.tileCheckRetries++;
+      
+      // Verificar si hay tiles visibles en el contenedor
+      const tilesVisible = this.checkTilesVisible();
+      
+      if (tilesVisible || this.tilesLoaded) {
+        console.log('✓ Mapa cargado correctamente');
+        clearInterval(this.tileCheckInterval);
+        return;
       }
-    }, 100);
-
-    // Listener para resize de ventana
-    window.addEventListener('resize', () => {
-      if (this.leafletMap) {
-        this.leafletMap.invalidateSize();
+      
+      console.log(`Verificación ${this.tileCheckRetries}/${this.MAX_TILE_CHECK_RETRIES}: Mapa no cargado, refrescando...`);
+      this.refreshMap();
+      
+      if (this.tileCheckRetries >= this.MAX_TILE_CHECK_RETRIES) {
+        console.warn('Máximo de reintentos de carga de mapa alcanzado');
+        clearInterval(this.tileCheckInterval);
       }
-    });
-
-    // Crear markers iniciales
-    this.updateLeafletMarkers();
+    }, 2000); // Cada 2 segundos
+  }
+  
+  // Verificar si hay tiles cargados visualmente
+  private checkTilesVisible(): boolean {
+    const container = document.getElementById('leaflet-map');
+    if (!container) return false;
+    
+    // Verificar si hay imágenes de tiles cargadas
+    const tiles = container.querySelectorAll('.leaflet-tile-loaded');
+    return tiles.length > 0;
   }
 
   private updateLeafletMarkers(): void {
@@ -342,6 +573,9 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
     // Limpiar markers existentes
     this.leafletMarkers.forEach(marker => marker.remove());
     this.leafletMarkers = [];
+
+    // Filtrar markers válidos
+    const validMarkers = this.markers.filter(m => m.lat && m.lng && !(m.lat === 0 && m.lng === 0));
 
     // Crear markers
     this.markers.forEach((marker, index) => {
@@ -368,6 +602,16 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.leafletMarkers.push(leafletMarker);
     });
+
+    // Centrar mapa según cantidad de markers
+    if (validMarkers.length === 1) {
+      // Solo un marker (tienda) - centrar en él
+      this.leafletMap.setView([validMarkers[0].lat, validMarkers[0].lng], 16);
+    } else if (validMarkers.length >= 2) {
+      // Dos o más markers - ajustar bounds para mostrar todos
+      const bounds = L.latLngBounds(validMarkers.map(m => [m.lat, m.lng] as L.LatLngTuple));
+      this.leafletMap.fitBounds(bounds, { padding: [50, 50] });
+    }
 
     // Actualizar polyline si hay puntos
     this.updateLeafletPolyline();
