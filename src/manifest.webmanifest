@@ -6,6 +6,15 @@
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
