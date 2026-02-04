@@ -8,6 +8,7 @@ import { PushService } from './modules/service/push.service';
 import { WokerHandler } from './modules/service/worker.service';
 import { TokenBridgeService } from './utils/token-bridge.service';
 import { GeoMessageHandlerService } from './modules/service/geo.message.handler.service';
+import { ShareLocationService } from './modules/service/share-location.service'; // ← NUEVO
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -43,10 +44,14 @@ export class AppComponent implements OnInit{
         private http:HttpClient,
         private push: PushService,
         private tokenBridge: TokenBridgeService,
-        private geoHandler:GeoMessageHandlerService
+        private geoHandler:GeoMessageHandlerService,
+        private shareLocation: ShareLocationService     // ← NUEVO
     ) {}
 
     ngOnInit() {
+        // ── Detectar ubicación compartida desde WhatsApp (Share Target API) ──
+        this.shareLocation.checkIncomingShare();
+
         this.geoHandler.init();
         this.primengConfig.ripple = true;
         this.connectionService.isConnected$.subscribe((result)=>{

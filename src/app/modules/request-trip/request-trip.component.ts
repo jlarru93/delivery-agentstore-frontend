@@ -22,6 +22,7 @@ import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 import { AddressSuggestionResponse } from "../order-course/data/response";
 import { CustomerExpressService } from "./services/customer-express.service";
 import { FilterRequest } from "../order-history/service/data/request";
+import { ShareLocationService } from "../service/share-location.service";
 
 // Interfaces para compatibilidad
 interface LatLngLiteral {
@@ -187,7 +188,8 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
     private appSer:MenuService,
     private main: AppMainComponent,
     private readonly customerExpressService: CustomerExpressService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private shareLocation: ShareLocationService 
   ) {
     this.storeSelected=JSON.parse(localStorage.getItem('storeBean'))
   }
@@ -692,6 +694,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
       this.findAdressOrigin()
       this.findAdress();
       this.onGetLocationStore();
+      this.processSharedLocation();
 
     }
   }
@@ -1766,5 +1769,26 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       ()=>{}
     )
+  }
+
+  private processSharedLocation(): void {
+    const sharedData = this.shareLocation.consume();
+    if (!sharedData) return;
+
+    console.log('[ShareTarget] Ubicación recibida de WhatsApp:', sharedData);
+
+    // Esperar a que el mapa y los datos de la tienda estén listos
+    setTimeout(() => {
+      if (sharedData.inputType === 'coordinates' && sharedData.coords) {
+        // Coordenadas directas extraídas del link de Google Maps
+        const coordStr = `${sharedData.coords.lat},${sharedData.coords.lng}`;
+        this.setCoordinates(coordStr);
+        this.alert.showInfo('📍 Ubicación recibida', 'Destino configurado desde WhatsApp');
+      } else if (sharedData.inputType === 'linkconvert' && sharedData.url) {
+        // Link acortado de Google Maps → resolver vía backend
+        this.setLinkConvert(sharedData.url);
+        this.alert.showInfo('📍 Ubicación recibida', 'Procesando ubicación desde WhatsApp...');
+      }
+    }, 1500);
   }
 }
