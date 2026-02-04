@@ -1787,7 +1787,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
       } else if (sharedData.inputType === 'linkconvert' && sharedData.url) {
         // Link acortado de Google Maps → resolver vía backend
         this.setLinkConvert(sharedData.url);
-        this.alert.showInfo('📍 Ubicación recibida', 'Procesando ubicación desde WhatsApp...');
+        this.alert.showInfo('📍 Ubicación recibida', 'Procesando ubicación desde WhatsApp...'+sharedData.url);
       }
     }, 1500);
   }
