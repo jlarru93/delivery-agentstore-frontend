@@ -28,12 +28,26 @@ export class RequestOrderComponent implements OnInit, OnDestroy {
     // Capturar uuid desde query params (para edición)
     const uuid = this.route.snapshot.queryParamMap.get('uuid');
     
+    // ── Capturar ubicación compartida desde WhatsApp / Google Maps ──
+    const sharedLat = this.route.snapshot.queryParamMap.get('sharedLat');
+    const sharedLng = this.route.snapshot.queryParamMap.get('sharedLng');
+    const sharedLocationUrl = this.route.snapshot.queryParamMap.get('sharedLocationUrl');
+    
     // Construir URL base
     let iframeUrl = `${environment.microFront.order}?userPoolId=${environment.awsConfig.cognito.userPoolId}&userPoolWebClientId=${environment.userPoolWebClientId}&brandIdSelected=${brandIdSelected}`;
     
     // Agregar uuid si existe (modo edición)
     if (uuid) {
       iframeUrl += `&uuid=${uuid}`;
+    }
+
+    // ── Agregar ubicación compartida al iframe URL ──
+    if (sharedLat && sharedLng) {
+      iframeUrl += `&sharedLat=${sharedLat}&sharedLng=${sharedLng}`;
+      console.log('[ShareTarget] Enviando coordenadas al micro-frontend:', sharedLat, sharedLng);
+    } else if (sharedLocationUrl) {
+      iframeUrl += `&sharedLocationUrl=${encodeURIComponent(sharedLocationUrl)}`;
+      console.log('[ShareTarget] Enviando URL de ubicación al micro-frontend:', sharedLocationUrl);
     }
     
     this.url = this.sanitizer.bypassSecurityTrustResourceUrl(iframeUrl);
