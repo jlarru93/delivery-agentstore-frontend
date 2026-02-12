@@ -215,6 +215,8 @@ export class OrderBean {
     isApprovedSelfManaged:boolean
     isSelfManaged:boolean
     isPickUpStore:boolean
+    isOrderCalendar?:boolean
+    reservationAt?:number
     readyToDmMinutesAt?: number
     statusHistory?:StatusHistoryBean[]
     totalPayUser?:number
@@ -432,6 +434,32 @@ export class OrderBean {
     }
     canEdit(): boolean {
         return this.isCommerce() && !this.deliveryMan;
+    }
+    getReservationDisplay(): string {
+        if (!this.reservationAt) return '';
+        return this.formatTimestamp(this.reservationAt);
+    }
+
+    getScheduledBadgeDisplay(): string {
+        const ts = this.readyToDmAt || this.reservationAt;
+        if (!ts) return '';
+        return this.formatTimestamp(ts);
+    }
+
+    private formatTimestamp(ts: number): string {
+        const date = new Date(ts * 1000);
+        const now = new Date();
+        const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const isToday = date.toDateString() === now.toDateString();
+        const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1);
+        const isTomorrow = date.toDateString() === tomorrow.toDateString();
+        let dayLabel: string;
+        if (isToday) dayLabel = 'Hoy';
+        else if (isTomorrow) dayLabel = 'Mañana';
+        else dayLabel = `${dayNames[date.getDay()]} ${date.getDate()}`;
+        const h = String(date.getHours()).padStart(2, '0');
+        const m = String(date.getMinutes()).padStart(2, '0');
+        return `${dayLabel} ${h}:${m}`;
     }
 }
 export interface StatusOpenStoreBean{

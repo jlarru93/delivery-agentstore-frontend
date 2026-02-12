@@ -100,6 +100,271 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     font-weight: 500;
 }
 
+.reservation-badge-modal {
+    background: #E8F5E9;
+    border: 1px solid #4CAF50;
+    color: #2E7D32;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+// ========== ACEPTACIÓN ORDEN PROGRAMADA ==========
+.reservation-accept-section {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+// Bloque destacado con la fecha/hora del cliente
+.reservation-client-datetime {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #E8F5E9;
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+}
+
+.reservation-client-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.reservation-client-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.reservation-client-label {
+    font-size: 11px;
+    color: #558B2F;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.reservation-client-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2E7D32;
+}
+
+.reservation-accept-header {
+    background: #fafafa;
+    padding: 10px 14px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #555;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.reservation-accept-options {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.reservation-accept-option {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+
+    &:hover { border-color: #aaa; }
+
+    &.selected {
+        border-color: #47AC34;
+        background: #f9fff9;
+
+        &::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            background: #47AC34;
+            color: #fff;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+    }
+}
+
+.reservation-accept-option-title {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.reservation-accept-option-desc {
+    font-size: 12px;
+    color: #777;
+    line-height: 1.4;
+    padding-right: 30px;
+}
+
+.reservation-datetime-picker {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #ddd;
+}
+
+.reservation-picker-row {
+    margin-bottom: 10px;
+}
+
+.reservation-picker-label {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.reservation-date-chips {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+}
+
+.reservation-date-chip {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 2px solid #ddd;
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+    font-weight: 500;
+
+    &:hover { border-color: #aaa; }
+
+    &.selected {
+        background: #47AC34;
+        color: #fff;
+        border-color: #47AC34;
+    }
+}
+
+.reservation-time-selects {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.reservation-select {
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    background: #fff;
+    cursor: pointer;
+    min-width: 70px;
+    text-align: center;
+
+    &:focus {
+        border-color: #47AC34;
+        outline: none;
+    }
+}
+
+.reservation-time-colon {
+    font-size: 18px;
+    font-weight: 700;
+    color: #999;
+}
+
+.reservation-preview {
+    background: #FFF8E1;
+    border: 1px solid #FFB300;
+    color: #E65100;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+// ========== MOBILE RESPONSIVE PARA ACEPTACIÓN PROGRAMADA ==========
+@media (max-width: 768px) {
+    .reservation-date-chip {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .reservation-select {
+        padding: 10px 14px;
+        font-size: 16px;
+        min-width: 76px;
+    }
+}
+
+// ========== EDICIÓN POST-ACEPTACIÓN PARA ORDENES PROGRAMADAS ==========
+.reservation-edit-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.reservation-edit-current {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #E8F5E9;
+    border: 1px solid #4CAF50;
+    border-radius: 8px;
+    padding: 10px 14px;
+}
+
+.reservation-edit-current-label {
+    font-size: 12px;
+    color: #558B2F;
+    font-weight: 600;
+}
+
+.reservation-edit-current-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2E7D32;
+}
+
+.reservation-btn-update {
+    margin-top: 4px;
+    border-color: #4CAF50 !important;
+    color: #2E7D32 !important;
+    font-weight: 600;
+    &:hover {
+        background: #E8F5E9 !important;
+    }
+}
+
 .modal-orden-acciones {
     display: flex;
     align-items: center;

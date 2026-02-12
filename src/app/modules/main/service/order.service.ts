@@ -24,11 +24,14 @@ export class OrderService {
     //return this.http.get<OrderResponse>(env.url.backEnd + "/order/"+orderId)
   }
 
-  aceptOder(orderId:string,readyToDmAt:number){
+  aceptOder(orderId:string, readyToDmMinutesAt:number, readyToDmAt?:number){
     let path="/order/:orderId/statusOrder/agent-store"
     path=path.replace(":orderId",orderId)
-    const body={uuid:orderId,status:PREPARING_ORDER_STATUS,readyToDmMinutesAt:readyToDmAt} as AceptOrderRequest
-    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backendOrder + path,body)
+    const body:any={uuid:orderId, status:PREPARING_ORDER_STATUS, readyToDmMinutesAt}
+    if(readyToDmAt){
+      body.readyToDmAt = readyToDmAt
+    }
+    return this.http.put<ObjetResponse<OrderResponse>>(env.url.backendOrder + path, body)
   }
 
   readyOder(orderId:string,body:any){

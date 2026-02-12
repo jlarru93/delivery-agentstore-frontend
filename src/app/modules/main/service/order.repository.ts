@@ -76,8 +76,8 @@ export class OrderRepository{
             return orderCancel
         }))
     }
-    aceptOder(id: string, readyToDmAt: number) {
-        return this.orderService.aceptOder(id+"",readyToDmAt).pipe(map((resp)=>{
+    aceptOder(id: string, readyToDmMinutesAt: number, readyToDmAt?: number) {
+        return this.orderService.aceptOder(id+"", readyToDmMinutesAt, readyToDmAt).pipe(map((resp)=>{
             const order=OrderResponse.toBean(resp.data)
             this.addProcess(order)
             this.orders.next(this.orders.value)

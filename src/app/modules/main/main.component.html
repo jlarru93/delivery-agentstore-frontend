@@ -30,6 +30,9 @@
                            <span class="pickup-badge" *ngIf="order.isPickUpStore">
                               🏪 PICK UP
                            </span>
+                           <span class="reservation-badge" *ngIf="order.isOrderCalendar && order.reservationAt">
+                              📅 {{order.getReservationDisplay()}}
+                           </span>
                         </div>
                      </div>
                      
@@ -158,6 +161,9 @@
                            <!-- PICK UP (condicional) -->
                            <span class="pickup-badge" *ngIf="order.isPickUpStore">
                               🏪 PICK UP
+                           </span>
+                           <span class="reservation-badge" *ngIf="order.isOrderCalendar && order.reservationAt">
+                              📅 {{order.getScheduledBadgeDisplay()}}
                            </span>
                         </div>
                      </div>
@@ -307,6 +313,9 @@
                            <span class="pickup-badge" *ngIf="order.isPickUpStore">
                               🏪 PICK UP
                            </span>
+                           <span class="reservation-badge" *ngIf="order.isOrderCalendar && order.reservationAt">
+                              📅 {{order.getScheduledBadgeDisplay()}}
+                           </span>
                         </div>
                      </div>
                      
@@ -444,6 +453,9 @@
                            <span class="pickup-badge" *ngIf="order.isPickUpStore">
                               🏪 PICK UP
                            </span>
+                           <span class="reservation-badge" *ngIf="order.isOrderCalendar && order.reservationAt">
+                              📅 {{order.getScheduledBadgeDisplay()}}
+                           </span>
                         </div>
                      </div>
                      
@@ -567,6 +579,9 @@
                            <!-- PICK UP (condicional) -->
                            <span class="pickup-badge" *ngIf="order.isPickUpStore">
                               🏪 PICK UP
+                           </span>
+                           <span class="reservation-badge" *ngIf="order.isOrderCalendar && order.reservationAt">
+                              📅 {{order.getScheduledBadgeDisplay()}}
                            </span>
                         </div>
                      </div>

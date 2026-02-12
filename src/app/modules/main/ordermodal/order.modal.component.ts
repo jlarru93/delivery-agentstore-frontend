@@ -51,6 +51,16 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     motorizedTracking: ResponseTrackingMotorized | null = null;
     trackingInterval: any = null;
 
+    // Propiedades de aceptación programada
+    scheduledAcceptMode: 'confirm' | 'modify' = 'confirm';
+    scheduledDates: {label: string, value: string}[] = [];
+    scheduledHours: string[] = [];
+    scheduledMinutes: string[] = ['00', '15', '30', '45'];
+    scheduledSelectedDate: string = '';
+    scheduledSelectedHour: string = '12';
+    scheduledSelectedMinute: string = '00';
+    scheduledPreviewText: string = '';
+
     constructor(
         private messageService: MessageService,
         private http: HttpClient,
@@ -113,6 +123,11 @@ export class OrderModalComponent implements OnInit, OnDestroy {
         
         if(this.orderSelected.status=="open"){
             this.readyToDmAt=15
+        }
+
+        // Inicializar datos de aceptación programada (solo si tiene reservationAt)
+        if (this.orderSelected.isOrderCalendar && this.orderSelected.reservationAt) {
+            this.initScheduledAcceptance();
         }
         if (this.orderSelected.readyToDmAt) {
             this.readyToDmAt = this.orderSelected.readyToDmAt;
@@ -843,63 +858,166 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     }
     flagOpenReceiptDialog: boolean = false
 
-    aceptOrder(){
-      let orderRequest=JSON.parse(JSON.stringify(this.orderSelected)) as OrderBean
-      orderRequest.readyToDmAt=this.readyToDmAt
-      this.loadingButtonAcept=true
+    // ========== MÉTODOS ACEPTACIÓN PROGRAMADA ==========
+    initScheduledAcceptance() {
+        this.scheduledAcceptMode = 'confirm';
+        this.scheduledDates = this.buildScheduledDates();
+        this.scheduledHours = [];
+        for (let i = 6; i <= 22; i++) {
+            this.scheduledHours.push(String(i).padStart(2, '0'));
+        }
+        // Pre-seleccionar fecha/hora: readyToDmAt (hora operativa) tiene prioridad, sino reservationAt (hora del cliente)
+        const preselectedTs = this.orderSelected.readyToDmAt || this.orderSelected.reservationAt;
+        if (preselectedTs) {
+            const preDate = new Date(preselectedTs * 1000);
+            const preDateStr = `${preDate.getFullYear()}-${String(preDate.getMonth()+1).padStart(2,'0')}-${String(preDate.getDate()).padStart(2,'0')}`;
+            this.scheduledSelectedDate = preDateStr;
+            this.scheduledSelectedHour = String(preDate.getHours()).padStart(2, '0');
+            this.scheduledSelectedMinute = String(Math.floor(preDate.getMinutes()/15)*15).padStart(2, '0');
+        } else {
+            this.scheduledSelectedDate = this.scheduledDates[0]?.value || '';
+            this.scheduledSelectedHour = '12';
+            this.scheduledSelectedMinute = '00';
+        }
+        this.updateScheduledPreview();
+    }
 
-      if(['CARD','CASH','PAY_IN_STORE','PAYMENT-BUTTON'].includes(orderRequest.payment.method.type)){
-        this.orderRepository.aceptOder(orderRequest.uuid,orderRequest.readyToDmAt).subscribe((resp)=>{
-        this.onVisibleChange(false)
-        this.loadingButtonAcept=false
-        this.dialogScreenshoot=false
-        this.messageService.add({
-                    severity: 'success',
-                    summary: '',
-                    detail: 'Operación realizado con exito'
-        });
+    buildScheduledDates(): {label: string, value: string}[] {
+        const dates: {label: string, value: string}[] = [];
+        const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const now = new Date();
+        for (let i = 0; i < 7; i++) {
+            const d = new Date(now);
+            d.setDate(d.getDate() + i);
+            const value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            let label: string;
+            if (i === 0) label = 'Hoy';
+            else if (i === 1) label = 'Mañana';
+            else label = `${dayNames[d.getDay()]} ${d.getDate()}`;
+            dates.push({ label, value });
+        }
+        return dates;
+    }
 
-        },(error)=>{
+    onSelectScheduledMode(mode: 'confirm' | 'modify') {
+        this.scheduledAcceptMode = mode;
+    }
+
+    onSelectScheduledDate(value: string) {
+        this.scheduledSelectedDate = value;
+        this.updateScheduledPreview();
+    }
+
+    updateScheduledPreview() {
+        const dateObj = this.scheduledDates.find(d => d.value === this.scheduledSelectedDate);
+        if (dateObj) {
+            this.scheduledPreviewText = `${dateObj.label} a las ${this.scheduledSelectedHour}:${this.scheduledSelectedMinute}`;
+        }
+    }
+
+    getScheduledReadyToDmAt(): number {
+        if (this.scheduledAcceptMode === 'confirm') {
+            return this.orderSelected.reservationAt;
+        }
+        return this.buildTimestampFromPicker();
+    }
+
+    buildTimestampFromPicker(): number {
+        const parts = this.scheduledSelectedDate.split('-');
+        const d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]),
+                           parseInt(this.scheduledSelectedHour), parseInt(this.scheduledSelectedMinute), 0);
+        return Math.floor(d.getTime() / 1000);
+    }
+
+    getReadyToDmDisplay(): string {
+        const ts = this.orderSelected.readyToDmAt;
+        if (!ts) return '';
+        const d = new Date(ts * 1000);
+        const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const dateObj = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        const diffDays = Math.round((dateObj.getTime() - today.getTime()) / 86400000);
+        const hora = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        if (diffDays === 0) return `Hoy ${hora}`;
+        if (diffDays === 1) return `Mañana ${hora}`;
+        return `${dayNames[d.getDay()]} ${d.getDate()} ${hora}`;
+    }
+
+    updateScheduledTime() {
+        this.loadingButtonUpdateTime = true;
+        const newReadyToDmAt = this.buildTimestampFromPicker();
+        const json = {
+            uuid: this.orderSelected.uuid,
+            readyToDmAt: newReadyToDmAt,
+            readyToDmMinutesAt: this.orderSelected.readyToDmMinutesAt || 15
+        };
+        this.orderRepository.updateReadyToDm(json).subscribe((response) => {
+            this.orderSelected.readyToDmAt = newReadyToDmAt;
+            this.loadingButtonUpdateTime = false;
+            this.messageService.add({
+                severity: 'success',
+                summary: '¡Actualizado!',
+                detail: 'Fecha y hora de entrega actualizada',
+                life: 3000
+            });
+        }, (error) => {
             this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: error.error.messages[0].message
             });
+            this.loadingButtonUpdateTime = false;
+        });
+    }
+
+    aceptOrder(){
+      this.loadingButtonAcept=true
+      const uuid = this.orderSelected.uuid
+      const readyToDmMinutesAt = this.readyToDmAt // minutos (15 por defecto)
+
+      // Para órdenes programadas: enviar readyToDmAt como timestamp
+      const readyToDmAt = (this.orderSelected.isOrderCalendar && this.orderSelected.reservationAt)
+        ? this.getScheduledReadyToDmAt()
+        : undefined;
+
+      const doAccept = () => {
+        this.orderRepository.aceptOder(uuid, readyToDmMinutesAt, readyToDmAt).subscribe((resp)=>{
+          this.onVisibleChange(false)
+          this.loadingButtonAcept=false
+          this.dialogScreenshoot=false
+          this.messageService.add({
+            severity: 'success',
+            summary: '',
+            detail: 'Operación realizado con exito'
+          });
+        },(error)=>{
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.messages[0].message
+          });
           this.loadingButtonAcept=false
           this.dialogScreenshoot=false
         })
+      }
+
+      if(['CARD','CASH','PAY_IN_STORE','PAYMENT-BUTTON'].includes(this.orderSelected.payment.method.type)){
+        doAccept()
       } else {
         if(!this.flagOpenReceiptDialog){
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'Advertencia',
-                detail: 'Por favor revise el comprobante de pago primero, Dar click en el boton del ojo'
-            });
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Advertencia',
+            detail: 'Por favor revise el comprobante de pago primero, Dar click en el boton del ojo'
+          });
           this.loadingButtonAcept = false
           this.dialogScreenshoot=false
           this.openDialogScreenShoot()
         } else {
-          this.orderRepository.aceptOder(orderRequest.uuid,orderRequest.readyToDmAt).subscribe((resp)=>{
-            this.onVisibleChange(false)
-            this.loadingButtonAcept=false
-            this.dialogScreenshoot=false
-            this.messageService.add({
-                    severity: 'success',
-                    summary: '',
-                    detail: 'Operación realizado con exito'
-                });
-          },(error)=>{
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error.error.messages[0].message
-            });
-            this.loadingButtonAcept=false
-            this.dialogScreenshoot=false
-          })
+          doAccept()
         }
       }
-
     }
     markOrderReady() {
         // Validar que hay orden seleccionada

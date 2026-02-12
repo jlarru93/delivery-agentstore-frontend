@@ -109,6 +109,18 @@
   white-space: nowrap;
 }
 
+.reservation-badge {
+  background: #E8F5E9;
+  border: 1px solid #4CAF50;
+  color: #2E7D32;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
 .header-right-compact {
   display: flex;
   align-items: center;
