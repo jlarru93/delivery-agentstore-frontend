@@ -14,6 +14,9 @@
     <ng-template pTemplate="header">
         <div class="modal-orden-header">
             <h2 class="modal-orden-titulo">Orden: #{{orderSelected.id}}</h2>
+            <span class="reservation-badge-modal" *ngIf="orderSelected.isOrderCalendar && orderSelected.reservationAt">
+                📅 {{orderSelected.getScheduledBadgeDisplay()}}
+            </span>
             <div class="modal-orden-acciones">
                 <!-- Botón editar solo para SendAndReciveStore -->
                 <button 
@@ -519,8 +522,8 @@
         </div>
     </div>
     
-    <!-- TIEMPO DE PREPARACIÓN (si status es 'open') -->
-    <div *ngIf="orderSelected.status=='open'" class="orden-info-card">
+    <!-- TIEMPO DE PREPARACIÓN (si status es 'open' y NO es programada o no tiene reservationAt) -->
+    <div *ngIf="orderSelected.status=='open' && !(orderSelected.isOrderCalendar && orderSelected.reservationAt)" class="orden-info-card">
         <h4 class="orden-info-card-titulo">Tiempo de Preparación ---</h4>
         <div class="orden-tiempo-prep">
             <div class="orden-tiempo-counter">
@@ -538,6 +541,74 @@
         </div>
         <div class="orden-tiempo-sugerido">
             <span>Tiempo sugerido para esta orden</span>
+        </div>
+    </div>
+
+    <!-- ACEPTACIÓN DE ORDEN PROGRAMADA (solo cuando isOrderCalendar=true Y reservationAt existe) -->
+    <div *ngIf="orderSelected.status=='open' && orderSelected.isOrderCalendar && orderSelected.reservationAt" class="orden-info-card">
+        <h4 class="orden-info-card-titulo">📅 Orden Programada</h4>
+        <!-- Fecha/hora del cliente destacada -->
+        <div class="reservation-client-datetime" *ngIf="orderSelected.reservationAt">
+            <span class="reservation-client-icon">🕐</span>
+            <div class="reservation-client-info">
+                <span class="reservation-client-label">El cliente solicita para:</span>
+                <span class="reservation-client-value">{{orderSelected.getReservationDisplay()}}</span>
+            </div>
+        </div>
+        <div class="reservation-accept-section">
+            <div class="reservation-accept-header">¿Cuándo estará lista la orden?</div>
+            <div class="reservation-accept-options">
+                <!-- Opción 1: Confirmar -->
+                <div class="reservation-accept-option"
+                     [class.selected]="scheduledAcceptMode === 'confirm'"
+                     (click)="onSelectScheduledMode('confirm')">
+                    <div class="reservation-accept-option-title">
+                        <span>✅</span> Confirmar fecha y hora del cliente
+                    </div>
+                    <div class="reservation-accept-option-desc">
+                        Lista el <strong>{{orderSelected.getReservationDisplay()}}</strong> como solicitó el cliente.
+                    </div>
+                </div>
+                <!-- Opción 2: Cambiar -->
+                <div class="reservation-accept-option"
+                     [class.selected]="scheduledAcceptMode === 'modify'"
+                     (click)="onSelectScheduledMode('modify')">
+                    <div class="reservation-accept-option-title">
+                        <span>📅</span> Cambiar fecha y hora
+                    </div>
+                    <div class="reservation-accept-option-desc">
+                        Acordaste otra fecha u hora con el cliente:
+                    </div>
+                    <div class="reservation-datetime-picker" *ngIf="scheduledAcceptMode === 'modify'">
+                        <div class="reservation-picker-row">
+                            <label class="reservation-picker-label">Fecha</label>
+                            <div class="reservation-date-chips">
+                                <span class="reservation-date-chip" 
+                                      *ngFor="let d of scheduledDates"
+                                      [class.selected]="scheduledSelectedDate === d.value"
+                                      (click)="onSelectScheduledDate(d.value)">
+                                    {{d.label}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="reservation-picker-row">
+                            <label class="reservation-picker-label">Hora</label>
+                            <div class="reservation-time-selects">
+                                <select class="reservation-select" [(ngModel)]="scheduledSelectedHour" (ngModelChange)="updateScheduledPreview()">
+                                    <option *ngFor="let h of scheduledHours" [value]="h">{{h}}</option>
+                                </select>
+                                <span class="reservation-time-colon">:</span>
+                                <select class="reservation-select" [(ngModel)]="scheduledSelectedMinute" (ngModelChange)="updateScheduledPreview()">
+                                    <option *ngFor="let m of scheduledMinutes" [value]="m">{{m}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="reservation-preview" *ngIf="scheduledPreviewText">
+                            🍳 Listo: <strong>{{scheduledPreviewText}}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -573,9 +644,10 @@
         </div>
     </div>
     
-    <!-- TIEMPO PREPARACIÓN (otros estados) -->
-    <div *ngIf="(orderSelected.status=='preparingOrder' && !orderSelected.deliveryMan) || 
-                (orderSelected.status=='orderReady' && !orderSelected.deliveryMan)" 
+    <!-- TIEMPO PREPARACIÓN (otros estados - orden NORMAL) -->
+    <div *ngIf="((orderSelected.status=='preparingOrder' && !orderSelected.deliveryMan) || 
+                (orderSelected.status=='orderReady' && !orderSelected.deliveryMan)) 
+                && !(orderSelected.isOrderCalendar && orderSelected.reservationAt)" 
          class="orden-info-card">
         <h4 class="orden-info-card-titulo">Tiempo de Preparación</h4>
         <div class="orden-tiempo-prep">
@@ -596,6 +668,54 @@
                     [loading]="loadingButtonUpdateTime" 
                     (click)="updateTimes(orderSelected)"
                     *ngIf="orderSelected.status=='preparingOrder' || orderSelected.status=='orderReady'">
+            </button>
+        </div>
+    </div>
+
+    <!-- EDITAR FECHA/HORA (otros estados - orden PROGRAMADA) -->
+    <div *ngIf="((orderSelected.status=='preparingOrder' && !orderSelected.deliveryMan) || 
+                (orderSelected.status=='orderReady' && !orderSelected.deliveryMan)) 
+                && orderSelected.isOrderCalendar && orderSelected.reservationAt" 
+         class="orden-info-card">
+        <h4 class="orden-info-card-titulo">📅 Fecha y Hora de Entrega</h4>
+        <div class="reservation-edit-section">
+            <div class="reservation-edit-current">
+                <span class="reservation-edit-current-label">Hora actual programada:</span>
+                <span class="reservation-edit-current-value">{{getReadyToDmDisplay()}}</span>
+            </div>
+            <div class="reservation-datetime-picker">
+                <div class="reservation-picker-row">
+                    <label class="reservation-picker-label">Fecha</label>
+                    <div class="reservation-date-chips">
+                        <span class="reservation-date-chip" 
+                              *ngFor="let d of scheduledDates"
+                              [class.selected]="scheduledSelectedDate === d.value"
+                              (click)="onSelectScheduledDate(d.value)">
+                            {{d.label}}
+                        </span>
+                    </div>
+                </div>
+                <div class="reservation-picker-row">
+                    <label class="reservation-picker-label">Hora</label>
+                    <div class="reservation-time-selects">
+                        <select class="reservation-select" [(ngModel)]="scheduledSelectedHour" (ngModelChange)="updateScheduledPreview()">
+                            <option *ngFor="let h of scheduledHours" [value]="h">{{h}}</option>
+                        </select>
+                        <span class="reservation-time-colon">:</span>
+                        <select class="reservation-select" [(ngModel)]="scheduledSelectedMinute" (ngModelChange)="updateScheduledPreview()">
+                            <option *ngFor="let m of scheduledMinutes" [value]="m">{{m}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="reservation-preview" *ngIf="scheduledPreviewText">
+                    🍳 Nueva hora: <strong>{{scheduledPreviewText}}</strong>
+                </div>
+            </div>
+            <button pButton type="button" label="Actualizar fecha y hora" 
+                    icon="pi pi-calendar"
+                    class="p-button-outlined orden-btn-actualizar reservation-btn-update" 
+                    [loading]="loadingButtonUpdateTime" 
+                    (click)="updateScheduledTime()">
             </button>
         </div>
     </div>

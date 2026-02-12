@@ -5,6 +5,8 @@ export class OpenStoreRequest{
 export class AceptOrderRequest{
     uuid:string
     status:string
+    readyToDmMinutesAt?:number
+    readyToDmAt?:number
 }
 export class CancelOrderRequest{
     status:string

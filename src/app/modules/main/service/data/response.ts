@@ -432,6 +432,8 @@ export class OrderResponse {
     isApprovedSelfManaged:boolean
     isSelfManaged:boolean
     isPickUpStore:boolean
+    isOrderCalendar?:boolean
+    reservationAt?:number
     readyToDmMinutesAt?: number
     statusHistory:StatusHistoryResponse[]
     totalPayUser ?:number
@@ -468,6 +470,8 @@ export class OrderResponse {
         bean.isApprovedSelfManaged=self.isApprovedSelfManaged??false
         bean.isSelfManaged = self.isSelfManaged??false
         bean.isPickUpStore = self.isPickUpStore??false
+        bean.isOrderCalendar = self.isOrderCalendar??false
+        bean.reservationAt = self.reservationAt??null
         bean.readyToDmMinutesAt = self.readyToDmMinutesAt
         bean.totalPayUser = self.totalPayUser
         bean.productPriceDiscount = self.productPriceDiscount
