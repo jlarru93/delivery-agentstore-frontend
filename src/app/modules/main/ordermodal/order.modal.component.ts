@@ -582,6 +582,17 @@ export class OrderModalComponent implements OnInit, OnDestroy {
 
     closeOptionBusinessIdDialog() { }
 
+    // ========== EVIDENCIA FULLSCREEN ==========
+    showEvidenceFullscreen: boolean = false;
+
+    openEvidenceFullscreen(): void {
+        this.showEvidenceFullscreen = true;
+    }
+
+    closeEvidenceFullscreen(): void {
+        this.showEvidenceFullscreen = false;
+    }
+
     dialogScreenshoot: boolean = false;
     loadingButtonUpdateTime: boolean = false;
     storeDataStorage: any; // Si usas app-print-template

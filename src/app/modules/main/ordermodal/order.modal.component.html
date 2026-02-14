@@ -448,6 +448,25 @@
                         </div>
                     </div>
                 </p-tabPanel>
+
+                <!-- TAB: EVIDENCIA -->
+                <p-tabPanel header="Evidencia" *ngIf="storeDataStorage?.isEnableViewEvidence && orderSelected?.evidenceReceptionOrder">
+                    <div class="orden-mobile-tab-content">
+                        <div class="orden-evidencia-container">
+                            <div class="orden-evidencia-header">
+                                <i class="pi pi-image"></i>
+                                <span>Evidencia de recepción</span>
+                            </div>
+                            <div class="orden-evidencia-image-wrapper">
+                                <img [src]="orderSelected.evidenceReceptionOrder" 
+                                     alt="Evidencia de recepción" 
+                                     class="orden-evidencia-image"
+                                     (click)="openEvidenceFullscreen()"
+                                     loading="lazy" />
+                            </div>
+                        </div>
+                    </div>
+                </p-tabPanel>
             </p-tabView>
             
             <!-- FAB IMPRIMIR (MÓVIL) -->
@@ -1295,4 +1314,22 @@
             (click)="confirmarOrdenLista()">
         </button>
     </ng-template>
+</p-dialog>
+
+<!-- DIALOG: Evidencia Fullscreen -->
+<p-dialog 
+    [(visible)]="showEvidenceFullscreen" 
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [closable]="true"
+    header="Evidencia de recepción"
+    styleClass="evidence-fullscreen-dialog"
+    [style]="{ width: '95vw', maxWidth: '600px' }">
+    <div class="evidence-fullscreen-content">
+        <img *ngIf="orderSelected?.evidenceReceptionOrder" 
+             [src]="orderSelected.evidenceReceptionOrder" 
+             alt="Evidencia de recepción"
+             class="evidence-fullscreen-image" />
+    </div>
 </p-dialog>

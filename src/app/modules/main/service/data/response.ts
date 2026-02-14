@@ -442,6 +442,7 @@ export class OrderResponse {
     coupons?: CouponsResponse[]
     urlTracking:string
     deliveryPriceMongo?: DeliveryPriceMongoResponse
+    evidenceReceptionOrder?: string
 
     static toBean(self: OrderResponse): OrderBean {
         const bean = new OrderBean()
@@ -492,6 +493,7 @@ export class OrderResponse {
                 id: String(history.executeFor?.id || '')
             }
         }));
+        bean.evidenceReceptionOrder = self?.evidenceReceptionOrder ?? null
         return bean
     }
 }
