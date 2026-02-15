@@ -226,6 +226,7 @@ export class OrderBean {
     urlTracking:string
     addresses?: AddressResponseLoadingOrder[]
     deliveryPriceMongo?: DeliveryPriceMongoBean
+    evidenceReceptionOrder?: string
 
     constructor(){
         this.messagesNoReadTotal=0

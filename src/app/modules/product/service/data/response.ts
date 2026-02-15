@@ -68,21 +68,23 @@ export class StoreResponse {
     ticketKitchen: TiketKitchenResponse[];
     tripSetting:any[];
     brand:BrandResponse
+    isEnableViewEvidence?: boolean
     static toBean(self: StoreResponse) : StoreBean{
         const bean = new StoreBean()
-            bean.id = self.id;
-            bean.zoneId = self.zoneId;
-            bean.fullName = self.fullName;
-            bean.banner = self.banner;
-            bean.log = self.log;
-            bean.starRating = self.starRating;
-            bean.isEnable = self.isEnable;
-            bean.menu = self.menu;
-            bean.products = self.products.filter((it)=>it.isEnabled).map((it) => ProductsResponse.toBean(it));
-            bean.isOpen = self.isOpen
-            bean.tripSetting=self.tripSetting
-            bean.ticketKitchen = self.ticketKitchen.map((it) => TiketKitchenResponse.toBean(it)) 
-            bean.brand= self.brand
+        bean.id = self.id;
+        bean.zoneId = self.zoneId;
+        bean.fullName = self.fullName;
+        bean.banner = self.banner;
+        bean.log = self.log;
+        bean.starRating = self.starRating;
+        bean.isEnable = self.isEnable;
+        bean.menu = self.menu;
+        bean.products = self.products.filter((it)=>it.isEnabled).map((it) => ProductsResponse.toBean(it));
+        bean.isOpen = self.isOpen
+        bean.tripSetting=self.tripSetting
+        bean.ticketKitchen = self.ticketKitchen.map((it) => TiketKitchenResponse.toBean(it)) 
+        bean.brand= self.brand
+        bean.isEnableViewEvidence = self.isEnableViewEvidence
         return bean
     }
 }

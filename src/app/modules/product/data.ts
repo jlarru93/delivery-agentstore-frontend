@@ -40,6 +40,7 @@ export class StoreBean {
     tripSetting:any[]
     ticketKitchen: TiketKitchenBean[]
     brand:BrandBean
+    isEnableViewEvidence?: boolean
 }
 
 export class TiketKitchenBean {
