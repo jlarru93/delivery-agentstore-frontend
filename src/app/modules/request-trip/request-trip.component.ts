@@ -22,6 +22,7 @@ import { CountryCode, CountryCodes } from 'src/app/utils/country-codes';
 import { AddressSuggestionResponse } from "../order-course/data/response";
 import { CustomerExpressService } from "./services/customer-express.service";
 import { FilterRequest } from "../order-history/service/data/request";
+import { StoreBean } from "../product/data";
 
 // Interfaces para compatibilidad
 interface LatLngLiteral {
@@ -177,7 +178,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
   countryCodes: CountryCode[] = CountryCodes;
   selectCountryCode: CountryCode = CountryCodes.find(country => country.dial_code == environment.countryDial);
   tagsOrderSelect:TagOrderResponse[]
-  storeSelected:any
+  storeSelected: StoreBean
   constructor(
     private storeService: StoreService,
     private requestTripService: RequestTripService,
@@ -189,7 +190,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly customerExpressService: CustomerExpressService,
     private cdr: ChangeDetectorRef
   ) {
-    this.storeSelected=JSON.parse(localStorage.getItem('storeBean'))
+    this.storeSelected=JSON.parse(localStorage.getItem('storeBean')) as StoreBean
   }
   ngAfterViewInit(): void {
     // Esperar a que el documento esté completamente cargado
@@ -1387,7 +1388,12 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
     ];
     this.request_trip.addresses.forEach((item, index) => {
       if (item.sort == 1) {
-        order.addresses[0].addressStreet = item.addressStreet;
+        let address=item?.addressStreet
+        
+        if(!this.request_trip?.isCheckedStore){
+          address=item.addressStreet +"("+this.storeSelected?.fullName+")"
+        }
+        order.addresses[0].addressStreet = address;
         order.addresses[0].phone = !this.request_trip?.isCheckedStore ? this.dataStorePhone : (this.selectCountryCode.dial_code + this.originMobilePhone?.toString());
         order.addresses[0].marker = item.marker;
         order.addresses[0].alias = item.alias;
