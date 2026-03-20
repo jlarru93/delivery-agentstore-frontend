@@ -5,7 +5,6 @@
     "ng": "ng",
     "start": "ng serve --ssl --host 0.0.0.0 --disable-host-check --port 4200",
     "start:prod": "ng serve --configuration prod",
-    "open:android":"npx cap open android",
     "build": "ng build",
     "build-dev": "ng build --configuration dev",
     "build-dev-spa": "ng build --configuration dev --source-map",
@@ -13,7 +12,12 @@
     "build-prod": "ng build --configuration prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+
+    "build:cap": "ng build --configuration prod",
+    "cap:sync": "npm run build:cap && npx cap sync",
+    "cap:android": "npm run cap:sync && npx cap open android",
+    "cap:ios": "npm run cap:sync && npx cap open ios"
   },
   "private": true,
   "dependencies": {
