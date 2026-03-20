@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 import { App } from '@capacitor/app';
+import { Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
 const ShareTargetPlugin = registerPlugin<{
@@ -18,21 +19,13 @@ export interface SharedLocationData {
 @Injectable({ providedIn: 'root' })
 export class ShareLocationService {
 
+  // RequestOrderComponent se suscribe directamente aquí
+  readonly sharedLocation$ = new Subject<SharedLocationData>();
+
   constructor(private router: Router) {}
 
-  /**
-   * Llamar en AppComponent.ngOnInit() SIN await.
-   *
-   * Cubre dos casos:
-   *  1. App cerrada → share → abre en frío:
-   *     espera el primer NavigationEnd (guards resueltos) y lee SharedPreferences.
-   *
-   *  2. App ya abierta → share → vuelve al frente:
-   *     appStateChange detecta el resume y re-chequea SharedPreferences.
-   */
   init(): void {
     if (!Capacitor.isNativePlatform()) {
-      // PWA/web: leer query params una sola vez al inicio
       this.router.events.pipe(
         filter(e => e instanceof NavigationEnd),
         take(1)
@@ -40,7 +33,7 @@ export class ShareLocationService {
       return;
     }
 
-    // ── CASO 1: Arranque en frío ──
+    // Arranque en frío: esperar guards
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       take(1)
@@ -49,7 +42,7 @@ export class ShareLocationService {
       await this.checkNativeShare();
     });
 
-    // ── CASO 2: App ya abierta, vuelve al frente ──
+    // App ya abierta: detectar resume
     App.addListener('appStateChange', async ({ isActive }) => {
       if (isActive) {
         console.log('[ShareTarget] App resumida — chequeando share...');
@@ -58,38 +51,40 @@ export class ShareLocationService {
     });
   }
 
-  // ───────────────────────────────────────────────────────────────────
-  // Nativo
-  // ───────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────
 
   private async checkNativeShare(): Promise<void> {
     try {
       const result = await ShareTargetPlugin.getPendingShare();
-      console.log('[ShareTarget] Resultado plugin:', result);
+      console.log('[ShareTarget] Plugin result:', result);
 
       const text = result?.text;
-      if (!text) {
-        console.log('[ShareTarget] Sin share pendiente');
-        return;
-      }
+      if (!text) return;
 
       console.log('[ShareTarget] Texto recibido:', text);
       const locationData = this.extractLocation(text);
       console.log('[ShareTarget] Location extraída:', locationData);
 
-      if (locationData) {
-        this.navigateWithLocation(locationData);
+      if (!locationData) {
+        console.warn('[ShareTarget] No se pudo extraer ubicación');
+        return;
+      }
+
+      // Si ya estamos en request-order → emitir directo al componente
+      const currentUrl = this.router.url.split('?')[0];
+      if (currentUrl === '/request-order') {
+        console.log('[ShareTarget] Ya en request-order, emitiendo al Subject...');
+        this.sharedLocation$.next(locationData);
       } else {
-        console.warn('[ShareTarget] No se pudo extraer ubicación del texto');
+        // Navegar a request-order con query params (arranque frío)
+        const queryParams = this.buildQueryParams(locationData);
+        console.log('[ShareTarget] Navegando a request-order:', queryParams);
+        this.router.navigate(['/request-order'], { queryParams });
       }
     } catch (e) {
       console.error('[ShareTarget] Error:', e);
     }
   }
-
-  // ───────────────────────────────────────────────────────────────────
-  // Web / PWA
-  // ───────────────────────────────────────────────────────────────────
 
   private checkWebShare(): void {
     const params = new URLSearchParams(window.location.search);
@@ -103,32 +98,30 @@ export class ShareLocationService {
     const locationData = this.extractLocation(combined);
     this.cleanUrl();
 
-    if (locationData) {
-      this.navigateWithLocation(locationData);
+    if (!locationData) return;
+
+    const currentUrl = this.router.url.split('?')[0];
+    if (currentUrl === '/request-order') {
+      this.sharedLocation$.next(locationData);
+    } else {
+      this.router.navigate(['/request-order'], { queryParams: this.buildQueryParams(locationData) });
     }
   }
 
-  // ───────────────────────────────────────────────────────────────────
-  // Navegación
-  // ───────────────────────────────────────────────────────────────────
-
-  private navigateWithLocation(locationData: SharedLocationData): void {
+  buildQueryParams(locationData: SharedLocationData): any {
     const queryParams: any = {};
-
     if (locationData.inputType === 'coordinates' && locationData.coords) {
       queryParams.sharedLat = locationData.coords.lat;
       queryParams.sharedLng = locationData.coords.lng;
     } else if (locationData.inputType === 'linkconvert' && locationData.url) {
       queryParams.sharedLocationUrl = locationData.url;
     }
-
-    console.log('[ShareTarget] Navegando a request-order con:', queryParams);
-    this.router.navigate(['/request-order'], { queryParams });
+    return queryParams;
   }
 
-  // ───────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────
   // Extracción de ubicación
-  // ───────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────
 
   private extractLocation(text: string): SharedLocationData | null {
     const urlMatch = text.match(
@@ -163,7 +156,6 @@ export class ShareLocationService {
       /[?&]ll=(-?\d{1,3}\.\d{3,8}),(-?\d{1,3}\.\d{3,8})/,
       /\/place\/(-?\d{1,3}\.\d{3,8}),(-?\d{1,3}\.\d{3,8})/,
     ];
-
     for (const pattern of patterns) {
       const match = url.match(pattern);
       if (match) {

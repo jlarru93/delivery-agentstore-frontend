@@ -1,1 +1,6 @@
-<iframe [src]="url" style="width: 100%; min-height: 95vh; border: none;" allow="geolocation"></iframe>
+<iframe
+  *ngIf="url"
+  [src]="url"
+  style="width: 100%; min-height: 95vh; border: none;"
+  allow="geolocation">
+</iframe>
