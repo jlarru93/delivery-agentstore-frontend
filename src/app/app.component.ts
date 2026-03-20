@@ -1,19 +1,20 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {PrimeNGConfig} from 'primeng/api';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { PrimeNGConfig } from 'primeng/api';
 import { ConnectionService } from './modules/service/connection.service';
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { interval, map, Observable, of, switchMap } from 'rxjs';
+import { interval, map, Observable, switchMap } from 'rxjs';
 import { PushService } from './modules/service/push.service';
 import { WokerHandler } from './modules/service/worker.service';
 import { TokenBridgeService } from './utils/token-bridge.service';
 import { GeoMessageHandlerService } from './modules/service/geo.message.handler.service';
-import { ShareLocationService } from './modules/service/share-location.service'; // ← NUEVO
+import { ShareLocationService } from './modules/service/share-location.service';
+
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 
     horizontalMenu: boolean;
 
@@ -31,52 +32,55 @@ export class AppComponent implements OnInit{
 
     inputStyle = 'outlined';
 
-    isDialogConnectionShow:boolean
+    isDialogConnectionShow: boolean;
     private previousVersion: string | null = null;
-    private currentVersion: string | null = null
+    private currentVersion: string | null = null;
 
     displayToken: string | null = null;
+
     @ViewChild(DialogUpdateWebComponent) dialogUpdate!: DialogUpdateWebComponent;
+
     constructor(
         private primengConfig: PrimeNGConfig,
-        private _worker:WokerHandler,
-        private connectionService:ConnectionService,
-        private http:HttpClient,
+        private _worker: WokerHandler,
+        private connectionService: ConnectionService,
+        private http: HttpClient,
         private push: PushService,
         private tokenBridge: TokenBridgeService,
-        private geoHandler:GeoMessageHandlerService,
-        private shareLocation: ShareLocationService     // ← NUEVO
+        private geoHandler: GeoMessageHandlerService,
+        private shareLocation: ShareLocationService
     ) {}
 
-    async ngOnInit() {
-        // ── Detectar ubicación compartida desde WhatsApp / Google Maps ──
-        await this.shareLocation.checkIncomingShare();
+    ngOnInit() {
+        // Registra listeners para share target (arranque frío + app resumida)
+        this.shareLocation.init();
 
         this.geoHandler.init();
         this.primengConfig.ripple = true;
-        this.connectionService.isConnected$.subscribe((result)=>{
-            console.log("result",result)
-            if(result===false){
-                this.isDialogConnectionShow=true
-                console.log("Lanzar modal")
+
+        this.connectionService.isConnected$.subscribe((result) => {
+            console.log('result', result);
+            if (result === false) {
+                this.isDialogConnectionShow = true;
+                console.log('Lanzar modal');
             }
-        })
+        });
 
         interval(10000)
-        .pipe(switchMap(() => this.loadVersion()))
-        .subscribe((version) => {
-        if (this.previousVersion && this.previousVersion !== version) {
-            console.log(`La versión ha cambiado de ${this.previousVersion} a ${version}`);
-            this.dialogUpdate.showMessage();
-        }
-        this.previousVersion = version;
-        });
+            .pipe(switchMap(() => this.loadVersion()))
+            .subscribe((version) => {
+                if (this.previousVersion && this.previousVersion !== version) {
+                    console.log(`La versión ha cambiado de ${this.previousVersion} a ${version}`);
+                    this.dialogUpdate.showMessage();
+                }
+                this.previousVersion = version;
+            });
+
         this.push.onForegroundMessage((payload) => {
             console.log('Mensaje en foreground:', payload);
-            // Aquí puedes mostrar un toast, alert, etc.
-        })
+        });
     }
-    
+
     private loadVersion(): Observable<string | null> {
         const headers = new HttpHeaders({
             'Cache-Control': 'no-cache',
@@ -90,6 +94,4 @@ export class AppComponent implements OnInit{
             })
         );
     }
-
-
 }

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { Capacitor, registerPlugin } from '@capacitor/core';
+import { App } from '@capacitor/app';
+import { filter, take } from 'rxjs/operators';
 
 const ShareTargetPlugin = registerPlugin<{
   getPendingShare(): Promise<{ text: string | null }>;
@@ -18,36 +20,63 @@ export class ShareLocationService {
 
   constructor(private router: Router) {}
 
-  async checkIncomingShare(): Promise<void> {
-    if (Capacitor.isNativePlatform()) {
-      // ── APK nativo: leer desde SharedPreferences vía plugin Java ──
-      await this.checkNativeShare();
-    } else {
-      // ── PWA / web: leer desde query params de la URL ──
-      this.checkWebShare();
+  /**
+   * Llamar en AppComponent.ngOnInit() SIN await.
+   *
+   * Cubre dos casos:
+   *  1. App cerrada → share → abre en frío:
+   *     espera el primer NavigationEnd (guards resueltos) y lee SharedPreferences.
+   *
+   *  2. App ya abierta → share → vuelve al frente:
+   *     appStateChange detecta el resume y re-chequea SharedPreferences.
+   */
+  init(): void {
+    if (!Capacitor.isNativePlatform()) {
+      // PWA/web: leer query params una sola vez al inicio
+      this.router.events.pipe(
+        filter(e => e instanceof NavigationEnd),
+        take(1)
+      ).subscribe(() => this.checkWebShare());
+      return;
     }
+
+    // ── CASO 1: Arranque en frío ──
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      take(1)
+    ).subscribe(async () => {
+      console.log('[ShareTarget] Arranque frío — chequeando share...');
+      await this.checkNativeShare();
+    });
+
+    // ── CASO 2: App ya abierta, vuelve al frente ──
+    App.addListener('appStateChange', async ({ isActive }) => {
+      if (isActive) {
+        console.log('[ShareTarget] App resumida — chequeando share...');
+        await this.checkNativeShare();
+      }
+    });
   }
 
   // ───────────────────────────────────────────────────────────────────
-  // Nativo (Capacitor / Android)
+  // Nativo
   // ───────────────────────────────────────────────────────────────────
 
-private async checkNativeShare(): Promise<void> {
+  private async checkNativeShare(): Promise<void> {
     try {
-      console.log('[ShareTarget] Intentando leer share nativo...');
       const result = await ShareTargetPlugin.getPendingShare();
-      console.log('[ShareTarget] Resultado del plugin:', result);
-      
+      console.log('[ShareTarget] Resultado plugin:', result);
+
       const text = result?.text;
       if (!text) {
-        console.log('[ShareTarget] No hay texto pendiente');
+        console.log('[ShareTarget] Sin share pendiente');
         return;
       }
 
       console.log('[ShareTarget] Texto recibido:', text);
       const locationData = this.extractLocation(text);
       console.log('[ShareTarget] Location extraída:', locationData);
-      
+
       if (locationData) {
         this.navigateWithLocation(locationData);
       } else {
@@ -56,10 +85,10 @@ private async checkNativeShare(): Promise<void> {
     } catch (e) {
       console.error('[ShareTarget] Error:', e);
     }
-}
+  }
 
   // ───────────────────────────────────────────────────────────────────
-  // Web / PWA (share_target del manifest.webmanifest)
+  // Web / PWA
   // ───────────────────────────────────────────────────────────────────
 
   private checkWebShare(): void {
@@ -72,7 +101,6 @@ private async checkNativeShare(): Promise<void> {
 
     const combined = [text, url, title].filter(Boolean).join(' ');
     const locationData = this.extractLocation(combined);
-
     this.cleanUrl();
 
     if (locationData) {
@@ -81,7 +109,7 @@ private async checkNativeShare(): Promise<void> {
   }
 
   // ───────────────────────────────────────────────────────────────────
-  // Navegación común
+  // Navegación
   // ───────────────────────────────────────────────────────────────────
 
   private navigateWithLocation(locationData: SharedLocationData): void {
@@ -99,7 +127,7 @@ private async checkNativeShare(): Promise<void> {
   }
 
   // ───────────────────────────────────────────────────────────────────
-  // Extracción de ubicación (sin cambios)
+  // Extracción de ubicación
   // ───────────────────────────────────────────────────────────────────
 
   private extractLocation(text: string): SharedLocationData | null {
