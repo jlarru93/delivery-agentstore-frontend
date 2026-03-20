@@ -48,9 +48,9 @@ export class AppComponent implements OnInit{
         private shareLocation: ShareLocationService     // ← NUEVO
     ) {}
 
-    ngOnInit() {
+    async ngOnInit() {
         // ── Detectar ubicación compartida desde WhatsApp / Google Maps ──
-        this.shareLocation.checkIncomingShare();
+        await this.shareLocation.checkIncomingShare();
 
         this.geoHandler.init();
         this.primengConfig.ripple = true;
