@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Piwi Agent</string>
-    <string name="title_activity_main">Piwi Agent</string>
+    <string name="app_name">POS PIWI</string>
+    <string name="title_activity_main">POS PIWI</string>
     <string name="package_name">pe.piwi.agent</string>
     <string name="custom_url_scheme">pe.piwi.agent</string>
 </resources>

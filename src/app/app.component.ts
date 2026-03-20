@@ -9,6 +9,8 @@ import { WokerHandler } from './modules/service/worker.service';
 import { TokenBridgeService } from './utils/token-bridge.service';
 import { GeoMessageHandlerService } from './modules/service/geo.message.handler.service';
 import { ShareLocationService } from './modules/service/share-location.service';
+import { Capacitor } from '@capacitor/core';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 @Component({
     selector: 'app-root',
@@ -17,25 +19,16 @@ import { ShareLocationService } from './modules/service/share-location.service';
 export class AppComponent implements OnInit {
 
     horizontalMenu: boolean;
-
     darkMode = false;
-
     menuColorMode = 'light';
-
     menuColor = 'layout-menu-light';
-
     themeColor = 'blue';
-
     layoutColor = 'blue';
-
     ripple = true;
-
     inputStyle = 'outlined';
-
     isDialogConnectionShow: boolean;
     private previousVersion: string | null = null;
     private currentVersion: string | null = null;
-
     displayToken: string | null = null;
 
     @ViewChild(DialogUpdateWebComponent) dialogUpdate!: DialogUpdateWebComponent;
@@ -52,7 +45,15 @@ export class AppComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        // Registra listeners para share target (arranque frío + app resumida)
+        // ── Status Bar: verde PIWI, sin solaparse con el contenido ──
+        if (Capacitor.isNativePlatform()) {
+            StatusBar.show();
+            StatusBar.setOverlaysWebView({ overlay: false }); // ← clave: empuja el contenido hacia abajo
+            StatusBar.setStyle({ style: Style.Dark });        // iconos blancos
+            StatusBar.setBackgroundColor({ color: '#398E3C' });
+        }
+
+        // ── Share Target ──
         this.shareLocation.init();
 
         this.geoHandler.init();

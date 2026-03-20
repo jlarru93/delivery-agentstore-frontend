@@ -3,10 +3,16 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'pe.piwi.agent',
-  appName: 'Piwi Agent',
-  webDir: 'dist/delivery-agentStore-frontend',  // ← este es el correcto
+  appName: 'POS PIWI',
+  webDir: 'dist/delivery-agentStore-frontend',
   server: {
     androidScheme: 'https'
+  },
+  plugins: {
+    StatusBar: {
+      style: 'DARK',
+      backgroundColor: '#398E3C'
+    }
   }
 };
 
