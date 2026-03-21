@@ -21,21 +21,23 @@ self.addEventListener('push', event => {
     const notif = payload.notification || {};
     const data  = payload.data || {};
 
-    // 1) Mostrar notificación (opcional)
-    /*const title = notif.title || 'Notificación';
-    const options = {
-      body: notif.body || '',
-      icon: notif.icon || '/assets/icons/icon-192x192.png',
-      vibrate: [200, 100, 200, 100, 200],
-      data, // aquí viajan tus claves personalizadas (click_action, audioUrl, etc.)
-      actions: [
-        { action: 'play',  title: '▶ Reproducir' },
-        { action: 'pause', title: '⏸ Pausar' }
-      ]
-    };*/
-    //await self.registration.showNotification(title, options);
+    // ── Verificar si el push sigue vigente ──────────────────────
+    const nowSeconds    = Math.floor(Date.now() / 1000);
+    const pushExpiresAt = data.pushExpiresAt ? parseInt(data.pushExpiresAt) : null;
+    const pushCreatedAt = data.pushCreatedAt ? parseInt(data.pushCreatedAt) : null;
 
-    // 2) Si viene audio en el payload, avisar a los clientes que reproduzcan
+    if (pushExpiresAt && nowSeconds > pushExpiresAt) {
+      console.log('[SW] Push expirado — ignorando. expiresAt=' + pushExpiresAt + ' now=' + nowSeconds);
+      return; // No reproducir audio ni mostrar notificación
+    }
+    // Fallback: si no hay expiresAt pero sí createdAt, usar TTL de 5 minutos
+    if (!pushExpiresAt && pushCreatedAt && nowSeconds > pushCreatedAt + 300) {
+      console.log('[SW] Push expirado (fallback TTL) — ignorando.');
+      return;
+    }
+    // ────────────────────────────────────────────────────────────
+
+    // Si viene audio en el payload, avisar a los clientes que reproduzcan
     if (data.audioUrl) {
       await broadcastToClients({
         type: 'PLAY_AUDIO',
@@ -60,7 +62,6 @@ self.addEventListener('notificationclick', event => {
   const data = (event.notification && event.notification.data) || {};
   const clickUrl = data.click_action || '/';
 
-  // Acciones de controles
   if (event.action === 'play') {
     event.waitUntil(broadcastToClients({ type: 'PLAY_AUDIO', url: data.audioUrl, metadata: data }));
     return;

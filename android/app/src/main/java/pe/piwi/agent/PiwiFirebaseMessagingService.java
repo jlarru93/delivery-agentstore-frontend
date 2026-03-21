@@ -15,23 +15,53 @@ public class PiwiFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "PiwiFCM";
     private static final String CHANNEL_ID = "piwi_fcm_channel";
+    private static final int PUSH_TTL_SECONDS = 300; // 5 minutos fallback
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Log.d(TAG, "FCM recibido: " + remoteMessage.getData());
 
-        String type      = remoteMessage.getData().get("type");
-        String title     = remoteMessage.getData().get("title");
-        String body      = remoteMessage.getData().get("body");
-        String orderUuid = remoteMessage.getData().get("orderUuid");
+        String type         = remoteMessage.getData().get("type");
+        String title        = remoteMessage.getData().get("title");
+        String body         = remoteMessage.getData().get("body");
+        String orderUuid    = remoteMessage.getData().get("orderUuid");
+        String expiresAtStr = remoteMessage.getData().get("pushExpiresAt");
+        String createdAtStr = remoteMessage.getData().get("pushCreatedAt");
 
         boolean isNewOrder = "NEW_ORDER".equals(type) || type == null;
         if (!isNewOrder) return;
 
-        Log.d(TAG, "Nueva orden uuid=" + orderUuid);
+        // ── Verificar si el push sigue vigente ──────────────────────
+        long nowSeconds = System.currentTimeMillis() / 1000;
 
-        // 1. Lanzar AlarmService (sonido en bucle)
+        if (expiresAtStr != null && !expiresAtStr.isEmpty()) {
+            try {
+                long expiresAt = Long.parseLong(expiresAtStr);
+                if (nowSeconds > expiresAt) {
+                    Log.d(TAG, "Push expirado — ignorando alarma. expiresAt=" + expiresAt + " now=" + nowSeconds);
+                    return; // Push caducado: no sonar, no notificar
+                }
+            } catch (NumberFormatException e) {
+                Log.w(TAG, "pushExpiresAt inválido: " + expiresAtStr);
+            }
+        } else if (createdAtStr != null && !createdAtStr.isEmpty()) {
+            // Fallback: si no hay expiresAt, calcular desde createdAt
+            try {
+                long createdAt = Long.parseLong(createdAtStr);
+                if (nowSeconds > createdAt + PUSH_TTL_SECONDS) {
+                    Log.d(TAG, "Push expirado (fallback TTL) — ignorando alarma.");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                Log.w(TAG, "pushCreatedAt inválido: " + createdAtStr);
+            }
+        }
+        // ────────────────────────────────────────────────────────────
+
+        Log.d(TAG, "Push vigente — lanzando AlarmService. orderUuid=" + orderUuid);
+
+        // 1. Lanzar AlarmService (sonido + vibración en bucle)
         Intent alarmIntent = new Intent(this, AlarmService.class);
         alarmIntent.putExtra("title", title != null ? title : "Nueva orden recibida");
         alarmIntent.putExtra("body",  body  != null ? body  : "Toca para ver la orden");
@@ -44,7 +74,6 @@ public class PiwiFirebaseMessagingService extends FirebaseMessagingService {
     private void showOrderNotification(String title, String body, String orderUuid) {
         createNotificationChannel();
 
-        // Al tocar → MainActivity recibe el orderUuid via intent extra
         Intent openIntent = new Intent(this, MainActivity.class);
         openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (orderUuid != null) {
