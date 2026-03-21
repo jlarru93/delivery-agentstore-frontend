@@ -9,6 +9,7 @@ public class MainActivity extends BridgeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         registerPlugin(ShareTargetPlugin.class);
+        registerPlugin(AlarmPlugin.class);
         super.onCreate(savedInstanceState);
         handleShareIntent(getIntent());
     }

@@ -45,13 +45,16 @@ export class AppComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        // ── Status Bar: verde PIWI, sin solaparse con el contenido ──
+        // ── Status Bar verde PIWI ──
         if (Capacitor.isNativePlatform()) {
             StatusBar.show();
-            StatusBar.setOverlaysWebView({ overlay: false }); // ← clave: empuja el contenido hacia abajo
-            StatusBar.setStyle({ style: Style.Dark });        // iconos blancos
+            StatusBar.setOverlaysWebView({ overlay: false });
+            StatusBar.setStyle({ style: Style.Dark });
             StatusBar.setBackgroundColor({ color: '#398E3C' });
         }
+
+        // ── Push / FCM ──
+        this.push.init();
 
         // ── Share Target ──
         this.shareLocation.init();
@@ -60,10 +63,8 @@ export class AppComponent implements OnInit {
         this.primengConfig.ripple = true;
 
         this.connectionService.isConnected$.subscribe((result) => {
-            console.log('result', result);
             if (result === false) {
                 this.isDialogConnectionShow = true;
-                console.log('Lanzar modal');
             }
         });
 
@@ -71,14 +72,23 @@ export class AppComponent implements OnInit {
             .pipe(switchMap(() => this.loadVersion()))
             .subscribe((version) => {
                 if (this.previousVersion && this.previousVersion !== version) {
-                    console.log(`La versión ha cambiado de ${this.previousVersion} a ${version}`);
                     this.dialogUpdate.showMessage();
                 }
                 this.previousVersion = version;
             });
 
+        // Mensajes web foreground (PWA)
         this.push.onForegroundMessage((payload) => {
-            console.log('Mensaje en foreground:', payload);
+            console.log('[Push] Mensaje foreground:', payload);
+        });
+
+        // Escuchar postMessage del micro-frontend para detener alarma
+        // cuando el agente abre/acepta una orden
+        window.addEventListener('message', (event: MessageEvent) => {
+            if (!event.data || typeof event.data !== 'object') return;
+            if (event.data.type === 'ORDER_OPENED' || event.data.type === 'ORDER_ACCEPTED') {
+                this.push.stopAlarm();
+            }
         });
     }
 

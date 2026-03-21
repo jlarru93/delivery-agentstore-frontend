@@ -21,7 +21,7 @@ export class ConnectionService {
             const now = new Date()
             
             const five_minutes_ms = 5 * 60 * 1000;
-            if (this.lastUpdateAt===null || (now.getTime() - this.lastUpdateAt?.getTime()??0) >five_minutes_ms) {
+            if (this.lastUpdateAt===null || (now.getTime() - this.lastUpdateAt?.getTime()) >five_minutes_ms) {
                 this.lastUpdateAt = new Date()
                 this.isConnected.next(false)
                 this.counter = 0

@@ -1,91 +1,159 @@
 import { Injectable } from '@angular/core';
+import { Capacitor, registerPlugin } from '@capacitor/core';
 import { initializeApp, getApps } from 'firebase/app';
 import { getMessaging, getToken, isSupported, onMessage, Messaging } from 'firebase/messaging';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 
+// Plugin para detener la alarma nativa desde Angular
+const AlarmPlugin = registerPlugin<{
+  stopAlarm(): Promise<void>;
+  startAlarm(): Promise<void>;
+}>('AlarmPlugin');
+
 @Injectable({ providedIn: 'root' })
 export class PushService {
-  private messaging?: Messaging;
-  constructor(private readonly http:HttpClient){
 
-  }
+  private messaging?: Messaging;
+
+  constructor(private readonly http: HttpClient) {}
+
+  // ─────────────────────────────────────────────────────────────────
+  // Inicialización — llamar al arrancar la app
+  // ─────────────────────────────────────────────────────────────────
 
   async init(): Promise<void> {
+    if (Capacitor.isNativePlatform()) {
+      await this.initNative();
+    } else {
+      await this.initWeb();
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // Nativo (Android/iOS) — usa @capacitor-firebase/messaging
+  // ─────────────────────────────────────────────────────────────────
+
+  private async initNative(): Promise<void> {
+    try {
+      const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
+
+      // Pedir permiso
+      await FirebaseMessaging.requestPermissions();
+
+      // Obtener token FCM y registrarlo en backend
+      const { token } = await FirebaseMessaging.getToken();
+      console.log('[Push] Token FCM nativo:', token);
+      if (token) {
+        this.registerService(token).subscribe(() => {
+          console.log('[Push] Token registrado en backend');
+        });
+      }
+
+      // Escuchar notificaciones en foreground
+      FirebaseMessaging.addListener('notificationReceived', (notification) => {
+        console.log('[Push] Foreground notification:', notification);
+      });
+
+      // Cuando el agente toca la notificación → detener alarma
+      FirebaseMessaging.addListener('notificationActionPerformed', (action) => {
+        console.log('[Push] Notificación tocada:', action);
+        this.stopAlarm();
+      });
+
+    } catch (e) {
+      console.error('[Push] Error inicializando FCM nativo:', e);
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // Web / PWA — usa Firebase JS SDK (implementación actual)
+  // ─────────────────────────────────────────────────────────────────
+
+  private async initWeb(): Promise<void> {
     if (!getApps().length) {
       initializeApp(environment.firebase);
     }
     if (!(await isSupported())) {
-      console.warn('FCM no soportado en este navegador.');
+      console.warn('[Push] FCM no soportado en este navegador.');
       return;
     }
     this.messaging = getMessaging();
   }
 
-  /**
-   * Llamar esto desde un botón (gesto de usuario).
-   * Retorna el token FCM o null si no hay permiso.
-   */
   async requestPermissionAndToken() {
-    // cache local para no pedir token cada vez
-
-
-    await this.init(); // initializeApp + isSupported + getMessaging
-    if (!this.messaging) return null;
-
-    // 1) permiso de notificación
-    const perm = await Notification.requestPermission();
-    if (perm !== 'granted') {
-      localStorage.removeItem('tokenPush')
-      console.warn('Permiso no concedido');
+    if (Capacitor.isNativePlatform()) {
+      // En nativo ya se pidió en initNative()
       return null;
     }
-    /*const cached = localStorage.getItem('tokenPush');
-    console.log("cached",cached)
-    if (cached) return {perm:perm,token:cached};*/
-    // 2) aseguramos la registration del SW de FCM (NO usar ready)
+
+    await this.initWeb();
+    if (!this.messaging) return null;
+
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') {
+      localStorage.removeItem('tokenPush');
+      console.warn('[Push] Permiso no concedido');
+      return null;
+    }
+
     let swReg = await navigator.serviceWorker.getRegistration('/firebase-cloud-messaging-push-scope');
     if (!swReg) {
       swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
         scope: '/firebase-cloud-messaging-push-scope'
       });
-      console.log('FCM SW registrado on-demand:', swReg.scope);
     }
 
-    // 3) validaciones duras antes de getToken
     if (!environment.vapidKey || typeof environment.vapidKey !== 'string') {
-      console.error('VAPID key ausente o inválida en environment');
-      return {error:'VAPID key ausente o inválida en environment'};
+      console.error('[Push] VAPID key ausente');
+      return { error: 'VAPID key ausente' };
     }
 
-    // 4) llamada directa, sin helpers intermedios
     try {
       const token = await getToken(this.messaging, {
         vapidKey: environment.vapidKey,
         serviceWorkerRegistration: swReg
       });
-      console.log('getToken OK:', token);
       if (token) {
         localStorage.setItem('tokenPush', token);
-        this.registerService(token).subscribe(()=>{console.log("se registro la notificación")});
+        this.registerService(token).subscribe(() => console.log('[Push] Token registrado'));
       }
-      return {token:token,perm:perm}
+      return { token, perm };
     } catch (err) {
-      console.error('getToken error ->', (err as any)?.code || err, err);
-      return {error:'getToken error ->'+(err as any)?.code};
+      console.error('[Push] getToken error:', err);
+      return { error: 'getToken error: ' + (err as any)?.code };
     }
   }
 
-
-  /**
-   * Escucha mensajes cuando la pestaña está en foreground.
-   */
   onForegroundMessage(cb: (payload: any) => void): void {
+    if (Capacitor.isNativePlatform()) return; // nativo usa addListener
     if (!this.messaging) return;
     onMessage(this.messaging, (payload) => cb(payload));
   }
-  
-  registerService(playerId:string){
-    return this.http.post(environment.url.backEndMessague+"/pushNotification/agent-store",{playerId:playerId})
+
+  // ─────────────────────────────────────────────────────────────────
+  // Alarma nativa
+  // ─────────────────────────────────────────────────────────────────
+
+  async stopAlarm(): Promise<void> {
+    if (Capacitor.isNativePlatform()) {
+      try {
+        await AlarmPlugin.stopAlarm();
+        console.log('[Push] Alarma detenida');
+      } catch (e) {
+        console.error('[Push] Error deteniendo alarma:', e);
+      }
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // Backend
+  // ─────────────────────────────────────────────────────────────────
+
+  registerService(playerId: string) {
+    return this.http.post(
+      environment.url.backEndMessague + '/pushNotification/agent-store',
+      { playerId }
+    );
   }
 }
