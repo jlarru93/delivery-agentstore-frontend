@@ -29,5 +29,10 @@
 -keep class com.google.firebase.** { *; }
 -keep class com.google.android.gms.** { *; }
 
+# Firebase Kotlin extensions — evita error R8 con com.google.firebase.ktx.Firebase
+-dontwarn com.google.firebase.ktx.**
+-dontwarn kotlin.**
+-dontwarn kotlinx.**
+
 # Plugins propios
 -keep class pe.piwi.agent.** { *; }
