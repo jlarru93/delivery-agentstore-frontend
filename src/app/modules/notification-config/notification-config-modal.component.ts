@@ -1,8 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, registerPlugin } from '@capacitor/core';
 import { NotificationConfig, NotificationConfigService } from '../service/notification-config.service';
 import { PushService } from '../service/push.service';
 import { AlertServices } from '../service/alert.service';
+
+const BatteryOptimizationPlugin = registerPlugin<{
+  isIgnoringBatteryOptimizations(): Promise<{ isIgnoring: boolean }>;
+  openBatterySettings(): Promise<void>;
+}>('BatteryOptimizationPlugin');
 
 type PermissionStatus = 'idle' | 'checking' | 'granted' | 'denied' | 'blocked';
 
@@ -24,6 +29,9 @@ export class NotificationConfigModalComponent implements OnInit {
 
   permStatus: PermissionStatus = 'idle';
 
+  // true = MIUI está restringiendo batería → mostrar aviso
+  isBatteryRestricted = false;
+
   constructor(
     private notifConfig: NotificationConfigService,
     private push: PushService,
@@ -35,11 +43,12 @@ export class NotificationConfigModalComponent implements OnInit {
   async open(): Promise<void> {
     this.config = this.notifConfig.get();
     await this.checkCurrentPermission();
+    await this.checkBatteryOptimization();
     this.visible = true;
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Verificar estado actual del permiso
+  // Permisos de notificación
   // ─────────────────────────────────────────────────────────────────
 
   private async checkCurrentPermission(): Promise<void> {
@@ -59,20 +68,15 @@ export class NotificationConfigModalComponent implements OnInit {
       if (Notification.permission === 'granted') {
         this.permStatus = 'granted';
       } else if (Notification.permission === 'denied') {
-        this.permStatus = 'blocked'; // No se puede volver a pedir
+        this.permStatus = 'blocked';
       } else {
-        this.permStatus = 'idle'; // 'default' → se puede pedir
+        this.permStatus = 'idle';
       }
     }
   }
 
-  // ─────────────────────────────────────────────────────────────────
-  // Solicitar permiso
-  // ─────────────────────────────────────────────────────────────────
-
   async requestPermission(): Promise<void> {
     this.permStatus = 'checking';
-
     try {
       if (this.isNative) {
         const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
@@ -84,7 +88,6 @@ export class NotificationConfigModalComponent implements OnInit {
           this.permStatus = 'blocked';
         }
       } else {
-        // PWA/Web
         const resp = await this.push.requestPermissionAndToken();
         if (resp?.perm === 'granted') {
           this.permStatus = 'granted';
@@ -116,6 +119,33 @@ export class NotificationConfigModalComponent implements OnInit {
   }
 
   // ─────────────────────────────────────────────────────────────────
+  // Optimización de batería (MIUI)
+  // ─────────────────────────────────────────────────────────────────
+
+  private async checkBatteryOptimization(): Promise<void> {
+    if (!this.isNative) return;
+    try {
+      const { isIgnoring } = await BatteryOptimizationPlugin.isIgnoringBatteryOptimizations();
+      this.isBatteryRestricted = !isIgnoring;
+      console.log('[NotifConfig] Batería restringida:', this.isBatteryRestricted);
+    } catch (e) {
+      console.warn('[NotifConfig] No se pudo verificar batería:', e);
+    }
+  }
+
+  async openBatterySettings(): Promise<void> {
+    try {
+      await BatteryOptimizationPlugin.openBatterySettings();
+      // Al volver, re-verificar el estado
+      setTimeout(async () => {
+        await this.checkBatteryOptimization();
+      }, 1000);
+    } catch (e) {
+      console.error('[NotifConfig] Error abriendo ajustes de batería:', e);
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────
   // Guardar y cerrar
   // ─────────────────────────────────────────────────────────────────
 
@@ -129,11 +159,11 @@ export class NotificationConfigModalComponent implements OnInit {
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Helpers para el template
+  // Helpers template
   // ─────────────────────────────────────────────────────────────────
 
-  get isGranted(): boolean    { return this.permStatus === 'granted'; }
-  get isBlocked(): boolean    { return this.permStatus === 'blocked'; }
-  get isChecking(): boolean   { return this.permStatus === 'checking'; }
-  get canRequest(): boolean   { return this.permStatus === 'idle' || this.permStatus === 'denied'; }
+  get isGranted(): boolean  { return this.permStatus === 'granted'; }
+  get isBlocked(): boolean  { return this.permStatus === 'blocked'; }
+  get isChecking(): boolean { return this.permStatus === 'checking'; }
+  get canRequest(): boolean { return this.permStatus === 'idle' || this.permStatus === 'denied'; }
 }

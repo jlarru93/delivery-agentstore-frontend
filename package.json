@@ -13,7 +13,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:cap": "ng build --configuration prod && npx capacitor-assets generate --android",
+    "build:cap": "ng build --configuration prod",
     "cap:sync": "npm run build:cap && npx cap sync",
     "cap:android": "npm run cap:sync && npx cap open android",
     "cap:ios": "npm run cap:sync && npx cap open ios"

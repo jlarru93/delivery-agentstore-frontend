@@ -55,6 +55,36 @@
       </div>
     </div>
 
+    <!-- ── AVISO DE BATERÍA MIUI (solo nativo y si está restringida) ── -->
+    <ng-container *ngIf="isNative && isBatteryRestricted">
+      <div class="notif-section-title" style="margin-top: 1.2rem;">Optimización de batería</div>
+      <div class="notif-battery-warning">
+        <i class="pi pi-bolt"></i>
+        <div>
+          <strong>Batería restringida</strong>
+          <p>
+            Tu dispositivo puede bloquear las alertas cuando la app lleva tiempo inactiva.
+            Activa <strong>Sin restricciones</strong> para recibir siempre las órdenes.
+          </p>
+          <p-button
+            label="Configurar ahora"
+            icon="pi pi-cog"
+            styleClass="p-button-warning p-button-sm"
+            (onClick)="openBatterySettings()">
+          </p-button>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ── Batería OK ── -->
+    <ng-container *ngIf="isNative && !isBatteryRestricted">
+      <div class="notif-section-title" style="margin-top: 1.2rem;">Optimización de batería</div>
+      <div class="notif-perm-status granted">
+        <i class="pi pi-check-circle"></i>
+        <span>Sin restricciones de batería</span>
+      </div>
+    </ng-container>
+
     <!-- ── SECCIÓN TIPO DE ALERTA (solo si tiene permiso) ── -->
     <ng-container *ngIf="isGranted">
 

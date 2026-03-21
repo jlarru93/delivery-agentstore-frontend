@@ -11,6 +11,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(ShareTargetPlugin.class);
         registerPlugin(AlarmPlugin.class);
         registerPlugin(AppInfoPlugin.class);
+        registerPlugin(BatteryOptimizationPlugin.class);
         super.onCreate(savedInstanceState);
         handleShareIntent(getIntent());
         handleOrderIntent(getIntent());
