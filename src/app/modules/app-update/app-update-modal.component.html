@@ -1,0 +1,28 @@
+<p-dialog
+  [visible]="(updateService.updateRequired$ | async)"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [closeOnEscape]="false"
+  styleClass="update-dialog"
+  [style]="{ width: '320px' }">
+
+  <div class="update-body">
+    <img src="assets/icons/icon-192x192.png" alt="POS PIWI" class="update-logo" />
+    <h3 class="update-title">Nueva versión disponible</h3>
+    <p class="update-desc">
+      Para continuar usando la app, actualiza a la última versión desde la Play Store.
+    </p>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Actualizar ahora"
+      icon="pi pi-download"
+      styleClass="p-button-success update-btn"
+      (onClick)="updateService.openPlayStore()">
+    </p-button>
+  </ng-template>
+
+</p-dialog>

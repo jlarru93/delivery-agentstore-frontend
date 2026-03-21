@@ -1,0 +1,33 @@
+.update-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0.5rem;
+  text-align: center;
+}
+
+.update-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+}
+
+.update-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.update-desc {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+.update-btn {
+  width: 100%;
+  justify-content: center;
+}

@@ -10,6 +10,7 @@ public class MainActivity extends BridgeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         registerPlugin(ShareTargetPlugin.class);
         registerPlugin(AlarmPlugin.class);
+        registerPlugin(AppInfoPlugin.class);
         super.onCreate(savedInstanceState);
         handleShareIntent(getIntent());
         handleOrderIntent(getIntent());
@@ -22,7 +23,6 @@ public class MainActivity extends BridgeActivity {
         handleOrderIntent(intent);
     }
 
-    // ── Share Target ──────────────────────────────────────────────
     private void handleShareIntent(Intent intent) {
         if (Intent.ACTION_SEND.equals(intent.getAction()) &&
                 intent.getType() != null &&
@@ -37,17 +37,14 @@ public class MainActivity extends BridgeActivity {
         }
     }
 
-    // ── Orden desde notificación FCM ──────────────────────────────
     private void handleOrderIntent(Intent intent) {
         if (intent == null) return;
         String orderUuid = intent.getStringExtra("orderUuid");
         if (orderUuid != null && !orderUuid.isEmpty()) {
-            // Guardar en SharedPreferences — Angular lo lee al estar listo
             getSharedPreferences("fcm_data", MODE_PRIVATE)
                     .edit()
                     .putString("pending_order_uuid", orderUuid)
                     .apply();
-            // Limpiar el extra para no procesarlo dos veces
             intent.removeExtra("orderUuid");
         }
     }

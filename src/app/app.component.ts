@@ -3,13 +3,17 @@ import { PrimeNGConfig } from 'primeng/api';
 import { ConnectionService } from './modules/service/connection.service';
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { interval, map, Observable, switchMap } from 'rxjs';
+import { interval, map, Observable, of, switchMap } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
+import { NavigationEnd, Router } from '@angular/router';
 import { PushService } from './modules/service/push.service';
 import { WokerHandler } from './modules/service/worker.service';
 import { TokenBridgeService } from './utils/token-bridge.service';
 import { GeoMessageHandlerService } from './modules/service/geo.message.handler.service';
 import { ShareLocationService } from './modules/service/share-location.service';
+import { AppUpdateService } from './modules/service/app-update.service';
 import { Capacitor } from '@capacitor/core';
+import { App } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
 
 @Component({
@@ -41,7 +45,9 @@ export class AppComponent implements OnInit {
         private push: PushService,
         private tokenBridge: TokenBridgeService,
         private geoHandler: GeoMessageHandlerService,
-        private shareLocation: ShareLocationService
+        private shareLocation: ShareLocationService,
+        private appUpdate: AppUpdateService,
+        private router: Router
     ) {}
 
     ngOnInit() {
@@ -53,11 +59,33 @@ export class AppComponent implements OnInit {
             StatusBar.setBackgroundColor({ color: '#398E3C' });
         }
 
+        // ── Verificar actualización forzada (Remote Config) ──
+        of(this.appUpdate.checkForUpdate()).subscribe(()=>{});
+
         // ── Push / FCM ──
         this.push.init();
 
         // ── Share Target ──
         this.shareLocation.init();
+
+        // ── Después del primer NavigationEnd: verificar orden pendiente ──
+        this.router.events.pipe(
+            filter(e => e instanceof NavigationEnd),
+            take(1)
+        ).subscribe(async () => {
+            await this.push.checkPendingOrder();
+        });
+
+        // ── App resume ──
+        if (Capacitor.isNativePlatform()) {
+            App.addListener('appStateChange', async ({ isActive }) => {
+                if (isActive) {
+                    await this.push.checkPendingOrder();
+                    // Re-verificar actualización cada vez que la app vuelve al frente
+                    of(this.appUpdate.checkForUpdate()).subscribe(()=>{});
+                }
+            });
+        }
 
         this.geoHandler.init();
         this.primengConfig.ripple = true;
@@ -77,18 +105,8 @@ export class AppComponent implements OnInit {
                 this.previousVersion = version;
             });
 
-        // Mensajes web foreground (PWA)
         this.push.onForegroundMessage((payload) => {
             console.log('[Push] Mensaje foreground:', payload);
-        });
-
-        // Escuchar postMessage del micro-frontend para detener alarma
-        // cuando el agente abre/acepta una orden
-        window.addEventListener('message', (event: MessageEvent) => {
-            if (!event.data || typeof event.data !== 'object') return;
-            if (event.data.type === 'ORDER_OPENED' || event.data.type === 'ORDER_ACCEPTED') {
-                this.push.stopAlarm();
-            }
         });
     }
 
