@@ -13,6 +13,10 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 @CapacitorPlugin(name = "AlarmPlugin")
 public class AlarmPlugin extends Plugin {
 
+    static final String PREFS_NAME = "alarm_config";
+    static final String KEY_SOUND     = "sound";
+    static final String KEY_VIBRATION = "vibration";
+
     @PluginMethod
     public void stopAlarm(PluginCall call) {
         Intent stopIntent = new Intent(getContext(), AlarmService.class);
@@ -27,16 +31,32 @@ public class AlarmPlugin extends Plugin {
         call.resolve();
     }
 
-    // Lee el uuid de la orden pendiente (llegó por notificación FCM)
+    // Angular llama esto cada vez que el usuario guarda la config
+    @PluginMethod
+    public void saveConfig(PluginCall call) {
+        boolean sound     = call.getBoolean("sound",     true);
+        boolean vibration = call.getBoolean("vibration", true);
+
+        getContext()
+            .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_SOUND,     sound)
+            .putBoolean(KEY_VIBRATION, vibration)
+            .apply();
+
+        call.resolve();
+    }
+
+    // Lee el uuid de la orden pendiente
     @PluginMethod
     public void getPendingOrderUuid(PluginCall call) {
         SharedPreferences prefs = getContext()
-                .getSharedPreferences("fcm_data", Context.MODE_PRIVATE);
+            .getSharedPreferences("fcm_data", Context.MODE_PRIVATE);
         String uuid = prefs.getString("pending_order_uuid", null);
         prefs.edit().remove("pending_order_uuid").apply();
 
         JSObject result = new JSObject();
-        result.put("order", uuid);  // coincide con params['order'] en Angular
+        result.put("order", uuid);
         call.resolve(result);
     }
 }

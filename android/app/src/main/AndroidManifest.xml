@@ -30,13 +30,13 @@
 
         </activity>
 
-        <!-- AlarmService: foreground service para sonido en bucle -->
+        <!-- AlarmService: foreground service para sonido + vibración -->
         <service
             android:name=".AlarmService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="false" />
 
-        <!-- FCM: servicio que intercepta push en background -->
+        <!-- FCM: intercepta push en background -->
         <service
             android:name=".PiwiFirebaseMessagingService"
             android:exported="false">
@@ -50,16 +50,16 @@
             android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
         </provider>
 
     </application>
 
-    <!-- Permisos -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
 </manifest>
