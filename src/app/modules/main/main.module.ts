@@ -1,5 +1,4 @@
 import { OrderService } from "./service/order.service";
-import {AgmCoreModule} from '../../../agm/core';
 import { CommonModule } from "@angular/common";
 import { MainComponent } from "./main.component";
 import { NgModule } from "@angular/core";
@@ -10,7 +9,6 @@ import { DialogModule } from "primeng/dialog";
 import { ButtonModule } from "primeng/button";
 import { TableModule } from "primeng/table";
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
-import { OrderDialogComponent } from "./dialog/orderDialog.component";
 import { AccordionModule } from "primeng/accordion";
 import { TreeTableModule } from "primeng/treetable";
 import { OverlayPanelModule } from "primeng/overlaypanel";
@@ -22,7 +20,6 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { AvatarModule } from "primeng/avatar";
 import { AvatarGroupModule } from "primeng/avatargroup";
-import { ChatComponent } from "src/app/chat/chat.component";
 import { InputTextModule } from "primeng/inputtext";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { ModalModule } from "src/app/modal/modal.module";
@@ -42,7 +39,7 @@ import { TabViewModule } from "primeng/tabview";
 import { RequestTripService } from "../request-trip/services/request-trip.service";
 
 @NgModule({
-    declarations: [MainComponent,CircleProgress,OrderDialogComponent,OrderModalComponent],
+    declarations: [MainComponent,CircleProgress,OrderModalComponent],
     imports: [
       AvatarModule,
       AvatarGroupModule,

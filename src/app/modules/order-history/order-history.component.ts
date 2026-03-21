@@ -5,7 +5,6 @@ import { OrderHistoryService } from './service/order-history.service';
 import { FilterRequest } from './service/data/request';
 import { ComplaintBean, OrderHistorBean } from './data';
 import { ObjetResponse, Pagination } from 'src/app/models';
-import { Image } from 'src/app/demo/domain/image';
 import { MessageService } from 'primeng/api';
 import { ChatBean } from 'src/app/chat/data.chat';
 import { ChatService } from '../main/service/chat.service';
@@ -35,7 +34,6 @@ export class OrderHistoryComponent implements OnInit {
 
   messageControl: UntypedFormControl = new UntypedFormControl('');
 
-  images: Image[] = []
 
   responsiveOptions:any[] = [
     {

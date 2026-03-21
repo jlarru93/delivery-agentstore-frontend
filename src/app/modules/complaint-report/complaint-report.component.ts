@@ -3,7 +3,6 @@ import { ComplaintReportService } from './service/complaint-report.service';
 import { ComplaintBean, OrderBean, PaymentBean } from './data';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ComplaintResponse, OrderResponse } from './service/data/response';
-import { Image } from 'src/app/demo/domain/image';
 import { ChatBean } from 'src/app/chat/data.chat';
 import { ChatComponent } from 'src/app/chat/chat.component';
 import { ChatService } from '../main/service/chat.service';
@@ -202,7 +201,6 @@ export class ComplaintReportComponent implements OnInit {
 
   orderUuidtoSend: string
   complaintStatus: string
-  images: Image[] = []
   imagesArray: string[]
   isEnabledInputText: boolean = false
 

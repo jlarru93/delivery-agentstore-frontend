@@ -1,4 +1,3 @@
-import {AgmCoreModule} from '../../../agm/core';
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { CardModule } from "primeng/card";

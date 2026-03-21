@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ProductService } from "src/app/demo/service/productservice";
 import { OrderService } from "./service/order.service";
 import { UnreadMessagesResponse } from "./service/data/response";
 import { OrderBean, PaymentBean } from "./data";
@@ -99,7 +98,6 @@ import { PushService } from "../service/push.service";
 
     constructor(
       public dialogService: DialogService,
-      private productService: ProductService,
       private orderService:OrderService,
       //private mqtt:MqttService,
       //private orderHandler:OrderHandler,
