@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Capacitor, registerPlugin } from '@capacitor/core';
+import { Router } from '@angular/router';
 import { initializeApp, getApps } from 'firebase/app';
 import { getMessaging, getToken, isSupported, onMessage, Messaging } from 'firebase/messaging';
 import { environment } from '../../../environments/environment';
@@ -9,6 +10,7 @@ import { NotificationConfigService } from './notification-config.service';
 const AlarmPlugin = registerPlugin<{
   stopAlarm(): Promise<void>;
   startAlarm(): Promise<void>;
+  getPendingOrderUuid(): Promise<{ order: string | null }>;
 }>('AlarmPlugin');
 
 @Injectable({ providedIn: 'root' })
@@ -18,7 +20,8 @@ export class PushService {
 
   constructor(
     private readonly http: HttpClient,
-    private notifConfig: NotificationConfigService
+    private notifConfig: NotificationConfigService,
+    private router: Router
   ) {}
 
   // ─────────────────────────────────────────────────────────────────
@@ -40,26 +43,29 @@ export class PushService {
   private async initNative(): Promise<void> {
     try {
       const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
-
       await FirebaseMessaging.requestPermissions();
 
       const { token } = await FirebaseMessaging.getToken();
       console.log('[Push] Token FCM nativo:', token);
       if (token) {
-        this.registerService(token).subscribe(() => {
-          console.log('[Push] Token registrado en backend');
-        });
+        this.registerService(token).subscribe(() =>
+          console.log('[Push] Token registrado en backend')
+        );
       }
 
       // Foreground: respetar config
-      FirebaseMessaging.addListener('notificationReceived', (notification) => {
-        console.log('[Push] Foreground notification:', notification);
-        this.handleNativeNotification();
+      FirebaseMessaging.addListener('notificationReceived', () => {
+        if (!this.notifConfig.isSound()) {
+          this.stopAlarm();
+        }
       });
 
-      // Al tocar notificación → detener alarma
-      FirebaseMessaging.addListener('notificationActionPerformed', () => {
-        this.stopAlarm();
+      // Al tocar la notificación → detener alarma y abrir orden
+      FirebaseMessaging.addListener('notificationActionPerformed', async (action) => {
+        console.log('[Push] Notificación tocada:', action);
+        await this.stopAlarm();
+        // El uuid ya está en SharedPreferences via MainActivity.handleOrderIntent
+        await this.checkPendingOrder();
       });
 
     } catch (e) {
@@ -67,18 +73,25 @@ export class PushService {
     }
   }
 
-  private handleNativeNotification(): void {
-    const config = this.notifConfig.get();
+  // ─────────────────────────────────────────────────────────────────
+  // Verificar orden pendiente desde notificación (arranque + resume)
+  // Llamar desde AppComponent después del primer NavigationEnd
+  // ─────────────────────────────────────────────────────────────────
 
-    // Vibración
-    if (config.vibration && Capacitor.isNativePlatform()) {
-      // La vibración la maneja AlarmService en Java
-      // Si solo quieren vibrar sin sonido, podemos detener el audio
-    }
+  async checkPendingOrder(): Promise<void> {
+    if (!Capacitor.isNativePlatform()) return;
+    try {
+      const { order } = await AlarmPlugin.getPendingOrderUuid();
+      if (!order) return;
 
-    // Si no quiere sonido → detener AlarmService inmediatamente
-    if (!config.sound) {
-      this.stopAlarm();
+      console.log('[Push] Orden pendiente uuid:', order);
+      await this.stopAlarm();
+
+      this.router.navigate(['/main'], {
+        queryParams: { order: order }
+      });
+    } catch (e) {
+      console.error('[Push] checkPendingOrder error:', e);
     }
   }
 
@@ -87,9 +100,7 @@ export class PushService {
   // ─────────────────────────────────────────────────────────────────
 
   private async initWeb(): Promise<void> {
-    if (!getApps().length) {
-      initializeApp(environment.firebase);
-    }
+    if (!getApps().length) initializeApp(environment.firebase);
     if (!(await isSupported())) {
       console.warn('[Push] FCM no soportado en este navegador.');
       return;
@@ -140,13 +151,8 @@ export class PushService {
     if (!this.messaging) return;
     onMessage(this.messaging, (payload) => {
       const config = this.notifConfig.get();
-      // Web: respetar config de sonido
-      if (config.sound) {
+      if (config.sound || config.visual) {
         cb(payload);
-      } else if (config.visual) {
-        // Solo visual, sin audio — pasar payload igualmente
-        // El componente que recibe decide si reproduce audio
-        cb({ ...payload, _skipAudio: true });
       }
     });
   }
@@ -156,23 +162,21 @@ export class PushService {
   // ─────────────────────────────────────────────────────────────────
 
   async stopAlarm(): Promise<void> {
-    if (Capacitor.isNativePlatform()) {
-      try {
-        await AlarmPlugin.stopAlarm();
-        console.log('[Push] Alarma detenida');
-      } catch (e) {
-        console.error('[Push] Error deteniendo alarma:', e);
-      }
+    if (!Capacitor.isNativePlatform()) return;
+    try {
+      await AlarmPlugin.stopAlarm();
+      console.log('[Push] Alarma detenida');
+    } catch (e) {
+      console.error('[Push] Error deteniendo alarma:', e);
     }
   }
 
   async startAlarm(): Promise<void> {
-    if (Capacitor.isNativePlatform() && this.notifConfig.isSound()) {
-      try {
-        await AlarmPlugin.startAlarm();
-      } catch (e) {
-        console.error('[Push] Error iniciando alarma:', e);
-      }
+    if (!Capacitor.isNativePlatform() || !this.notifConfig.isSound()) return;
+    try {
+      await AlarmPlugin.startAlarm();
+    } catch (e) {
+      console.error('[Push] Error iniciando alarma:', e);
     }
   }
 

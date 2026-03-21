@@ -22,6 +22,7 @@ import { OrderRepository } from "./service/order.repository";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ClipboardService } from "ngx-clipboard";
 import { DomSanitizer } from "@angular/platform-browser";
+import { PushService } from "../service/push.service";
 //import { NgxPrinterService } from "ngx-printer";
 @Component({
     selector: 'app-stores',
@@ -117,7 +118,8 @@ import { DomSanitizer } from "@angular/platform-browser";
       private router: Router,
       private route: ActivatedRoute,
       private readonly clipboardService:ClipboardService,
-      private sanitizer: DomSanitizer
+      private sanitizer: DomSanitizer,
+      private push: PushService
       ){
         
       }
@@ -182,13 +184,26 @@ import { DomSanitizer } from "@angular/platform-browser";
       document.addEventListener('visibilitychange', this.visibilityChangeCallback);
 
       this.route.queryParams.subscribe(params => {
-        // const orderId = +params['order'] || 0; 
-        // if (orderId) {
-        //     this.orderRepository.getOrderById(orderId).subscribe((order: OrderBean) => {
-        //         this.openOrderDialog(order);
-        //     });
-        // }
-    });
+        console.log("this.route.queryParams.params",params)
+        const orderUuid = params['order'];
+        if (!orderUuid) return;
+
+        // Intentar abrir la orden — si aún no cargó, reintentar a los 1.5s
+        const tryOpen = () => {
+          const order = this.orders.find(o => o.uuid === orderUuid);
+          if (order) {
+            this.openOrderDialog(order);
+
+            this.router.navigate([], {
+              queryParams: { order: null },
+              queryParamsHandling: 'merge'
+            });
+          }
+        };
+
+        tryOpen();
+        setTimeout(() => tryOpen(), 1500);
+      });
 
       this.idStore= JSON.parse(localStorage.getItem('lstIdStore'))
       this.flagAudio = JSON.parse(localStorage.getItem('audioEnabled'))
@@ -463,6 +478,8 @@ import { DomSanitizer } from "@angular/platform-browser";
     openOrderDialog(order:OrderBean){
       this.orderSelected=order
       this.displayOrder=true
+      this.stopAudio();            // para audio web/PWA
+      this.push.stopAlarm();       // para alarma nativa Android
     }
 
     onCloseOrderDetail(){
