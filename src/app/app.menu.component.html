@@ -43,7 +43,6 @@
 
         <ng-container *ngIf="storesOpen.length > 1">
             <label class="store-selector-label">Tienda activa</label>
-
             <p-dropdown 
                 #storeDropdown
                 [options]="storesOpen" 
@@ -55,10 +54,7 @@
                 [autoZIndex]="true"
                 [baseZIndex]="1100"
                 [appendTo]="sideRef"
-                (onHide)="storesOpen?.length === 1 && selectedStoreOpen && onStoreItemClick(selectedStoreOpen, storeDropdown)"
-                >
-                
-                <!-- Template para item seleccionado -->
+                (onHide)="storesOpen?.length === 1 && selectedStoreOpen && onStoreItemClick(selectedStoreOpen, storeDropdown)">
                 <ng-template pTemplate="selectedItem">
                     <div class="store-selected-item" *ngIf="selectedStoreOpen">
                         <i class="pi" 
@@ -69,8 +65,6 @@
                         <span class="store-name">{{ selectedStoreOpen.name }}</span>
                     </div>
                 </ng-template>
-                
-                <!-- Template para cada opción - CON CLICK -->
                 <ng-template let-store pTemplate="item">
                     <div class="store-option-item" (click)="onStoreItemClick(store, storeDropdown); $event.stopPropagation()">
                         <i class="pi" 
@@ -98,24 +92,27 @@
             <li app-menuitem *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true"></li>
             <div style="padding-bottom: 20px;"></div>
             <li class="action-menu-items">
-                <a  href="https://drive.google.com/drive/folders/1LEJ-r2VD7-YupLr73X2nQRDG4rMzk8CZ?usp=sharing"
+                <a href="https://drive.google.com/drive/folders/1LEJ-r2VD7-YupLr73X2nQRDG4rMzk8CZ?usp=sharing"
                     target="_blank"
                     rel="noopener noreferrer">
                     <span style="color: #FFFFFF;">Tutoriales</span>
                     <i class="pi pi-external-link"></i>
                 </a>
             </li>
+            <!-- Alertas: abre modal con permisos + configuración -->
             <li>
-                <a (click)="permitToNotify()">
-                    <span style="color: #FFFFFF;">Activar Notificaciones</span>
+                <a (click)="openNotifConfig()">
+                    <span style="color: #FFFFFF;">Alertas de órdenes</span>
                     <i class="pi pi-bell"></i>
                 </a>
             </li>
         </ul>
-        <!-- Logo de fondo -->
         <img src="assets/images/LOGOTIPO 1.png" 
              alt="" 
              [ngClass]="{'close' : !appMain.staticMenuActive, 'close-img': appMain.sidebarActive}" 
              class="sidebar-bg-logo">
     </div>
 </div>
+
+<!-- Modal de alertas -->
+<app-notification-config-modal #notifConfigModal></app-notification-config-modal>

@@ -4,8 +4,8 @@ import { initializeApp, getApps } from 'firebase/app';
 import { getMessaging, getToken, isSupported, onMessage, Messaging } from 'firebase/messaging';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { NotificationConfigService } from './notification-config.service';
 
-// Plugin para detener la alarma nativa desde Angular
 const AlarmPlugin = registerPlugin<{
   stopAlarm(): Promise<void>;
   startAlarm(): Promise<void>;
@@ -16,10 +16,13 @@ export class PushService {
 
   private messaging?: Messaging;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private notifConfig: NotificationConfigService
+  ) {}
 
   // ─────────────────────────────────────────────────────────────────
-  // Inicialización — llamar al arrancar la app
+  // Init
   // ─────────────────────────────────────────────────────────────────
 
   async init(): Promise<void> {
@@ -31,17 +34,15 @@ export class PushService {
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Nativo (Android/iOS) — usa @capacitor-firebase/messaging
+  // Nativo (Android)
   // ─────────────────────────────────────────────────────────────────
 
   private async initNative(): Promise<void> {
     try {
       const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
 
-      // Pedir permiso
       await FirebaseMessaging.requestPermissions();
 
-      // Obtener token FCM y registrarlo en backend
       const { token } = await FirebaseMessaging.getToken();
       console.log('[Push] Token FCM nativo:', token);
       if (token) {
@@ -50,24 +51,39 @@ export class PushService {
         });
       }
 
-      // Escuchar notificaciones en foreground
+      // Foreground: respetar config
       FirebaseMessaging.addListener('notificationReceived', (notification) => {
         console.log('[Push] Foreground notification:', notification);
+        this.handleNativeNotification();
       });
 
-      // Cuando el agente toca la notificación → detener alarma
-      FirebaseMessaging.addListener('notificationActionPerformed', (action) => {
-        console.log('[Push] Notificación tocada:', action);
+      // Al tocar notificación → detener alarma
+      FirebaseMessaging.addListener('notificationActionPerformed', () => {
         this.stopAlarm();
       });
 
     } catch (e) {
-      console.error('[Push] Error inicializando FCM nativo:', e);
+      console.error('[Push] Error FCM nativo:', e);
+    }
+  }
+
+  private handleNativeNotification(): void {
+    const config = this.notifConfig.get();
+
+    // Vibración
+    if (config.vibration && Capacitor.isNativePlatform()) {
+      // La vibración la maneja AlarmService en Java
+      // Si solo quieren vibrar sin sonido, podemos detener el audio
+    }
+
+    // Si no quiere sonido → detener AlarmService inmediatamente
+    if (!config.sound) {
+      this.stopAlarm();
     }
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Web / PWA — usa Firebase JS SDK (implementación actual)
+  // Web / PWA
   // ─────────────────────────────────────────────────────────────────
 
   private async initWeb(): Promise<void> {
@@ -82,10 +98,7 @@ export class PushService {
   }
 
   async requestPermissionAndToken() {
-    if (Capacitor.isNativePlatform()) {
-      // En nativo ya se pidió en initNative()
-      return null;
-    }
+    if (Capacitor.isNativePlatform()) return null;
 
     await this.initWeb();
     if (!this.messaging) return null;
@@ -93,7 +106,6 @@ export class PushService {
     const perm = await Notification.requestPermission();
     if (perm !== 'granted') {
       localStorage.removeItem('tokenPush');
-      console.warn('[Push] Permiso no concedido');
       return null;
     }
 
@@ -105,7 +117,6 @@ export class PushService {
     }
 
     if (!environment.vapidKey || typeof environment.vapidKey !== 'string') {
-      console.error('[Push] VAPID key ausente');
       return { error: 'VAPID key ausente' };
     }
 
@@ -120,15 +131,24 @@ export class PushService {
       }
       return { token, perm };
     } catch (err) {
-      console.error('[Push] getToken error:', err);
       return { error: 'getToken error: ' + (err as any)?.code };
     }
   }
 
   onForegroundMessage(cb: (payload: any) => void): void {
-    if (Capacitor.isNativePlatform()) return; // nativo usa addListener
+    if (Capacitor.isNativePlatform()) return;
     if (!this.messaging) return;
-    onMessage(this.messaging, (payload) => cb(payload));
+    onMessage(this.messaging, (payload) => {
+      const config = this.notifConfig.get();
+      // Web: respetar config de sonido
+      if (config.sound) {
+        cb(payload);
+      } else if (config.visual) {
+        // Solo visual, sin audio — pasar payload igualmente
+        // El componente que recibe decide si reproduce audio
+        cb({ ...payload, _skipAudio: true });
+      }
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────
@@ -142,6 +162,16 @@ export class PushService {
         console.log('[Push] Alarma detenida');
       } catch (e) {
         console.error('[Push] Error deteniendo alarma:', e);
+      }
+    }
+  }
+
+  async startAlarm(): Promise<void> {
+    if (Capacitor.isNativePlatform() && this.notifConfig.isSound()) {
+      try {
+        await AlarmPlugin.startAlarm();
+      } catch (e) {
+        console.error('[Push] Error iniciando alarma:', e);
       }
     }
   }

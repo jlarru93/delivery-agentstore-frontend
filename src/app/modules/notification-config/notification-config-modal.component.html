@@ -1,0 +1,120 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  header="Alertas de órdenes"
+  styleClass="notif-config-dialog"
+  [style]="{ width: '360px' }">
+
+  <div class="notif-config-body">
+
+    <!-- ── SECCIÓN PERMISOS ── -->
+    <div class="notif-section-title">Notificaciones push</div>
+
+    <!-- Estado: concedido -->
+    <div class="notif-perm-status granted" *ngIf="isGranted">
+      <i class="pi pi-check-circle"></i>
+      <span>Notificaciones activadas</span>
+    </div>
+
+    <!-- Estado: verificando -->
+    <div class="notif-perm-status checking" *ngIf="isChecking">
+      <i class="pi pi-spin pi-spinner"></i>
+      <span>Solicitando permiso...</span>
+    </div>
+
+    <!-- Estado: puede solicitar -->
+    <div class="notif-perm-request" *ngIf="canRequest">
+      <p class="notif-perm-desc">
+        Activa las notificaciones para recibir alertas de nuevas órdenes.
+      </p>
+      <p-button
+        label="Activar notificaciones"
+        icon="pi pi-bell"
+        styleClass="p-button-success p-button-sm notif-perm-btn"
+        (onClick)="requestPermission()">
+      </p-button>
+    </div>
+
+    <!-- Estado: bloqueado por el sistema -->
+    <div class="notif-perm-blocked" *ngIf="isBlocked">
+      <i class="pi pi-exclamation-triangle"></i>
+      <div>
+        <strong>Notificaciones bloqueadas</strong>
+        <p *ngIf="!isNative">
+          Para activarlas: haz clic en el candado 🔒 en la barra de dirección del navegador
+          → <strong>Notificaciones</strong> → <strong>Permitir</strong> → recarga la página.
+        </p>
+        <p *ngIf="isNative">
+          Para activarlas: ve a <strong>Ajustes del teléfono</strong>
+          → <strong>Aplicaciones</strong> → <strong>POS PIWI</strong>
+          → <strong>Notificaciones</strong> → actívalas.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── SECCIÓN TIPO DE ALERTA (solo si tiene permiso) ── -->
+    <ng-container *ngIf="isGranted">
+
+      <div class="notif-section-title" style="margin-top: 1.2rem;">Tipo de alerta</div>
+
+      <!-- Sonido -->
+      <div class="notif-option">
+        <div class="notif-option-info">
+          <i class="pi pi-volume-up notif-icon"></i>
+          <div>
+            <span class="notif-option-title">Sonido</span>
+            <small class="notif-option-desc">Alarma en bucle hasta abrir la orden</small>
+          </div>
+        </div>
+        <p-inputSwitch [(ngModel)]="config.sound"></p-inputSwitch>
+      </div>
+
+      <!-- Vibración — solo Android nativo -->
+      <div class="notif-option" *ngIf="isNative">
+        <div class="notif-option-info">
+          <i class="pi pi-mobile notif-icon"></i>
+          <div>
+            <span class="notif-option-title">Vibración</span>
+            <small class="notif-option-desc">Vibra al recibir una nueva orden</small>
+          </div>
+        </div>
+        <p-inputSwitch [(ngModel)]="config.vibration"></p-inputSwitch>
+      </div>
+
+      <!-- Notificación visual -->
+      <div class="notif-option">
+        <div class="notif-option-info">
+          <i class="pi pi-bell notif-icon"></i>
+          <div>
+            <span class="notif-option-title">Notificación flotante</span>
+            <small class="notif-option-desc">Muestra un aviso en pantalla</small>
+          </div>
+        </div>
+        <p-inputSwitch [(ngModel)]="config.visual"></p-inputSwitch>
+      </div>
+
+    </ng-container>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="notif-config-footer">
+      <p-button
+        label="Cerrar"
+        styleClass="p-button-text p-button-secondary"
+        (onClick)="cancel()">
+      </p-button>
+      <p-button
+        *ngIf="isGranted"
+        label="Guardar"
+        styleClass="p-button-success"
+        icon="pi pi-check"
+        (onClick)="save()">
+      </p-button>
+    </div>
+  </ng-template>
+
+</p-dialog>

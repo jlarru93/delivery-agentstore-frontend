@@ -165,6 +165,7 @@ import { DialogUpdateWebModule } from './modules/dialogUpdateWeb/dialogUpdateWeb
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
 import { PushService } from './modules/service/push.service';
 import { GeoMessageHandlerService } from './modules/service/geo.message.handler.service';
+import { NotificationConfigModalComponent } from './modules/notification-config/notification-config-modal.component';
 
 
 @NgModule({
@@ -309,7 +310,8 @@ import { GeoMessageHandlerService } from './modules/service/geo.message.handler.
         TextComponent,
         WidgetsComponent,
         SignInComponent,
-        DialogUpdateWebComponent
+        DialogUpdateWebComponent,
+        NotificationConfigModalComponent
     ],
     providers: [
         { provide: LocationStrategy, useClass: HashLocationStrategy },

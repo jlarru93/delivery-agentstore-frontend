@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { AppMainComponent } from './app.main.component';
 import { ProductService } from './modules/product/service/product.service';
 import { StoreResponse } from './modules/product/service/data/response';
@@ -9,9 +9,9 @@ import { ZoneResponse } from './modules/request-trip/data/response';
 import { StatusOpenStoreBean } from './modules/main/data';
 import { Subscription } from 'rxjs';
 import { Dropdown } from 'primeng/dropdown';
-import { AudioBackgroundService } from './modules/service/audio.background.service';
 import { PushService } from './modules/service/push.service';
 import { AlertServices } from './modules/service/alert.service';
+import { NotificationConfigModalComponent } from './modules/notification-config/notification-config-modal.component';
 
 @Component({
     selector: 'app-menu',
@@ -22,11 +22,12 @@ import { AlertServices } from './modules/service/alert.service';
 export class AppMenuComponent implements OnInit, OnDestroy {
 
     model: any[];
-    
-    // Selector de tiendas
+
     storesOpen: StatusOpenStoreBean[] = [];
     selectedStoreOpen: StatusOpenStoreBean | null = null;
     private storesSubscription: Subscription;
+
+    @ViewChild('notifConfigModal') notifConfigModal: NotificationConfigModalComponent;
 
     constructor(
         public appMain: AppMainComponent,
@@ -34,7 +35,6 @@ export class AppMenuComponent implements OnInit, OnDestroy {
         private router: Router,
         private store: DataSharedService,
         private requestTripService: RequestTripService,
-        private audio: AudioBackgroundService,
         private push: PushService,
         private messageService: AlertServices
     ) { }
@@ -50,81 +50,49 @@ export class AppMenuComponent implements OnInit, OnDestroy {
             { label: 'Reporte dinamico', icon: 'pi pi-fw pi-file', routerLink: ['/dynamic-report'] }
         ];
 
-        // Suscribirse a las tiendas disponibles para productos
         this.store.storeAviliable.subscribe((storesAvilible) => {
-            if (storesAvilible?.length == 0) {
-                return;
-            }
-            const store_id = storesAvilible[0].store_id;
-            this.getProducts(store_id);
+            if (storesAvilible?.length == 0) return;
+            this.getProducts(storesAvilible[0].store_id);
         });
 
-        // Suscribirse al estado de tiendas abiertas (viene del topbar)
         this.storesSubscription = this.store.storesOpenStatus$.subscribe((stores) => {
             if (stores && stores.length > 0) {
                 this.storesOpen = stores;
-                // Seleccionar la primera tienda por defecto si no hay selección
                 if (!this.selectedStoreOpen) {
                     this.selectedStoreOpen = this.storesOpen[0];
                 } else {
-                    // Actualizar la selección actual con el nuevo estado
                     const updated = this.storesOpen.find(s => s.id === this.selectedStoreOpen.id);
-                    if (updated) {
-                        this.selectedStoreOpen = updated;
-                    }
+                    if (updated) this.selectedStoreOpen = updated;
                 }
             }
         });
     }
 
     ngOnDestroy() {
-        if (this.storesSubscription) {
-            this.storesSubscription.unsubscribe();
-        }
+        if (this.storesSubscription) this.storesSubscription.unsubscribe();
     }
 
     onMenuClick() {
         this.appMain.menuClick = true;
     }
 
-    // ==================== MANEJO DE TIENDAS ====================
+    // ==================== TIENDAS ====================
 
-    /**
-     * Se ejecuta al cambiar el switch cuando hay UNA sola tienda
-     * Cambia el estado directamente sin abrir dialog
-     */
     onSingleStoreToggle(store: StatusOpenStoreBean): void {
-        console.log('Toggle tienda única:', store.name, '-> isOpen:', store.isOpen);
-        
-        // Notificar al topbar para que ejecute el cambio de estado
-        // El isOpen ya se actualizó por el ngModel, enviamos la tienda con el nuevo estado
         this.store.requestChangeStoreStatus(store);
     }
 
-    /**
-     * Se ejecuta al hacer CLICK en un item del dropdown (2+ tiendas)
-     * Abre el dialog para confirmar cambio de estado
-     */
     onStoreItemClick(store: StatusOpenStoreBean, dropdown: Dropdown): void {
-        console.log('Click en tienda:', store);
-        
-        // Actualizar la selección
         this.selectedStoreOpen = store;
-        
-        // Cerrar el dropdown
         dropdown.hide();
-        
-        // Actualizar en el servicio compartido
         this.store.setSelectedStoreOpen(store);
-        
-        // Abrir el dialog de estado de tienda
         this.store.requestOpenStoreDialog(store);
     }
 
-    // ==================== MÉTODOS EXISTENTES ====================
-    
+    // ==================== PRODUCTOS / ZONA ====================
+
     storeFullName: string;
-    
+
     getProducts(store_id: number) {
         this.productService.getProducts(store_id).subscribe((resp) => {
             let storeBean = StoreResponse.toBean(resp.data);
@@ -135,16 +103,14 @@ export class AppMenuComponent implements OnInit, OnDestroy {
     }
 
     zoneResponse: ZoneResponse;
-    
+
     getPolygonByZone() {
         this.requestTripService.onGetPolygonZone().subscribe(
             (resp) => {
                 this.zoneResponse = resp.data;
                 localStorage.setItem('zoneResponse', JSON.stringify(this.zoneResponse));
             },
-            (error) => {
-                console.log('Ocurrio un error');
-            }
+            (error) => { console.log('Error zona:', error); }
         );
     }
 
@@ -155,23 +121,13 @@ export class AppMenuComponent implements OnInit, OnDestroy {
 
     onSidebarMouseLeave(ev: MouseEvent) {
         const to = ev.relatedTarget as HTMLElement | null;
-        // Si el mouse entra al panel del dropdown, no colapses el sidebar
         if (to && to.closest('.store-dropdown-panel')) return;
         this.appMain.sidebarActive = false;
     }
 
-    async permitToNotify() {
-        console.log("permitToNotify");
-        this.audio.play("assets/audio/audio.mp3");
-        try {
-            const resp = await this.push.requestPermissionAndToken();
-            if (resp.perm != 'granted') { }
-            if (resp?.error) {
-                this.messageService.showError('Error', resp.error);
-            }
-        } catch (error) {
-            console.log("Error", error);
-            this.messageService.showError('Error', error);
-        }
+    // ==================== ALERTAS ====================
+
+    openNotifConfig(): void {
+        this.notifConfigModal.open();
     }
 }

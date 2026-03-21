@@ -1,0 +1,130 @@
+.notif-config-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 0.25rem 0;
+}
+
+.notif-section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #eee;
+}
+
+/* ── Permiso: concedido ── */
+.notif-perm-status {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+
+  &.granted {
+    background: #e8f5e9;
+    color: #2e7d32;
+    i { color: #2e7d32; font-size: 1.1rem; }
+  }
+
+  &.checking {
+    background: #f5f5f5;
+    color: #666;
+    i { font-size: 1.1rem; }
+  }
+}
+
+/* ── Permiso: puede solicitar ── */
+.notif-perm-request {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.notif-perm-desc {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+.notif-perm-btn {
+  align-self: flex-start;
+}
+
+/* ── Permiso: bloqueado ── */
+.notif-perm-blocked {
+  display: flex;
+  gap: 0.75rem;
+  background: #fff3e0;
+  border: 1px solid #ffe0b2;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  color: #e65100;
+
+  i {
+    font-size: 1.3rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  strong {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #555;
+    line-height: 1.5;
+  }
+}
+
+/* ── Opciones de alerta ── */
+.notif-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: #f9f9f9;
+  border: 1px solid #e8e8e8;
+}
+
+.notif-option-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.notif-icon {
+  font-size: 1.2rem;
+  color: #398E3C;
+  min-width: 22px;
+}
+
+.notif-option-title {
+  display: block;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #333;
+}
+
+.notif-option-desc {
+  display: block;
+  font-size: 0.73rem;
+  color: #888;
+  margin-top: 2px;
+}
+
+.notif-config-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
