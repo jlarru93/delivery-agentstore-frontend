@@ -1,33 +1,23 @@
 workflows:
-  ios-release:
-    name: POS PIWI - iOS Release
+  ios-dev:
+    name: POS PIWI - iOS Dev (dispositivo físico)
     max_build_duration: 60
     instance_type: mac_mini_m2
-
-    integrations:
-      app_store_connect: App Store Connect API  # Nombre de la integración en Codemagic → Teams → Integrations
 
     environment:
       node: 18.20.0
       xcode: 16.2
       cocoapods: default
       ios_signing:
-        distribution_type: app_store       # Cambiar a 'ad_hoc' para pruebas sin App Store
+        distribution_type: development
         bundle_identifier: pe.piwi.agent
       groups:
-        - firebase_credentials             # Grupo con GOOGLE_SERVICE_INFO_PLIST
+        - firebase_credentials
+        - apple_dev                        # Grupo con certificado de desarrollo
       vars:
         BUNDLE_ID: "pe.piwi.agent"
-        APP_NAME: "POS PIWI"
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
-
-    triggering:
-      events:
-        - tag
-      tag_patterns:
-        - pattern: "ios-*"
-          include: true
 
     scripts:
       - name: Install npm dependencies
@@ -47,19 +37,15 @@ workflows:
         script: |
           cd ios/App && pod install --repo-update
 
-      - name: Build IPA
+      - name: Build IPA (development)
         script: |
           xcode-project build-ipa \
             --workspace "$XCODE_WORKSPACE" \
-            --scheme "$XCODE_SCHEME"
+            --scheme "$XCODE_SCHEME" \
+            --config "Debug"
 
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
 
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
-        beta_groups:
-          - Comercios PIWI
+    # Sin publishing — solo descargas el IPA del artifact
