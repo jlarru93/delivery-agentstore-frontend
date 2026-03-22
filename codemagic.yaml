@@ -1,0 +1,68 @@
+workflows:
+  ios-release:
+    name: POS PIWI - iOS Release
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      node: 18.20.0
+      xcode: 16.2
+      cocoapods: default
+      groups:
+        - app_store_credentials   # Variables del App Store Connect
+        - firebase_credentials    # google-services / GoogleService-Info.plist
+      vars:
+        BUNDLE_ID: "pe.piwi.agent"
+        APP_NAME: "POS PIWI"
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
+
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: "ios-*"
+          include: true
+
+    scripts:
+      # 1. Instalar dependencias Node
+      - name: Install npm dependencies
+        script: npm ci
+
+      # 2. Build Angular producción
+      - name: Build Angular
+        script: npm run build:cap
+
+      # 3. Sync Capacitor → copia dist/ a ios/
+      - name: Capacitor sync iOS
+        script: npx cap sync ios
+
+      # 4. Instalar CocoaPods (si se usa Podfile)
+      - name: Install CocoaPods
+        script: |
+          cd ios/App
+          pod install --repo-update || echo "No Podfile or already installed"
+
+      # 5. Copiar GoogleService-Info.plist desde variable de entorno
+      - name: Setup Firebase iOS
+        script: |
+          echo $GOOGLE_SERVICE_INFO_PLIST | base64 --decode > ios/App/App/GoogleService-Info.plist
+
+      # 6. Build y firma el IPA
+      - name: Build IPA
+        script: |
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      # Subir automáticamente a TestFlight
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - Comercios PIWI
