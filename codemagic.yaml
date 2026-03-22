@@ -4,13 +4,18 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
 
+    integrations:
+      app_store_connect: App Store Connect API  # Nombre de la integración en Codemagic → Teams → Integrations
+
     environment:
       node: 18.20.0
       xcode: 16.2
       cocoapods: default
+      ios_signing:
+        distribution_type: app_store       # Cambiar a 'ad_hoc' para pruebas sin App Store
+        bundle_identifier: pe.piwi.agent
       groups:
-        - app_store_credentials   # Variables del App Store Connect
-        - firebase_credentials    # google-services / GoogleService-Info.plist
+        - firebase_credentials             # Grupo con GOOGLE_SERVICE_INFO_PLIST
       vars:
         BUNDLE_ID: "pe.piwi.agent"
         APP_NAME: "POS PIWI"
@@ -25,30 +30,23 @@ workflows:
           include: true
 
     scripts:
-      # 1. Instalar dependencias Node
       - name: Install npm dependencies
         script: npm ci
 
-      # 2. Build Angular producción
       - name: Build Angular
         script: npm run build:cap
 
-      # 3. Sync Capacitor → copia dist/ a ios/
       - name: Capacitor sync iOS
         script: npx cap sync ios
 
-      # 4. Instalar CocoaPods (si se usa Podfile)
-      - name: Install CocoaPods
-        script: |
-          cd ios/App
-          pod install --repo-update || echo "No Podfile or already installed"
-
-      # 5. Copiar GoogleService-Info.plist desde variable de entorno
       - name: Setup Firebase iOS
         script: |
           echo $GOOGLE_SERVICE_INFO_PLIST | base64 --decode > ios/App/App/GoogleService-Info.plist
 
-      # 6. Build y firma el IPA
+      - name: Install CocoaPods
+        script: |
+          cd ios/App && pod install --repo-update
+
       - name: Build IPA
         script: |
           xcode-project build-ipa \
@@ -60,7 +58,6 @@ workflows:
       - /tmp/xcodebuild_logs/*.log
 
     publishing:
-      # Subir automáticamente a TestFlight
       app_store_connect:
         auth: integration
         submit_to_testflight: true
