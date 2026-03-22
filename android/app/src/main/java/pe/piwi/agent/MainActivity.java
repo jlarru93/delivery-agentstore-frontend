@@ -12,6 +12,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(AlarmPlugin.class);
         registerPlugin(AppInfoPlugin.class);
         registerPlugin(BatteryOptimizationPlugin.class);
+        registerPlugin(PiwiPlugin.class);          // print + descarga para micro-frontends
         super.onCreate(savedInstanceState);
         handleShareIntent(getIntent());
         handleOrderIntent(getIntent());
