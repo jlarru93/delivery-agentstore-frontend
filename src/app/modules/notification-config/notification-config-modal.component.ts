@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 import { NotificationConfig, NotificationConfigService } from '../service/notification-config.service';
 import { PushService } from '../service/push.service';
@@ -9,7 +9,29 @@ const BatteryOptimizationPlugin = registerPlugin<{
   openBatterySettings(): Promise<void>;
 }>('BatteryOptimizationPlugin');
 
+const AlarmPlugin = registerPlugin<{
+  getAudioStatus(): Promise<{
+    ringerMode: number;
+    hasDndAccess: boolean;
+    hasOverlayPermission: boolean;
+    alarmVolume: number;
+    alarmMaxVolume: number;
+  }>;
+  openDndSettings(): Promise<void>;
+  openSoundSettings(): Promise<void>;
+  openOverlaySettings(): Promise<void>;
+  saveConfig(config: { sound: boolean; vibration: boolean }): Promise<void>;
+}>('AlarmPlugin');
+
 type PermissionStatus = 'idle' | 'checking' | 'granted' | 'denied' | 'blocked';
+
+export interface AudioStatus {
+  ringerMode: number;
+  hasDndAccess: boolean;
+  hasOverlayPermission: boolean;
+  alarmVolume: number;
+  alarmMaxVolume: number;
+}
 
 @Component({
   selector: 'app-notification-config-modal',
@@ -18,24 +40,22 @@ type PermissionStatus = 'idle' | 'checking' | 'granted' | 'denied' | 'blocked';
 })
 export class NotificationConfigModalComponent implements OnInit {
 
-  visible = false;
+  visible  = false;
   isNative = Capacitor.isNativePlatform();
 
-  config: NotificationConfig = {
-    sound: true,
-    vibration: true,
-    visual: true,
-  };
+  config: NotificationConfig = { sound: true, vibration: true, visual: true };
 
   permStatus: PermissionStatus = 'idle';
-
-  // true = MIUI está restringiendo batería → mostrar aviso
   isBatteryRestricted = false;
+
+  audioStatus: AudioStatus | null = null;
+  isLoadingAudio = false;
 
   constructor(
     private notifConfig: NotificationConfigService,
     private push: PushService,
-    private alert: AlertServices
+    private alert: AlertServices,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {}
@@ -44,11 +64,12 @@ export class NotificationConfigModalComponent implements OnInit {
     this.config = this.notifConfig.get();
     await this.checkCurrentPermission();
     await this.checkBatteryOptimization();
+    if (this.isNative) await this.refreshAudioStatus();
     this.visible = true;
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Permisos de notificación
+  // Permisos push
   // ─────────────────────────────────────────────────────────────────
 
   private async checkCurrentPermission(): Promise<void> {
@@ -57,21 +78,12 @@ export class NotificationConfigModalComponent implements OnInit {
         const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
         const result = await FirebaseMessaging.checkPermissions();
         this.permStatus = result.receive === 'granted' ? 'granted' : 'denied';
-      } catch {
-        this.permStatus = 'idle';
-      }
+      } catch { this.permStatus = 'idle'; }
     } else {
-      if (!('Notification' in window)) {
-        this.permStatus = 'denied';
-        return;
-      }
-      if (Notification.permission === 'granted') {
-        this.permStatus = 'granted';
-      } else if (Notification.permission === 'denied') {
-        this.permStatus = 'blocked';
-      } else {
-        this.permStatus = 'idle';
-      }
+      if (!('Notification' in window)) { this.permStatus = 'denied'; return; }
+      if (Notification.permission === 'granted')     this.permStatus = 'granted';
+      else if (Notification.permission === 'denied') this.permStatus = 'blocked';
+      else                                           this.permStatus = 'idle';
     }
   }
 
@@ -89,14 +101,10 @@ export class NotificationConfigModalComponent implements OnInit {
         }
       } else {
         const resp = await this.push.requestPermissionAndToken();
-        if (resp?.perm === 'granted') {
-          this.permStatus = 'granted';
+        if (resp?.perm === 'granted')  this.permStatus = 'granted';
         //@ts-ignore
-        } else if (resp?.error) {
-          this.permStatus = 'blocked';
-        } else {
-          this.permStatus = 'denied';
-        }
+        else if (resp?.error)          this.permStatus = 'blocked';
+        else                           this.permStatus = 'denied';
       }
     } catch (e) {
       this.permStatus = 'denied';
@@ -104,26 +112,52 @@ export class NotificationConfigModalComponent implements OnInit {
     }
   }
 
-  // ✅ Renombrado para claridad + error handler incluido
   private async registerNativeToken(): Promise<void> {
     try {
       const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
       const { token } = await FirebaseMessaging.getToken();
       if (token) {
         this.push.registerService(token).subscribe({
-          next: () => console.log('[NotifConfig] Token registrado en backend ✔'),
-          error: (err) => console.error('[NotifConfig] Error registrando token:', err)
+          next: () => console.log('[NotifConfig] Token registrado ✔'),
+          error: (err) => console.error('[NotifConfig] Error:', err)
         });
-      } else {
-        console.warn('[NotifConfig] getToken devolvió token vacío');
       }
-    } catch (e) {
-      console.error('[NotifConfig] Error obteniendo/registrando token:', e);
-    }
+    } catch (e) { console.error('[NotifConfig] Error getToken:', e); }
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Optimización de batería (MIUI)
+  // Estado de audio
+  // ─────────────────────────────────────────────────────────────────
+
+  async refreshAudioStatus(): Promise<void> {
+    if (!this.isNative) return;
+    this.isLoadingAudio = true;
+    try {
+      const status = await AlarmPlugin.getAudioStatus();
+      this.zone.run(() => { this.audioStatus = status; this.isLoadingAudio = false; });
+    } catch (e) {
+      console.warn('[NotifConfig] No se pudo leer estado de audio:', e);
+      this.isLoadingAudio = false;
+    }
+  }
+
+  async openDndSettings(): Promise<void> {
+    await AlarmPlugin.openDndSettings();
+    setTimeout(() => this.refreshAudioStatus(), 1500);
+  }
+
+  async openSoundSettings(): Promise<void> {
+    await AlarmPlugin.openSoundSettings();
+    setTimeout(() => this.refreshAudioStatus(), 1500);
+  }
+
+  async openOverlaySettings(): Promise<void> {
+    await AlarmPlugin.openOverlaySettings();
+    setTimeout(() => this.refreshAudioStatus(), 1500);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // Batería
   // ─────────────────────────────────────────────────────────────────
 
   private async checkBatteryOptimization(): Promise<void> {
@@ -131,43 +165,30 @@ export class NotificationConfigModalComponent implements OnInit {
     try {
       const { isIgnoring } = await BatteryOptimizationPlugin.isIgnoringBatteryOptimizations();
       this.isBatteryRestricted = !isIgnoring;
-      console.log('[NotifConfig] Batería restringida:', this.isBatteryRestricted);
-    } catch (e) {
-      console.warn('[NotifConfig] No se pudo verificar batería:', e);
-    }
+    } catch (e) { console.warn('[NotifConfig] No se pudo verificar batería:', e); }
   }
 
   async openBatterySettings(): Promise<void> {
-    try {
-      await BatteryOptimizationPlugin.openBatterySettings();
-      // Al volver, re-verificar el estado
-      setTimeout(async () => {
-        await this.checkBatteryOptimization();
-      }, 1000);
-    } catch (e) {
-      console.error('[NotifConfig] Error abriendo ajustes de batería:', e);
-    }
+    await BatteryOptimizationPlugin.openBatterySettings();
+    setTimeout(async () => await this.checkBatteryOptimization(), 1000);
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Guardar y cerrar
+  // Helpers de template
   // ─────────────────────────────────────────────────────────────────
 
-  save(): void {
-    this.notifConfig.save(this.config);
-    this.visible = false;
-  }
-
-  cancel(): void {
-    this.visible = false;
-  }
-
-  // ─────────────────────────────────────────────────────────────────
-  // Helpers template
-  // ─────────────────────────────────────────────────────────────────
+  get isSilent(): boolean            { return this.audioStatus?.ringerMode === 0; }
+  get isVibrate(): boolean           { return this.audioStatus?.ringerMode === 1; }
+  get isAlarmVolumeLow(): boolean    { return (this.audioStatus?.alarmVolume ?? 1) === 0; }
+  get needsDndAccess(): boolean      { return !!this.audioStatus && !this.audioStatus.hasDndAccess; }
+  get needsOverlay(): boolean        { return !!this.audioStatus && !this.audioStatus.hasOverlayPermission; }
+  get hasAudioWarning(): boolean     { return this.isSilent || this.isAlarmVolumeLow || this.needsDndAccess || this.needsOverlay; }
 
   get isGranted(): boolean  { return this.permStatus === 'granted'; }
   get isBlocked(): boolean  { return this.permStatus === 'blocked'; }
   get isChecking(): boolean { return this.permStatus === 'checking'; }
   get canRequest(): boolean { return this.permStatus === 'idle' || this.permStatus === 'denied'; }
+
+  save(): void  { this.notifConfig.save(this.config); this.visible = false; }
+  cancel(): void { this.visible = false; }
 }

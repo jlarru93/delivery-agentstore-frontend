@@ -26,8 +26,11 @@
             </intent-filter>
         </activity>
 
-        <!-- AlarmService: foreground service para sonido + vibración -->
-        <service android:name=".AlarmService" android:foregroundServiceType="mediaPlayback" android:exported="false" />
+        <!-- AlarmService: foreground service para sonido + vibración + overlay -->
+        <service
+            android:name=".AlarmService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false" />
 
         <!-- FCM: intercepta push en background -->
         <service android:name=".PiwiFirebaseMessagingService" android:exported="false">
@@ -41,13 +44,29 @@
             android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 
+    <!-- Permisos base -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Subir volumen de alarma automáticamente -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <!-- Verificar/solicitar acceso al modo No Molestar -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
+    <!-- ✅ NUEVO: mostrar banner flotante encima de DND y pantalla bloqueada -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- ✅ NUEVO: encender pantalla cuando llega una orden -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
 </manifest>
