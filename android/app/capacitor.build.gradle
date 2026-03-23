@@ -9,7 +9,6 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
-    implementation 'com.google.firebase:firebase-messaging:25.0.1'
     implementation project(':capacitor-firebase-messaging')
     implementation project(':capacitor-firebase-remote-config')
     implementation project(':capacitor-app')

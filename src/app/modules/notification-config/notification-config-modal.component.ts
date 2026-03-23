@@ -71,12 +71,15 @@ export class NotificationConfigModalComponent implements OnInit {
     this.config = this.notifConfig.get();
     await this.checkCurrentPermission();
     await this.checkBatteryOptimization();
-    if (this.isNative) await this.refreshAudioStatus();
+    if (this.isNative) {
+      // ✅ Al abrir: sincronizar bypassSilent desde Java UNA sola vez
+      await this.refreshAudioStatus(true);
+    }
     this.visible = true;
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Permisos push — refresh público para el botón del template
+  // Permisos push
   // ─────────────────────────────────────────────────────────────────
 
   async checkCurrentPermissionAndRefresh(): Promise<void> {
@@ -137,7 +140,7 @@ export class NotificationConfigModalComponent implements OnInit {
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Batería — refresh público para el botón del template
+  // Batería
   // ─────────────────────────────────────────────────────────────────
 
   async checkBatteryAndRefresh(): Promise<void> {
@@ -158,18 +161,24 @@ export class NotificationConfigModalComponent implements OnInit {
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Audio / bypass — refresh público para el botón del template
+  // Audio / permisos de bypass
+  //
+  // syncBypass=true  → solo en open(), sincroniza el switch desde Java
+  // syncBypass=false → en refresh manual, NO toca el switch
   // ─────────────────────────────────────────────────────────────────
 
-  async refreshAudioStatus(): Promise<void> {
+  async refreshAudioStatus(syncBypass = false): Promise<void> {
     if (!this.isNative) return;
     this.isLoadingAudio = true;
     try {
       const status = await AlarmPlugin.getAudioStatus();
       this.zone.run(() => {
         this.audioStatus    = status;
-        this.bypassSilent   = status.bypassSilent;
         this.isLoadingAudio = false;
+        // ✅ Solo sincronizar el switch cuando se abre el modal por primera vez
+        if (syncBypass) {
+          this.bypassSilent = status.bypassSilent;
+        }
       });
     } catch (e) {
       console.warn('[NotifConfig] No se pudo leer estado de audio:', e);
