@@ -10,7 +10,7 @@
 
   <div class="notif-config-body">
 
-    <!-- ── NOTIFICACIONES PUSH ── -->
+    <!-- ── 1. NOTIFICACIONES PUSH ── -->
     <div class="notif-section-title">Notificaciones push</div>
 
     <div class="notif-perm-status granted" *ngIf="isGranted">
@@ -43,7 +43,30 @@
       </div>
     </div>
 
-    <!-- ── TIPO DE ALERTA ── -->
+    <!-- ── 2. BATERÍA MIUI ── -->
+    <ng-container *ngIf="isNative">
+      <div class="notif-section-title" style="margin-top: 1.2rem;">Optimización de batería</div>
+
+      <div class="notif-battery-warning" *ngIf="isBatteryRestricted">
+        <i class="pi pi-bolt"></i>
+        <div>
+          <strong>Batería restringida</strong>
+          <p>Tu dispositivo puede bloquear alertas cuando la app está inactiva.
+             Activa <strong>Sin restricciones</strong>.</p>
+          <p-button label="Configurar ahora" icon="pi pi-cog"
+            styleClass="p-button-warning p-button-sm"
+            (onClick)="openBatterySettings()">
+          </p-button>
+        </div>
+      </div>
+
+      <div class="notif-perm-status granted" *ngIf="!isBatteryRestricted">
+        <i class="pi pi-check-circle"></i>
+        <span>Sin restricciones de batería</span>
+      </div>
+    </ng-container>
+
+    <!-- ── 3. TIPO DE ALERTA (solo si tiene permiso push) ── -->
     <ng-container *ngIf="isGranted">
       <div class="notif-section-title" style="margin-top: 1.2rem;">Tipo de alerta</div>
 
@@ -80,8 +103,9 @@
         <p-inputSwitch [(ngModel)]="config.visual"></p-inputSwitch>
       </div>
 
-      <!-- ✅ NUEVO: switch de bypass de silencio -->
-      <div class="notif-option" *ngIf="isNative" style="margin-top: 0.5rem; border-top: 1px solid #eee; padding-top: 0.75rem;">
+      <!-- Switch: sonar en modo silencio -->
+      <div class="notif-option" *ngIf="isNative"
+           style="margin-top: 0.5rem; border-top: 1px solid #eee; padding-top: 0.75rem;">
         <div class="notif-option-info">
           <i class="pi pi-bolt notif-icon" style="color: #e67e22;"></i>
           <div>
@@ -95,10 +119,9 @@
         <p-inputSwitch [(ngModel)]="bypassSilent"></p-inputSwitch>
       </div>
 
-      <!-- Advertencias que aparecen SOLO si el bypass está activado -->
+      <!-- Advertencias solo si bypass está ON -->
       <ng-container *ngIf="isNative && bypassSilent && audioStatus">
 
-        <!-- Permiso de superposición aún no concedido -->
         <div class="notif-battery-warning" *ngIf="needsOverlay" style="margin-top: 0.75rem;">
           <i class="pi pi-clone" style="color:#e67e22;"></i>
           <div>
@@ -108,16 +131,13 @@
               modo No Molestar necesitas conceder el permiso
               <strong>"Mostrar sobre otras apps"</strong>.
             </p>
-            <p-button
-              label="Conceder permiso"
-              icon="pi pi-shield"
+            <p-button label="Conceder permiso" icon="pi pi-shield"
               styleClass="p-button-warning p-button-sm"
               (onClick)="openOverlaySettings()">
             </p-button>
           </div>
         </div>
 
-        <!-- Volumen de alarma en 0 -->
         <div class="notif-battery-warning" *ngIf="isAlarmVolumeLow" style="margin-top: 0.75rem;">
           <i class="pi pi-volume-down" style="color:#e67e22;"></i>
           <div>
@@ -131,32 +151,6 @@
         </div>
 
       </ng-container>
-
-    </ng-container>
-
-    <!-- ── BATERÍA MIUI ── -->
-    <ng-container *ngIf="isNative && isBatteryRestricted">
-      <div class="notif-section-title" style="margin-top: 1.2rem;">Optimización de batería</div>
-      <div class="notif-battery-warning">
-        <i class="pi pi-bolt"></i>
-        <div>
-          <strong>Batería restringida</strong>
-          <p>Tu dispositivo puede bloquear alertas cuando la app está inactiva.
-             Activa <strong>Sin restricciones</strong>.</p>
-          <p-button label="Configurar ahora" icon="pi pi-cog"
-            styleClass="p-button-warning p-button-sm"
-            (onClick)="openBatterySettings()">
-          </p-button>
-        </div>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="isNative && !isBatteryRestricted">
-      <div class="notif-section-title" style="margin-top: 1.2rem;">Optimización de batería</div>
-      <div class="notif-perm-status granted">
-        <i class="pi pi-check-circle"></i>
-        <span>Sin restricciones de batería</span>
-      </div>
     </ng-container>
 
   </div>
