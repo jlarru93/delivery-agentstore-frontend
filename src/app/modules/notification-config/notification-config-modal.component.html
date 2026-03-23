@@ -33,130 +33,15 @@
       <div>
         <strong>Notificaciones bloqueadas</strong>
         <p *ngIf="!isNative">
-          Haz clic en el candado 🔒 → <strong>Notificaciones</strong> → <strong>Permitir</strong> → recarga.
+          Haz clic en el candado 🔒 → <strong>Notificaciones</strong>
+          → <strong>Permitir</strong> → recarga.
         </p>
         <p *ngIf="isNative">
-          Ve a <strong>Ajustes</strong> → <strong>Aplicaciones</strong> → <strong>POS PIWI</strong>
-          → <strong>Notificaciones</strong>.
+          Ve a <strong>Ajustes</strong> → <strong>Aplicaciones</strong>
+          → <strong>POS PIWI</strong> → <strong>Notificaciones</strong>.
         </p>
       </div>
     </div>
-
-    <!-- ── SONIDO DE ALARMA (solo nativo) ── -->
-    <ng-container *ngIf="isNative && isGranted">
-
-      <div class="notif-section-title" style="margin-top: 1.2rem;">
-        Sonido de alarma
-        <i class="pi pi-refresh"
-           style="cursor:pointer; font-size:0.85rem; margin-left:6px; color:#888;"
-           (click)="refreshAudioStatus()" title="Actualizar"></i>
-      </div>
-
-      <div class="notif-perm-status checking" *ngIf="isLoadingAudio">
-        <i class="pi pi-spin pi-spinner"></i>
-        <span>Verificando estado de audio...</span>
-      </div>
-
-      <ng-container *ngIf="!isLoadingAudio && audioStatus">
-
-        <!-- ✅ Todo OK -->
-        <div class="notif-perm-status granted" *ngIf="!hasAudioWarning">
-          <i class="pi pi-check-circle"></i>
-          <span>La alarma sonará aunque el celular esté en silencio</span>
-        </div>
-
-        <!-- ⚠️ Permiso de superposición (CLAVE para bypass DND visual) -->
-        <div class="notif-battery-warning" *ngIf="needsOverlay">
-          <i class="pi pi-clone" style="color:#e67e22;"></i>
-          <div>
-            <strong>Permitir mostrar sobre otras apps</strong>
-            <p>
-              Con este permiso PIWI puede mostrar un <strong>banner verde</strong> encima de
-              cualquier pantalla — incluso con No Molestar activado o la pantalla bloqueada —
-              para que nunca pierdas una orden.
-            </p>
-            <p-button
-              label="Conceder permiso"
-              icon="pi pi-shield"
-              styleClass="p-button-warning p-button-sm"
-              (onClick)="openOverlaySettings()">
-            </p-button>
-          </div>
-        </div>
-
-        <!-- ⚠️ Celular en silencio total -->
-        <div class="notif-battery-warning" *ngIf="isSilent">
-          <i class="pi pi-volume-off" style="color:#e67e22;"></i>
-          <div>
-            <strong>Celular en silencio</strong>
-            <p>
-              La alarma usa el canal de <strong>Alarma del sistema</strong> que suena
-              en modo silencio/vibrar. Si el volumen de alarma está en cero no sonará.
-              Si usas <strong>No Molestar</strong> desactívalo o usa solo Modo silencio.
-            </p>
-            <p-button label="Ajustes de sonido" icon="pi pi-cog"
-              styleClass="p-button-warning p-button-sm"
-              (onClick)="openSoundSettings()">
-            </p-button>
-          </div>
-        </div>
-
-        <!-- ⚠️ Volumen de alarma en 0 -->
-        <div class="notif-battery-warning" *ngIf="isAlarmVolumeLow && !isSilent">
-          <i class="pi pi-volume-down" style="color:#e67e22;"></i>
-          <div>
-            <strong>Volumen de alarma en 0</strong>
-            <p>Sube el volumen de alarma para que la orden llame tu atención.</p>
-            <p-button label="Subir volumen" icon="pi pi-cog"
-              styleClass="p-button-warning p-button-sm"
-              (onClick)="openSoundSettings()">
-            </p-button>
-          </div>
-        </div>
-
-        <!-- ⚠️ Sin acceso DND -->
-        <div class="notif-battery-warning" *ngIf="needsDndAccess">
-          <i class="pi pi-ban" style="color:#e67e22;"></i>
-          <div>
-            <strong>Modo "No Molestar" puede bloquear la alarma</strong>
-            <p>
-              Si usas <strong>No Molestar</strong>, desactívalo o usa solo
-              <strong>Modo silencio</strong> — la alarma de PIWI suena igual en silencio y vibrar.
-            </p>
-            <p-button label="Ajustes de sonido" icon="pi pi-cog"
-              styleClass="p-button-warning p-button-sm"
-              (onClick)="openSoundSettings()">
-            </p-button>
-          </div>
-        </div>
-
-      </ng-container>
-    </ng-container>
-
-    <!-- ── BATERÍA MIUI ── -->
-    <ng-container *ngIf="isNative && isBatteryRestricted">
-      <div class="notif-section-title" style="margin-top: 1.2rem;">Optimización de batería</div>
-      <div class="notif-battery-warning">
-        <i class="pi pi-bolt"></i>
-        <div>
-          <strong>Batería restringida</strong>
-          <p>Tu dispositivo puede bloquear alertas cuando la app está inactiva.
-             Activa <strong>Sin restricciones</strong>.</p>
-          <p-button label="Configurar ahora" icon="pi pi-cog"
-            styleClass="p-button-warning p-button-sm"
-            (onClick)="openBatterySettings()">
-          </p-button>
-        </div>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="isNative && !isBatteryRestricted">
-      <div class="notif-section-title" style="margin-top: 1.2rem;">Optimización de batería</div>
-      <div class="notif-perm-status granted">
-        <i class="pi pi-check-circle"></i>
-        <span>Sin restricciones de batería</span>
-      </div>
-    </ng-container>
 
     <!-- ── TIPO DE ALERTA ── -->
     <ng-container *ngIf="isGranted">
@@ -194,13 +79,93 @@
         </div>
         <p-inputSwitch [(ngModel)]="config.visual"></p-inputSwitch>
       </div>
+
+      <!-- ✅ NUEVO: switch de bypass de silencio -->
+      <div class="notif-option" *ngIf="isNative" style="margin-top: 0.5rem; border-top: 1px solid #eee; padding-top: 0.75rem;">
+        <div class="notif-option-info">
+          <i class="pi pi-bolt notif-icon" style="color: #e67e22;"></i>
+          <div>
+            <span class="notif-option-title">Sonar en modo silencio</span>
+            <small class="notif-option-desc">
+              La alarma suena y enciende la pantalla aunque el celular esté
+              en silencio o vibrar. Útil para personal de tienda.
+            </small>
+          </div>
+        </div>
+        <p-inputSwitch [(ngModel)]="bypassSilent"></p-inputSwitch>
+      </div>
+
+      <!-- Advertencias que aparecen SOLO si el bypass está activado -->
+      <ng-container *ngIf="isNative && bypassSilent && audioStatus">
+
+        <!-- Permiso de superposición aún no concedido -->
+        <div class="notif-battery-warning" *ngIf="needsOverlay" style="margin-top: 0.75rem;">
+          <i class="pi pi-clone" style="color:#e67e22;"></i>
+          <div>
+            <strong>Permiso de superposición requerido</strong>
+            <p>
+              Para mostrar el banner verde sobre la pantalla bloqueada y el
+              modo No Molestar necesitas conceder el permiso
+              <strong>"Mostrar sobre otras apps"</strong>.
+            </p>
+            <p-button
+              label="Conceder permiso"
+              icon="pi pi-shield"
+              styleClass="p-button-warning p-button-sm"
+              (onClick)="openOverlaySettings()">
+            </p-button>
+          </div>
+        </div>
+
+        <!-- Volumen de alarma en 0 -->
+        <div class="notif-battery-warning" *ngIf="isAlarmVolumeLow" style="margin-top: 0.75rem;">
+          <i class="pi pi-volume-down" style="color:#e67e22;"></i>
+          <div>
+            <strong>Volumen de alarma en 0</strong>
+            <p>Sube el volumen del canal de alarma para que suene correctamente.</p>
+            <p-button label="Ajustes de sonido" icon="pi pi-cog"
+              styleClass="p-button-warning p-button-sm"
+              (onClick)="openSoundSettings()">
+            </p-button>
+          </div>
+        </div>
+
+      </ng-container>
+
+    </ng-container>
+
+    <!-- ── BATERÍA MIUI ── -->
+    <ng-container *ngIf="isNative && isBatteryRestricted">
+      <div class="notif-section-title" style="margin-top: 1.2rem;">Optimización de batería</div>
+      <div class="notif-battery-warning">
+        <i class="pi pi-bolt"></i>
+        <div>
+          <strong>Batería restringida</strong>
+          <p>Tu dispositivo puede bloquear alertas cuando la app está inactiva.
+             Activa <strong>Sin restricciones</strong>.</p>
+          <p-button label="Configurar ahora" icon="pi pi-cog"
+            styleClass="p-button-warning p-button-sm"
+            (onClick)="openBatterySettings()">
+          </p-button>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isNative && !isBatteryRestricted">
+      <div class="notif-section-title" style="margin-top: 1.2rem;">Optimización de batería</div>
+      <div class="notif-perm-status granted">
+        <i class="pi pi-check-circle"></i>
+        <span>Sin restricciones de batería</span>
+      </div>
     </ng-container>
 
   </div>
 
   <ng-template pTemplate="footer">
     <div class="notif-config-footer">
-      <p-button label="Cerrar" styleClass="p-button-text p-button-secondary" (onClick)="cancel()"></p-button>
+      <p-button label="Cerrar" styleClass="p-button-text p-button-secondary"
+        (onClick)="cancel()">
+      </p-button>
       <p-button *ngIf="isGranted" label="Guardar" styleClass="p-button-success"
         icon="pi pi-check" (onClick)="save()">
       </p-button>

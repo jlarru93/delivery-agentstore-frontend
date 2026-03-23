@@ -16,11 +16,16 @@ const AlarmPlugin = registerPlugin<{
     hasOverlayPermission: boolean;
     alarmVolume: number;
     alarmMaxVolume: number;
+    bypassSilent: boolean;
   }>;
   openDndSettings(): Promise<void>;
   openSoundSettings(): Promise<void>;
   openOverlaySettings(): Promise<void>;
-  saveConfig(config: { sound: boolean; vibration: boolean }): Promise<void>;
+  saveConfig(config: {
+    sound: boolean;
+    vibration: boolean;
+    bypassSilent: boolean;
+  }): Promise<void>;
 }>('AlarmPlugin');
 
 type PermissionStatus = 'idle' | 'checking' | 'granted' | 'denied' | 'blocked';
@@ -31,6 +36,7 @@ export interface AudioStatus {
   hasOverlayPermission: boolean;
   alarmVolume: number;
   alarmMaxVolume: number;
+  bypassSilent: boolean;
 }
 
 @Component({
@@ -44,6 +50,9 @@ export class NotificationConfigModalComponent implements OnInit {
   isNative = Capacitor.isNativePlatform();
 
   config: NotificationConfig = { sound: true, vibration: true, visual: true };
+
+  // ✅ Switch independiente para el bypass de silencio
+  bypassSilent = false;
 
   permStatus: PermissionStatus = 'idle';
   isBatteryRestricted = false;
@@ -134,7 +143,11 @@ export class NotificationConfigModalComponent implements OnInit {
     this.isLoadingAudio = true;
     try {
       const status = await AlarmPlugin.getAudioStatus();
-      this.zone.run(() => { this.audioStatus = status; this.isLoadingAudio = false; });
+      this.zone.run(() => {
+        this.audioStatus   = status;
+        this.bypassSilent  = status.bypassSilent; // sincronizar switch
+        this.isLoadingAudio = false;
+      });
     } catch (e) {
       console.warn('[NotifConfig] No se pudo leer estado de audio:', e);
       this.isLoadingAudio = false;
@@ -177,18 +190,29 @@ export class NotificationConfigModalComponent implements OnInit {
   // Helpers de template
   // ─────────────────────────────────────────────────────────────────
 
-  get isSilent(): boolean            { return this.audioStatus?.ringerMode === 0; }
-  get isVibrate(): boolean           { return this.audioStatus?.ringerMode === 1; }
-  get isAlarmVolumeLow(): boolean    { return (this.audioStatus?.alarmVolume ?? 1) === 0; }
-  get needsDndAccess(): boolean      { return !!this.audioStatus && !this.audioStatus.hasDndAccess; }
-  get needsOverlay(): boolean        { return !!this.audioStatus && !this.audioStatus.hasOverlayPermission; }
-  get hasAudioWarning(): boolean     { return this.isSilent || this.isAlarmVolumeLow || this.needsDndAccess || this.needsOverlay; }
+  get isSilent(): boolean         { return this.audioStatus?.ringerMode === 0; }
+  get isAlarmVolumeLow(): boolean { return (this.audioStatus?.alarmVolume ?? 1) === 0; }
+  get needsOverlay(): boolean     { return this.bypassSilent && !!this.audioStatus && !this.audioStatus.hasOverlayPermission; }
 
   get isGranted(): boolean  { return this.permStatus === 'granted'; }
   get isBlocked(): boolean  { return this.permStatus === 'blocked'; }
   get isChecking(): boolean { return this.permStatus === 'checking'; }
   get canRequest(): boolean { return this.permStatus === 'idle' || this.permStatus === 'denied'; }
 
-  save(): void  { this.notifConfig.save(this.config); this.visible = false; }
+  // ─────────────────────────────────────────────────────────────────
+  // Guardar — incluye bypassSilent
+  // ─────────────────────────────────────────────────────────────────
+
+  save(): void {
+    this.notifConfig.save(this.config);
+    // Guardar bypassSilent en Java vía AlarmPlugin
+    AlarmPlugin.saveConfig({
+      sound:        this.config.sound,
+      vibration:    this.config.vibration,
+      bypassSilent: this.bypassSilent
+    }).catch(err => console.error('[NotifConfig] Error guardando config:', err));
+    this.visible = false;
+  }
+
   cancel(): void { this.visible = false; }
 }

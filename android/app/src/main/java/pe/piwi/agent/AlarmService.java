@@ -52,10 +52,12 @@ public class AlarmService extends Service {
                 ? intent.getStringExtra("body")  : "Toca para ver la orden";
 
         SharedPreferences config = getSharedPreferences(AlarmPlugin.PREFS_NAME, MODE_PRIVATE);
-        boolean soundEnabled     = config.getBoolean(AlarmPlugin.KEY_SOUND,     true);
-        boolean vibrationEnabled = config.getBoolean(AlarmPlugin.KEY_VIBRATION, true);
+        boolean soundEnabled     = config.getBoolean(AlarmPlugin.KEY_SOUND,         true);
+        boolean vibrationEnabled = config.getBoolean(AlarmPlugin.KEY_VIBRATION,     true);
+        // ✅ Lee si el usuario activó el bypass de silencio
+        boolean bypassSilent     = config.getBoolean(AlarmPlugin.KEY_BYPASS_SILENT, false);
 
-        // ── 1. Foreground notification (obligatoria para el service) ──────
+        // ── 1. Foreground notification (siempre obligatoria) ──────────────
         Intent openApp = new Intent(this, MainActivity.class);
         openApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(
@@ -76,30 +78,80 @@ public class AlarmService extends Service {
 
         startForeground(NOTIFICATION_ID, notification);
 
-        // ── 2. WakeLock: enciende pantalla aunque esté bloqueada ──────────
-        acquireWakeLock();
-
-        // ── 3. Overlay: banner verde flotante encima de DND/lockscreen ────
-        //    Solo si el usuario concedió el permiso de superposición
-        if (Settings.canDrawOverlays(this)) {
-            showOverlay(title, body);
+        if (bypassSilent) {
+            // ── Modo bypass: enciende pantalla + overlay + STREAM_ALARM ───
+            acquireWakeLock();
+            if (Settings.canDrawOverlays(this)) {
+                showOverlay(title, body);
+            }
+            if (soundEnabled) playAlarmSoundBypass();
+        } else {
+            // ── Modo normal: respeta el silencio del sistema ──────────────
+            if (soundEnabled) playAlarmSoundNormal();
         }
 
-        // ── 4. Sonido STREAM_ALARM (suena en silencio y vibrar) ───────────
-        if (soundEnabled) {
-            playAlarmSound();
-        }
-
-        // ── 5. Vibración ──────────────────────────────────────────────────
-        if (vibrationEnabled) {
-            startVibration();
-        }
+        if (vibrationEnabled) startVibration();
 
         return START_STICKY;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // WakeLock — enciende la pantalla al recibir la alarma
+    // Sonido NORMAL — respeta modo silencio (STREAM_MUSIC)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void playAlarmSoundNormal() {
+        try {
+            if (mediaPlayer != null) { mediaPlayer.stop(); mediaPlayer.release(); }
+
+            android.content.res.AssetFileDescriptor afd =
+                    getAssets().openFd("public/assets/audio/audio.mp3");
+
+            mediaPlayer = new MediaPlayer();
+            // Sin AudioAttributes especiales → respeta el perfil de sonido del sistema
+            mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            afd.close();
+            mediaPlayer.setLooping(true);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Sonido BYPASS — STREAM_ALARM, suena en silencio y vibrar
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void playAlarmSoundBypass() {
+        try {
+            if (mediaPlayer != null) { mediaPlayer.stop(); mediaPlayer.release(); }
+
+            android.content.res.AssetFileDescriptor afd =
+                    getAssets().openFd("public/assets/audio/audio.mp3");
+
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioAttributes(
+                    new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .build()
+            );
+
+            // Subir volumen de alarma al máximo
+            AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+            if (am != null) {
+                int maxVol = am.getStreamMaxVolume(AudioManager.STREAM_ALARM);
+                am.setStreamVolume(AudioManager.STREAM_ALARM, maxVol, 0);
+            }
+
+            mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            afd.close();
+            mediaPlayer.setLooping(true);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // WakeLock — enciende pantalla (solo en modo bypass)
     // ─────────────────────────────────────────────────────────────────────────
 
     @SuppressLint("WakelockTimeout")
@@ -113,15 +165,13 @@ public class AlarmService extends Service {
                                 PowerManager.ON_AFTER_RELEASE,
                         "PiwiAgent::AlarmWakeLock"
                 );
-                wakeLock.acquire(3 * 60 * 1000L); // máximo 3 minutos
+                wakeLock.acquire(3 * 60 * 1000L);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Overlay — ventana flotante visible sobre DND y pantalla bloqueada
+    // Overlay — banner verde flotante (solo en modo bypass)
     // ─────────────────────────────────────────────────────────────────────────
 
     private void showOverlay(String title, String body) {
@@ -130,10 +180,9 @@ public class AlarmService extends Service {
 
             windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-            // Banner verde PIWI con título y cuerpo
             overlayView = new LinearLayout(this);
             overlayView.setOrientation(LinearLayout.VERTICAL);
-            overlayView.setBackgroundColor(0xFF398E3C); // verde PIWI
+            overlayView.setBackgroundColor(0xFF398E3C);
             overlayView.setPadding(48, 36, 48, 36);
 
             TextView tvTitle = new TextView(this);
@@ -173,7 +222,6 @@ public class AlarmService extends Service {
             );
             params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 
-            // Tocar el banner → abrir app y detener alarma
             overlayView.setOnClickListener(v -> {
                 Intent open = new Intent(this, MainActivity.class);
                 open.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -182,10 +230,7 @@ public class AlarmService extends Service {
             });
 
             windowManager.addView(overlayView, params);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     private void removeOverlay() {
@@ -198,47 +243,7 @@ public class AlarmService extends Service {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Sonido — STREAM_ALARM bypasea el modo silencio y vibrar
-    // ─────────────────────────────────────────────────────────────────────────
-
-    private void playAlarmSound() {
-        try {
-            if (mediaPlayer != null) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
-            }
-
-            android.content.res.AssetFileDescriptor afd =
-                    getAssets().openFd("public/assets/audio/audio.mp3");
-
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setAudioAttributes(
-                    new AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_ALARM)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                            .build()
-            );
-
-            // Subir volumen de alarma al máximo automáticamente
-            AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
-            if (am != null) {
-                int maxVol = am.getStreamMaxVolume(AudioManager.STREAM_ALARM);
-                am.setStreamVolume(AudioManager.STREAM_ALARM, maxVol, 0);
-            }
-
-            mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            afd.close();
-            mediaPlayer.setLooping(true);
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Vibración
+    // Vibración (siempre según config)
     // ─────────────────────────────────────────────────────────────────────────
 
     private void startVibration() {

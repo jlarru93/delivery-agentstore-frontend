@@ -19,9 +19,11 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 @CapacitorPlugin(name = "AlarmPlugin")
 public class AlarmPlugin extends Plugin {
 
-    static final String PREFS_NAME    = "alarm_config";
-    static final String KEY_SOUND     = "sound";
-    static final String KEY_VIBRATION = "vibration";
+    static final String PREFS_NAME         = "alarm_config";
+    static final String KEY_SOUND          = "sound";
+    static final String KEY_VIBRATION      = "vibration";
+    // ✅ NUEVO: controla si la alarma bypasea silencio/DND
+    static final String KEY_BYPASS_SILENT  = "bypassSilent";
 
     @PluginMethod
     public void stopAlarm(PluginCall call) {
@@ -39,14 +41,18 @@ public class AlarmPlugin extends Plugin {
 
     @PluginMethod
     public void saveConfig(PluginCall call) {
-        boolean sound     = call.getBoolean("sound",     true);
-        boolean vibration = call.getBoolean("vibration", true);
+        boolean sound        = call.getBoolean("sound",        true);
+        boolean vibration    = call.getBoolean("vibration",    true);
+        boolean bypassSilent = call.getBoolean("bypassSilent", false);
+
         getContext()
                 .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                 .edit()
-                .putBoolean(KEY_SOUND,     sound)
-                .putBoolean(KEY_VIBRATION, vibration)
+                .putBoolean(KEY_SOUND,         sound)
+                .putBoolean(KEY_VIBRATION,     vibration)
+                .putBoolean(KEY_BYPASS_SILENT, bypassSilent)
                 .apply();
+
         call.resolve();
     }
 
@@ -61,17 +67,6 @@ public class AlarmPlugin extends Plugin {
         call.resolve(result);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Estado de audio + permisos especiales
-    // ─────────────────────────────────────────────────────────────────────────
-
-    /**
-     * Retorna el estado completo del audio y permisos necesarios:
-     * - ringerMode: 0=silent, 1=vibrate, 2=normal
-     * - hasDndAccess: permiso para sobrevivir al modo No Molestar
-     * - hasOverlayPermission: permiso para mostrar ventana flotante
-     * - alarmVolume / alarmMaxVolume
-     */
     @PluginMethod
     public void getAudioStatus(PluginCall call) {
         Context ctx = getContext();
@@ -90,19 +85,23 @@ public class AlarmPlugin extends Plugin {
             hasDndAccess = true;
         }
 
-        // ✅ NUEVO: permiso de superposición (overlay) para el bypass de DND visual
         boolean hasOverlayPermission = Settings.canDrawOverlays(ctx);
 
+        // Leer si el bypass está activado para mostrarlo en la UI
+        boolean bypassSilent = ctx
+                .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                .getBoolean(KEY_BYPASS_SILENT, false);
+
         JSObject result = new JSObject();
-        result.put("ringerMode",          ringerMode);
-        result.put("hasDndAccess",        hasDndAccess);
+        result.put("ringerMode",           ringerMode);
+        result.put("hasDndAccess",         hasDndAccess);
         result.put("hasOverlayPermission", hasOverlayPermission);
-        result.put("alarmVolume",         alarmVolume);
-        result.put("alarmMaxVolume",      alarmMaxVolume);
+        result.put("alarmVolume",          alarmVolume);
+        result.put("alarmMaxVolume",       alarmMaxVolume);
+        result.put("bypassSilent",         bypassSilent);
         call.resolve(result);
     }
 
-    /** Abre ajustes de No Molestar */
     @PluginMethod
     public void openDndSettings(PluginCall call) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -113,7 +112,6 @@ public class AlarmPlugin extends Plugin {
         call.resolve();
     }
 
-    /** Abre ajustes de sonido del sistema */
     @PluginMethod
     public void openSoundSettings(PluginCall call) {
         Intent intent = new Intent(Settings.ACTION_SOUND_SETTINGS);
@@ -122,11 +120,6 @@ public class AlarmPlugin extends Plugin {
         call.resolve();
     }
 
-    /**
-     * ✅ NUEVO: abre ajustes de permiso de superposición (overlay).
-     * Con este permiso el AlarmService puede mostrar el banner verde
-     * encima de DND y de la pantalla bloqueada.
-     */
     @PluginMethod
     public void openOverlaySettings(PluginCall call) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
