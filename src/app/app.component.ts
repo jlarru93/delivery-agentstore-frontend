@@ -60,29 +60,36 @@ export class AppComponent implements OnInit {
         }
 
         // ── Verificar actualización forzada (Remote Config) ──
-        of(this.appUpdate.checkForUpdate()).subscribe(()=>{});
-
-        // ── Push / FCM ──
-        this.push.init();
+        of(this.appUpdate.checkForUpdate()).subscribe(() => {});
 
         // ── Share Target ──
         this.shareLocation.init();
 
-        // ── Después del primer NavigationEnd: verificar orden pendiente ──
+        // ── Push / FCM: inicializar solo después de primera NavigationEnd ──
+        // Garantiza que Cognito ya cargó la sesión antes de registrar el token FCM
         this.router.events.pipe(
             filter(e => e instanceof NavigationEnd),
             take(1)
-        ).subscribe(async () => {
+        ).subscribe(async (e: any) => {
+            const url: string = e.urlAfterRedirects || e.url || '';
+
+            // No inicializar push si estamos en login (usuario no autenticado)
+            if (!url.includes('/login')) {
+                await this.push.init();
+            }
+
+            // Verificar si hay una orden pendiente por notificación (solo nativo)
             await this.push.checkPendingOrder();
         });
 
-        // ── App resume ──
+        // ── App resume (nativo): re-registrar token y verificar orden pendiente ──
         if (Capacitor.isNativePlatform()) {
             App.addListener('appStateChange', async ({ isActive }) => {
                 if (isActive) {
+                    // Re-registrar token por si rotó mientras la app estaba en background
+                    await this.push.init();
                     await this.push.checkPendingOrder();
-                    // Re-verificar actualización cada vez que la app vuelve al frente
-                    of(this.appUpdate.checkForUpdate()).subscribe(()=>{});
+                    of(this.appUpdate.checkForUpdate()).subscribe(() => {});
                 }
             });
         }

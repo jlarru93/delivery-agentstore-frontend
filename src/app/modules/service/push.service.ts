@@ -6,6 +6,7 @@ import { getMessaging, getToken, isSupported, onMessage, Messaging } from 'fireb
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { NotificationConfigService } from './notification-config.service';
+import { Auth } from 'aws-amplify';
 
 const AlarmPlugin = registerPlugin<{
   stopAlarm(): Promise<void>;
@@ -25,10 +26,16 @@ export class PushService {
   ) {}
 
   // ─────────────────────────────────────────────────────────────────
-  // Init
+  // Init — solo llamar cuando el usuario ya está autenticado
   // ─────────────────────────────────────────────────────────────────
 
   async init(): Promise<void> {
+    // ✅ Verificar sesión Cognito activa antes de intentar registrar token
+    if (!await this.isAuthReady()) {
+      console.warn('[Push] init abortado: sesión Cognito no activa aún');
+      return;
+    }
+
     if (Capacitor.isNativePlatform()) {
       await this.initNative();
     } else {
@@ -36,24 +43,43 @@ export class PushService {
     }
   }
 
+  private async isAuthReady(): Promise<boolean> {
+    try {
+      await Auth.currentSession();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   // ─────────────────────────────────────────────────────────────────
-  // Nativo (Android)
+  // Nativo (Android / Capacitor)
   // ─────────────────────────────────────────────────────────────────
 
   private async initNative(): Promise<void> {
     try {
       const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
-      await FirebaseMessaging.requestPermissions();
 
-      const { token } = await FirebaseMessaging.getToken();
-      console.log('[Push] Token FCM nativo:', token);
-      if (token) {
-        this.registerService(token).subscribe(() =>
-          console.log('[Push] Token registrado en backend')
-        );
+      // ✅ Verificar primero — no pedir permiso si ya fue concedido
+      const { receive } = await FirebaseMessaging.checkPermissions();
+
+      if (receive === 'granted') {
+        // Ya tiene permiso: re-registrar token silenciosamente
+        await this.refreshAndRegisterNativeToken(FirebaseMessaging);
+      } else if (receive === 'prompt') {
+        // Solo pedir si nunca ha decidido
+        const result = await FirebaseMessaging.requestPermissions();
+        if (result.receive === 'granted') {
+          await this.refreshAndRegisterNativeToken(FirebaseMessaging);
+        } else {
+          console.warn('[Push] Permiso de notificaciones denegado por el usuario');
+        }
+      } else {
+        // 'denied' — bloqueado en ajustes del sistema, no insistir
+        console.warn('[Push] Notificaciones bloqueadas en ajustes del sistema');
       }
 
-      // Foreground: respetar config
+      // Foreground: respetar config de sonido
       FirebaseMessaging.addListener('notificationReceived', () => {
         if (!this.notifConfig.isSound()) {
           this.stopAlarm();
@@ -61,10 +87,8 @@ export class PushService {
       });
 
       // Al tocar la notificación → detener alarma y abrir orden
-      FirebaseMessaging.addListener('notificationActionPerformed', async (action) => {
-        console.log('[Push] Notificación tocada:', action);
+      FirebaseMessaging.addListener('notificationActionPerformed', async () => {
         await this.stopAlarm();
-        // El uuid ya está en SharedPreferences via MainActivity.handleOrderIntent
         await this.checkPendingOrder();
       });
 
@@ -73,9 +97,23 @@ export class PushService {
     }
   }
 
+  private async refreshAndRegisterNativeToken(FirebaseMessaging: any): Promise<void> {
+    try {
+      const { token } = await FirebaseMessaging.getToken();
+      console.log('[Push] Token FCM nativo obtenido:', token ? '✔' : '✘ vacío');
+      if (token) {
+        this.registerService(token).subscribe({
+          next: () => console.log('[Push] Token nativo registrado en backend ✔'),
+          error: (err) => console.error('[Push] Error registrando token nativo:', err)
+        });
+      }
+    } catch (e) {
+      console.error('[Push] Error obteniendo token FCM nativo:', e);
+    }
+  }
+
   // ─────────────────────────────────────────────────────────────────
   // Verificar orden pendiente desde notificación (arranque + resume)
-  // Llamar desde AppComponent después del primer NavigationEnd
   // ─────────────────────────────────────────────────────────────────
 
   async checkPendingOrder(): Promise<void> {
@@ -106,6 +144,45 @@ export class PushService {
       return;
     }
     this.messaging = getMessaging();
+
+    // ✅ Si ya tenía permiso concedido → re-registrar token en cada sesión
+    // Esto cubre el caso donde el token fue rotado o eliminado por softDelete
+    if (Notification.permission === 'granted') {
+      await this.silentlyRefreshWebToken();
+    }
+  }
+
+  private async silentlyRefreshWebToken(): Promise<void> {
+    try {
+      if (!this.messaging) return;
+
+      let swReg = await navigator.serviceWorker.getRegistration('/firebase-cloud-messaging-push-scope');
+      if (!swReg) {
+        swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+          scope: '/firebase-cloud-messaging-push-scope'
+        });
+      }
+
+      if (!environment.vapidKey || typeof environment.vapidKey !== 'string') {
+        console.warn('[Push] VAPID key ausente, no se puede refrescar token web');
+        return;
+      }
+
+      const token = await getToken(this.messaging, {
+        vapidKey: environment.vapidKey,
+        serviceWorkerRegistration: swReg
+      });
+
+      if (token) {
+        localStorage.setItem('tokenPush', token);
+        this.registerService(token).subscribe({
+          next: () => console.log('[Push] Token web re-registrado silenciosamente ✔'),
+          error: (err) => console.error('[Push] Error re-registrando token web:', err)
+        });
+      }
+    } catch (err) {
+      console.warn('[Push] No se pudo refrescar token web:', err);
+    }
   }
 
   async requestPermissionAndToken() {
@@ -138,7 +215,10 @@ export class PushService {
       });
       if (token) {
         localStorage.setItem('tokenPush', token);
-        this.registerService(token).subscribe(() => console.log('[Push] Token registrado'));
+        this.registerService(token).subscribe({
+          next: () => console.log('[Push] Token web registrado ✔'),
+          error: (err) => console.error('[Push] Error registrando token web:', err)
+        });
       }
       return { token, perm };
     } catch (err) {

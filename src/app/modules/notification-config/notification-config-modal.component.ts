@@ -83,7 +83,7 @@ export class NotificationConfigModalComponent implements OnInit {
         const result = await FirebaseMessaging.requestPermissions();
         if (result.receive === 'granted') {
           this.permStatus = 'granted';
-          await this.registerToken();
+          await this.registerNativeToken();
         } else {
           this.permStatus = 'blocked';
         }
@@ -104,17 +104,21 @@ export class NotificationConfigModalComponent implements OnInit {
     }
   }
 
-  private async registerToken(): Promise<void> {
+  // ✅ Renombrado para claridad + error handler incluido
+  private async registerNativeToken(): Promise<void> {
     try {
       const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
       const { token } = await FirebaseMessaging.getToken();
       if (token) {
-        this.push.registerService(token).subscribe(() => {
-          console.log('[NotifConfig] Token registrado en backend');
+        this.push.registerService(token).subscribe({
+          next: () => console.log('[NotifConfig] Token registrado en backend ✔'),
+          error: (err) => console.error('[NotifConfig] Error registrando token:', err)
         });
+      } else {
+        console.warn('[NotifConfig] getToken devolvió token vacío');
       }
     } catch (e) {
-      console.error('[NotifConfig] Error registrando token:', e);
+      console.error('[NotifConfig] Error obteniendo/registrando token:', e);
     }
   }
 
