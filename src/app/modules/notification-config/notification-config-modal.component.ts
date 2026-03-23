@@ -50,8 +50,6 @@ export class NotificationConfigModalComponent implements OnInit {
   isNative = Capacitor.isNativePlatform();
 
   config: NotificationConfig = { sound: true, vibration: true, visual: true };
-
-  // ✅ Switch independiente para el bypass de silencio
   bypassSilent = false;
 
   permStatus: PermissionStatus = 'idle';
@@ -78,8 +76,12 @@ export class NotificationConfigModalComponent implements OnInit {
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Permisos push
+  // Permisos push — refresh público para el botón del template
   // ─────────────────────────────────────────────────────────────────
+
+  async checkCurrentPermissionAndRefresh(): Promise<void> {
+    await this.checkCurrentPermission();
+  }
 
   private async checkCurrentPermission(): Promise<void> {
     if (this.isNative) {
@@ -135,7 +137,28 @@ export class NotificationConfigModalComponent implements OnInit {
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Estado de audio
+  // Batería — refresh público para el botón del template
+  // ─────────────────────────────────────────────────────────────────
+
+  async checkBatteryAndRefresh(): Promise<void> {
+    await this.checkBatteryOptimization();
+  }
+
+  private async checkBatteryOptimization(): Promise<void> {
+    if (!this.isNative) return;
+    try {
+      const { isIgnoring } = await BatteryOptimizationPlugin.isIgnoringBatteryOptimizations();
+      this.isBatteryRestricted = !isIgnoring;
+    } catch (e) { console.warn('[NotifConfig] No se pudo verificar batería:', e); }
+  }
+
+  async openBatterySettings(): Promise<void> {
+    await BatteryOptimizationPlugin.openBatterySettings();
+    setTimeout(async () => await this.checkBatteryOptimization(), 1000);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // Audio / bypass — refresh público para el botón del template
   // ─────────────────────────────────────────────────────────────────
 
   async refreshAudioStatus(): Promise<void> {
@@ -144,8 +167,8 @@ export class NotificationConfigModalComponent implements OnInit {
     try {
       const status = await AlarmPlugin.getAudioStatus();
       this.zone.run(() => {
-        this.audioStatus   = status;
-        this.bypassSilent  = status.bypassSilent; // sincronizar switch
+        this.audioStatus    = status;
+        this.bypassSilent   = status.bypassSilent;
         this.isLoadingAudio = false;
       });
     } catch (e) {
@@ -170,23 +193,6 @@ export class NotificationConfigModalComponent implements OnInit {
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // Batería
-  // ─────────────────────────────────────────────────────────────────
-
-  private async checkBatteryOptimization(): Promise<void> {
-    if (!this.isNative) return;
-    try {
-      const { isIgnoring } = await BatteryOptimizationPlugin.isIgnoringBatteryOptimizations();
-      this.isBatteryRestricted = !isIgnoring;
-    } catch (e) { console.warn('[NotifConfig] No se pudo verificar batería:', e); }
-  }
-
-  async openBatterySettings(): Promise<void> {
-    await BatteryOptimizationPlugin.openBatterySettings();
-    setTimeout(async () => await this.checkBatteryOptimization(), 1000);
-  }
-
-  // ─────────────────────────────────────────────────────────────────
   // Helpers de template
   // ─────────────────────────────────────────────────────────────────
 
@@ -200,12 +206,11 @@ export class NotificationConfigModalComponent implements OnInit {
   get canRequest(): boolean { return this.permStatus === 'idle' || this.permStatus === 'denied'; }
 
   // ─────────────────────────────────────────────────────────────────
-  // Guardar — incluye bypassSilent
+  // Guardar
   // ─────────────────────────────────────────────────────────────────
 
   save(): void {
     this.notifConfig.save(this.config);
-    // Guardar bypassSilent en Java vía AlarmPlugin
     AlarmPlugin.saveConfig({
       sound:        this.config.sound,
       vibration:    this.config.vibration,

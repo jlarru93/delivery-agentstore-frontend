@@ -11,7 +11,13 @@
   <div class="notif-config-body">
 
     <!-- ── 1. NOTIFICACIONES PUSH ── -->
-    <div class="notif-section-title">Notificaciones push</div>
+    <div class="notif-section-title">
+      Notificaciones push
+      <i class="pi pi-refresh"
+         style="cursor:pointer; font-size:0.85rem; margin-left:6px; color:#888;"
+         (click)="checkCurrentPermissionAndRefresh()"
+         title="Actualizar estado"></i>
+    </div>
 
     <div class="notif-perm-status granted" *ngIf="isGranted">
       <i class="pi pi-check-circle"></i>
@@ -45,7 +51,13 @@
 
     <!-- ── 2. BATERÍA MIUI ── -->
     <ng-container *ngIf="isNative">
-      <div class="notif-section-title" style="margin-top: 1.2rem;">Optimización de batería</div>
+      <div class="notif-section-title" style="margin-top: 1.2rem;">
+        Optimización de batería
+        <i class="pi pi-refresh"
+           style="cursor:pointer; font-size:0.85rem; margin-left:6px; color:#888;"
+           (click)="checkBatteryAndRefresh()"
+           title="Actualizar estado"></i>
+      </div>
 
       <div class="notif-battery-warning" *ngIf="isBatteryRestricted">
         <i class="pi pi-bolt"></i>
@@ -66,7 +78,7 @@
       </div>
     </ng-container>
 
-    <!-- ── 3. TIPO DE ALERTA (solo si tiene permiso push) ── -->
+    <!-- ── 3. TIPO DE ALERTA ── -->
     <ng-container *ngIf="isGranted">
       <div class="notif-section-title" style="margin-top: 1.2rem;">Tipo de alerta</div>
 
@@ -120,37 +132,61 @@
       </div>
 
       <!-- Advertencias solo si bypass está ON -->
-      <ng-container *ngIf="isNative && bypassSilent && audioStatus">
+      <ng-container *ngIf="isNative && bypassSilent">
 
-        <div class="notif-battery-warning" *ngIf="needsOverlay" style="margin-top: 0.75rem;">
-          <i class="pi pi-clone" style="color:#e67e22;"></i>
-          <div>
-            <strong>Permiso de superposición requerido</strong>
-            <p>
-              Para mostrar el banner verde sobre la pantalla bloqueada y el
-              modo No Molestar necesitas conceder el permiso
-              <strong>"Mostrar sobre otras apps"</strong>.
-            </p>
-            <p-button label="Conceder permiso" icon="pi pi-shield"
-              styleClass="p-button-warning p-button-sm"
-              (onClick)="openOverlaySettings()">
-            </p-button>
-          </div>
+        <div class="notif-section-title" style="margin-top: 1rem; font-size: 0.78rem;">
+          Permisos para sonar en silencio
+          <i class="pi pi-refresh"
+             style="cursor:pointer; font-size:0.85rem; margin-left:6px; color:#888;"
+             (click)="refreshAudioStatus()"
+             title="Actualizar estado"></i>
         </div>
 
-        <div class="notif-battery-warning" *ngIf="isAlarmVolumeLow" style="margin-top: 0.75rem;">
-          <i class="pi pi-volume-down" style="color:#e67e22;"></i>
-          <div>
-            <strong>Volumen de alarma en 0</strong>
-            <p>Sube el volumen del canal de alarma para que suene correctamente.</p>
-            <p-button label="Ajustes de sonido" icon="pi pi-cog"
-              styleClass="p-button-warning p-button-sm"
-              (onClick)="openSoundSettings()">
-            </p-button>
-          </div>
+        <div class="notif-perm-status checking" *ngIf="isLoadingAudio">
+          <i class="pi pi-spin pi-spinner"></i>
+          <span>Verificando permisos...</span>
         </div>
 
+        <ng-container *ngIf="!isLoadingAudio && audioStatus">
+
+          <!-- Todo OK -->
+          <div class="notif-perm-status granted" *ngIf="!needsOverlay && !isAlarmVolumeLow">
+            <i class="pi pi-check-circle"></i>
+            <span>Todo listo para sonar en silencio</span>
+          </div>
+
+          <!-- Permiso de superposición -->
+          <div class="notif-battery-warning" *ngIf="needsOverlay" style="margin-top: 0.5rem;">
+            <i class="pi pi-clone" style="color:#e67e22;"></i>
+            <div>
+              <strong>Permiso de superposición requerido</strong>
+              <p>
+                Necesitas conceder <strong>"Mostrar sobre otras apps"</strong>
+                para que el banner aparezca sobre la pantalla bloqueada y el modo No Molestar.
+              </p>
+              <p-button label="Conceder permiso" icon="pi pi-shield"
+                styleClass="p-button-warning p-button-sm"
+                (onClick)="openOverlaySettings()">
+              </p-button>
+            </div>
+          </div>
+
+          <!-- Volumen de alarma en 0 -->
+          <div class="notif-battery-warning" *ngIf="isAlarmVolumeLow" style="margin-top: 0.5rem;">
+            <i class="pi pi-volume-down" style="color:#e67e22;"></i>
+            <div>
+              <strong>Volumen de alarma en 0</strong>
+              <p>Sube el volumen del canal de alarma para que suene correctamente.</p>
+              <p-button label="Ajustes de sonido" icon="pi pi-cog"
+                styleClass="p-button-warning p-button-sm"
+                (onClick)="openSoundSettings()">
+              </p-button>
+            </div>
+          </div>
+
+        </ng-container>
       </ng-container>
+
     </ng-container>
 
   </div>
