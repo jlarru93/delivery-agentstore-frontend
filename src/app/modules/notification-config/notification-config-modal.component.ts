@@ -2,6 +2,7 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 import { NotificationConfig, NotificationConfigService } from '../service/notification-config.service';
 import { PushService } from '../service/push.service';
+import { AudioService } from '../service/audio.service';
 import { AlertServices } from '../service/alert.service';
 
 const BatteryOptimizationPlugin = registerPlugin<{
@@ -61,6 +62,7 @@ export class NotificationConfigModalComponent implements OnInit {
   constructor(
     private notifConfig: NotificationConfigService,
     private push: PushService,
+    private audioService: AudioService,
     private alert: AlertServices,
     private zone: NgZone
   ) {}
@@ -229,4 +231,9 @@ export class NotificationConfigModalComponent implements OnInit {
   }
 
   cancel(): void { this.visible = false; }
+
+  silenciarAlarma(): void {
+    this.push.stopAlarm();       // detiene AlarmService.java (Android nativo)
+    this.audioService.stopAudio(); // detiene audio web/PWA
+  }
 }

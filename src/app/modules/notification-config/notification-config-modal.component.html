@@ -193,12 +193,23 @@
 
   <ng-template pTemplate="footer">
     <div class="notif-config-footer">
-      <p-button label="Cerrar" styleClass="p-button-text p-button-secondary"
-        (onClick)="cancel()">
+
+      <p-button
+        label="Silenciar alarma"
+        icon="pi pi-volume-off"
+        styleClass="p-button-danger p-button-outlined"
+        (onClick)="silenciarAlarma()">
       </p-button>
-      <p-button *ngIf="isGranted" label="Guardar" styleClass="p-button-success"
-        icon="pi pi-check" (onClick)="save()">
-      </p-button>
+
+      <div style="display:flex; gap:0.5rem; margin-left:auto">
+        <p-button label="Cerrar" styleClass="p-button-text p-button-secondary"
+          (onClick)="cancel()">
+        </p-button>
+        <p-button *ngIf="isGranted" label="Guardar" styleClass="p-button-success"
+          icon="pi pi-check" (onClick)="save()">
+        </p-button>
+      </div>
+
     </div>
   </ng-template>
 
