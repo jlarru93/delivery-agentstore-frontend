@@ -50,7 +50,7 @@ export class NotificationConfigModalComponent implements OnInit {
   visible  = false;
   isNative = Capacitor.isNativePlatform();
 
-  config: NotificationConfig = { sound: true, vibration: true, visual: true };
+  config: NotificationConfig = { sound: true, vibration: true, visual: true ,bypassSilent:true};
   bypassSilent = false;
 
   permStatus: PermissionStatus = 'idle';
@@ -70,7 +70,9 @@ export class NotificationConfigModalComponent implements OnInit {
   ngOnInit(): void {}
 
   async open(): Promise<void> {
-    this.config = this.notifConfig.get();
+    const stored = this.notifConfig.get();
+    this.config = stored;
+    this.bypassSilent = stored.bypassSilent ?? false;
     await this.checkCurrentPermission();
     await this.checkBatteryOptimization();
     if (this.isNative) {
@@ -221,12 +223,12 @@ export class NotificationConfigModalComponent implements OnInit {
   // ─────────────────────────────────────────────────────────────────
 
   save(): void {
-    this.notifConfig.save(this.config);
-    AlarmPlugin.saveConfig({
-      sound:        this.config.sound,
-      vibration:    this.config.vibration,
+    // Incluir bypassSilent en la config antes de guardar
+    // notifConfig.save() lo persiste en localStorage Y sincroniza con AlarmPlugin.saveConfig()
+    this.notifConfig.save({
+      ...this.config,
       bypassSilent: this.bypassSilent
-    }).catch(err => console.error('[NotifConfig] Error guardando config:', err));
+    });
     this.visible = false;
   }
 

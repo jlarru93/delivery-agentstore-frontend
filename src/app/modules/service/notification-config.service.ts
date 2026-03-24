@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 
 const AlarmPlugin = registerPlugin<{
-  saveConfig(config: { sound: boolean; vibration: boolean }): Promise<void>;
+  saveConfig(config: { sound: boolean; vibration: boolean; bypassSilent: boolean }): Promise<void>;
 }>('AlarmPlugin');
 
 export interface NotificationConfig {
   sound: boolean;
   vibration: boolean;
   visual: boolean;
+  bypassSilent: boolean;
 }
 
 const STORAGE_KEY = 'piwi_notification_config';
@@ -17,6 +18,7 @@ const DEFAULT_CONFIG: NotificationConfig = {
   sound: true,
   vibration: true,
   visual: true,
+  bypassSilent: false,
 };
 
 @Injectable({ providedIn: 'root' })
@@ -41,7 +43,8 @@ export class NotificationConfigService {
     await this.syncToNative();
   }
 
-  isSound(): boolean     { return this.config.sound; }
+  isSound(): boolean        { return this.config.sound; }
+  isBypassSilent(): boolean { return this.config.bypassSilent ?? false; }
   isVibration(): boolean { return this.config.vibration && Capacitor.isNativePlatform(); }
   isVisual(): boolean    { return this.config.visual; }
 
@@ -49,8 +52,9 @@ export class NotificationConfigService {
     if (!Capacitor.isNativePlatform()) return;
     try {
       await AlarmPlugin.saveConfig({
-        sound:     this.config.sound,
-        vibration: this.config.vibration,
+        sound:        this.config.sound,
+        vibration:    this.config.vibration,
+        bypassSilent: this.config.bypassSilent ?? false,
       });
       console.log('[NotifConfig] Config sincronizada con AlarmService:', this.config);
     } catch (e) {
