@@ -29,6 +29,13 @@ public class PiwiFirebaseMessagingService extends FirebaseMessagingService {
         String expiresAtStr = remoteMessage.getData().get("pushExpiresAt");
         String createdAtStr = remoteMessage.getData().get("pushCreatedAt");
 
+        // ── CANCEL_ORDER: detener alarma si está sonando ────────────
+        if ("CANCEL_ORDER".equals(type)) {
+            Log.d(TAG, "CANCEL_ORDER recibido — deteniendo AlarmService");
+            stopService(new Intent(this, AlarmService.class));
+            return;
+        }
+
         boolean isNewOrder = "NEW_ORDER".equals(type) || type == null;
         if (!isNewOrder) return;
 

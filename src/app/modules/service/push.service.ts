@@ -80,7 +80,15 @@ export class PushService {
       }
 
       // Foreground: respetar config de sonido
-      FirebaseMessaging.addListener('notificationReceived', () => {
+      FirebaseMessaging.addListener('notificationReceived', async (notification: any) => {
+        const type = notification?.notification?.data?.type ?? 'NEW_ORDER';
+
+        if (type === 'CANCEL_ORDER') {
+          // Orden cancelada → detener alarma silenciosamente
+          await this.stopAlarm();
+          return;
+        }
+
         if (!this.notifConfig.isSound()) {
           this.stopAlarm();
         }
