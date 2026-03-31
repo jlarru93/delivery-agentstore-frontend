@@ -23,18 +23,18 @@ self.addEventListener('push', event => {
     const title = notif.title || data.title || 'PIWI';
     const body  = notif.body  || data.body  || 'Tienes una notificación';
 
-    const options = {
+    /*const options = {
       body,  // ← ya no es JSON.stringify
       icon: notif.icon || '/assets/icons/icon-192x192.png',
       //vibrate: [200, 100, 200, 100, 200],
       data,
-      /*actions: [
+      actions: [
         { action: 'play',  title: '▶ Reproducir' },
         { action: 'pause', title: '⏸ Pausar' }
-      ]*/
+      ]
     };
 
-    await self.registration.showNotification(title, options);
+    await self.registration.showNotification(title, options);*/
 
     // ✅ Audio: solo si viene audioUrl
     const audioUrl = data.audioUrl || 'assets/audio/audio.mp3';
