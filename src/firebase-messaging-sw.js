@@ -12,7 +12,6 @@ async function broadcastToClients(message) {
   allClients.forEach(c => c.postMessage(message));
 }
 
-// Manejo de push (data-only o sobrescribiendo notificación)
 self.addEventListener('push', event => {
   event.waitUntil((async () => {
     let payload = {};
@@ -38,20 +37,39 @@ self.addEventListener('push', event => {
     // ────────────────────────────────────────────────────────────
 
     // Si viene audio en el payload, avisar a los clientes que reproduzcan
-    if (data.audioUrl) {
+    /*const title = notif.title || data.title || 'PIWI';
+    const body  = notif.body  || data.body  || 'Tienes una notificación';
+
+    const options = {
+      body,  // ← ya no es JSON.stringify
+      icon: notif.icon || '/assets/icons/icon-192x192.png',
+      //vibrate: [200, 100, 200, 100, 200],
+      data,
+      actions: [
+        { action: 'play',  title: '▶ Reproducir' },
+        { action: 'pause', title: '⏸ Pausar' }
+      ]
+    };
+
+    await self.registration.showNotification(title, options);*/
+
+    // ✅ Audio: solo si viene audioUrl
+    if(data.audioUrl){
+      const audioUrl = data.audioUrl || 'assets/audio/audio.mp3';
       await broadcastToClients({
         type: 'PLAY_AUDIO',
-        audioUrl: data.audioUrl,
+        audioUrl,
         metadata: {
-          title: data.title || notif.title,
-          artist: data.artist || 'Piwi',
-          album: data.album || '',
-          artwork: data.artwork ? JSON.parse(data.artwork) : [
+          title,
+          artist: 'Piwi',
+          album: '',
+          artwork: [
             { src: '/assets/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' }
           ]
         }
       });
     }
+
   })());
 });
 
