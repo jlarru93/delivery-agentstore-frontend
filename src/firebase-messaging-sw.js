@@ -37,19 +37,22 @@ self.addEventListener('push', event => {
     await self.registration.showNotification(title, options);*/
 
     // ✅ Audio: solo si viene audioUrl
-    const audioUrl = data.audioUrl || 'assets/audio/audio.mp3';
-    await broadcastToClients({
-      type: 'PLAY_AUDIO',
-      audioUrl,
-      metadata: {
-        title,
-        artist: 'Piwi',
-        album: '',
-        artwork: [
-          { src: '/assets/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' }
-        ]
-      }
-    });
+    if(data.audioUrl){
+      const audioUrl = data.audioUrl || 'assets/audio/audio.mp3';
+      await broadcastToClients({
+        type: 'PLAY_AUDIO',
+        audioUrl,
+        metadata: {
+          title,
+          artist: 'Piwi',
+          album: '',
+          artwork: [
+            { src: '/assets/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' }
+          ]
+        }
+      });
+    }
+
   })());
 });
 
