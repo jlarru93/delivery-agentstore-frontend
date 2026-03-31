@@ -26,12 +26,12 @@ self.addEventListener('push', event => {
     const options = {
       body,  // ← ya no es JSON.stringify
       icon: notif.icon || '/assets/icons/icon-192x192.png',
-      vibrate: [200, 100, 200, 100, 200],
+      //vibrate: [200, 100, 200, 100, 200],
       data,
-      actions: [
+      /*actions: [
         { action: 'play',  title: '▶ Reproducir' },
         { action: 'pause', title: '⏸ Pausar' }
-      ]
+      ]*/
     };
 
     await self.registration.showNotification(title, options);
