@@ -15,43 +15,32 @@ async function broadcastToClients(message) {
 self.addEventListener('push', event => {
   event.waitUntil((async () => {
     let payload = {};
-    try { payload = await event.data.json(); } catch (_) {}
+    try { 
+        // Firebase encapsula los datos en un objeto "data"
+        const rawData = event.data.json();
+        payload = rawData.data || rawData; 
+    } catch (_) { return; }
 
-    const notif = payload.notification || {};
-    const data  = payload.data || {};
-
-    const title = notif.title || data.title || 'PIWI';
-    const body  = notif.body  || data.body  || 'Tienes una notificación';
-
+    const title = payload.title || 'Nueva Notificación';
     const options = {
-      body,  // ← ya no es JSON.stringify
-      icon: notif.icon || '/assets/icons/icon-192x192.png',
-      //vibrate: [200, 100, 200, 100, 200],
-      data,
-      actions: [
-        { action: 'play',  title: '▶ Reproducir' },
-        { action: 'pause', title: '⏸ Pausar' }
-      ],
+      body: payload.body || '',
+      icon: payload.icon || '/assets/icons/icon-192x192.png',
+      data: payload, // Guardamos todo el payload para el 'notificationclick'
+      tag: 'order-update', // Evita duplicados
       renotify: true
     };
 
+    // 1. Mostrar la notificación visualmente (Obligatorio en iOS para mantener el hilo vivo)
     await self.registration.showNotification(title, options);
 
-    // ✅ Audio: solo si viene audioUrl
-    const audioUrl = data.audioUrl || 'assets/audio/audio.mp3';
-    await broadcastToClients({
-      type: 'PLAY_AUDIO',
-      audioUrl,
-      metadata: {
-        title,
-        artist: 'Piwi',
-        album: '',
-        artwork: [
-          { src: '/assets/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' }
-        ]
-      }
-    });
-
+    // 2. Ejecutar tu lógica de audio
+    if (payload.audioUrl) {
+      await broadcastToClients({
+        type: 'PLAY_AUDIO',
+        audioUrl: payload.audioUrl,
+        title: title
+      });
+    }
   })());
 });
 
