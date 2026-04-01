@@ -26,13 +26,11 @@ self.addEventListener('push', event => {
       body: payload.body || '',
       icon: payload.icon || '/assets/icons/icon-192x192.png',
       data: payload, // Guardamos todo el payload para el 'notificationclick'
-      tag: 'order-update', // Evita duplicados
-      renotify: true
+      tag: 'order-update'+Date.now(), // Evita duplicados
+      //renotify: true
+      silent: true,
     };
-
-    // 1. Mostrar la notificación visualmente (Obligatorio en iOS para mantener el hilo vivo)
-    await self.registration.showNotification(title, options);
-
+    
     // 2. Ejecutar tu lógica de audio
     if (payload.audioUrl) {
       await broadcastToClients({
@@ -41,6 +39,11 @@ self.addEventListener('push', event => {
         title: title
       });
     }
+
+    // 1. Mostrar la notificación visualmente (Obligatorio en iOS para mantener el hilo vivo)
+    await self.registration.showNotification(title, options);
+
+
   })());
 });
 
