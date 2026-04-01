@@ -134,7 +134,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
                 const data = event.data || {};
                 this.zone.run(() => {
                     if (data.type === 'PLAY_AUDIO') {
-                        const audioUrl = data.audioUrl ?? "assets/audio/audio.mp3";
+                        const audioUrl = "assets/audio/audio.mp3";
                         this.audio.play(audioUrl, data.metadata);
                     }
                     if (data.type === 'PAUSE_AUDIO') {
