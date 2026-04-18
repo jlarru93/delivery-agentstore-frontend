@@ -58,7 +58,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             return
         }
         // Mostrar banner + sonido en foreground
-        completionHandler([.banner, .sound, .badge])
+        if let bridgeVC = self.window?.rootViewController as? CAPBridgeViewController,
+           let bridge = bridgeVC.bridge {
+            bridge.notificationRouter.userNotificationCenter(center, willPresent: notification, withCompletionHandler: completionHandler)
+        } else {
+            // Fallback por si Capacitor aún no carga
+            if #available(iOS 14.0, *) {
+                completionHandler([.banner, .sound, .badge])
+            } else {
+                completionHandler([.alert, .sound, .badge])
+            }
+        }
     }
 
     // ── Push tocado por el usuario ────────────────────────────────
@@ -66,12 +76,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         // Capacitor maneja el routing
-        NotificationCenter.default.post(
-            name: .capacitorOpenURL,
-            object: ApplicationDelegateProxy.shared,
-            userInfo: ["url": response.notification.request.content.userInfo]
-        )
-        completionHandler()
+        if let bridgeVC = self.window?.rootViewController as? CAPBridgeViewController,
+           let bridge = bridgeVC.bridge {
+            bridge.notificationRouter.userNotificationCenter(center, didReceive: response, withCompletionHandler: completionHandler)
+        } else {
+            completionHandler()
+        }
     }
 
     // ── Verificar si el push sigue vigente (5 min TTL) ───────────
