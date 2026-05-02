@@ -1,36 +1,210 @@
-:host ::ng-deep {
-    .p-dropdown{
-        display: flex;
-        border: solid 1px #c3ccdd;
-    }
-    .p-button {
-        padding: 1rem 7rem;
-        border-radius: 40px;
-    }
-    .login-body.layout-light .login-content .login-panel{
-        background-color: transparent;
-    }
-    .login-body.layout-light{
-        background-color: transparent;
-    }
-    .login-body .login-content .login-panel{
-        height: 80vh;
-    }
-    .login-body .login-content .login-panel .login-panel-content{
-        padding: 0;
-        width: 550px;
-    }
+// ==================== LOGIN SCREEN — RESPONSIVE ====================
+$primary-yellow: #FFC107;
+$primary-yellow-dark: #FFA000;
+$text-dark: #2D2D2D;
+$text-muted: #6c757d;
+$border-subtle: #c3ccdd;
+$bg-card: #ffffff;
+
+.login-screen {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    width: 100%;
+    background-image: url('../../../assets/images/Bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    overflow-x: hidden;
 }
+
+.login-screen__content {
+    min-height: 100vh;
+    min-height: 100svh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px clamp(16px, 4vw, 48px);
+    box-sizing: border-box;
+}
+
+.login-screen__panel {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+// ==================== HERO ====================
+.login-screen__hero {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: -28px;
+    z-index: 1;
+}
+
+.login-screen__hero-img {
+    width: clamp(140px, 35vw, 220px);
+    height: auto;
+    display: block;
+}
+
+// ==================== CARD ====================
 .login-card {
-    background-color: #FFFFFF;
-    padding: 20px 30px;
-    border-radius: 29px;
-    margin-top: -35px;
-    box-shadow: 0px 7px 30px rgba(0, 0, 0, 0.08), 0px 22px 30px 2px rgba(0, 0, 0, 0.15), 0px 8px 10px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    background-color: $bg-card;
+    padding: clamp(20px, 5vw, 36px) clamp(20px, 5vw, 40px);
+    border-radius: 24px;
+    box-sizing: border-box;
+    box-shadow:
+        0 7px 30px rgba(0, 0, 0, 0.08),
+        0 22px 30px 2px rgba(0, 0, 0, 0.15),
+        0 8px 10px rgba(0, 0, 0, 0.15);
 }
-.gif{
-    width: 50%;
-    @media (max-height: 765px){
-        width: 40%;
+
+.login-card__title {
+    margin: 0 0 24px 0;
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 700;
+    color: $text-dark;
+    text-align: center;
+}
+
+.login-card__form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+// ==================== INPUTS ====================
+.login-input-wrapper {
+    position: relative;
+    text-align: left;
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        color: $text-dark;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px 40px 12px 14px;
+        border-radius: 8px;
+        border: solid 1px $border-subtle;
+        background-color: #ffffff;
+        color: $text-dark;
+        font-size: 15px;
+        box-sizing: border-box;
+
+        &:focus {
+            outline: none;
+            border-color: $primary-yellow-dark;
+            box-shadow: 0 0 0 2px rgba($primary-yellow, 0.2);
+        }
+    }
+
+    > i {
+        position: absolute;
+        right: 14px;
+        bottom: 14px;
+        color: $text-muted;
+        font-size: 16px;
+        pointer-events: none;
+    }
+}
+
+// ==================== ACTIONS ====================
+.login-card__actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+    min-height: 56px;
+}
+
+.login-card__spinner {
+    font-size: 2rem;
+    color: $primary-yellow-dark;
+}
+
+// ==================== PRIMENG OVERRIDES ====================
+:host ::ng-deep {
+    .login-card__submit.p-button {
+        width: 100%;
+        max-width: 320px;
+        padding: 14px 24px;
+        border-radius: 40px;
+        font-size: 16px;
+        font-weight: 600;
+        justify-content: center;
+    }
+
+    .p-password {
+        width: 100%;
+        display: block;
+    }
+
+    .p-password input {
+        width: 100%;
+    }
+}
+
+// ==================== RESPONSIVE TWEAKS ====================
+@media (max-width: 480px) {
+    .login-screen__content {
+        padding: 16px;
+        align-items: flex-start;
+        padding-top: 32px;
+    }
+
+    .login-screen__panel {
+        max-width: 100%;
+    }
+
+    .login-card {
+        border-radius: 20px;
+    }
+}
+
+// Landscape phones with low height — give the screen room to scroll
+@media (max-height: 600px) and (orientation: landscape) {
+    .login-screen__content {
+        align-items: flex-start;
+        padding-top: 24px;
+        padding-bottom: 24px;
+    }
+
+    .login-screen__hero {
+        margin-bottom: -16px;
+    }
+
+    .login-screen__hero-img {
+        width: clamp(100px, 18vw, 140px);
+    }
+
+    .login-card__title {
+        margin-bottom: 16px;
+    }
+
+    .login-card__form {
+        gap: 12px;
+    }
+}
+
+// Very small screens
+@media (max-width: 360px) {
+    .login-card {
+        padding: 18px 16px;
+    }
+
+    .login-input-wrapper input {
+        padding: 10px 38px 10px 12px;
+        font-size: 14px;
     }
 }

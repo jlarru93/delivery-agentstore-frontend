@@ -1,52 +1,37 @@
-<div style="background-image: url('../../../assets/images/Bg.png'); height: 100vh;">
+<div class="login-screen" [ngClass]="{'layout-dark': dark, 'layout-light': !dark}">
     <p-toast baseZIndex="10000"></p-toast>
-    <div class="login-body" [ngClass]="{'layout-dark': dark, 'layout-light': !dark}">
-    
-        <div class="login-content">
-            <!-- <div class="night-switch">
-                <p-button styleClass="dark-switch" icon="pi pi-circle-on" (click)="dark = true"></p-button>
-                <p-button styleClass="light-switch" icon="pi pi-circle-off" (click)="dark = false"></p-button>
-            </div> -->
-            <div class="login-panel">
-                <div class="login-panel-content">
-                    <div class="login-panel-gif">
-                        <img class="gif" src="../../../assets/images/DELIVERY_MAN.png" alt="">
+
+    <div class="login-screen__content">
+        <div class="login-screen__panel">
+
+            <div class="login-screen__hero">
+                <img class="login-screen__hero-img" src="../../../assets/images/DELIVERY_MAN.png" alt="" />
+            </div>
+
+            <div class="login-card">
+                <h1 class="login-card__title">Ingresar</h1>
+
+                <div class="login-card__form">
+                    <div class="login-input-wrapper">
+                        <label for="username">Usuario</label>
+                        <input id="username" pInputText [(ngModel)]="userName" required autocomplete="username" />
+                        <i class="pi pi-user"></i>
                     </div>
-                    <div class="login-card">
-                        <h1 style="font-weight: 700;">Ingresar</h1>
-                        <div class="forms">
-                            <div class="p-grid">
-                                <div class="p-col-12 p-md-6 p-lg-12">
-                                    <div class="login-input-wrapper">
-                                        <label for="username">Usuario</label>
-                                        <input id="username" pInputText [(ngModel)]="userName" required/>
-                                        <i class="pi pi-user"></i>
-                                        <!-- <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorUserName}}</small>  -->
-                                    </div>
-                                </div>
-                                <div class="p-col-12 p-md-6 p-lg-12">
-                                    <div class="login-input-wrapper">
-                                        <label for="username">Contraseña</label>
-                                        <input id="username" pPassword type="password" [(ngModel)]="password" required autocomplete="off"/>
-                                        <i class="pi pi-lock"></i>
-                                        <!-- <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorPassword}}</small>  -->
-                                    </div>
-                                </div>
-                                <!-- <small class="p-error ng-star-inserted" *ngIf="phoneSubmitted">{{errorSignIn}}</small>  -->
-                                <div class="p-col-12 p-md-6 p-lg-12">
-                                    <div style="text-align: center; padding: 30px 0;">
-                                        <button pButton type="button" label="Iniciar Sesión" (click)="signIn()" *ngIf="!flagButtonnumberphone"></button>
-                                        <i class="pi pi-spin pi-spinner" style="font-size: 2rem" *ngIf="flagButtonnumberphone"></i>
-                                    </div>
-                                </div>
-                            </div>               
-                        </div>
+
+                    <div class="login-input-wrapper">
+                        <label for="password">Contraseña</label>
+                        <input id="password" pPassword type="password" [(ngModel)]="password" required autocomplete="current-password" />
+                        <i class="pi pi-lock"></i>
+                    </div>
+
+                    <div class="login-card__actions">
+                        <button pButton type="button" label="Iniciar Sesión" class="login-card__submit"
+                                (click)="signIn()" *ngIf="!flagButtonnumberphone"></button>
+                        <i class="pi pi-spin pi-spinner login-card__spinner" *ngIf="flagButtonnumberphone"></i>
                     </div>
                 </div>
             </div>
-    
-            <!-- <div class="desert"></div> -->
+
         </div>
     </div>
-
 </div>
