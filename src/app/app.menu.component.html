@@ -106,6 +106,13 @@
                     <i class="pi pi-bell"></i>
                 </a>
             </li>
+            <!-- Cerrar sesión -->
+            <li class="logout-menu-item">
+                <a (click)="confirmLogout($event)">
+                    <span>Cerrar sesión</span>
+                    <i class="pi pi-sign-out"></i>
+                </a>
+            </li>
         </ul>
         <img src="assets/images/LOGOTIPO 1.png" 
              alt="" 
@@ -116,3 +123,12 @@
 
 <!-- Modal de alertas -->
 <app-notification-config-modal #notifConfigModal></app-notification-config-modal>
+
+<!-- Confirmación de cierre de sesión -->
+<p-confirmDialog
+    key="menuLogoutConfirm"
+    header="Cerrar sesión"
+    [style]="{ width: '380px' }"
+    [breakpoints]="{ '768px': '92vw' }"
+    [baseZIndex]="10000">
+</p-confirmDialog>

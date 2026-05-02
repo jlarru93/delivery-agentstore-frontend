@@ -12,12 +12,15 @@ import { Dropdown } from 'primeng/dropdown';
 import { PushService } from './modules/service/push.service';
 import { AlertServices } from './modules/service/alert.service';
 import { NotificationConfigModalComponent } from './modules/notification-config/notification-config-modal.component';
+import { AuthService } from './utils/auth.service';
+import { MenuService } from './app.menu.service';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
     selector: 'app-menu',
     styleUrls: ['./app.menu.component.scss'],
     templateUrl: './app.menu.component.html',
-    providers: []
+    providers: [ConfirmationService]
 })
 export class AppMenuComponent implements OnInit, OnDestroy {
 
@@ -36,7 +39,10 @@ export class AppMenuComponent implements OnInit, OnDestroy {
         private store: DataSharedService,
         private requestTripService: RequestTripService,
         private push: PushService,
-        private messageService: AlertServices
+        private messageService: AlertServices,
+        private auth: AuthService,
+        private menuService: MenuService,
+        private confirmationService: ConfirmationService
     ) { }
 
     ngOnInit() {
@@ -130,5 +136,34 @@ export class AppMenuComponent implements OnInit, OnDestroy {
 
     openNotifConfig(): void {
         this.notifConfigModal.open();
+    }
+
+    // ==================== SESIÓN ====================
+
+    confirmLogout(event: Event): void {
+        this.confirmationService.confirm({
+            target: event.target,
+            key: 'menuLogoutConfirm',
+            message: '¿Estás seguro que deseas cerrar sesión?',
+            icon: 'pi pi-sign-out',
+            acceptLabel: 'Cerrar sesión',
+            rejectLabel: 'Cancelar',
+            acceptButtonStyleClass: 'p-button-danger',
+            rejectButtonStyleClass: 'p-button-text',
+            accept: () => this.logout()
+        });
+    }
+
+    async logout(): Promise<void> {
+        await this.auth.signOut();
+        localStorage.clear();
+        try {
+            this.menuService.deleteContentFileAgentStore().subscribe((resp) => {
+                if (!resp.success) {
+                    console.log('Error en la limpieza del archivo', resp.error);
+                }
+            });
+        } catch (error) { }
+        this.router.navigate(['/login']);
     }
 }
