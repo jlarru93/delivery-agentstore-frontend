@@ -1,0 +1,264 @@
+$primary-yellow: #FFC107;
+$primary-yellow-dark: #FFA000;
+$danger-red: #ff5252;
+$danger-red-dark: #d32f2f;
+$bg-card: #ffffff;
+$text-primary: #2D2D2D;
+$text-secondary: #6c757d;
+$border-subtle: #e9ecef;
+
+.profile-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+// ==================== HEADER ====================
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px;
+    background: linear-gradient(135deg, $primary-yellow, $primary-yellow-dark);
+    border-radius: 14px;
+    color: #ffffff;
+}
+
+.profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i {
+        font-size: 34px;
+        color: #ffffff;
+    }
+}
+
+.profile-header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.profile-name {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-role {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+// ==================== CARDS ====================
+:host ::ng-deep {
+    .profile-card.p-card {
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+        .p-card-title {
+            margin-bottom: 12px;
+        }
+
+        .p-card-body {
+            padding: 18px 20px;
+        }
+    }
+
+    .profile-card-danger.p-card {
+        border: 1px solid rgba($danger-red, 0.25);
+    }
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-primary;
+
+    i {
+        color: $primary-yellow-dark;
+        font-size: 18px;
+    }
+}
+
+.card-title-danger {
+    i {
+        color: $danger-red;
+    }
+}
+
+// ==================== PROFILE FIELDS ====================
+.profile-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: $text-secondary;
+    padding: 12px 0;
+
+    i {
+        font-size: 18px;
+    }
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.profile-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: $text-secondary;
+    }
+}
+
+.profile-value {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #f8f9fa;
+    border: 1px solid $border-subtle;
+    border-radius: 10px;
+    font-size: 14px;
+    color: $text-primary;
+    word-break: break-all;
+
+    i {
+        color: $primary-yellow-dark;
+        flex-shrink: 0;
+    }
+}
+
+.profile-value-mono {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+}
+
+// ==================== DANGER ZONE ====================
+.profile-danger-text {
+    margin: 0 0 16px 0;
+    color: $text-secondary;
+    font-size: 14px;
+    line-height: 1.5;
+
+    strong {
+        color: $text-primary;
+    }
+}
+
+// ==================== DELETE DIALOG ====================
+.delete-dialog-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 8px 4px;
+
+    p {
+        margin: 0;
+        color: $text-primary;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+}
+
+.delete-dialog-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba($danger-red, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+        font-size: 32px;
+        color: $danger-red;
+    }
+}
+
+.delete-options {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: #f8f9fa;
+        border: 1px solid $border-subtle;
+        border-radius: 10px;
+        font-size: 14px;
+        text-align: left;
+
+        i {
+            color: $primary-yellow-dark;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+    }
+}
+
+// ==================== RESPONSIVE ====================
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 12px;
+        gap: 16px;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-header {
+        padding: 16px;
+        gap: 14px;
+    }
+
+    .profile-avatar {
+        width: 60px;
+        height: 60px;
+
+        i {
+            font-size: 28px;
+        }
+    }
+
+    .profile-name {
+        font-size: 18px;
+    }
+}

@@ -49,16 +49,16 @@ const routes: Routes = [
                 loadChildren: () => import('./modules/complaint-report/complaint-report.module').then(m => m.ComplaintReportModule), canActivate: [IsAuthenticated]
             },
             {
-                path: "user-report",
-                loadChildren: () => import('./modules/user-report/user-report.module').then(m => m.UserReportModule), canActivate: [IsAuthenticated]
-            },
-            {
                 path: "multiple-assignment",
                 loadChildren: () => import('./modules/multi-assigment/multiAssigment.module').then(m => m.MultiAssigmentModule), canActivate: [IsAuthenticated]
             },
             {
                 path: "dynamic-report",
                 loadChildren: () => import('./modules/dynamic-report/dynamic-report.module').then(m => m.DynamicReportModule)
+            },
+            {
+                path: "profile",
+                loadChildren: () => import('./modules/profile/profile.module').then(m => m.ProfileModule), canActivate: [IsAuthenticated]
             }
             //THEME
             /*{ path: '', component: DashboardDemoComponent },
