@@ -9,11 +9,12 @@ export abstract class SubOptionBean {
     price?: PriceBean
     quantity? : number
     abstract getPrice(): number
+    abstract getDisplayPrice(): number
     getPriceAndCurrency(){
-        return "S/"+this.getPrice().toFixed(2)
+        return "S/"+this.getDisplayPrice().toFixed(2)
     }
     getPriceMinimalCurrency(): string {
-        return this.price.currency + formatCurrency(this.price.value)
+        return this.price.currency + formatCurrency(this.price.getDisplayValue())
     }
     //abstract select(recipe: SubOptionBean,parent:OptionBean)
 }
@@ -22,17 +23,26 @@ export class SubOptionAggregable extends SubOptionBean {
     getPrice(): number {
         return this.quantity * this.price?.value!!
     }
+    getDisplayPrice(): number {
+        return this.quantity * (this.price?.getDisplayValue() ?? 0)
+    }
 
 }
 export class SubOptionMultiple extends SubOptionBean {
     getPrice(): number {
         return this.price.value
     }
+    getDisplayPrice(): number {
+        return this.price.getDisplayValue()
+    }
 
 }
 export class SubOptionUnique extends SubOptionBean {
     getPrice(): number {
         return this.price.value
+    }
+    getDisplayPrice(): number {
+        return this.price.getDisplayValue()
     }
 
 }
@@ -49,11 +59,22 @@ export class OptionBean {
 export class PriceBean {
     currency: String
     value: number
+    priceToStore?: number
     id?: number
     currencyId?: number
 
     getCurrencyAndValue(): String {
         return this.currency + formatCurrency(this.value)
+    }
+
+    // Precio que se le muestra al agente del comercio: si el backend envía
+    // price.priceToStore > 0 (lo que recibe ya descontada la comisión PIWI),
+    // se usa ese. Si no, se cae al precio del cliente — sin etiquetas.
+    // Nota: NO usar price.commerce, que es el precio de carta antes de comisión.
+    getDisplayValue(): number {
+        return this.priceToStore !== undefined && this.priceToStore !== null && this.priceToStore > 0
+            ? this.priceToStore
+            : this.value
     }
 }
 export class ProductBean {
@@ -73,11 +94,22 @@ export class ProductBean {
         let priceSubOption = this.options?.reduce((accumulation, current) => { return accumulation + current.totalPrice() }, 0)  //sumOf { it.totalPrice() }?:0.0
         return this.price.currency, this.price.value + priceSubOption
     }
+    // Precio unitario que ve el agente: usa price.commerce del producto y de
+    // cada subOpción cuando exista; si no, cae al precio del cliente.
+    getDisplayUnitPrice(): number {
+        const subOptionsTotal = this.options?.reduce((acc, opt) => {
+            return acc + (opt.subOptions?.reduce((s, sub) => s + sub.getDisplayPrice(), 0) ?? 0)
+        }, 0) ?? 0
+        return this.price.getDisplayValue() + subOptionsTotal
+    }
+    getDisplayTotalPrice(): number {
+        return this.quantity * this.getDisplayUnitPrice()
+    }
     getPriceMinimalCurrency(): string {
-        return this.price.currency + formatCurrency(this.price.value)
+        return this.price.currency + formatCurrency(this.price.getDisplayValue())
     }
     getTotalPriceAndCurrency(): string {
-        return this.price.currency + formatCurrency(this.getTotalPrice())
+        return this.price.currency + formatCurrency(this.getDisplayTotalPrice())
     }
 
 }
@@ -222,6 +254,7 @@ export class OrderBean {
     totalPayUser?:number
     productPriceDiscount?:number
     productPriceWithDiscount?:number
+    priceToStore?:number
     coupons?: CouponsBean[]
     urlTracking:string
     addresses?: AddressResponseLoadingOrder[]
@@ -348,7 +381,20 @@ export class OrderBean {
         const value = this.productPriceWithDiscount ?? this.productPrice ?? 0;
         return "" + this.getCurrency() + formatCurrency(value);
     }
-    
+
+    // Mostrar el monto que recibe el comercio solo si la comisión está activa
+    shouldShowPriceToStore(): boolean {
+        if (this.priceToStore === undefined || this.priceToStore === null) return false;
+        if (this.priceToStore <= 0) return false;
+        const productsTotal = this.productPriceWithDiscount ?? this.productPrice ?? 0;
+        return this.priceToStore !== productsTotal;
+    }
+
+    // Monto que le corresponde al comercio por la orden
+    getPriceToStoreAndCurrency(): string {
+        return "" + this.getCurrency() + formatCurrency(this.priceToStore ?? 0);
+    }
+
     calculateTime(){
         const tiempoActual = new Date();
         const tiempoCreacion = new Date(this.createdAt * 1000);

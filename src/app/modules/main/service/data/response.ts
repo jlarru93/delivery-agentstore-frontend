@@ -68,6 +68,7 @@ export class OptionResponse {
 export class PriceResponse {
     currency: String
     value: number
+    priceToStore?: number
     id?: number
     currencyId?: number
     static toBean(selft: PriceResponse): PriceBean {
@@ -75,6 +76,7 @@ export class PriceResponse {
         bean.id = selft.id
         bean.currencyId = selft.currencyId
         bean.value = selft.value
+        bean.priceToStore = selft.priceToStore
         bean.currency = selft.currency
         return bean
     }
@@ -439,6 +441,7 @@ export class OrderResponse {
     totalPayUser ?:number
     productPriceDiscount ?:number
     productPriceWithDiscount?:number
+    priceToStore?:number
     coupons?: CouponsResponse[]
     urlTracking:string
     deliveryPriceMongo?: DeliveryPriceMongoResponse
@@ -477,6 +480,7 @@ export class OrderResponse {
         bean.totalPayUser = self.totalPayUser
         bean.productPriceDiscount = self.productPriceDiscount
         bean.productPriceWithDiscount = self.productPriceWithDiscount
+        bean.priceToStore = self.priceToStore
         bean.coupons = self?.coupons?.map((it)=> CouponsResponse.toBean(it))
         bean.urlTracking = self.urlTracking
         bean.addresses = self?.addresses

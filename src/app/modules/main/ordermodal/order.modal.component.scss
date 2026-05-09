@@ -718,20 +718,46 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
 
 .orden-resumen-total {
     background: $orden-primary-color;
-    
+
     .orden-resumen-item-label {
         color: rgba(255,255,255,0.9);
     }
-    
+
     .orden-resumen-item-valor {
         color: white;
         font-size: 1.25rem;
     }
-    
+
     &:hover {
         border-color: $orden-green-700;
         box-shadow: 0 4px 12px rgba(71, 172, 52, 0.4);
     }
+}
+
+.orden-resumen-comercio {
+    margin-top: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    background: $orden-green-50;
+    border: 2px solid $orden-primary-color;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.orden-resumen-comercio-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $orden-green-900;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.orden-resumen-comercio-valor {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: $orden-green-800;
 }
 
 // ========== COLUMNA INFO ==========
