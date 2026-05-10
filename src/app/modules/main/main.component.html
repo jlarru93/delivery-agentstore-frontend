@@ -38,7 +38,12 @@
                      
                      <!-- DERECHA: Total + Método Pago -->
                      <div class="header-right-compact">
-                        <span class="total-compact">{{order.getCartillaTotalAndCurrency()}}</span>
+                        <ng-container *ngIf="order.shouldShowGatewayDiscount()">
+                           <span class="total-compact-old">{{order.getPriceToStoreAndCurrency()}}</span>
+                           <span class="total-compact-arrow">→</span>
+                           <span class="total-compact total-compact-new">{{order.getPiwiPaysStoreAndCurrency()}}</span>
+                        </ng-container>
+                        <span *ngIf="!order.shouldShowGatewayDiscount()" class="total-compact">{{order.getCartillaTotalAndCurrency()}}</span>
                         <div class="payment-icon-compact" [pTooltip]="getPaymentLabel(order)" tooltipPosition="top">
                            <div [innerHTML]="getPaymentIcon(order)"></div>
                         </div>
@@ -170,7 +175,12 @@
                      
                      <!-- DERECHA: Total + Método Pago -->
                      <div class="header-right-compact">
-                        <span class="total-compact">{{order.getCartillaTotalAndCurrency()}}</span>
+                        <ng-container *ngIf="order.shouldShowGatewayDiscount()">
+                           <span class="total-compact-old">{{order.getPriceToStoreAndCurrency()}}</span>
+                           <span class="total-compact-arrow">→</span>
+                           <span class="total-compact total-compact-new">{{order.getPiwiPaysStoreAndCurrency()}}</span>
+                        </ng-container>
+                        <span *ngIf="!order.shouldShowGatewayDiscount()" class="total-compact">{{order.getCartillaTotalAndCurrency()}}</span>
                         
                         <div class="payment-icon-compact" [pTooltip]="getPaymentLabel(order)" tooltipPosition="top">
                            <div [innerHTML]="getPaymentIcon(order)"></div>
@@ -321,7 +331,12 @@
                      
                      <!-- DERECHA: Total + Método Pago -->
                      <div class="header-right-compact">
-                        <span class="total-compact">{{order.getCartillaTotalAndCurrency()}}</span>
+                        <ng-container *ngIf="order.shouldShowGatewayDiscount()">
+                           <span class="total-compact-old">{{order.getPriceToStoreAndCurrency()}}</span>
+                           <span class="total-compact-arrow">→</span>
+                           <span class="total-compact total-compact-new">{{order.getPiwiPaysStoreAndCurrency()}}</span>
+                        </ng-container>
+                        <span *ngIf="!order.shouldShowGatewayDiscount()" class="total-compact">{{order.getCartillaTotalAndCurrency()}}</span>
                         
                         <div class="payment-icon-compact" [pTooltip]="getPaymentLabel(order)" tooltipPosition="top">
                            <div [innerHTML]="getPaymentIcon(order)"></div>
@@ -461,7 +476,12 @@
                      
                      <!-- DERECHA: Total + Método Pago -->
                      <div class="header-right-compact">
-                        <span class="total-compact">{{order.getCartillaTotalAndCurrency()}}</span>
+                        <ng-container *ngIf="order.shouldShowGatewayDiscount()">
+                           <span class="total-compact-old">{{order.getPriceToStoreAndCurrency()}}</span>
+                           <span class="total-compact-arrow">→</span>
+                           <span class="total-compact total-compact-new">{{order.getPiwiPaysStoreAndCurrency()}}</span>
+                        </ng-container>
+                        <span *ngIf="!order.shouldShowGatewayDiscount()" class="total-compact">{{order.getCartillaTotalAndCurrency()}}</span>
                         
                         <div class="payment-icon-compact" [pTooltip]="getPaymentLabel(order)" tooltipPosition="top">
                            <div [innerHTML]="getPaymentIcon(order)"></div>
@@ -588,7 +608,12 @@
                      
                      <!-- DERECHA: Total + Método Pago -->
                      <div class="header-right-compact">
-                        <span class="total-compact">{{order.getCartillaTotalAndCurrency()}}</span>
+                        <ng-container *ngIf="order.shouldShowGatewayDiscount()">
+                           <span class="total-compact-old">{{order.getPriceToStoreAndCurrency()}}</span>
+                           <span class="total-compact-arrow">→</span>
+                           <span class="total-compact total-compact-new">{{order.getPiwiPaysStoreAndCurrency()}}</span>
+                        </ng-container>
+                        <span *ngIf="!order.shouldShowGatewayDiscount()" class="total-compact">{{order.getCartillaTotalAndCurrency()}}</span>
                         
                         <div class="payment-icon-compact" [pTooltip]="getPaymentLabel(order)" tooltipPosition="top">
                            <div [innerHTML]="getPaymentIcon(order)"></div>

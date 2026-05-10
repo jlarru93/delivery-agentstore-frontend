@@ -136,6 +136,27 @@
   white-space: nowrap;
 }
 
+// Cuando el comercio absorbe la pasarela (CARD/PAYMENT-BUTTON con
+// storeAbsorbsPaymentGateway = 1), la tarjeta muestra:
+//   priceToStore (tachado, gris)  →  piwiPaysStore (verde, bold)
+.total-compact-old {
+  color: #9CA3AF;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: line-through;
+  white-space: nowrap;
+}
+
+.total-compact-arrow {
+  color: #9CA3AF;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.total-compact-new {
+  color: #2E7D32;
+}
+
 .payment-icon-compact {
   width: 28px;
   height: 28px;
@@ -313,6 +334,11 @@
 
   .total-compact {
     font-size: 18px;
+  }
+
+  .total-compact-old,
+  .total-compact-arrow {
+    font-size: 12px;
   }
 
   .btn-accept-compact {
