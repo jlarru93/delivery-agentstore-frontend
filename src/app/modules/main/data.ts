@@ -333,6 +333,18 @@ export class OrderBean {
     getTotalPayUserAndCurrencyCommand(){
         return ""+this.getCurrency()+formatCurrency(this.totalPayUser ?? this.total ?? 0)
     }
+
+    // Total mostrado en las tarjetas de la cartilla:
+    // - traditional: el monto que recibe el comercio (priceToStore), porque el comercio
+    //   no debe ver lo que paga el cliente (incluye comisión PIWI / delivery).
+    // - commerce (SendAndReciveStore): el total que paga el cliente, como antes.
+    // Si priceToStore no viene o es 0, cae al comportamiento previo para no mostrar S/0.
+    getCartillaTotalAndCurrency(): string {
+        if (this.type === 'traditional' && this.priceToStore && this.priceToStore > 0) {
+            return "" + this.getCurrency() + formatCurrency(this.priceToStore);
+        }
+        return this.getTotalPayUserAndCurrencyCommand();
+    }
     getTotalAndCurrencyCommand(){
         return ""+this.getCurrency()+formatCurrency(this.total ?? 0)
     }
