@@ -255,6 +255,10 @@ export class OrderBean {
     productPriceDiscount?:number
     productPriceWithDiscount?:number
     priceToStore?:number
+    piwiPaysStore?:number
+    commissionPaymentGatewayProduct?:number
+    commissionPaymentGatewayTotal?:number
+    storeAbsorbsPaymentGateway?:number
     coupons?: CouponsBean[]
     urlTracking:string
     addresses?: AddressResponseLoadingOrder[]
@@ -405,6 +409,31 @@ export class OrderBean {
     // Monto que le corresponde al comercio por la orden
     getPriceToStoreAndCurrency(): string {
         return "" + this.getCurrency() + formatCurrency(this.priceToStore ?? 0);
+    }
+
+    // Cuando el comercio absorbe la comisión de la pasarela (tarjeta / PSE),
+    // mostramos en el bloque "Le corresponde al comercio" el priceToStore tachado
+    // junto al neto que efectivamente recibe (piwiPaysStore) + la línea de comisión.
+    // Para otros métodos de pago o cuando PIWI absorbe la pasarela, se mantiene
+    // el bloque original con solo priceToStore.
+    isPaymentGatewayMethod(): boolean {
+        const type = this.payment?.method?.type;
+        return type === 'CARD' || type === 'PAYMENT-BUTTON';
+    }
+
+    shouldShowGatewayDiscount(): boolean {
+        return this.isPaymentGatewayMethod()
+            && this.storeAbsorbsPaymentGateway === 1
+            && (this.piwiPaysStore ?? 0) > 0
+            && (this.commissionPaymentGatewayProduct ?? 0) > 0;
+    }
+
+    getPiwiPaysStoreAndCurrency(): string {
+        return "" + this.getCurrency() + formatCurrency(this.piwiPaysStore ?? 0);
+    }
+
+    getCommissionPaymentGatewayProductAndCurrency(): string {
+        return "" + this.getCurrency() + formatCurrency(this.commissionPaymentGatewayProduct ?? 0);
     }
 
     calculateTime(){

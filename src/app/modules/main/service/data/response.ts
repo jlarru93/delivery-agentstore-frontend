@@ -442,6 +442,10 @@ export class OrderResponse {
     productPriceDiscount ?:number
     productPriceWithDiscount?:number
     priceToStore?:number
+    piwiPaysStore?:number
+    commissionPaymentGatewayProduct?:number
+    commissionPaymentGatewayTotal?:number
+    storeAbsorbsPaymentGateway?:number
     coupons?: CouponsResponse[]
     urlTracking:string
     deliveryPriceMongo?: DeliveryPriceMongoResponse
@@ -481,6 +485,10 @@ export class OrderResponse {
         bean.productPriceDiscount = self.productPriceDiscount
         bean.productPriceWithDiscount = self.productPriceWithDiscount
         bean.priceToStore = self.priceToStore
+        bean.piwiPaysStore = self.piwiPaysStore
+        bean.commissionPaymentGatewayProduct = self.commissionPaymentGatewayProduct
+        bean.commissionPaymentGatewayTotal = self.commissionPaymentGatewayTotal
+        bean.storeAbsorbsPaymentGateway = self.storeAbsorbsPaymentGateway
         bean.coupons = self?.coupons?.map((it)=> CouponsResponse.toBean(it))
         bean.urlTracking = self.urlTracking
         bean.addresses = self?.addresses

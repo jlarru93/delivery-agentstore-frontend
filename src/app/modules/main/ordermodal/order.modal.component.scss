@@ -760,6 +760,64 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     color: $orden-green-800;
 }
 
+// Layout cuando el comercio absorbe la comisión de pasarela:
+// "S/X.XX (tachado)  →  S/Y.YY (resaltado)"  + nota de comisión debajo.
+.orden-resumen-comercio-valor-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.2rem;
+    text-align: right;
+}
+
+.orden-resumen-comercio-valor-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.orden-resumen-comercio-valor-old {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #9CA3AF;
+    text-decoration: line-through;
+}
+
+.orden-resumen-comercio-valor-arrow {
+    font-size: 0.95rem;
+    color: #9CA3AF;
+    font-weight: 600;
+}
+
+.orden-resumen-comercio-valor-new {
+    cursor: help;
+}
+
+.orden-resumen-comercio-gateway-note {
+    font-size: 0.75rem;
+    color: #6B7280;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+@media (max-width: 480px) {
+    .orden-resumen-comercio {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .orden-resumen-comercio-valor-wrapper {
+        align-items: flex-start;
+        text-align: left;
+        width: 100%;
+    }
+    .orden-resumen-comercio-valor-row {
+        justify-content: flex-start;
+    }
+}
+
 // ========== COLUMNA INFO ==========
 .orden-modal-info-col {
     overflow-y: auto;

@@ -269,7 +269,25 @@
                     </div>
                     <div class="orden-resumen-comercio" *ngIf="orderSelected.shouldShowPriceToStore()">
                         <div class="orden-resumen-comercio-label">Le corresponde al comercio</div>
-                        <div class="orden-resumen-comercio-valor">{{orderSelected.getPriceToStoreAndCurrency()}}</div>
+                        <ng-container *ngIf="orderSelected.shouldShowGatewayDiscount(); else priceToStoreOnly">
+                            <div class="orden-resumen-comercio-valor-wrapper">
+                                <div class="orden-resumen-comercio-valor-row">
+                                    <span class="orden-resumen-comercio-valor-old">{{orderSelected.getPriceToStoreAndCurrency()}}</span>
+                                    <span class="orden-resumen-comercio-valor-arrow">→</span>
+                                    <span class="orden-resumen-comercio-valor orden-resumen-comercio-valor-new"
+                                          [pTooltip]="'Productos ' + orderSelected.getPriceToStoreAndCurrency() + ' − Pasarela ' + orderSelected.getCommissionPaymentGatewayProductAndCurrency() + ' = ' + orderSelected.getPiwiPaysStoreAndCurrency()"
+                                          tooltipPosition="top">
+                                        {{orderSelected.getPiwiPaysStoreAndCurrency()}}
+                                    </span>
+                                </div>
+                                <div class="orden-resumen-comercio-gateway-note">
+                                    Comisión por pasarela de pago: {{orderSelected.getCommissionPaymentGatewayProductAndCurrency()}}
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #priceToStoreOnly>
+                            <div class="orden-resumen-comercio-valor">{{orderSelected.getPriceToStoreAndCurrency()}}</div>
+                        </ng-template>
                     </div>
                 </div>
             </div>
@@ -452,7 +470,25 @@
                         </div>
                         <div class="orden-resumen-comercio" *ngIf="orderSelected.shouldShowPriceToStore()">
                             <div class="orden-resumen-comercio-label">Le corresponde al comercio</div>
-                            <div class="orden-resumen-comercio-valor">{{orderSelected.getPriceToStoreAndCurrency()}}</div>
+                            <ng-container *ngIf="orderSelected.shouldShowGatewayDiscount(); else priceToStoreOnlyMobile">
+                                <div class="orden-resumen-comercio-valor-wrapper">
+                                    <div class="orden-resumen-comercio-valor-row">
+                                        <span class="orden-resumen-comercio-valor-old">{{orderSelected.getPriceToStoreAndCurrency()}}</span>
+                                        <span class="orden-resumen-comercio-valor-arrow">→</span>
+                                        <span class="orden-resumen-comercio-valor orden-resumen-comercio-valor-new"
+                                              [pTooltip]="'Productos ' + orderSelected.getPriceToStoreAndCurrency() + ' − Pasarela ' + orderSelected.getCommissionPaymentGatewayProductAndCurrency() + ' = ' + orderSelected.getPiwiPaysStoreAndCurrency()"
+                                              tooltipPosition="top">
+                                            {{orderSelected.getPiwiPaysStoreAndCurrency()}}
+                                        </span>
+                                    </div>
+                                    <div class="orden-resumen-comercio-gateway-note">
+                                        Comisión por pasarela de pago: {{orderSelected.getCommissionPaymentGatewayProductAndCurrency()}}
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-template #priceToStoreOnlyMobile>
+                                <div class="orden-resumen-comercio-valor">{{orderSelected.getPriceToStoreAndCurrency()}}</div>
+                            </ng-template>
                         </div>
                     </div>
                 </p-tabPanel>
