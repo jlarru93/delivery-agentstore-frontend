@@ -426,3 +426,27 @@ $header-height: 56px;
   background: transparent !important;
   border: none !important;
 }
+
+// En mobile el input de minutos no debe abrir el teclado al tocarlo
+// (sólo se interactúa con los botones + / −), pero sí mostramos el valor
+// en el centro como texto. pointer-events: none bloquea el tap sin esconder.
+@media screen and (max-width: 768px) {
+  ::ng-deep .minutes-stepper .p-inputnumber-input {
+    pointer-events: none !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-align: center !important;
+    font-weight: 700;
+    font-size: 1.15rem;
+    width: 70px !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    color: #212322;
+  }
+  ::ng-deep .minutes-stepper .p-inputnumber {
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}

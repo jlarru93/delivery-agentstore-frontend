@@ -487,7 +487,7 @@ export class OrderBean {
             methodConverted = 'Pago en tienda'; 
             break;
             case 'CREDIT': 
-            methodConverted = 'Crédito del comercio'; 
+            methodConverted = 'El cliente ya pagó'; 
             break;
             default:
             methodConverted = 'Otro método';

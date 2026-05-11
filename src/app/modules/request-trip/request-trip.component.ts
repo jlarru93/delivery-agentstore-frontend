@@ -159,6 +159,18 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
   activeIndexCalendar: number = 0
   stateOptions: any[]=[];
   method_payment = "efectivo";
+
+  // Etiquetas visibles en los botones de método de pago de la solicitud de viaje.
+  // El backend devuelve "Crédito" / "Efectivo" pero al agente le resulta más claro
+  // ver el comportamiento real (cobro ya hecho vs cobro contra entrega).
+  // Mantenemos el value original (CREDIT/CASH) para no tocar el resto del flujo.
+  getPaymentMethodLabel(item: any): string {
+    if (!item) return '';
+    if (item.value === 'CREDIT') return 'Cliente ya pagó';
+    if (item.value === 'CASH') return 'Contra entrega';
+    return item.name;
+  }
+
   amount?: number = 0;
   cashAmount?: number = null;
   request_trip: RequestTrip = new RequestTrip();

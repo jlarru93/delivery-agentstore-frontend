@@ -49,7 +49,7 @@ export class Point {
     addresses: Address[];
     mobile ?: string
     readyToDmAt ?: number = 0
-    readyToDmMinutesAt?:number = 0
+    readyToDmMinutesAt?:number = 15
     uuid_price:string
     productPrice?:number
     isOrderCalendar?:boolean = false

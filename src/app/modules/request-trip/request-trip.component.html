@@ -252,7 +252,11 @@
                 [(ngModel)]="method_payment"
                 optionLabel="name"
                 optionValue="value"
-              ></p-selectButton>
+              >
+                <ng-template let-item pTemplate>
+                  {{ getPaymentMethodLabel(item) }}
+                </ng-template>
+              </p-selectButton>
             </div>
           </div>
           <div class="p-grid p-fluid">
@@ -274,13 +278,13 @@
           </div>
           <p-tabView [(activeIndex)]="activeIndexCalendar" (onChange)="onChangeOrder($event)" >
             <p-tabPanel  header="Minutos">
-              <div class="p-grid p-fluid">      
-                <p-inputNumber 
-                  [(ngModel)]="request_trip.readyToDmMinutesAt" 
-                  [showButtons]="true" 
-                  min="0"
+              <div class="p-grid p-fluid minutes-stepper">
+                <p-inputNumber
+                  [(ngModel)]="request_trip.readyToDmMinutesAt"
+                  [showButtons]="true"
+                  [min]="15"
                   buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="5"
-                  decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-success" 
+                  decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-success"
                   incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" currency="EUR">
                 </p-inputNumber>
               </div>
