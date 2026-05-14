@@ -13,6 +13,16 @@ export abstract class SubOptionBean {
     getPriceAndCurrency(){
         return "S/"+this.getDisplayPrice().toFixed(2)
     }
+    getCommercePrice(): number {
+        const unit = this.price?.getCommerceValue() ?? 0
+        return (this.quantity ?? 1) * unit
+    }
+    getCommercePriceAndCurrency(): string {
+        return "S/"+this.getCommercePrice().toFixed(2)
+    }
+    hasCommerceReference(): boolean {
+        return this.price?.hasCommerceReference() ?? false
+    }
     getPriceMinimalCurrency(): string {
         return this.price.currency + formatCurrency(this.price.getDisplayValue())
     }
@@ -60,6 +70,7 @@ export class PriceBean {
     currency: String
     value: number
     priceToStore?: number
+    commerce?: number
     id?: number
     currencyId?: number
 
@@ -70,11 +81,22 @@ export class PriceBean {
     // Precio que se le muestra al agente del comercio: si el backend envía
     // price.priceToStore > 0 (lo que recibe ya descontada la comisión PIWI),
     // se usa ese. Si no, se cae al precio del cliente — sin etiquetas.
-    // Nota: NO usar price.commerce, que es el precio de carta antes de comisión.
     getDisplayValue(): number {
         return this.priceToStore !== undefined && this.priceToStore !== null && this.priceToStore > 0
             ? this.priceToStore
             : this.value
+    }
+
+    // Precio de carta del comercio (referencia chica para el personal).
+    getCommerceValue(): number {
+        return this.commerce !== undefined && this.commerce !== null && this.commerce > 0
+            ? this.commerce
+            : this.value
+    }
+
+    // Indica que existe un precio de carta distinto al pagado por el cliente.
+    hasCommerceReference(): boolean {
+        return this.commerce !== undefined && this.commerce !== null && this.commerce > 0 && this.commerce !== this.value
     }
 }
 export class ProductBean {
@@ -110,6 +132,28 @@ export class ProductBean {
     }
     getTotalPriceAndCurrency(): string {
         return this.price.currency + formatCurrency(this.getDisplayTotalPrice())
+    }
+
+    // Referencia chica para el personal del local: precio de carta del comercio
+    // (price.commerce), agregando subopciones cuando corresponda. Si el backend
+    // no envía commerce, cae al value para no quedar en S/0.
+    getCommerceUnitPrice(): number {
+        const subOptionsTotal = this.options?.reduce((acc, opt) => {
+            return acc + (opt.subOptions?.reduce((s, sub) => s + sub.getCommercePrice(), 0) ?? 0)
+        }, 0) ?? 0
+        return (this.price?.getCommerceValue() ?? 0) + subOptionsTotal
+    }
+    getCommerceTotalPrice(): number {
+        return (this.quantity ?? 1) * this.getCommerceUnitPrice()
+    }
+    getCommerceTotalAndCurrency(): string {
+        return (this.price?.currency ?? "S/") + formatCurrency(this.getCommerceTotalPrice())
+    }
+    hasCommerceReference(): boolean {
+        if (this.price?.hasCommerceReference()) return true
+        return this.options?.some(opt =>
+            opt.subOptions?.some(sub => sub.price?.hasCommerceReference())
+        ) ?? false
     }
 
 }

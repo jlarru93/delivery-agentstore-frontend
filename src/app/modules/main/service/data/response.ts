@@ -69,6 +69,7 @@ export class PriceResponse {
     currency: String
     value: number
     priceToStore?: number
+    commerce?: number
     id?: number
     currencyId?: number
     static toBean(selft: PriceResponse): PriceBean {
@@ -77,6 +78,7 @@ export class PriceResponse {
         bean.currencyId = selft.currencyId
         bean.value = selft.value
         bean.priceToStore = selft.priceToStore
+        bean.commerce = selft.commerce
         bean.currency = selft.currency
         return bean
     }
