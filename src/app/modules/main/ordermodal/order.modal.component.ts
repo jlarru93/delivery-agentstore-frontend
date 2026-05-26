@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ChangeDetectorRef } from "@angular/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { DialogService } from "primeng/dynamicdialog";
 import { OrderBean, PaymentBean, ProductBean } from "../data";
@@ -9,6 +9,9 @@ import * as CONSTANTES from "src/app/utils/constant";
 import { PrintService } from 'src/app/utils/print.service';
 import { RequestTripService } from "../../request-trip/services/request-trip.service";
 import { ResponseTrackingMotorized } from "../../order-course/data/response";
+import { OrderHandler } from "src/app/modules/service/handlers/order.handler";
+import { OrderResponse } from "../service/data/response";
+import { Subscription } from "rxjs";
 
 
 @Component({
@@ -51,6 +54,12 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     motorizedTracking: ResponseTrackingMotorized | null = null;
     trackingInterval: any = null;
 
+    // [1.3.41] Subscripción al OrderHandler para refrescar el modal en vivo
+    // cuando el backend publica cambios de la orden (ej. asignación de
+    // motorizado) en el topic order/{uuid}. Antes el modal solo recibía
+    // la orden por @Input al abrirse y nunca veía las actualizaciones.
+    private mqttOrderSub: Subscription | null = null;
+
     // Propiedades de aceptación programada
     scheduledAcceptMode: 'confirm' | 'modify' = 'confirm';
     scheduledDates: {label: string, value: string}[] = [];
@@ -67,18 +76,62 @@ export class OrderModalComponent implements OnInit, OnDestroy {
         private confirmationService: ConfirmationService,
         private orderRepository: OrderRepository,
         private printService: PrintService,
-        private requestTripService: RequestTripService
+        private requestTripService: RequestTripService,
+        private orderHandler: OrderHandler,
+        private cdr: ChangeDetectorRef
     ) { }
     ngOnInit(): void {
         this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
+        this.subscribeOrderUpdates()
     }
-    
+
     ngOnDestroy(): void {
         this.stopTrackingPolling();
         if (this.leafletMap) {
             this.leafletMap.remove();
             this.leafletMap = null;
         }
+        this.mqttOrderSub?.unsubscribe();
+        this.mqttOrderSub = null;
+    }
+
+    /**
+     * [1.3.41] Escucha el stream MQTT del OrderHandler y, cuando llega una
+     * actualización de la orden actualmente mostrada en el modal, refresca
+     * los campos manteniendo la referencia del objeto (Object.assign) para
+     * que Angular detecte los cambios sin re-instanciar el @Input.
+     *
+     * Caso de uso principal: el comercio deja abierto el detalle de una
+     * orden recién aceptada esperando ver al motorizado asignado. Antes
+     * la pantalla quedaba congelada hasta cerrarla y volver a abrirla.
+     */
+    private subscribeOrderUpdates(): void {
+        this.mqttOrderSub = this.orderHandler.data$.subscribe((payload) => {
+            const data = payload?.data
+            if (!data || !this.orderSelected) return
+            if (data.uuid !== this.orderSelected.uuid) return
+
+            const hadDriver = !!this.orderSelected.deliveryMan?.id
+            const updatedBean = OrderResponse.toBean(data)
+
+            // Preservar la referencia para no romper @Input ni el binding del padre.
+            // Conservamos algunas propiedades de UI que el modal mantiene localmente.
+            const preserved = {
+                messagesChat: this.orderSelected.messagesChat,
+                showButton: this.orderSelected.showButton,
+                messagesNoReadTotal: this.orderSelected.messagesNoReadTotal,
+            }
+            Object.assign(this.orderSelected, updatedBean, preserved)
+
+            // Si recién se acaba de asignar motorizado, arrancar el polling
+            // de tracking que solo se enciende cuando deliveryMan.id existe.
+            const hasDriverNow = !!this.orderSelected.deliveryMan?.id
+            if (!hadDriver && hasDriverNow) {
+                this.startTrackingPolling()
+            }
+
+            this.cdr.markForCheck()
+        })
     }
 
     init() {
