@@ -52,9 +52,16 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         // ── Status Bar verde PIWI ──
+        // En Android: overlay: true → WebView ocupa toda la pantalla y
+        // ganamos los ~35dp del padding. El CSS compensa con
+        // env(safe-area-inset-top).
+        // En iOS: mantenemos el comportamiento previo (sin overlay) para
+        // no cambiar el layout que ya está en App Store / resubmitido.
         if (Capacitor.isNativePlatform()) {
             StatusBar.show();
-            StatusBar.setOverlaysWebView({ overlay: false });
+            if (Capacitor.getPlatform() === 'android') {
+                StatusBar.setOverlaysWebView({ overlay: true });
+            }
             StatusBar.setStyle({ style: Style.Dark });
             StatusBar.setBackgroundColor({ color: '#398E3C' });
         }
