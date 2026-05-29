@@ -133,6 +133,36 @@ $bg-card: #ffffff;
     color: $primary-yellow-dark;
 }
 
+// ==================== REGISTRO PÚBLICO (Apple 3.2) ====================
+.login-card__register {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid $border-subtle;
+    text-align: center;
+
+    p {
+        margin: 0 0 6px;
+        font-size: 13px;
+        color: $text-muted;
+    }
+}
+
+.login-card__register-link {
+    background: none;
+    border: none;
+    color: $primary-yellow-dark;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 8px;
+    text-decoration: underline;
+    font-family: inherit;
+
+    &:hover {
+        color: darken($primary-yellow-dark, 8%);
+    }
+}
+
 // ==================== PRIMENG OVERRIDES ====================
 :host ::ng-deep {
     .login-card__submit.p-button {

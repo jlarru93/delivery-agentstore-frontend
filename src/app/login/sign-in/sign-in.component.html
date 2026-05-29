@@ -29,6 +29,17 @@
                                 (click)="signIn()" *ngIf="!flagButtonnumberphone"></button>
                         <i class="pi pi-spin pi-spinner login-card__spinner" *ngIf="flagButtonnumberphone"></i>
                     </div>
+
+                    <!-- Registro público — Apple Guideline 3.2.
+                         Abre el form de captación de comercios en piwi.pe.
+                         El reviewer de Apple verifica que cualquier comercio
+                         puede iniciar su signup sin pre-aprobación. -->
+                    <div class="login-card__register">
+                        <p>¿Aún no eres comercio Piwi?</p>
+                        <button type="button" class="login-card__register-link" (click)="openRegister()">
+                            Regístrate aquí
+                        </button>
+                    </div>
                 </div>
             </div>
 
