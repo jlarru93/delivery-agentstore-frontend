@@ -10,7 +10,7 @@ import { PushService } from './modules/service/push.service';
 import { WokerHandler } from './modules/service/worker.service';
 import { TokenBridgeService } from './utils/token-bridge.service';
 import { GeoMessageHandlerService } from './modules/service/geo.message.handler.service';
-import { ContactMessageHandlerService } from './modules/service/contacts.service'; // ← NUEVO
+import { ContactMessageHandlerService } from './modules/service/contacts.service';
 import { ShareLocationService } from './modules/service/share-location.service';
 import { AppUpdateService } from './modules/service/app-update.service';
 import { Capacitor } from '@capacitor/core';
@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
     private currentVersion: string | null = null;
     displayToken: string | null = null;
 
-    private contactHandler = inject(ContactMessageHandlerService); // ← NUEVO
+    private contactHandler = inject(ContactMessageHandlerService);
 
     @ViewChild(DialogUpdateWebComponent) dialogUpdate!: DialogUpdateWebComponent;
 
@@ -76,11 +76,9 @@ export class AppComponent implements OnInit {
             take(1)
         ).subscribe(async (e: any) => {
             const url: string = e.urlAfterRedirects || e.url || '';
-
             if (!url.includes('/login')) {
                 await this.push.init();
             }
-
             await this.push.checkPendingOrder();
         });
 
@@ -88,12 +86,11 @@ export class AppComponent implements OnInit {
         if (Capacitor.isNativePlatform()) {
             App.addListener('appStateChange', async ({ isActive }) => {
                 if (isActive) {
-                    // Si el usuario volvió desde el picker nativo de contactos,
-                    // ignorar este resume — de lo contrario push.init() pediría
-                    // permiso de notificaciones y registraría el token FCM sin
-                    // que el usuario haya hecho nada relacionado con push.
-                    if (this.contactHandler.isPickerOpen) {
-                        console.log('[AppState] Resume ignorado — picker de contactos activo');
+                    // Ignorar resumes causados por diálogos nativos del micro-frontend:
+                    // — picker de contactos  → evita pedir permiso de notificaciones
+                    // — diálogo de ubicación → evita registrar token FCM innecesariamente
+                    if (this.contactHandler.isPickerOpen || this.geoHandler.isLocationRequestActive) {
+                        console.log('[AppState] Resume ignorado — picker/geo activo');
                         return;
                     }
                     await this.push.init();
