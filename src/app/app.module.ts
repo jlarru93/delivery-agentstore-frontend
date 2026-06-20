@@ -93,6 +93,7 @@ import { GeoMessageHandlerService } from './modules/service/geo.message.handler.
 
 // Print
 import { PrintTemplateModule } from './print-template/print-template.module';
+import { ContactMessageHandlerService } from './modules/service/contacts.service';
 
 @NgModule({
     imports: [
@@ -182,6 +183,7 @@ import { PrintTemplateModule } from './print-template/print-template.module';
         OrderHandler,
         StoreHandler,
         GeoMessageHandlerService,
+        ContactMessageHandlerService
     ],
     bootstrap: [AppComponent]
 })
