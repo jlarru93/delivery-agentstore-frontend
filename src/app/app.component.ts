@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import { ConnectionService } from './modules/service/connection.service';
 import { DialogUpdateWebComponent } from './modules/dialogUpdateWeb/dialogUpdateWeb.component';
@@ -10,6 +10,7 @@ import { PushService } from './modules/service/push.service';
 import { WokerHandler } from './modules/service/worker.service';
 import { TokenBridgeService } from './utils/token-bridge.service';
 import { GeoMessageHandlerService } from './modules/service/geo.message.handler.service';
+import { ContactMessageHandlerService } from './modules/service/contacts.service';
 import { ShareLocationService } from './modules/service/share-location.service';
 import { AppUpdateService } from './modules/service/app-update.service';
 import { Capacitor } from '@capacitor/core';
@@ -35,6 +36,8 @@ export class AppComponent implements OnInit {
     private currentVersion: string | null = null;
     displayToken: string | null = null;
 
+    private contactHandler = inject(ContactMessageHandlerService);
+
     @ViewChild(DialogUpdateWebComponent) dialogUpdate!: DialogUpdateWebComponent;
 
     constructor(
@@ -54,7 +57,9 @@ export class AppComponent implements OnInit {
         // ── Status Bar verde PIWI ──
         if (Capacitor.isNativePlatform()) {
             StatusBar.show();
-            StatusBar.setOverlaysWebView({ overlay: false });
+            if (Capacitor.getPlatform() === 'android') {
+                StatusBar.setOverlaysWebView({ overlay: true });
+            }
             StatusBar.setStyle({ style: Style.Dark });
             StatusBar.setBackgroundColor({ color: '#398E3C' });
         }
@@ -66,27 +71,28 @@ export class AppComponent implements OnInit {
         this.shareLocation.init();
 
         // ── Push / FCM: inicializar solo después de primera NavigationEnd ──
-        // Garantiza que Cognito ya cargó la sesión antes de registrar el token FCM
         this.router.events.pipe(
             filter(e => e instanceof NavigationEnd),
             take(1)
         ).subscribe(async (e: any) => {
             const url: string = e.urlAfterRedirects || e.url || '';
-
-            // No inicializar push si estamos en login (usuario no autenticado)
             if (!url.includes('/login')) {
                 await this.push.init();
             }
-
-            // Verificar si hay una orden pendiente por notificación (solo nativo)
             await this.push.checkPendingOrder();
         });
 
-        // ── App resume (nativo): re-registrar token y verificar orden pendiente ──
+        // ── App resume (nativo) ──
         if (Capacitor.isNativePlatform()) {
             App.addListener('appStateChange', async ({ isActive }) => {
                 if (isActive) {
-                    // Re-registrar token por si rotó mientras la app estaba en background
+                    // Ignorar resumes causados por diálogos nativos del micro-frontend:
+                    // — picker de contactos  → evita pedir permiso de notificaciones
+                    // — diálogo de ubicación → evita registrar token FCM innecesariamente
+                    if (this.contactHandler.isPickerOpen || this.geoHandler.isLocationRequestActive) {
+                        console.log('[AppState] Resume ignorado — picker/geo activo');
+                        return;
+                    }
                     await this.push.init();
                     await this.push.checkPendingOrder();
                     of(this.appUpdate.checkForUpdate()).subscribe(() => {});

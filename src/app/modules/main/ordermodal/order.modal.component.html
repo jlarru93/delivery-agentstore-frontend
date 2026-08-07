@@ -158,10 +158,16 @@
                                     </h4>
                                     <p class="orden-producto-descripcion">{{product.description || 'Sin descripción'}}</p>
                                 </div>
-                                <span class="orden-producto-precio">{{product.getTotalPriceAndCurrency()}}</span>
+                                <div class="orden-producto-precio-stack">
+                                    <span class="orden-producto-precio">{{product.getTotalPriceAndCurrency()}}</span>
+                                    <span class="orden-producto-precio-commerce"
+                                          *ngIf="product.hasCommerceReference()">
+                                        Carta: {{product.getCommerceTotalAndCurrency()}}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        
+
                         <!-- DETALLES DEL PRODUCTO - Solo si tiene detalles -->
                         <div class="orden-producto-detalles accordion-description" 
                              *ngIf="tieneDetalles(product)">
@@ -194,18 +200,22 @@
                                             </ng-container>
                                             {{sub.name}}
                                         </span>
-                                        <i class="pi pi-check orden-opcion-check" 
+                                        <i class="pi pi-check orden-opcion-check"
                                         *ngIf="sub.selected && !sub.quantity"></i>
-                                        <span class="orden-opcion-precio" 
+                                        <div class="orden-opcion-precio-stack"
                                             *ngIf="sub.quantity && sub.quantity > 0 && sub?.price?.value > 0">
-                                            {{sub.getPriceAndCurrency()}}
-                                        </span>
-                                        <span class="orden-opcion-no-seleccionada" 
+                                            <span class="orden-opcion-precio">{{sub.getPriceAndCurrency()}}</span>
+                                            <span class="orden-opcion-precio-commerce"
+                                                  *ngIf="sub.hasCommerceReference()">
+                                                Carta: {{sub.getCommercePriceAndCurrency()}}
+                                            </span>
+                                        </div>
+                                        <span class="orden-opcion-no-seleccionada"
                                             *ngIf="!sub.selected && (!sub.quantity || sub.quantity === 0)">-</span>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- COMENTARIOS -->
                             <div *ngIf="product.comment && product.comment.trim() !== ''" class="orden-comentario-card">
                                 <div class="orden-comentario-header">
@@ -220,7 +230,13 @@
                             <!-- SUBTOTAL DEL PRODUCTO -->
                             <div class="orden-subtotal-card">
                                 <span class="orden-subtotal-label">Sub Total</span>
-                                <span class="orden-subtotal-valor">{{product.getTotalPriceAndCurrency()}}</span>
+                                <div class="orden-subtotal-valor-stack">
+                                    <span class="orden-subtotal-valor">{{product.getTotalPriceAndCurrency()}}</span>
+                                    <span class="orden-subtotal-valor-commerce"
+                                          *ngIf="product.hasCommerceReference()">
+                                        Carta: {{product.getCommerceTotalAndCurrency()}}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -320,7 +336,13 @@
                                         </h4>
                                         <p class="orden-producto-descripcion">{{product.description || 'Sin descripción'}}</p>
                                     </div>
-                                    <span class="orden-producto-precio">{{product.getTotalPriceAndCurrency()}}</span>
+                                    <div class="orden-producto-precio-stack">
+                                        <span class="orden-producto-precio">{{product.getTotalPriceAndCurrency()}}</span>
+                                        <span class="orden-producto-precio-commerce"
+                                              *ngIf="product.hasCommerceReference()">
+                                            Carta: {{product.getCommerceTotalAndCurrency()}}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -344,13 +366,17 @@
                                                 </ng-container>
                                                 {{sub.name}}
                                             </span>
-                                            <i class="pi pi-check orden-opcion-check" 
+                                            <i class="pi pi-check orden-opcion-check"
                                             *ngIf="sub.selected && !sub.quantity"></i>
-                                            <span class="orden-opcion-precio" 
+                                            <div class="orden-opcion-precio-stack"
                                                 *ngIf="sub.quantity && sub.quantity > 0 && sub?.price?.value > 0">
-                                                {{sub.getPriceAndCurrency()}}
-                                            </span>
-                                            <span class="orden-opcion-no-seleccionada" 
+                                                <span class="orden-opcion-precio">{{sub.getPriceAndCurrency()}}</span>
+                                                <span class="orden-opcion-precio-commerce"
+                                                      *ngIf="sub.hasCommerceReference()">
+                                                    Carta: {{sub.getCommercePriceAndCurrency()}}
+                                                </span>
+                                            </div>
+                                            <span class="orden-opcion-no-seleccionada"
                                                 *ngIf="!sub.selected && (!sub.quantity || sub.quantity === 0)">-</span>
                                         </div>
                                     </div>
@@ -366,7 +392,13 @@
                                 
                                 <div class="orden-subtotal-card">
                                     <span class="orden-subtotal-label">Sub Total</span>
-                                    <span class="orden-subtotal-valor">{{product.getTotalPriceAndCurrency()}}</span>
+                                    <div class="orden-subtotal-valor-stack">
+                                        <span class="orden-subtotal-valor">{{product.getTotalPriceAndCurrency()}}</span>
+                                        <span class="orden-subtotal-valor-commerce"
+                                              *ngIf="product.hasCommerceReference()">
+                                            Carta: {{product.getCommerceTotalAndCurrency()}}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

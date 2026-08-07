@@ -532,11 +532,27 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     margin: 0;
 }
 
+.orden-producto-precio-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-shrink: 0;
+    gap: 0.125rem;
+}
+
 .orden-producto-precio {
     font-weight: 700;
     font-size: 1.125rem;
     color: $orden-primary-color;
     flex-shrink: 0;
+}
+
+.orden-producto-precio-commerce {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: $orden-text-secondary;
+    line-height: 1;
+    white-space: nowrap;
 }
 
 // ========== DETALLES DEL PRODUCTO ==========
@@ -668,10 +684,25 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     font-size: 1rem;
 }
 
+.orden-subtotal-valor-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.125rem;
+}
+
 .orden-subtotal-valor {
     color: white;
     font-weight: 700;
     font-size: 1.25rem;
+}
+
+.orden-subtotal-valor-commerce {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
 }
 
 // ========== RESUMEN FIJO ==========
@@ -2003,10 +2034,25 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
     margin-right: 0.25rem;
 }
 
+.orden-opcion-precio-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.125rem;
+}
+
 .orden-opcion-precio {
     color: $orden-primary-color;
     font-weight: 600;
     font-size: 0.875rem;
+}
+
+.orden-opcion-precio-commerce {
+    color: $orden-text-secondary;
+    font-weight: 500;
+    font-size: 0.65rem;
+    line-height: 1;
+    white-space: nowrap;
 }
 // ========== ESTILOS PARA MAPA ==========
 

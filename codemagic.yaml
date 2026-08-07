@@ -10,12 +10,12 @@ workflows:
       cocoapods: default
       ios_signing:
         distribution_type: development
-        bundle_identifier: pe.piwi.agent
+        bundle_identifier: group.pe.piwi.agent
       groups:
         - firebase_credentials
         - apple_dev                        # Grupo con certificado de desarrollo
       vars:
-        BUNDLE_ID: "pe.piwi.agent"
+        BUNDLE_ID: "group.pe.piwi.agent"
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
 

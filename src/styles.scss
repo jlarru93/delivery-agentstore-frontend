@@ -10,7 +10,36 @@ $gutter: .5rem; //for primeflex grid system
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 html, body { height: 100%; }
-body { margin: 0; font-family: 'Poppins', sans-serif;}
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    /* Verde Piwi para que cualquier zona descubierta sea verde, no blanca. */
+    background-color: #398E3C;
+}
+
+/* ── Safe area handling (StatusBar.setOverlaysWebView({ overlay: true })) ──
+   La WebView ahora ocupa toda la pantalla, incluyendo detrás del status bar.
+   env(safe-area-inset-top) devuelve el alto del status bar SOLO cuando hay
+   viewport-fit=cover en el meta viewport (que ya está). En web sin notch
+   devuelve 0, así que estos overrides NO afectan al desktop. */
+
+/* La topbar de Sigma está position:fixed; top:0 — la empujamos abajo del
+   status bar para que no quede tapada por iconos del sistema. */
+.layout-topbar {
+    top: env(safe-area-inset-top) !important;
+}
+
+/* layout-main tiene padding-top:75px (= alto del topbar). Le sumamos el
+   alto del status bar para que el contenido tampoco quede tapado. */
+.layout-main {
+    padding-top: calc(75px + env(safe-area-inset-top)) !important;
+}
+
+/* La pantalla de login (.login-screen__content) usa flex centering. Le
+   metemos padding-top para que el card no quede pegado al status bar. */
+.login-screen__content {
+    padding-top: calc(24px + env(safe-area-inset-top)) !important;
+}
 
 * {
     padding: 0;

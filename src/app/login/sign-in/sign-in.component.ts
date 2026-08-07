@@ -122,4 +122,13 @@ export class SignInComponent {
     return false;
   }
 
+  /**
+   * Abre el form público de registro de comercios — Apple Guideline 3.2.
+   * En Capacitor `window.open(_, '_blank')` delega al navegador del sistema
+   * (Safari en iOS, Chrome en Android), que es lo que Apple espera ver.
+   */
+  openRegister(): void {
+    window.open('https://piwi.pe/#/comercios/registro', '_blank');
+  }
+
 }

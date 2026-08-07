@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { StoreResponse } from '../main/service/data/response';
-import { ShareLocationService, SharedLocationData } from '../service/share-location.service';
+import { ShareLocationService } from '../service/share-location.service';
+import { ContactMessageHandlerService } from '../service/contacts.service';
 
 @Component({
   selector: 'request-order',
@@ -19,6 +20,8 @@ export class RequestOrderComponent implements OnInit, OnDestroy {
   private queryParamsSub: Subscription;
   private sharedLocationSub: Subscription;
 
+  private contactHandler = inject(ContactMessageHandlerService);
+
   constructor(
     public sanitizer: DomSanitizer,
     private route: ActivatedRoute,
@@ -28,6 +31,9 @@ export class RequestOrderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Iniciar el handler de contactos JIT — solo activo mientras este componente vive
+    this.contactHandler.init();
+
     // Caso 1: llegó por navegación con queryParams
     this.queryParamsSub = this.route.queryParams.subscribe(params => {
       this.reloadIframe(params);
@@ -44,6 +50,9 @@ export class RequestOrderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    // Detener el handler al salir — JIT
+    this.contactHandler.destroy();
+
     this.queryParamsSub?.unsubscribe();
     this.sharedLocationSub?.unsubscribe();
     if (this.messageListener) {
@@ -58,11 +67,9 @@ export class RequestOrderComponent implements OnInit, OnDestroy {
   private reloadIframe(params: any): void {
     const newUrl = this.buildIframeUrl(params);
 
-    // 1. Destruir iframe del DOM y forzar que Angular lo detecte
     this.url = null;
     this.cdr.detectChanges();
 
-    // 2. En el siguiente tick reasignar y volver a detectar
     setTimeout(() => {
       this.url = this.sanitizer.bypassSecurityTrustResourceUrl(newUrl);
       this.cdr.detectChanges();
@@ -81,8 +88,9 @@ export class RequestOrderComponent implements OnInit, OnDestroy {
     let iframeUrl = `${environment.microFront.order}`
       + `?userPoolId=${environment.awsConfig.cognito.userPoolId}`
       + `&userPoolWebClientId=${environment.userPoolWebClientId}`
-      + `&brandIdSelected=${brandIdSelected}`;
-
+      + `&brandIdSelected=${brandIdSelected}`
+      + `&nativeApp=true` // ← señal explícita al micro-frontend de que corre en Capacitor
+      + `&t=${Date.now()}`
     if (uuid) {
       iframeUrl += `&uuid=${uuid}`;
     }
