@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AppMainComponent } from './app.main.component';
 import { AuthService } from './utils/auth.service';
 import { OpenStoreRequest } from './modules/main/service/data/request';
+import { buildOpenStoreRequest, canCloseAllDay, closeHint, confirmQuestion, getBackendMessage } from './modules/main/store-open.helper';
 import { Brand, Store } from './models';
 import { AgentStoreStoreResponse, MenuService } from './app.menu.service';
 import { DataSharedService } from './modules/service/data-shared.service';
@@ -68,7 +69,6 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('quickActionsPanel') quickActionsPanel: OverlayPanel;
 
     private openStoreDialogSubscription: Subscription;
-    private changeStoreStatusSubscription: Subscription;
 
     constructor(
         private auth: AuthService,
@@ -149,12 +149,6 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.showDialogOpenStore(store);
             }
         });
-
-        this.changeStoreStatusSubscription = this.dataShared.changeStoreStatus$.subscribe((store) => {
-            if (store) {
-                this.changeStoreStatusDirect(store);
-            }
-        });
     }
 
     ngAfterViewInit() { }
@@ -222,11 +216,18 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
         }, () => { });
     }
 
+    // Casilla "Cerrar todo el día" del diálogo de abrir/cerrar.
+    closeAllDay: boolean = false;
+    // Mientras se vuelve a pedir hasMoreSlotsToday al abrir el diálogo, no se puede confirmar.
+    isRefreshingOpenStatus: boolean = false;
+
+    get confirmQuestionText(): string { return confirmQuestion(this.storeOpenSelected); }
+    get showCloseAllDay(): boolean { return canCloseAllDay(this.storeOpenSelected); }
+    get closeHintText(): string { return closeHint(this.storeOpenSelected, this.closeAllDay); }
+
+    // Único camino para abrir o cerrar una tienda (el menú lateral y la barra superior abren este mismo diálogo).
     changeStatusOpenStore() {
-        const request: OpenStoreRequest = {
-            id: this.storeOpenSelected.id,
-            status: !this.storeOpenSelected.isOpen
-        };
+        const request: OpenStoreRequest = buildOpenStoreRequest(this.storeOpenSelected, this.closeAllDay);
 
         this.displayOpenStore = false;
         this.storeOpenSelected.isLoadingOpenStatusStore = true;
@@ -234,6 +235,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
         this.appMain.changeStatusOpenStore(request).subscribe((resp) => {
             const data = resp.data;
             this.storeOpenSelected.isOpen = data.isOpen;
+            this.storeOpenSelected.hasMoreSlotsToday = data.hasMoreSlotsToday;
             this.updateMenuItems();
             this.processSubsCribeStore(data.id);
             this.storeOpenSelected.isLoadingOpenStatusStore = false;
@@ -242,6 +244,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
             this.dataShared.setStoresOpenStatus(this.storesOpen);
         }, (error) => {
             this.storeOpenSelected.isLoadingOpenStatusStore = false;
+            this.messageService.showError('', getBackendMessage(error, 'No se pudo cambiar el estado de la tienda'));
         }, () => { });
     }
 
@@ -314,6 +317,22 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
         this.displayOpenStore = true;
         this.listBrands();
         this.storeOpenSelected = storeOpen;
+        this.closeAllDay = false;
+        this.refreshHasMoreSlotsToday(storeOpen);
+    }
+
+    // hasMoreSlotsToday cambia con la hora: se vuelve a pedir al abrir el diálogo para no decidir con un dato viejo.
+    private refreshHasMoreSlotsToday(storeOpen: StatusOpenStoreBean) {
+        this.isRefreshingOpenStatus = true;
+        this.appMain.getStatusOpen().subscribe((resp) => {
+            const fresh = (resp.data || []).find(s => s.id === storeOpen.id);
+            if (fresh) {
+                storeOpen.hasMoreSlotsToday = fresh.hasMoreSlotsToday;
+            }
+            this.isRefreshingOpenStatus = false;
+        }, () => {
+            this.isRefreshingOpenStatus = false;
+        });
     }
 
     showLeyend() {
@@ -465,48 +484,6 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
         return this.listInvoicesAfterPay?.length > 0 || this.listInvoicesBeforeTwoDays?.length > 0;
     }
 
-    changeStoreStatusDirect(store: StatusOpenStoreBean): void {
-        const request: OpenStoreRequest = {
-            id: store.id,
-            status: store.isOpen  // El switch ya cambió el valor
-        };
-
-        // Encontrar la tienda en el array local
-        const storeIndex = this.storesOpen.findIndex(s => s.id === store.id);
-        if (storeIndex >= 0) {
-            this.storesOpen[storeIndex].isLoadingOpenStatusStore = true;
-        }
-
-        this.appMain.changeStatusOpenStore(request).subscribe(
-            (resp) => {
-                const data = resp.data;
-                
-                // Actualizar el estado local
-                if (storeIndex >= 0) {
-                    this.storesOpen[storeIndex].isOpen = data.isOpen;
-                    this.storesOpen[storeIndex].isLoadingOpenStatusStore = false;
-                }
-                
-                this.updateMenuItems();
-                this.processSubsCribeStore(data.id);
-                
-                // Actualizar estado compartido
-                this.dataShared.setStoresOpenStatus(this.storesOpen);
-            },
-            (error) => {
-                // Revertir el cambio del switch si hay error
-                if (storeIndex >= 0) {
-                    this.storesOpen[storeIndex].isOpen = !store.isOpen;
-                    this.storesOpen[storeIndex].isLoadingOpenStatusStore = false;
-                }
-                // Notificar al menú del estado revertido
-                this.dataShared.setStoresOpenStatus(this.storesOpen);
-                
-                console.error('Error al cambiar estado de tienda:', error);
-            }
-        );
-    }
-
     // Método para conectar alarma Windows
     connectWindowsAlarm() {
         if (this.selectStore.length === 0) {
@@ -542,9 +519,6 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnDestroy(): void {
         if (this.openStoreDialogSubscription) {
             this.openStoreDialogSubscription.unsubscribe();
-        }
-        if (this.changeStoreStatusSubscription) {
-            this.changeStoreStatusSubscription.unsubscribe();
         }
     }
     

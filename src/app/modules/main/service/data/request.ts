@@ -1,6 +1,8 @@
 export class OpenStoreRequest{
     id:number
     status: boolean;
+    // Solo al cerrar. SLOT = solo el tramo actual (se reabre en el siguiente), DAY = todo el día.
+    scope?: 'SLOT' | 'DAY';
 }
 export class AceptOrderRequest{
     uuid:string

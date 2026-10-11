@@ -190,9 +190,15 @@
 <p-dialog [(visible)]="displayOpenStore" [modal]="true" header="Opciones de la tienda">
     <ng-template pTemplate="content">
         <h5 class="p-p-5 p-m-auto">La tienda esta {{storeOpenSelected.isOpen?'Abierta':'Cerrada'}}</h5  >
+        <p class="p-m-0 p-px-5 p-pb-2" style="text-align: center;">{{ confirmQuestionText }}</p>
+        <!-- Solo aparece al cerrar y cuando quedan más tramos hoy -->
+        <div class="p-px-5 p-pb-3" *ngIf="showCloseAllDay">
+            <p-checkbox [(ngModel)]="closeAllDay" [binary]="true" label="Cerrar todo el día"></p-checkbox>
+            <small class="p-d-block p-mt-2" style="color: #666;">{{ closeHintText }}</small>
+        </div>
     </ng-template>
     <ng-template pTemplate="footer">
-        <p-button icon="pi pi-check" (click)="changeStatusOpenStore()" [label]="storeOpenSelected.isOpen?'Cerrar la tienda':'Abrir la tienda'" class="p-button-text"></p-button>
+        <p-button icon="pi pi-check" (click)="changeStatusOpenStore()" [disabled]="isRefreshingOpenStatus" [label]="storeOpenSelected.isOpen?'Cerrar la tienda':'Abrir la tienda'" class="p-button-text"></p-button>
         <p-button icon="pi pi-times" (click)="displayOpenStore=false" label="Cancelar"></p-button>
     </ng-template>
 </p-dialog>
