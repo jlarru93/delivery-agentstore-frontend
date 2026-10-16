@@ -85,8 +85,10 @@ export class AppMenuComponent implements OnInit, OnDestroy {
 
     // ==================== TIENDAS ====================
 
+    // El interruptor no cambia el estado por sí solo: abre el diálogo de confirmación (el mismo de la barra superior).
     onSingleStoreToggle(store: StatusOpenStoreBean): void {
-        this.store.requestChangeStoreStatus(store);
+        this.store.setSelectedStoreOpen(store);
+        this.store.requestOpenStoreDialog(store);
     }
 
     onStoreItemClick(store: StatusOpenStoreBean, dropdown: Dropdown): void {

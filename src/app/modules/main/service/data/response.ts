@@ -6,6 +6,8 @@ export class StatusOpenStoreResponse {
     id:number
     name:string
     isOpen: boolean
+    // Hay un tramo que empieza más tarde hoy: solo entonces tiene sentido ofrecer "cerrar todo el día".
+    hasMoreSlotsToday?: boolean
 }
 
 export class SubOptionResponse {

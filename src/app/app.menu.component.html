@@ -33,11 +33,13 @@
                         </span>
                     </div>
                 </div>
-                <p-inputSwitch 
-                    [(ngModel)]="storesOpen[0].isOpen"
-                    (onChange)="onSingleStoreToggle(storesOpen[0])"
-                    [styleClass]="'store-switch'">
-                </p-inputSwitch>
+                <!-- El interruptor solo muestra el estado: al tocarlo se abre el diálogo de confirmación. -->
+                <div class="store-switch-click" (click)="onSingleStoreToggle(storesOpen[0])">
+                    <p-inputSwitch 
+                        [ngModel]="storesOpen[0].isOpen"
+                        [styleClass]="'store-switch'">
+                    </p-inputSwitch>
+                </div>
             </div>
         </ng-container>
 

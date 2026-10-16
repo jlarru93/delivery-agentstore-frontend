@@ -598,5 +598,6 @@ export interface StatusOpenStoreBean{
     id:number
     name:string
     isOpen:boolean
+    hasMoreSlotsToday?:boolean
     isLoadingOpenStatusStore?:boolean
 }
