@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { CaseWatchService } from './case-watch.service';
-import { CaseFileRequest, StoreCase, StoreCaseDetail, StoreOption, SupportCategory } from './support.models';
+import { CaseFileRequest, StoreCase, StoreOption, SupportCategory } from './support.models';
 import { SupportService } from './support.service';
 
 // Casos del local en el POS (Mesa de ayuda de Piwi):
@@ -28,11 +28,9 @@ export class SupportComponent implements OnInit, OnDestroy {
     storeId: number | null = null
 
     // Detalle
-    detail: StoreCaseDetail | null = null
+    // Detalle (app-case-thread en el panel lateral)
+    openCode: string | null = null
     isDetailOpen = false
-    replyText = ''
-    replyFiles: File[] = []
-    sending = false
 
     // Reportar
     categories: { label: string, value: string }[] = []
@@ -56,7 +54,6 @@ export class SupportComponent implements OnInit, OnDestroy {
         this.subscription = this.watch.cases$.subscribe(cases => {
             this.cases = cases
             this.loading = false
-            if (this.isDetailOpen && this.detail) this.refreshDetail(this.detail.code)
         })
         this.watch.start()
         this.watch.refresh()
@@ -90,39 +87,8 @@ export class SupportComponent implements OnInit, OnDestroy {
     // ── Detalle ──
 
     open(code: string) {
-        this.replyText = ''
-        this.replyFiles = []
-        this.detail = null
+        this.openCode = code
         this.isDetailOpen = true
-        this.refreshDetail(code)
-    }
-
-    private refreshDetail(code: string) {
-        this.support.detail(code).subscribe({
-            next: resp => this.detail = resp.data,
-            error: err => {
-                this.isDetailOpen = false
-                this.fail(err)
-            },
-        })
-    }
-
-    async sendReply() {
-        if (!this.detail || this.replyText.trim().length < 2 || this.sending) return
-        this.sending = true
-        try {
-            const files = await this.uploadAll(this.replyFiles)
-            await firstValueFrom(this.support.reply(this.detail.code, this.replyText.trim(), files))
-            this.toast.add({ severity: 'success', summary: 'Respuesta enviada a Piwi' })
-            this.replyText = ''
-            this.replyFiles = []
-            this.refreshDetail(this.detail.code)
-            this.watch.refresh()
-        } catch (err) {
-            this.fail(err)
-        } finally {
-            this.sending = false
-        }
     }
 
     // ── Reportar un problema ──
@@ -192,10 +158,6 @@ export class SupportComponent implements OnInit, OnDestroy {
         if (c.statusCategory === 'DONE') return 'done'
         if (c.statusCategory === 'CANCELLED') return 'cancelled'
         return 'open'
-    }
-
-    entryAuthor(kind: string): string {
-        return kind === 'TEAM' ? 'Piwi' : kind === 'YOU' ? 'Tu local' : ''
     }
 
     private fail(err: any) {

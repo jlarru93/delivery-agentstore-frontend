@@ -61,18 +61,28 @@
             <!-- COLUMNA PRODUCTOS/MAPA (60%) -->
             <div class="orden-modal-productos-col">
                 
-                <!-- TOGGLE MAPA/PRODUCTOS -->
-                <div class="orden-view-toggle" *ngIf="orderSelected?.addresses?.length >= 2">
+                <!-- TOGGLE PRODUCTOS / MAPA / INCIDENCIA -->
+                <div class="orden-view-toggle" *ngIf="orderSelected?.addresses?.length >= 2 || orderCase">
                     <button class="toggle-btn" 
-                            [class.active]="!showMapView" 
-                            (click)="showMapView = false">
+                            [class.active]="!showMapView && !showCaseView" 
+                            (click)="showProducts()">
                         <i class="pi pi-list"></i> Productos
                     </button>
-                    <button class="toggle-btn" 
+                    <button class="toggle-btn" *ngIf="orderSelected?.addresses?.length >= 2"
                             [class.active]="showMapView" 
                             (click)="toggleMapView()">
                         <i class="pi pi-map"></i> Mapa
                     </button>
+                    <button class="toggle-btn toggle-case" *ngIf="orderCase as c"
+                            [class.active]="showCaseView" [class.needs-you]="c.needsYou"
+                            (click)="showCase()">
+                        <i class="pi pi-exclamation-circle"></i> Incidencia
+                    </button>
+                </div>
+
+                <!-- VISTA INCIDENCIA: el caso de Piwi en este pedido (ver y responder sin salir) -->
+                <div class="orden-modal-caso" *ngIf="showCaseView && orderCase as c">
+                    <app-case-thread [code]="c.code" [showOrder]="false"></app-case-thread>
                 </div>
                 
                 <!-- VISTA MAPA -->
@@ -119,7 +129,7 @@
                 </div>
                 
                 <!-- VISTA PRODUCTOS -->
-                <div class="orden-modal-productos-scroll" *ngIf="!showMapView">
+                <div class="orden-modal-productos-scroll" *ngIf="!showMapView && !showCaseView">
                     <button id="btnOnClicked" (click)="accordionFunction()" style="display: none;"></button>
                     
                     <!-- Mensaje si no hay productos -->
@@ -316,7 +326,7 @@
         
         <!-- ==================== MÓVIL LAYOUT (TABS) ==================== -->
         <div class="orden-modal-content orden-mobile-view">
-            <p-tabView styleClass="orden-tabs-mobile" (onChange)="onMobileTabChange($event)">
+            <p-tabView styleClass="orden-tabs-mobile" [(activeIndex)]="mobileTab" (onChange)="onMobileTabChange($event)">
                 
                 <!-- TAB 1: PRODUCTOS -->
                 <p-tabPanel header="Productos">
@@ -541,6 +551,13 @@
                                      loading="lazy" />
                             </div>
                         </div>
+                    </div>
+                </p-tabPanel>
+
+                <!-- TAB: INCIDENCIA (al final, para no mover el índice del mapa) -->
+                <p-tabPanel header="Incidencia" *ngIf="orderCase as c">
+                    <div class="orden-mobile-tab-content">
+                        <app-case-thread [code]="c.code" [showOrder]="false"></app-case-thread>
                     </div>
                 </p-tabPanel>
             </p-tabView>

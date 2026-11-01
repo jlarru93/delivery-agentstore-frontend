@@ -475,7 +475,11 @@ import { PushService } from "../service/push.service";
     paymentName: string
     storeDataStorage: StoreBean
 
-    openOrderDialog(order:OrderBean){
+    // toCase: tocaron la etiqueta INCIDENCIA de la tarjeta → el modal abre en la incidencia
+    openOnCase = false
+
+    openOrderDialog(order:OrderBean, toCase = false){
+      this.openOnCase = toCase
       this.orderSelected=order
       this.displayOrder=true
       this.stopAudio();            // para audio web/PWA

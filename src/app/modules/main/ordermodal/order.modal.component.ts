@@ -12,6 +12,8 @@ import { ResponseTrackingMotorized } from "../../order-course/data/response";
 import { OrderHandler } from "src/app/modules/service/handlers/order.handler";
 import { OrderResponse } from "../service/data/response";
 import { Subscription } from "rxjs";
+import { CaseWatchService } from "src/app/modules/support/case-watch.service";
+import { StoreCase } from "src/app/modules/support/support.models";
 
 
 @Component({
@@ -26,6 +28,8 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     orderSelected: OrderBean
 
     @Input() visible: boolean = false;
+    // Abrir directo en la incidencia del pedido (tocaron la etiqueta INCIDENCIA de la tarjeta)
+    @Input() startOnCase: boolean = false;
     @Output() visibleChange = new EventEmitter<boolean>();
     @Output() editOrder = new EventEmitter<OrderBean>();
 
@@ -49,6 +53,9 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     mapZoom = 14;
     mapMarkers: any[] = [];
     showMapView: boolean = false;
+    // Vista "Incidencia": el caso de Piwi abierto en este pedido (app-case-thread)
+    showCaseView: boolean = false;
+    mobileTab: number = 0;
     
     // Tracking del motorizado
     motorizedTracking: ResponseTrackingMotorized | null = null;
@@ -78,8 +85,30 @@ export class OrderModalComponent implements OnInit, OnDestroy {
         private printService: PrintService,
         private requestTripService: RequestTripService,
         private orderHandler: OrderHandler,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private caseWatch: CaseWatchService
     ) { }
+
+    /** Incidencia abierta de este pedido (la misma que marca la tarjeta) */
+    get orderCase(): StoreCase | undefined {
+        return this.caseWatch.caseForOrder(this.orderSelected?.id)
+    }
+
+    /** Índice de la pestaña "Incidencia" en celular: va al final */
+    get mobileCaseTab(): number {
+        return 3 + (this.orderSelected?.addresses?.length >= 2 ? 1 : 0)
+            + (this.storeDataStorage?.isEnableViewEvidence && this.orderSelected?.evidenceReceptionOrder ? 1 : 0)
+    }
+
+    showProducts() {
+        this.showMapView = false
+        this.showCaseView = false
+    }
+
+    showCase() {
+        this.showMapView = false
+        this.showCaseView = true
+    }
     ngOnInit(): void {
         this.storeDataStorage = JSON.parse(localStorage.getItem('storeBean'))
         this.subscribeOrderUpdates()
@@ -165,6 +194,8 @@ export class OrderModalComponent implements OnInit, OnDestroy {
         // Limpiar datos del mapa y tracking
         this.motorizedTracking = null;
         this.showMapView = false;
+        this.showCaseView = false;
+        this.mobileTab = 0;
         this.stopTrackingPolling();
         if (this.leafletMap) {
             this.leafletMap.remove();
@@ -263,6 +294,12 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     async initializeMap() {
         // Mostrar mapa por defecto si es orden de comercio (SendAndReciveStore)
         this.showMapView = this.orderSelected?.isCommerce() || false;
+        // Con incidencia: abre en ella si tocaron la etiqueta o si Piwi espera respuesta del local
+        if (this.orderCase && (this.startOnCase || this.orderCase.needsYou)) {
+            this.showMapView = false;
+            this.showCaseView = true;
+            this.mobileTab = this.mobileCaseTab;
+        }
         
         // Cargar Leaflet dinámicamente
         await this.loadLeaflet();
@@ -574,6 +611,7 @@ export class OrderModalComponent implements OnInit, OnDestroy {
 
     // Alternar vista mapa/productos
     toggleMapView() {
+        this.showCaseView = false;
         this.showMapView = !this.showMapView;
         if (this.showMapView) {
             setTimeout(() => {

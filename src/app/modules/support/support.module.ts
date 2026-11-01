@@ -15,6 +15,7 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 
 import { SupportComponent } from './support.component';
+import { SupportSharedModule } from './support-shared.module';
 
 // Casos del local con la Mesa de ayuda de Piwi (WBS 1.4, Etapa 4). SupportService y CaseWatchService son de la raíz:
 // el tablero de pedidos y el topbar también los usan.
@@ -33,6 +34,7 @@ import { SupportComponent } from './support.component';
         TabViewModule,
         ToastModule,
         TooltipModule,
+        SupportSharedModule,
     ],
 })
 export class SupportModule { }

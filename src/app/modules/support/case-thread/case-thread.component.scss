@@ -1,0 +1,218 @@
+$primary-color: #47AC34;
+$waiting-color: #F59E0B;
+$danger-color: #dc3545;
+
+.waiting-banner {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .75rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    background: rgba($waiting-color, .12);
+    color: darken($waiting-color, 18%);
+    font-weight: 600;
+}
+
+.loading {
+    text-align: center;
+    padding: 1.5rem;
+    color: $primary-color;
+}
+
+.case-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem 1rem;
+    font-size: .8rem;
+    color: var(--text-color-secondary);
+
+    .when {
+        margin-left: auto;
+    }
+}
+
+.status {
+    font-size: .75rem;
+    font-weight: 600;
+    padding: .2rem .6rem;
+    border-radius: 999px;
+
+    &.open { background: rgba($primary-color, .12); color: darken($primary-color, 10%); }
+    &.waiting { background: rgba($waiting-color, .15); color: darken($waiting-color, 18%); }
+    &.done { background: var(--surface-200); color: var(--text-color-secondary); }
+    &.cancelled { background: rgba($danger-color, .1); color: $danger-color; }
+}
+
+.hint {
+    color: var(--text-color-secondary);
+    font-size: .9rem;
+}
+
+.files {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem;
+    margin-top: .5rem;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    background: var(--surface-100);
+    border-radius: 999px;
+    padding: .2rem .65rem;
+    font-size: .8rem;
+
+    .pi {
+        cursor: pointer;
+        font-size: .7rem;
+    }
+}
+
+// ── Detalle ──
+h3 {
+    margin: 0 0 .4rem;
+}
+
+.steps {
+    display: flex;
+    gap: .25rem;
+    margin: 1.25rem 0 1rem;
+
+    .step {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: .3rem;
+        text-align: center;
+        color: var(--text-color-secondary);
+
+        .dot {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--surface-300);
+        }
+
+        &.done .dot, &.current .dot {
+            background: $primary-color;
+        }
+
+        &.current small {
+            color: $primary-color;
+            font-weight: 700;
+        }
+    }
+}
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    margin: 1rem 0;
+
+    .event {
+        color: var(--text-color-secondary);
+
+        .pi {
+            font-size: .45rem;
+            vertical-align: middle;
+            color: $primary-color;
+        }
+    }
+
+    .bubble {
+        max-width: 85%;
+        padding: .6rem .8rem;
+        border-radius: 12px;
+        background: var(--surface-100);
+        white-space: pre-line;
+
+        .who {
+            display: block;
+            color: var(--text-color-secondary);
+            margin-bottom: .2rem;
+        }
+    }
+
+    .team .bubble {
+        background: rgba($primary-color, .1);
+    }
+
+    .you {
+        align-self: flex-end;
+
+        .bubble {
+            margin-left: auto;
+        }
+    }
+}
+
+.detail-files {
+    display: grid;
+    gap: .3rem;
+    margin-bottom: 1rem;
+
+    label {
+        font-weight: 600;
+    }
+
+    .file {
+        color: $primary-color;
+        text-decoration: none;
+
+        small {
+            color: var(--text-color-secondary);
+            margin-left: .3rem;
+        }
+    }
+}
+
+.reply {
+    border-top: 1px solid var(--surface-border);
+    padding-top: .75rem;
+
+    textarea {
+        width: 100%;
+    }
+
+    .send {
+        margin-left: auto;
+    }
+}
+
+// Calificación de la que nació la incidencia (estrellas y comentario del cliente)
+.case-rating {
+    margin: .75rem 0 1rem;
+    padding: .75rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--surface-border);
+    background: var(--surface-100);
+
+    .who {
+        color: var(--text-color-secondary);
+    }
+
+    .stars {
+        margin: .25rem 0;
+        color: $waiting-color;
+
+        .off {
+            color: var(--surface-300);
+        }
+    }
+
+    .comment {
+        margin: 0;
+        white-space: pre-line;
+
+        &.muted,
+        small {
+            color: var(--text-color-secondary);
+        }
+    }
+}
