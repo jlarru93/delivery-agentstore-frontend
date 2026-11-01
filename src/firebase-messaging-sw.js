@@ -31,8 +31,15 @@ self.addEventListener('push', event => {
       silent: true,
     };
     
+    // Incidencias (workboard): sin el audio de pedido nuevo; al tocar abre "Casos"
+    const isCase = payload.type === 'WB_CASE_UPDATED';
+    if (isCase) {
+      options.tag = 'wb-case';
+      options.silent = false;
+    }
+
     // 2. Ejecutar tu lógica de audio
-    if (payload.audioUrl) {
+    if (payload.audioUrl && !isCase) {
       await broadcastToClients({
         type: 'PLAY_AUDIO',
         audioUrl: payload.audioUrl,
@@ -52,7 +59,7 @@ self.addEventListener('notificationclick', event => {
   event.notification.close();
 
   const data = (event.notification && event.notification.data) || {};
-  const clickUrl = data.click_action || '/';
+  const clickUrl = data.type === 'WB_CASE_UPDATED' ? '/#/support' : (data.click_action || '/');
 
   if (event.action === 'play') {
     event.waitUntil(broadcastToClients({ type: 'PLAY_AUDIO', url: data.audioUrl, metadata: data }));

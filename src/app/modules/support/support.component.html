@@ -97,6 +97,18 @@
             <span *ngIf="d.orderId"><i class="pi pi-shopping-bag"></i> Pedido #{{ d.orderId }}</span>
         </div>
 
+        <div class="case-rating" *ngIf="d.rating as r">
+            <small class="who">
+                Calificación del cliente {{ r.about === 'DRIVER' ? 'al repartidor' : 'a tu local' }}
+                <ng-container *ngIf="r.createdAt"> · {{ r.createdAt | date:'dd/MM HH:mm' }}</ng-container>
+            </small>
+            <div class="stars" [attr.aria-label]="r.stars + ' de 5 estrellas'">
+                <i class="pi pi-star-fill" *ngFor="let s of [1,2,3,4,5]" [class.off]="s > r.stars"></i>
+            </div>
+            <p class="comment" *ngIf="r.comment; else noComment">"{{ r.comment }}" <small>— {{ r.customer }}</small></p>
+            <ng-template #noComment><p class="comment muted">{{ r.customer }} no dejó comentario.</p></ng-template>
+        </div>
+
         <div class="steps" *ngIf="d.currentStep >= 0; else cancelled">
             <div class="step" *ngFor="let s of d.steps; let i = index" [class.done]="i < d.currentStep" [class.current]="i === d.currentStep">
                 <span class="dot"></span><small>{{ s }}</small>

@@ -293,3 +293,35 @@ h3 {
         margin-left: auto;
     }
 }
+
+// Calificación de la que nació la incidencia (estrellas y comentario del cliente)
+.case-rating {
+    margin: .75rem 0 1rem;
+    padding: .75rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--surface-border);
+    background: var(--surface-100);
+
+    .who {
+        color: var(--text-color-secondary);
+    }
+
+    .stars {
+        margin: .25rem 0;
+        color: $waiting-color;
+
+        .off {
+            color: var(--surface-300);
+        }
+    }
+
+    .comment {
+        margin: 0;
+        white-space: pre-line;
+
+        &.muted,
+        small {
+            color: var(--text-color-secondary);
+        }
+    }
+}

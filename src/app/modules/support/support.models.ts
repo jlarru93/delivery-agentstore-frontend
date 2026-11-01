@@ -44,6 +44,16 @@ export interface StoreCaseDetail {
     storeId: number
     storeName: string
     orderId: string | null
+    rating: CaseRating | null // si la incidencia nació de una calificación del cliente
+}
+
+/** Lo que el cliente calificó y escribió del pedido ("María G.") */
+export interface CaseRating {
+    about: 'STORE' | 'DRIVER'  // tu local | el repartidor del pedido
+    stars: number
+    comment: string | null
+    customer: string
+    createdAt: string | null
 }
 
 export interface SupportCategory {
