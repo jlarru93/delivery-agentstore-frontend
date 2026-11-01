@@ -1,0 +1,147 @@
+<p-toast></p-toast>
+
+<div class="support-container">
+    <div class="header-section">
+        <div class="title-area">
+            <i class="pi pi-comments"></i>
+            <div>
+                <h2>Incidencias</h2>
+                <small>Lo que Piwi necesita de tu local y lo que reportaste</small>
+            </div>
+        </div>
+        <button pButton type="button" icon="pi pi-refresh" class="p-button-rounded p-button-text" pTooltip="Actualizar"
+            (click)="load()"></button>
+    </div>
+
+    <div class="waiting-banner" *ngIf="waiting">
+        <i class="pi pi-exclamation-circle"></i>
+        Piwi espera tu respuesta en {{ waiting === 1 ? '1 incidencia' : waiting + ' incidencias' }}.
+    </div>
+
+    <p-tabView [(activeIndex)]="tab">
+        <!-- ── Mis incidencias ── -->
+        <p-tabPanel header="Mis incidencias">
+            <div class="empty" *ngIf="!loading && !cases.length">
+                <i class="pi pi-inbox"></i>
+                <p>No tienes incidencias. Si tuviste un problema con un pedido, un repartidor o la app, repórtalo en "Reportar un problema".</p>
+            </div>
+
+            <div class="case-list">
+                <button type="button" class="case" *ngFor="let c of cases" (click)="open(c.code)" [class.needs]="c.needsYou">
+                    <div class="case-top">
+                        <span class="code">{{ c.code }}</span>
+                        <span class="status" [ngClass]="statusClass(c)">{{ c.needsYou ? 'Piwi espera tu respuesta' : c.status }}</span>
+                    </div>
+                    <div class="case-title">{{ c.title }}</div>
+                    <div class="case-meta">
+                        <span><i class="pi pi-shop"></i> {{ c.storeName }}</span>
+                        <span *ngIf="c.orderId"><i class="pi pi-shopping-bag"></i> Pedido #{{ c.orderId }}</span>
+                        <span>{{ c.openedBy === 'PIWI' ? 'Abierto por Piwi' : 'Reportado por tu local' }}</span>
+                        <span class="when">{{ c.updatedAt | date:'dd/MM HH:mm' }}</span>
+                    </div>
+                </button>
+            </div>
+            <div class="loading" *ngIf="loading"><i class="pi pi-spin pi-spinner"></i></div>
+        </p-tabPanel>
+
+        <!-- ── Reportar un problema ── -->
+        <p-tabPanel header="Reportar un problema">
+            <div class="report-form">
+                <p class="hint">Cuéntanos qué pasó. Te respondemos aquí.</p>
+                <ng-container *ngIf="stores.length > 1">
+                    <label>Local</label>
+                    <p-dropdown [options]="stores" [(ngModel)]="storeId" optionLabel="name" optionValue="id"
+                        styleClass="w-full" appendTo="body"></p-dropdown>
+                </ng-container>
+                <label>¿Sobre qué es?</label>
+                <p-dropdown [options]="categories" [(ngModel)]="categoryCode" placeholder="Elige una opción (opcional)"
+                    [showClear]="true" [filter]="true" styleClass="w-full" appendTo="body"></p-dropdown>
+
+                <label>N.º de pedido (opcional)</label>
+                <p-inputNumber [(ngModel)]="orderId" [useGrouping]="false" [min]="1" placeholder="Ej. 25790"
+                    styleClass="w-full"></p-inputNumber>
+
+                <label>Título</label>
+                <input pInputText [(ngModel)]="title" maxlength="150" placeholder="Ej. El repartidor no recogió el pedido">
+
+                <label>Qué pasó</label>
+                <textarea pInputTextarea [(ngModel)]="body" rows="5" maxlength="2000"
+                    placeholder="Cuéntanos con detalle: hora, qué esperabas y qué pasó"></textarea>
+
+                <div class="files">
+                    <input #newPicker type="file" multiple [accept]="accept" hidden (change)="pick($event, newFiles)">
+                    <button pButton type="button" icon="pi pi-camera" label="Agregar fotos o PDF" class="p-button-outlined p-button-sm"
+                        (click)="newPicker.click()"></button>
+                    <span class="chip" *ngFor="let f of newFiles; let i = index">
+                        {{ f.name }} <i class="pi pi-times" (click)="removeFile(newFiles, i)"></i>
+                    </span>
+                </div>
+
+                <div class="actions">
+                    <button pButton type="button" label="Enviar a Piwi" icon="pi pi-send" [loading]="creating"
+                        [disabled]="!canCreate" (click)="create()"></button>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+
+<!-- ── Detalle de la incidencia ── -->
+<p-sidebar [(visible)]="isDetailOpen" position="right" styleClass="support-detail" [blockScroll]="true">
+    <ng-template pTemplate="header"><b>Incidencia {{ detail?.code }}</b></ng-template>
+    <div class="loading" *ngIf="!detail"><i class="pi pi-spin pi-spinner"></i></div>
+    <ng-container *ngIf="detail as d">
+        <h3>{{ d.title }}</h3>
+        <div class="case-meta">
+            <span><i class="pi pi-shop"></i> {{ d.storeName }}</span>
+            <span *ngIf="d.orderId"><i class="pi pi-shopping-bag"></i> Pedido #{{ d.orderId }}</span>
+        </div>
+
+        <div class="steps" *ngIf="d.currentStep >= 0; else cancelled">
+            <div class="step" *ngFor="let s of d.steps; let i = index" [class.done]="i < d.currentStep" [class.current]="i === d.currentStep">
+                <span class="dot"></span><small>{{ s }}</small>
+            </div>
+        </div>
+        <ng-template #cancelled><p class="status cancelled">{{ d.status }}</p></ng-template>
+        <p class="waiting-banner" *ngIf="d.statusCategory === 'WAITING'">
+            <i class="pi pi-exclamation-circle"></i> Piwi espera tu respuesta.
+        </p>
+
+        <div class="timeline">
+            <div class="entry" *ngFor="let e of d.timeline" [ngClass]="e.kind.toLowerCase()">
+                <ng-container *ngIf="e.kind === 'TEAM' || e.kind === 'YOU'; else statusEntry">
+                    <div class="bubble">
+                        <small class="who">{{ entryAuthor(e.kind) }} · {{ e.at | date:'dd/MM HH:mm' }}</small>
+                        <div>{{ e.text }}</div>
+                    </div>
+                </ng-container>
+                <ng-template #statusEntry>
+                    <small class="event"><i class="pi pi-circle-fill"></i> {{ e.text }} · {{ e.at | date:'dd/MM HH:mm' }}</small>
+                </ng-template>
+            </div>
+        </div>
+
+        <div class="detail-files" *ngIf="d.files.length">
+            <label>Archivos</label>
+            <a class="file" *ngFor="let f of d.files" [href]="f.url" target="_blank" rel="noopener">
+                <i class="pi" [ngClass]="f.kind === 'IMAGE' ? 'pi-image' : 'pi-file-pdf'"></i>
+                {{ f.fileName }} <small>{{ f.fromYou ? 'Tu local' : 'Piwi' }}</small>
+            </a>
+        </div>
+
+        <div class="reply" *ngIf="d.canReply; else closed">
+            <textarea pInputTextarea [(ngModel)]="replyText" rows="3" maxlength="2000" placeholder="Escribe tu respuesta a Piwi"></textarea>
+            <div class="files">
+                <input #replyPicker type="file" multiple [accept]="accept" hidden (change)="pick($event, replyFiles)">
+                <button pButton type="button" icon="pi pi-paperclip" class="p-button-text p-button-sm" pTooltip="Adjuntar fotos o PDF"
+                    (click)="replyPicker.click()"></button>
+                <span class="chip" *ngFor="let f of replyFiles; let i = index">
+                    {{ f.name }} <i class="pi pi-times" (click)="removeFile(replyFiles, i)"></i>
+                </span>
+                <button pButton type="button" label="Enviar" icon="pi pi-send" class="p-button-sm send" [loading]="sending"
+                    [disabled]="replyText.trim().length < 2" (click)="sendReply()"></button>
+            </div>
+        </div>
+        <ng-template #closed><p class="hint">Esta incidencia está cerrada. Si el problema sigue, repórtalo de nuevo.</p></ng-template>
+    </ng-container>
+</p-sidebar>

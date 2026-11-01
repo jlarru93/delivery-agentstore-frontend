@@ -1,3 +1,4 @@
+import { CaseWatchService } from "../support/case-watch.service";
 import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { OrderService } from "./service/order.service";
@@ -112,6 +113,7 @@ import { PushService } from "../service/push.service";
       //private dataShared:DataSharedService,
       private orderRepository:OrderRepository,
       public audioService:AudioService,
+      public readonly caseWatch:CaseWatchService, // casos de Piwi: aviso y etiqueta CASO
       private ngZone: NgZone,
       private router: Router,
       private route: ActivatedRoute,

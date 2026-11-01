@@ -57,6 +57,11 @@ const routes: Routes = [
                 loadChildren: () => import('./modules/dynamic-report/dynamic-report.module').then(m => m.DynamicReportModule)
             },
             {
+                // Mesa de ayuda de Piwi: casos del local (WBS 1.4)
+                path: "support",
+                loadChildren: () => import('./modules/support/support.module').then(m => m.SupportModule), canActivate: [IsAuthenticated]
+            },
+            {
                 path: "profile",
                 loadChildren: () => import('./modules/profile/profile.module').then(m => m.ProfileModule), canActivate: [IsAuthenticated]
             }

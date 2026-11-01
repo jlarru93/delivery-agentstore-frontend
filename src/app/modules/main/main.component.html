@@ -1,4 +1,10 @@
 <p-toast [baseZIndex]="1000"></p-toast>
+<!-- Mesa de ayuda: Piwi espera respuesta del local -->
+<a class="case-banner" routerLink="/support" *ngIf="caseWatch.waiting">
+   <i class="pi pi-comments"></i>
+   <span>Piwi te pide respuesta en {{ caseWatch.waiting === 1 ? '1 incidencia' : caseWatch.waiting + ' incidencias' }}</span>
+   <b>Ver incidencias</b>
+</a>
 <div class="p-grid">
    <div class="p-col-12 p-lg-order-5 p-md-6">
       <div class="p-p-2" style="background-color: #F5F5F5; border-radius: 3px;">
@@ -21,6 +27,7 @@
                         <span class="customer-name-compact">{{getFirstName(order)}}</span>
                         <div class="meta-badges">
                            <span class="order-id-badge">#{{order.id}}</span>
+                           <span class="case-badge" *ngIf="caseWatch.caseForOrder(order.id) as c" [title]="c.code + ' · ' + c.status">INCIDENCIA</span>
                            <span class="items-badge">
                               <svg width="10" height="10" viewBox="0 0 24 24" fill="white">
                                  <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
@@ -146,6 +153,7 @@
                         <div class="meta-badges">
                            <!-- ID Pedido -->
                            <span class="order-id-badge">#{{order.id}}</span>
+                           <span class="case-badge" *ngIf="caseWatch.caseForOrder(order.id) as c" [title]="c.code + ' · ' + c.status">INCIDENCIA</span>
                            
                            <!-- Cantidad Items -->
                            <span class="items-badge">
@@ -302,6 +310,7 @@
                         <div class="meta-badges">
                            <!-- ID Pedido -->
                            <span class="order-id-badge">#{{order.id}}</span>
+                           <span class="case-badge" *ngIf="caseWatch.caseForOrder(order.id) as c" [title]="c.code + ' · ' + c.status">INCIDENCIA</span>
                            
                            <!-- Cantidad Items -->
                            <span class="items-badge">
@@ -447,6 +456,7 @@
                         <div class="meta-badges">
                            <!-- ID Pedido -->
                            <span class="order-id-badge">#{{order.id}}</span>
+                           <span class="case-badge" *ngIf="caseWatch.caseForOrder(order.id) as c" [title]="c.code + ' · ' + c.status">INCIDENCIA</span>
                            
                            <!-- Cantidad Items -->
                            <span class="items-badge">
@@ -579,6 +589,7 @@
                         <div class="meta-badges">
                            <!-- ID Pedido -->
                            <span class="order-id-badge">#{{order.id}}</span>
+                           <span class="case-badge" *ngIf="caseWatch.caseForOrder(order.id) as c" [title]="c.code + ' · ' + c.status">INCIDENCIA</span>
                            
                            <!-- Cantidad Items -->
                            <span class="items-badge">

@@ -801,3 +801,31 @@ p{
 ::ng-deep .p-disabled, .p-component:disabled {
     opacity: 100!important;
 }
+
+// ── Mesa de ayuda (casos de Piwi) ──
+.case-banner {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  margin: 0 .5rem .75rem;
+  padding: .7rem 1rem;
+  border-radius: 10px;
+  background: rgba(245, 158, 11, .14);
+  color: #92400E;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+
+  .pi { font-size: 1.1rem; }
+  b { margin-left: auto; text-decoration: underline; }
+}
+
+.case-badge {
+  background: #F59E0B;
+  color: #fff;
+  border-radius: 4px;
+  padding: 0 .35rem;
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+}

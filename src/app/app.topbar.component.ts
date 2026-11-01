@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewCh
 import { Router } from '@angular/router';
 import { AppMainComponent } from './app.main.component';
 import { AuthService } from './utils/auth.service';
+import { CaseWatchService } from './modules/support/case-watch.service';
 import { OpenStoreRequest } from './modules/main/service/data/request';
 import { buildOpenStoreRequest, canCloseAllDay, closeHint, confirmQuestion, getBackendMessage } from './modules/main/store-open.helper';
 import { Brand, Store } from './models';
@@ -83,6 +84,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
         private readonly pwaInstallService: PwaInstallService,
         private messageService: AlertServices,
         private audio: AudioBackgroundService,
+        private readonly caseWatch: CaseWatchService,
         
         private zone: NgZone
         
@@ -90,6 +92,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // ==================== LIFECYCLE HOOKS ====================
     ngOnInit(): void {
+        this.caseWatch.start(); // casos de Piwi: aviso en Órdenes y etiqueta CASO en el pedido
         this.getFirstLogin();
         this.checkDevice();
         window.addEventListener('resize', () => this.checkDevice());
@@ -164,6 +167,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
             this.storesOpen.forEach(s => {
                 this.processSubsCribeStore(s.id);
                 this.processSubsCribeOpenStore(s.id);
+                this.workerHandler.subscribe("wb/store/" + s.id); // casos de la Mesa de ayuda (abierto o cerrado)
             });
         }
     }

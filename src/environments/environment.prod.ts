@@ -3,6 +3,7 @@ export const environment = {
   url:{
     backEndInit : [
       'https://api.piwi.pe/agent-store',
+      'https://api.piwi.pe/delivery-workboard',
       'https://api.piwi.pe/tracking',
       "https://api.piwi.pe/utils",
       'https://api.piwi.pe/delivery-zone',
@@ -22,6 +23,8 @@ export const environment = {
     backEnd_Zone: 'https://api.piwi.pe/delivery-zone',
     store_banckEnd:"https://api.piwi.pe/delivery-store",
     backEndInvoice:'https://api.piwi.pe/delivery-invoice',
+    // Mesa de ayuda (Casos): casos del local en delivery-workboard-backend
+    backWorkboard: 'https://api.piwi.pe/delivery-workboard',
   },
   microFront:{
     invoice:"https://micro-invoice.piwi.pe/#/",
