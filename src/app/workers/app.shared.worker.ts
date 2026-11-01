@@ -20,6 +20,10 @@ self.onconnect = (connectEvent: MessageEvent<WorkerAction>) => {
   console.log("inicio WORKER")
   const port = connectEvent.ports[0];
   connections.push(port);
+  // Pestaña nueva con el broker ya conectado (otra pestaña lo abrió): avisarle, si no nunca se suscribe a lo suyo
+  if (clientMqtt && clientMqtt.isConnected()) {
+    port.postMessage({ action: "mqttConnect", param: true });
+  }
 
   port.onmessage = (requestMessageEvent: MessageEvent<WorkerAction<any>>) => {
     val++
@@ -93,7 +97,7 @@ function configMqttClient() {
 }
 
 function subscribe(topic: string) {
-  channelsSubscripted.push(topic)
+  if (!channelsSubscripted.includes(topic)) channelsSubscripted.push(topic)
   if (!clientMqtt || !clientMqtt.isConnected()) {
     getMqttClient()
     _onConnect.subscribe((isconect) => {

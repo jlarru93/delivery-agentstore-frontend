@@ -12,6 +12,7 @@ export class CaseWatchService {
     private readonly _cases = new BehaviorSubject<StoreCase[]>([])
     readonly cases$ = this._cases.asObservable()
     private byOrder = new Map<string, StoreCase>()
+    private lastByOrder = new Map<string, StoreCase>() // el más reciente del pedido, abierto o cerrado
     private timer?: ReturnType<typeof setInterval>
     private audio?: AudioContext
 
@@ -29,7 +30,9 @@ export class CaseWatchService {
             next: resp => this.zone.run(() => {
                 const cases = resp.data ?? []
                 this.byOrder = new Map()
+                this.lastByOrder = new Map()
                 for (const c of cases) {
+                    if (c.orderId && !this.lastByOrder.has(c.orderId)) this.lastByOrder.set(c.orderId, c)
                     // Solo los abiertos marcan el pedido
                     if (c.orderId && c.statusCategory !== 'DONE' && c.statusCategory !== 'CANCELLED' && !this.byOrder.has(c.orderId)) {
                         this.byOrder.set(c.orderId, c)
@@ -49,6 +52,11 @@ export class CaseWatchService {
 
     caseForOrder(orderId: number | string | null | undefined): StoreCase | undefined {
         return orderId == null ? undefined : this.byOrder.get(String(orderId))
+    }
+
+    /** Para el modal de la orden: la abierta si hay; si no, la última (cerrada), para que no desaparezca al cerrarla Piwi */
+    lastCaseForOrder(orderId: number | string | null | undefined): StoreCase | undefined {
+        return orderId == null ? undefined : this.byOrder.get(String(orderId)) ?? this.lastByOrder.get(String(orderId))
     }
 
     get waiting(): number {

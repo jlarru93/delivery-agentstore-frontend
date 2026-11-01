@@ -8,7 +8,7 @@ import { SupportService } from '../support.service';
 
 // Detalle de una incidencia: calificación del cliente, etapas, conversación con Piwi, archivos y respuesta.
 // Se usa en "Casos" (panel lateral) y en el modal de la orden (vista "Incidencia"). Se recarga solo cuando llega un
-// aviso del local (CaseWatchService: MQTT wb/store/{id} y respaldo cada 2 minutos).
+// aviso del local (CaseWatchService: MQTT wb/store/{id}) y, de respaldo, cada 30 s mientras está a la vista.
 @Component({
     selector: 'app-case-thread',
     templateUrl: './case-thread.component.html',
@@ -29,6 +29,7 @@ export class CaseThreadComponent implements OnInit, OnChanges, OnDestroy {
     sending = false
 
     private subscription?: Subscription
+    private timer?: ReturnType<typeof setInterval>
 
     constructor(
         private readonly support: SupportService,
@@ -39,6 +40,9 @@ export class CaseThreadComponent implements OnInit, OnChanges, OnDestroy {
     ngOnInit(): void {
         // El primer valor es el estado actual: solo interesan los avisos nuevos
         this.subscription = this.watch.cases$.pipe(skip(1)).subscribe(() => this.refresh())
+        this.timer = setInterval(() => {
+            if (document.visibilityState === 'visible' && !this.sending) this.refresh()
+        }, 30_000)
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -52,6 +56,7 @@ export class CaseThreadComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnDestroy(): void {
         this.subscription?.unsubscribe()
+        if (this.timer) clearInterval(this.timer)
     }
 
     private refresh() {

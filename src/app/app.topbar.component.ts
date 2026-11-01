@@ -116,8 +116,9 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
 
-        // ⚡ CRÍTICO: Suscribirse a conexión MQTT
-        this.workerHandler._onConnectWorker.subscribe((isConnect) => {
+        // ⚡ CRÍTICO: Suscribirse a conexión MQTT. onConnectAsync$ avisa con SharedWorker y sin él (WebView de Android,
+        // MqttService directo); _onConnectWorker solo cambiaba con el worker y en Android nunca se suscribía.
+        this.workerHandler.onConnectAsync$.subscribe((isConnect) => {
             this.isConnectMqtt = isConnect;
             this.validateConnectMqttAndGetStatus();
         });

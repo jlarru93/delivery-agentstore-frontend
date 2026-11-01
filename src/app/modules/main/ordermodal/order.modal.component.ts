@@ -89,9 +89,9 @@ export class OrderModalComponent implements OnInit, OnDestroy {
         private caseWatch: CaseWatchService
     ) { }
 
-    /** Incidencia abierta de este pedido (la misma que marca la tarjeta) */
+    /** Incidencia de este pedido: la abierta (la que marca la tarjeta) o, si Piwi ya la cerró, la última */
     get orderCase(): StoreCase | undefined {
-        return this.caseWatch.caseForOrder(this.orderSelected?.id)
+        return this.caseWatch.lastCaseForOrder(this.orderSelected?.id)
     }
 
     /** Índice de la pestaña "Incidencia" en celular: va al final */
