@@ -2094,7 +2094,20 @@ $orden-surface-hover: rgba(0, 0, 0, .04);
             border-color: $orden-primary-color;
             color: white;
         }
+
+        // Incidencia en la que Piwi espera respuesta del local: resalta en ámbar (mismo color que la etiqueta)
+        &.toggle-case.needs-you:not(.active) {
+            border-color: #F59E0B;
+            color: #b45309;
+        }
     }
+}
+
+// Vista "Incidencia" (app-case-thread)
+.orden-modal-caso {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
 }
 
 // Contenedor del mapa

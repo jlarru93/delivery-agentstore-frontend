@@ -95,6 +95,11 @@ export class PushService {
             return;
           }
 
+          // Incidencia (workboard): sin alarma de pedido; el aviso en pantalla lo da CaseWatchService por MQTT
+          if (type === "WB_CASE_UPDATED") {
+            return;
+          }
+
           if (type === "NEW_ORDER") {
             if (this.notifConfig.isSound()) {
               await this.startAlarm();
@@ -109,6 +114,10 @@ export class PushService {
           await this.stopAlarm();
 
           const data = action.notification?.data;
+          if (data?.type === "WB_CASE_UPDATED") {
+            this.router.navigate(["/support"]);
+            return;
+          }
           if (data && data.orderUuid) {
             this.router.navigate(["/main"], {
               queryParams: { order: data.orderUuid },

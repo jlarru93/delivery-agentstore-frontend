@@ -1,3 +1,4 @@
+import { CaseWatchService } from "../support/case-watch.service";
 import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { OrderService } from "./service/order.service";
@@ -112,6 +113,7 @@ import { PushService } from "../service/push.service";
       //private dataShared:DataSharedService,
       private orderRepository:OrderRepository,
       public audioService:AudioService,
+      public readonly caseWatch:CaseWatchService, // casos de Piwi: aviso y etiqueta CASO
       private ngZone: NgZone,
       private router: Router,
       private route: ActivatedRoute,
@@ -473,7 +475,11 @@ import { PushService } from "../service/push.service";
     paymentName: string
     storeDataStorage: StoreBean
 
-    openOrderDialog(order:OrderBean){
+    // toCase: tocaron la etiqueta INCIDENCIA de la tarjeta → el modal abre en la incidencia
+    openOnCase = false
+
+    openOrderDialog(order:OrderBean, toCase = false){
+      this.openOnCase = toCase
       this.orderSelected=order
       this.displayOrder=true
       this.stopAudio();            // para audio web/PWA

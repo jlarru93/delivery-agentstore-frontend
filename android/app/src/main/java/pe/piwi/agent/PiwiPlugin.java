@@ -34,7 +34,7 @@ public class PiwiPlugin extends Plugin {
      * Recibe el HTML de la comanda y abre el diálogo de impresión del sistema.
      */
     @PluginMethod
-    public void printComanda(PluginCall call) {
+    public void printComanpoda(PluginCall call) {
         String html = call.getString("html");
         if (html == null || html.isEmpty()) {
             call.reject("html requerido");

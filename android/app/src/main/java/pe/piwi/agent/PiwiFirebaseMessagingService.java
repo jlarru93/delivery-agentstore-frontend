@@ -15,6 +15,7 @@ public class PiwiFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "PiwiFCM";
     private static final String CHANNEL_ID = "piwi_fcm_channel";
+    private static final String CASES_CHANNEL_ID = "piwi_cases_channel";
     private static final int PUSH_TTL_SECONDS = 300; // 5 minutos fallback
 
     @Override
@@ -33,6 +34,13 @@ public class PiwiFirebaseMessagingService extends FirebaseMessagingService {
         if ("CANCEL_ORDER".equals(type)) {
             Log.d(TAG, "CANCEL_ORDER recibido — deteniendo AlarmService");
             stopService(new Intent(this, AlarmService.class));
+            return;
+        }
+
+        // ── WB_CASE_UPDATED: Piwi escribió o cambió una incidencia del local (workboard) ──
+        // Notificación normal, sin alarma: al abrir, la pantalla de Incidencias trae los casos.
+        if ("WB_CASE_UPDATED".equals(type)) {
+            showCaseNotification(title, body);
             return;
         }
 
@@ -102,6 +110,35 @@ public class PiwiFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (nm != null) nm.notify(1002, builder.build());
+    }
+
+    private void showCaseNotification(String title, String body) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CASES_CHANNEL_ID, "Incidencias", NotificationManager.IMPORTANCE_HIGH
+            );
+            NotificationManager nm = getSystemService(NotificationManager.class);
+            if (nm != null) nm.createNotificationChannel(channel);
+        }
+
+        Intent openIntent = new Intent(this, MainActivity.class);
+        openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this, 1, openIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CASES_CHANNEL_ID)
+                .setContentTitle(title != null ? title : "Piwi te escribió")
+                .setContentText(body != null ? body : "Toca para ver la incidencia")
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (nm != null) nm.notify(1003, builder.build());
     }
 
     private void createNotificationChannel() {

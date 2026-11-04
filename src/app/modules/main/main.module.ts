@@ -35,12 +35,14 @@ import {KnobModule} from 'primeng/knob';
 import { TooltipModule } from "primeng/tooltip";
 import { DropdownModule } from "primeng/dropdown";
 import { OrderModalComponent } from "./ordermodal/order.modal.component";
+import { SupportSharedModule } from "../support/support-shared.module";
 import { TabViewModule } from "primeng/tabview";
 import { RequestTripService } from "../request-trip/services/request-trip.service";
 
 @NgModule({
     declarations: [MainComponent,CircleProgress,OrderModalComponent],
     imports: [
+      SupportSharedModule,
       AvatarModule,
       AvatarGroupModule,
       ModalModule,
