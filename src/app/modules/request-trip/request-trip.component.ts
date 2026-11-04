@@ -693,7 +693,7 @@ export class RequestTripComponent implements OnInit, AfterViewInit, OnDestroy {
           alias: "",
           floor: "",
           phone: "",
-          marker: "store",
+          marker: "home",
           point: {
             coordinates: [0, 0],
             type: "",
