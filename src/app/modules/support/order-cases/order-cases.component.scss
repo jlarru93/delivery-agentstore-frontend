@@ -1,0 +1,108 @@
+$primary-color: #47AC34;
+$waiting-color: #F59E0B;
+
+// Una pestaña por incidencia del pedido + "Reportar incidencia"
+.case-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin-bottom: .75rem;
+}
+
+.case-chip {
+    display: grid;
+    gap: .1rem;
+    text-align: left;
+    padding: .35rem .7rem;
+    border-radius: 10px;
+    border: 1px solid var(--surface-border);
+    background: var(--surface-card);
+    cursor: pointer;
+    font: inherit;
+
+    .code {
+        font-weight: 700;
+        font-size: .85rem;
+    }
+
+    small {
+        color: var(--text-color-secondary);
+    }
+
+    &.needs-you {
+        border-color: $waiting-color;
+
+        small {
+            color: darken($waiting-color, 18%);
+            font-weight: 600;
+        }
+    }
+
+    &.closed {
+        opacity: .7;
+    }
+
+    &.active {
+        border-color: $primary-color;
+        background: rgba($primary-color, .1);
+    }
+
+    &.new {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        color: $primary-color;
+        font-weight: 600;
+        border-style: dashed;
+    }
+}
+
+.report-form {
+    display: grid;
+    gap: .4rem;
+
+    label {
+        font-weight: 600;
+        font-size: .9rem;
+        margin-top: .5rem;
+    }
+
+    input, textarea {
+        width: 100%;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: .5rem;
+        margin-top: .75rem;
+    }
+}
+
+.hint {
+    color: var(--text-color-secondary);
+    font-size: .9rem;
+    margin: 0;
+}
+
+.files {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem;
+    margin-top: .5rem;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    background: var(--surface-100);
+    border-radius: 999px;
+    padding: .2rem .65rem;
+    font-size: .8rem;
+
+    i {
+        cursor: pointer;
+    }
+}

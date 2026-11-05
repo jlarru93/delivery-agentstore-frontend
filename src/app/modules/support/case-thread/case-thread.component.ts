@@ -3,7 +3,7 @@ import { MessageService } from 'primeng/api';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { CaseWatchService } from '../case-watch.service';
-import { CaseFileRequest, StoreCaseDetail } from '../support.models';
+import { CaseFile, CaseFileRequest, StoreCaseDetail } from '../support.models';
 import { SupportService } from '../support.service';
 
 // Detalle de una incidencia: calificación del cliente, etapas, conversación con Piwi, archivos y respuesta.
@@ -108,6 +108,24 @@ export class CaseThreadComponent implements OnInit, OnChanges, OnDestroy {
 
     entryAuthor(kind: string): string {
         return kind === 'TEAM' ? 'Piwi' : kind === 'YOU' ? 'Tu local' : ''
+    }
+
+    images(d: StoreCaseDetail): CaseFile[] {
+        return d.files.filter(f => f.kind === 'IMAGE')
+    }
+
+    documents(d: StoreCaseDetail): CaseFile[] {
+        return d.files.filter(f => f.kind !== 'IMAGE')
+    }
+
+    fileAuthor(f: CaseFile): string {
+        const by = f.by ?? (f.fromYou ? 'YOU' : 'PIWI')
+        return ({ YOU: 'Tu local', DRIVER: 'Motorizado', USER: 'Cliente' } as Record<string, string>)[by] ?? 'Piwi'
+    }
+
+    reportAuthor(by: string): string {
+        return ({ YOU: 'Lo que reportaste', DRIVER: 'Lo que reportó el motorizado', USER: 'Lo que reportó el cliente' } as Record<string, string>)[by]
+            ?? 'Lo que registró Piwi'
     }
 
     private fail(err: any) {

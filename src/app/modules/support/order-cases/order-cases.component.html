@@ -1,0 +1,46 @@
+<p-toast></p-toast>
+<div class="case-tabs">
+    <button type="button" class="case-chip" *ngFor="let c of cases" (click)="select(c.code)"
+        [class.active]="!reporting && selected === c.code" [class.needs-you]="c.needsYou" [class.closed]="isClosed(c)"
+        [pTooltip]="c.title">
+        <span class="code">{{ c.code }}</span>
+        <small>{{ c.needsYou ? 'Piwi espera tu respuesta' : c.status }}</small>
+    </button>
+    <button type="button" class="case-chip new" [class.active]="reporting" (click)="openReport()">
+        <i class="pi pi-plus"></i> Reportar incidencia
+    </button>
+</div>
+
+<app-case-thread *ngIf="!reporting && selected" [code]="selected" [showOrder]="false"></app-case-thread>
+
+<div class="report-form" *ngIf="reporting">
+    <p class="hint">Cuéntale a Piwi qué pasó con el pedido #{{ orderId }}. Te respondemos aquí.</p>
+    <label>¿Sobre qué es?</label>
+    <!-- baseZIndex: el modal de la orden fuerza su máscara a 9998; sin esto la lista se abre detrás -->
+    <p-dropdown [options]="categories" [(ngModel)]="categoryCode" placeholder="Elige una opción (opcional)"
+        [showClear]="true" [filter]="true" styleClass="w-full" appendTo="body" [baseZIndex]="11000"
+        emptyMessage="No hay opciones" emptyFilterMessage="Sin resultados"></p-dropdown>
+
+    <label>Título</label>
+    <input pInputText [(ngModel)]="title" maxlength="150" placeholder="Ej. El repartidor no recogió el pedido">
+
+    <label>Qué pasó</label>
+    <textarea pInputTextarea [(ngModel)]="body" rows="4" maxlength="2000"
+        placeholder="Cuéntanos con detalle: hora, qué esperabas y qué pasó"></textarea>
+
+    <div class="files">
+        <input #picker type="file" multiple [accept]="accept" hidden (change)="pick($event)">
+        <button pButton type="button" icon="pi pi-camera" label="Agregar fotos o PDF" class="p-button-outlined p-button-sm"
+            (click)="picker.click()"></button>
+        <span class="chip" *ngFor="let f of files; let i = index">
+            {{ f.name }} <i class="pi pi-times" (click)="removeFile(i)"></i>
+        </span>
+    </div>
+
+    <div class="actions">
+        <button pButton type="button" label="Cancelar" class="p-button-text p-button-sm" *ngIf="cases.length"
+            (click)="cancelReport()"></button>
+        <button pButton type="button" label="Enviar a Piwi" icon="pi pi-send" class="p-button-sm" [loading]="creating"
+            [disabled]="!canCreate" (click)="create()"></button>
+    </div>
+</div>

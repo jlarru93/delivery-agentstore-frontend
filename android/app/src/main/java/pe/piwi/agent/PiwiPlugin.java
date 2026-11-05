@@ -30,6 +30,24 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 @CapacitorPlugin(name = "PiwiPlugin")
 public class PiwiPlugin extends Plugin {
 
+    // La instancia viva (con la app abierta) para avisar a Angular desde el servicio de FCM
+    private static PiwiPlugin instance;
+
+    @Override
+    public void load() {
+        instance = this;
+    }
+
+    /**
+     * Llegó un push de incidencia (WB_CASE_UPDATED): Angular recarga la lista de incidencias.
+     * PiwiFirebaseMessagingService atiende el push, así que el listener del plugin de Firebase no se entera.
+     *   PiwiPlugin.addListener('caseUpdated', () => ...)
+     */
+    public static void emitCaseUpdated() {
+        PiwiPlugin plugin = instance;
+        if (plugin != null) plugin.notifyListeners("caseUpdated", new JSObject());
+    }
+
     /**
      * Recibe el HTML de la comanda y abre el diálogo de impresión del sistema.
      */

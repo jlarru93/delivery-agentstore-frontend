@@ -26,6 +26,14 @@ export interface CaseFile {
     url: string
     kind: string              // IMAGE | PDF…
     fromYou: boolean
+    by?: 'YOU' | 'PIWI' | 'DRIVER' | 'STORE' | 'USER'  // quién lo subió (DRIVER / USER = evidencia de su reporte)
+    at: string
+}
+
+/** La descripción con la que se abrió la incidencia (tu local, el motorizado, el cliente o Piwi) */
+export interface CaseReport {
+    by: 'YOU' | 'DRIVER' | 'USER' | 'PIWI'
+    text: string
     at: string
 }
 
@@ -45,6 +53,7 @@ export interface StoreCaseDetail {
     storeName: string
     orderId: string | null
     rating: CaseRating | null // si la incidencia nació de una calificación del cliente
+    report?: CaseReport | null
 }
 
 /** Lo que el cliente calificó y escribió del pedido ("María G.") */

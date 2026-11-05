@@ -17,6 +17,7 @@ public class PiwiFirebaseMessagingService extends FirebaseMessagingService {
     private static final String CHANNEL_ID = "piwi_fcm_channel";
     private static final String CASES_CHANNEL_ID = "piwi_cases_channel";
     private static final int PUSH_TTL_SECONDS = 300; // 5 minutos fallback
+    private static final int CASE_ALARM_PLAYS = 3;   // una incidencia suena 3 veces (la orden, hasta atenderla)
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -38,9 +39,17 @@ public class PiwiFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         // ── WB_CASE_UPDATED: Piwi escribió o cambió una incidencia del local (workboard) ──
-        // Notificación normal, sin alarma: al abrir, la pantalla de Incidencias trae los casos.
+        // Suena como una orden (mismo audio y volumen) pero solo 3 veces; si hay una orden sonando, no la corta.
         if ("WB_CASE_UPDATED".equals(type)) {
+            if (!AlarmService.orderRinging) {
+                Intent alarmIntent = new Intent(this, AlarmService.class);
+                alarmIntent.putExtra("title", title != null ? title : "Piwi te escribió");
+                alarmIntent.putExtra("body",  body  != null ? body  : "Toca para ver la incidencia");
+                alarmIntent.putExtra(AlarmService.EXTRA_PLAYS, CASE_ALARM_PLAYS);
+                ContextCompat.startForegroundService(this, alarmIntent);
+            }
             showCaseNotification(title, body);
+            PiwiPlugin.emitCaseUpdated(); // con la app abierta, la lista se recarga al instante
             return;
         }
 

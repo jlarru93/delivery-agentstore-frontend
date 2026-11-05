@@ -161,6 +161,32 @@ h3 {
         font-weight: 600;
     }
 
+    .thumbs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+    }
+
+    .thumb {
+        display: grid;
+        gap: .15rem;
+        width: 96px;
+        text-decoration: none;
+
+        img {
+            width: 96px;
+            height: 96px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--surface-border);
+        }
+
+        small {
+            color: var(--text-color-secondary);
+            text-align: center;
+        }
+    }
+
     .file {
         color: $primary-color;
         text-decoration: none;
@@ -185,8 +211,9 @@ h3 {
     }
 }
 
-// Calificación de la que nació la incidencia (estrellas y comentario del cliente)
-.case-rating {
+// Calificación de la que nació la incidencia (estrellas y comentario del cliente) y reporte con el que se abrió
+.case-rating,
+.case-report {
     margin: .75rem 0 1rem;
     padding: .75rem 1rem;
     border-radius: 10px;
