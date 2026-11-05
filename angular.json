@@ -32,6 +32,7 @@
                           "src/assets",
                           "src/manifest.webmanifest",
                           "src/firebase-messaging-sw.js",
+                          "src/ngsw-worker.js",
                             {
                                 "glob": "firebase-config.js",
                                 "input": "src/environments/dev",
@@ -62,7 +63,7 @@
                             "@aws-crypto/crc32",
                             "paho-mqtt"
                         ],
-                        "serviceWorker": true,
+                        "serviceWorker": false,
                         "webWorkerTsConfig": "tsconfig.worker.json",
                         "ngswConfigPath": "ngsw-config.json"
                     },
@@ -82,6 +83,7 @@
                                 "src/assets",
                                 "src/manifest.webmanifest",
                                 "src/firebase-messaging-sw.js",
+                                "src/ngsw-worker.js",
                                 {
                                     "glob": "firebase-config.js",
                                     "input": "src/environments/prod",
@@ -187,6 +189,7 @@
                           "src/assets",
                           "src/manifest.webmanifest",
                           "src/firebase-messaging-sw.js",
+                          "src/ngsw-worker.js",
                           {
                             "glob": "firebase-config.js",
                             "input": "src/environments/dev",
