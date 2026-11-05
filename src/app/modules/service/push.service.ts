@@ -95,7 +95,7 @@ export class PushService {
             return;
           }
 
-          // Incidencia (workboard): sin alarma de pedido; el aviso en pantalla lo da CaseWatchService por MQTT
+          // Incidencia (workboard): la alarma (3 veces) y el refresco de la lista los da PiwiFirebaseMessagingService
           if (type === "WB_CASE_UPDATED") {
             return;
           }

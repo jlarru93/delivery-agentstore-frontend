@@ -94,6 +94,21 @@ export class OrderModalComponent implements OnInit, OnDestroy {
         return this.caseWatch.lastCaseForOrder(this.orderSelected?.id)
     }
 
+    /** Pestaña de incidencias: siempre (para reportar desde el pedido), con cuántas tiene */
+    get caseTabLabel(): string {
+        const n = this.caseWatch.casesForOrder(this.orderSelected?.id).length
+        return n > 1 ? `Incidencias (${n})` : n === 1 ? 'Incidencia' : 'Reportar incidencia'
+    }
+
+    get caseNeedsYou(): boolean {
+        return this.caseWatch.casesForOrder(this.orderSelected?.id).some(c => c.needsYou)
+    }
+
+    /** Local del pedido (el POS puede atender más de uno) */
+    get orderStoreId(): number | null {
+        return this.orderSelected?.store?.id ?? this.storeDataStorage?.id ?? null
+    }
+
     /** Índice de la pestaña "Incidencia" en celular: va al final */
     get mobileCaseTab(): number {
         return 3 + (this.orderSelected?.addresses?.length >= 2 ? 1 : 0)

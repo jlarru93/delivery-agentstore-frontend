@@ -36,6 +36,8 @@ self.addEventListener('push', event => {
     if (isCase) {
       options.tag = 'wb-case';
       options.silent = false;
+      // Con el POS abierto, la lista de incidencias se recarga (CaseWatchService)
+      await broadcastToClients({ type: 'WB_CASE_UPDATED' });
     }
 
     // 2. Ejecutar tu lógica de audio

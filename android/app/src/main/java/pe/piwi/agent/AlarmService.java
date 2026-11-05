@@ -32,7 +32,14 @@ public class AlarmService extends Service {
     private static final String CHANNEL_ID     = "piwi_alarm_channel";
     private static final int    NOTIFICATION_ID = 1001;
 
+    /** Extra "plays": cuántas veces suena (0 = en bucle hasta detenerla, como una orden nueva). */
+    public static final String EXTRA_PLAYS = "plays";
+
+    /** Hay una orden sonando en bucle: un aviso que suena N veces no debe cortarla. */
+    public static volatile boolean orderRinging = false;
+
     private MediaPlayer           mediaPlayer;
+    private int                   playsLeft; // 0 = bucle
     private Vibrator              vibrator;
     private PowerManager.WakeLock wakeLock;
     private WindowManager         windowManager;
@@ -50,6 +57,8 @@ public class AlarmService extends Service {
                 ? intent.getStringExtra("title") : "Nueva orden recibida";
         String body  = intent != null && intent.getStringExtra("body") != null
                 ? intent.getStringExtra("body")  : "Toca para ver la orden";
+        playsLeft    = intent != null ? Math.max(0, intent.getIntExtra(EXTRA_PLAYS, 0)) : 0;
+        orderRinging = playsLeft == 0;
 
         SharedPreferences config = getSharedPreferences(AlarmPlugin.PREFS_NAME, MODE_PRIVATE);
         boolean soundEnabled     = config.getBoolean(AlarmPlugin.KEY_SOUND,         true);
@@ -91,8 +100,33 @@ public class AlarmService extends Service {
         }
 
         if (vibrationEnabled) startVibration();
+        // Sin sonido no hay fin de reproducción: el aviso limitado se cierra con su vibración
+        if (playsLeft > 0 && !soundEnabled) {
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> stopSelf(startId), playsLeft * 1000L + 500); // si llegó una orden, no la corta
+        }
 
-        return START_STICKY;
+        // Un aviso limitado no se vuelve a lanzar si el sistema mata el servicio
+        return playsLeft > 0 ? START_NOT_STICKY : START_STICKY;
+    }
+
+    // Bucle (orden) o N veces y se detiene (incidencia)
+    private void startPlayer() throws java.io.IOException {
+        if (playsLeft > 0) {
+            mediaPlayer.setLooping(false);
+            mediaPlayer.setOnCompletionListener(mp -> {
+                playsLeft--;
+                if (playsLeft > 0) {
+                    mp.seekTo(0);
+                    mp.start();
+                } else {
+                    stopSelf();
+                }
+            });
+        } else {
+            mediaPlayer.setLooping(true);
+        }
+        mediaPlayer.prepare();
+        mediaPlayer.start();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -110,9 +144,7 @@ public class AlarmService extends Service {
             // Sin AudioAttributes especiales → respeta el perfil de sonido del sistema
             mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             afd.close();
-            mediaPlayer.setLooping(true);
-            mediaPlayer.prepare();
-            mediaPlayer.start();
+            startPlayer();
         } catch (Exception e) { e.printStackTrace(); }
     }
 
@@ -144,9 +176,7 @@ public class AlarmService extends Service {
 
             mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             afd.close();
-            mediaPlayer.setLooping(true);
-            mediaPlayer.prepare();
-            mediaPlayer.start();
+            startPlayer();
         } catch (Exception e) { e.printStackTrace(); }
     }
 
@@ -249,12 +279,19 @@ public class AlarmService extends Service {
     private void startVibration() {
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         if (vibrator != null && vibrator.hasVibrator()) {
+            // En bucle (orden) o tantos pulsos como veces suena (incidencia)
             long[] pattern = {0, 500, 500};
+            int repeat = 1;
+            if (playsLeft > 0) {
+                pattern = new long[playsLeft * 2];
+                for (int i = 0; i < pattern.length; i += 2) { pattern[i] = i == 0 ? 0 : 500; pattern[i + 1] = 500; }
+                repeat = -1;
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createWaveform(pattern, 1));
+                vibrator.vibrate(VibrationEffect.createWaveform(pattern, repeat));
             } else {
                 //noinspection deprecation
-                vibrator.vibrate(pattern, 1);
+                vibrator.vibrate(pattern, repeat);
             }
         }
     }
@@ -266,6 +303,7 @@ public class AlarmService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        orderRinging = false;
         if (mediaPlayer != null) { mediaPlayer.stop(); mediaPlayer.release(); mediaPlayer = null; }
         if (vibrator != null)    { vibrator.cancel(); vibrator = null; }
         if (wakeLock != null && wakeLock.isHeld()) { wakeLock.release(); wakeLock = null; }

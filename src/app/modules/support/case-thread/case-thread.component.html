@@ -19,6 +19,11 @@
         <ng-template #noComment><p class="comment muted">{{ r.customer }} no dejó comentario.</p></ng-template>
     </div>
 
+    <div class="case-report" *ngIf="d.report as rep">
+        <small class="who">{{ reportAuthor(rep.by) }} · {{ rep.at | date:'dd/MM HH:mm' }}</small>
+        <p class="comment">{{ rep.text }}</p>
+    </div>
+
     <div class="steps" *ngIf="d.currentStep >= 0; else cancelled">
         <div class="step" *ngFor="let s of d.steps; let i = index" [class.done]="i < d.currentStep" [class.current]="i === d.currentStep">
             <span class="dot"></span><small>{{ s }}</small>
@@ -44,10 +49,16 @@
     </div>
 
     <div class="detail-files" *ngIf="d.files.length">
-        <label>Archivos</label>
-        <a class="file" *ngFor="let f of d.files" [href]="f.url" target="_blank" rel="noopener">
-            <i class="pi" [ngClass]="f.kind === 'IMAGE' ? 'pi-image' : 'pi-file-pdf'"></i>
-            {{ f.fileName }} <small>{{ f.fromYou ? 'Tu local' : 'Piwi' }}</small>
+        <label>Evidencia y archivos</label>
+        <div class="thumbs" *ngIf="images(d).length">
+            <a class="thumb" *ngFor="let f of images(d)" [href]="f.url" target="_blank" rel="noopener" [pTooltip]="fileAuthor(f)">
+                <img [src]="f.url" [alt]="f.fileName" loading="lazy">
+                <small>{{ fileAuthor(f) }}</small>
+            </a>
+        </div>
+        <a class="file" *ngFor="let f of documents(d)" [href]="f.url" target="_blank" rel="noopener">
+            <i class="pi pi-file-pdf"></i>
+            {{ f.fileName }} <small>{{ fileAuthor(f) }}</small>
         </a>
     </div>
 
