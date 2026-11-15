@@ -1,5 +1,8 @@
 export const environment = {
   production: true,
+  // Motor de push nuevo (delivery-push-notification-backend). mode: 'legacy' = solo delivery-messaging (hoy en producción),
+  // 'both' = registra el token en los dos (pruebas en dev; el motor nuevo no puede romper el registro actual), 'new' = solo el motor nuevo.
+  pushEngine: { url: 'https://api.piwi.pe/delivery-push-notification', mode: 'legacy' },
   url:{
     backEndInit : [
       'https://api.piwi.pe/agent-store',
@@ -12,6 +15,7 @@ export const environment = {
       'https://api.piwi.pe/user',
       'https://api.piwi.pe/delivery-invoice',
       'https://api.piwi.pe/delivery-messaging',
+      'https://api.piwi.pe/delivery-push-notification'
     ],
     backEndUser: 'https://api.piwi.pe/user',
     backendOrder: 'https://api.piwi.pe/delivery-order',

@@ -14,6 +14,12 @@ import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { NotificationConfigService } from "./notification-config.service";
 import { Auth } from "aws-amplify";
+import { Observable, firstValueFrom, from, of } from "rxjs";
+import { catchError, switchMap, tap, timeout } from "rxjs/operators";
+import { getPushDeviceInfo } from "../../utils/push-device-info";
+
+// Token que este equipo registró en el motor nuevo: se guarda para darlo de baja al cerrar sesión.
+const ENGINE_TOKEN_KEY = "pushEngineToken";
 
 const AlarmPlugin = registerPlugin<{
   stopAlarm(): Promise<void>;
@@ -324,10 +330,62 @@ export class PushService {
   // Backend
   // ─────────────────────────────────────────────────────────────────
 
-  registerService(playerId: string) {
-    return this.http.post(
+  /**
+   * Registra el dispositivo del POS. Según `environment.pushEngine.mode`:
+   *   - legacy (producción hoy): solo delivery-messaging-backend.
+   *   - both   (pruebas en dev): en los dos; el motor nuevo no puede romper el registro actual (su falla se ignora).
+   *   - new    (tras migrar):    solo en delivery-push-notification-backend.
+   */
+  registerService(playerId: string): Observable<any> {
+    const legacy$ = this.http.post(
       environment.url.backEndMessague + "/pushNotification/agent-store",
       { playerId }
     );
+    const engine = (environment as any).pushEngine as { url: string; mode: string } | undefined;
+    if (!engine?.url || engine.mode === "legacy") return legacy$;
+
+    const modern$ = from(getPushDeviceInfo()).pipe(
+      switchMap((device) =>
+        this.http.post<any>(engine.url + "/push/device/agent-store", {
+          token: playerId,
+          provider: "FCM",
+          platform: device.platform,
+          appVersion: device.appVersion,
+        })
+      ),
+      tap(() => localStorage.setItem(ENGINE_TOKEN_KEY, playerId))
+    );
+    if (engine.mode === "new") return modern$;
+    // both: el registro del motor nuevo se dispara aparte y su error no afecta al flujo actual
+    modern$
+      .pipe(
+        catchError((e) => {
+          console.warn("[Push] no se pudo registrar en el motor nuevo", e?.status ?? e);
+          return of(null);
+        })
+      )
+      .subscribe();
+    return legacy$;
+  }
+
+  /**
+   * Da de baja el token de este equipo en el motor nuevo (al cerrar sesión, para que un POS sin sesión no reciba pedidos).
+   * Debe llamarse ANTES de cerrar la sesión de Cognito: la baja necesita el token de acceso. Sin efecto en modo legacy.
+   */
+  async unregisterFromEngine(): Promise<void> {
+    const engine = (environment as any).pushEngine as { url: string; mode: string } | undefined;
+    if (!engine?.url || engine.mode === "legacy") return;
+    let token: string | null = null;
+    try { token = localStorage.getItem(ENGINE_TOKEN_KEY); } catch { return; }
+    if (!token) return;
+    try {
+      await firstValueFrom(
+        this.http
+          .request<any>("DELETE", engine.url + "/push/device/agent-store", { body: { token, provider: "FCM" } })
+          .pipe(timeout(4000))
+      );
+    } catch (e) {
+      console.warn("[Push] no se pudo dar de baja el token en el motor nuevo", e);
+    }
   }
 }

@@ -158,6 +158,7 @@ export class AppMenuComponent implements OnInit, OnDestroy {
     }
 
     async logout(): Promise<void> {
+        await this.push.unregisterFromEngine();
         await this.auth.signOut();
         localStorage.clear();
         try {

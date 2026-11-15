@@ -471,6 +471,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     async logout() {
+        await this.push.unregisterFromEngine();
         await this.auth.signOut();
         localStorage.clear();
         try {
