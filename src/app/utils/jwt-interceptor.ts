@@ -1,4 +1,4 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, from, throwError } from "rxjs";
 import { environment } from "src/environments/environment";
@@ -28,8 +28,13 @@ export class JWTInterceptor implements HttpInterceptor {
       const clonedRequest = this.attachTokenToRequest(request, this.authenticationService.getAutorizationToken());
       return next.handle(clonedRequest).pipe(tap(()=>this.attachResponse(request.url)));
     }else{
-      return from(this.authenticationService.refreshToken()).pipe(
-        mergeMap(() => {
+      return from(this.authenticationService.refreshOutcome()).pipe(
+        mergeMap((outcome) => {
+          if (outcome === 'network') {
+            // Sin conexión no se pudo renovar el token: esta petición falla como error de red (status 0). Mandarla con el token vencido daría
+            // 401 y, en algunas apps, eso cerraba la sesión.
+            return throwError(() => new HttpErrorResponse({ status: 0, url: request.url, statusText: 'Sin conexión', error: 'No se pudo renovar la sesión por falta de conexión' }));
+          }
           const newToken = this.authenticationService.getAutorizationToken();
           const clonedRequest = this.attachTokenToRequest(request, newToken);
           return next.handle(clonedRequest).pipe(tap(()=>this.attachResponse(request.url)));;

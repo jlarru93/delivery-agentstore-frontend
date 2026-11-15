@@ -62,13 +62,9 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
     }
   
     public async  isAuthenticated()  {
-      try {
-       await  Auth.currentSession();
-        return true;
-      } catch {
-        return false;
-      }
-    }
+    // Sin internet NO es "sin sesión": un error de red al renovar el token conserva al usuario dentro.
+    return (await this.sessionState()) !== 'invalid';
+  }
 
 
     public isAllAuthenticated():boolean{
@@ -77,11 +73,15 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
       this.dataToken = this.getStorageValue(nameToken) || '';
 
 
-      if(this.dataToken != null){
-        const decode = jwt_decode(this.dataToken) as any;
-        const tokenExpire=Number(decode.exp as string);
-        const now=Number(new Date().getTime().toString().substring(0,10));
-        return tokenExpire>now;
+      if(this.dataToken != null && this.dataToken !== ''){
+        try {
+          const decode = jwt_decode(this.dataToken) as any;
+          const tokenExpire=Number(decode.exp as string);
+          const now=Number(new Date().getTime().toString().substring(0,10));
+          return tokenExpire>now;
+        } catch {
+          return false;
+        }
       }else{
         return false;
       }
@@ -154,6 +154,43 @@ const serviceToken = 'CognitoIdentityServiceProvider.';
         return false;
       }
     }
+
+  // ── Sesión: "sin conexión" NO es "sesión vencida" ──
+  // El SDK de Cognito solo borra la sesión cuando el servidor dice que ya no sirve (NotAuthorizedException: refresh token vencido o
+  // revocado). Un error de red al renovar el token (sin internet, señal débil) deja la sesión intacta: no hay que sacar al usuario.
+  public isNetworkError(err: any): boolean {
+    const code = err?.code ?? err?.name;
+    const msg = String(err?.message ?? err ?? '');
+    return code === 'NetworkError' || /network error|failed to fetch|load failed|timed? ?out/i.test(msg);
+  }
+
+  // ¿Quedó guardado el refresh token de este equipo? (la sesión sigue existiendo aunque ahora no haya internet)
+  private hasStoredSession(): boolean {
+    const user = this.getNameTokenId();
+    if (!user) return false;
+    return !!localStorage.getItem(this.initNameToken + user + '.refreshToken');
+  }
+
+  // valid = sesión vigente (renovada si hacía falta); network = no se pudo renovar por falta de conexión, la sesión sigue guardada;
+  // invalid = no hay sesión o el servidor la rechazó (hay que iniciar sesión otra vez)
+  public async sessionState(): Promise<'valid' | 'network' | 'invalid'> {
+    try {
+      await Auth.currentSession();
+      return 'valid';
+    } catch (error) {
+      if (this.isNetworkError(error) && this.hasStoredSession()) {
+        console.warn('[Auth] sin conexión para renovar la sesión; se conserva');
+        return 'network';
+      }
+      return 'invalid';
+    }
+  }
+
+  // Igual que refreshToken() pero distingue la falta de conexión de la sesión vencida
+  public async refreshOutcome(): Promise<'ok' | 'network' | 'invalid'> {
+    const state = await this.sessionState();
+    return state === 'valid' ? 'ok' : state;
+  }
 
     getStorageValue(name: string): string {
       // Ahora lee de localStorage en vez de cookies
