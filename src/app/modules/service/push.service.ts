@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, NgZone } from "@angular/core";
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { Router } from "@angular/router";
 import { initializeApp, getApps } from "firebase/app";
@@ -14,7 +14,7 @@ import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { NotificationConfigService } from "./notification-config.service";
 import { Auth } from "aws-amplify";
-import { Observable, firstValueFrom, from, of } from "rxjs";
+import { BehaviorSubject, Observable, firstValueFrom, from, of } from "rxjs";
 import { catchError, switchMap, tap, timeout } from "rxjs/operators";
 import { getPushDeviceInfo } from "../../utils/push-device-info";
 
@@ -22,20 +22,56 @@ import { getPushDeviceInfo } from "../../utils/push-device-info";
 const ENGINE_TOKEN_KEY = "pushEngineToken";
 
 const AlarmPlugin = registerPlugin<{
-  stopAlarm(): Promise<void>;
-  startAlarm(): Promise<void>;
+  // orderUuid en stopAlarm = esa orden fue cancelada (el nativo lo recuerda por si "orden nueva" llega tarde)
+  stopAlarm(opts?: { orderUuid?: string }): Promise<void>;
+  startAlarm(opts?: { orderUuid?: string }): Promise<{ started?: boolean; reason?: string }>;
+  reconcile(opts: { openOrders: number }): Promise<{ stopped: boolean }>;
+  isRinging(): Promise<{ ringing: boolean }>;
+  addListener(
+    eventName: "alarmState",
+    cb: (state: { ringing: boolean }) => void
+  ): Promise<{ remove: () => Promise<void> }>;
   getPendingOrderUuid(): Promise<{ order: string | null }>;
 }>("AlarmPlugin");
+
+// Reintentos al pedir el token FCM cuando falla (espera creciente, en ms)
+const TOKEN_RETRY_MS = [2_000, 10_000, 30_000, 120_000];
 
 @Injectable({ providedIn: "root" })
 export class PushService {
   private messaging?: Messaging;
 
+  // Los listeners nativos se registran UNA vez: init() corre en cada resume y antes los duplicaba
+  // (cada push disparaba N veces la misma acción).
+  private nativeListenersReady = false;
+  private tokenRetryTimer?: ReturnType<typeof setTimeout>;
+  private tokenRetryCount = 0;
+
+  // true mientras suena la alarma nativa (orden nueva o incidencia): el topbar muestra el botón "Silenciar"
+  readonly alarmRinging$ = new BehaviorSubject<boolean>(false);
+
   constructor(
     private readonly http: HttpClient,
     private notifConfig: NotificationConfigService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private zone: NgZone
+  ) {
+    this.watchAlarmState();
+  }
+
+  private async watchAlarmState(): Promise<void> {
+    if (!Capacitor.isNativePlatform()) return;
+    try {
+      await AlarmPlugin.addListener("alarmState", (s) =>
+        this.zone.run(() => this.alarmRinging$.next(!!s?.ringing))
+      );
+      // Si la app se abre con la alarma ya sonando (llegó con la app cerrada)
+      const { ringing } = await AlarmPlugin.isRinging();
+      this.zone.run(() => this.alarmRinging$.next(!!ringing));
+    } catch (e) {
+      console.error("[Push] No se pudo vigilar el estado de la alarma:", e);
+    }
+  }
 
   // ─────────────────────────────────────────────────────────────────
   // Init — solo llamar cuando el usuario ya está autenticado
@@ -74,11 +110,17 @@ export class PushService {
         "@capacitor-firebase/messaging"
       );
 
-      const { receive } = await FirebaseMessaging.checkPermissions();
+      console.log("[Push][perm] 1. checkPermissions → consultando…");
+      const check = await FirebaseMessaging.checkPermissions();
+      const { receive } = check;
+      console.log("[Push][perm] 1. checkPermissions ←", JSON.stringify(check));
       if (receive === "granted") {
+        console.log("[Push][perm] permiso ya concedido → pido token");
         await this.refreshAndRegisterNativeToken(FirebaseMessaging);
       } else if (receive === "prompt") {
+        console.log("[Push][perm] 2. requestPermissions → mostrando diálogo…");
         const result = await FirebaseMessaging.requestPermissions();
+        console.log("[Push][perm] 2. requestPermissions ←", JSON.stringify(result));
         if (result.receive === "granted") {
           await this.refreshAndRegisterNativeToken(FirebaseMessaging);
         } else {
@@ -87,69 +129,119 @@ export class PushService {
           );
         }
       } else {
-        console.warn("[Push] Notificaciones bloqueadas en ajustes del sistema");
+        console.warn(
+          "[Push] Notificaciones bloqueadas en ajustes del sistema (receive=" + receive + ")"
+        );
       }
 
-      FirebaseMessaging.addListener(
-        "notificationReceived",
-        async (notification: any) => {
-          const data = notification?.notification?.data;
-          const type = data?.type ?? "NEW_ORDER";
-
-          if (type === "CANCEL_ORDER") {
-            await this.stopAlarm();
-            return;
-          }
-
-          // Incidencia (workboard): la alarma (3 veces) y el refresco de la lista los da PiwiFirebaseMessagingService
-          if (type === "WB_CASE_UPDATED") {
-            return;
-          }
-
-          if (type === "NEW_ORDER") {
-            if (this.notifConfig.isSound()) {
-              await this.startAlarm();
-            }
-          }
-        }
-      );
-
-      FirebaseMessaging.addListener(
-        "notificationActionPerformed",
-        async (action: any) => {
-          await this.stopAlarm();
-
-          const data = action.notification?.data;
-          if (data?.type === "WB_CASE_UPDATED") {
-            this.router.navigate(["/support"]);
-            return;
-          }
-          if (data && data.orderUuid) {
-            this.router.navigate(["/main"], {
-              queryParams: { order: data.orderUuid },
-            });
-          } else {
-            await this.checkPendingOrder();
-          }
-        }
-      );
-
-      App.addListener("appStateChange", async ({ isActive }) => {
-        if (!isActive) {
-          await this.stopAlarm();
-        }
-      });
+      if (!this.nativeListenersReady) {
+        this.nativeListenersReady = true;
+        this.registerNativeListeners(FirebaseMessaging);
+      }
     } catch (e) {
       console.error("[Push] Error FCM nativo:", e);
     }
   }
 
+  private registerNativeListeners(FirebaseMessaging: any): void {
+    FirebaseMessaging.addListener(
+      "notificationReceived",
+      async (notification: any) => {
+        const data = notification?.notification?.data;
+        const type = data?.type ?? "NEW_ORDER";
+
+        if (type === "CANCEL_ORDER") {
+          // Con el uuid, el nativo recuerda que esa orden está cancelada
+          await this.stopAlarm(data?.orderUuid);
+          return;
+        }
+
+        // Incidencia (workboard): la alarma (3 veces) y el refresco de la lista los da PiwiFirebaseMessagingService
+        if (type === "WB_CASE_UPDATED") {
+          return;
+        }
+
+        if (type === "NEW_ORDER") {
+          // Un aviso vencido no debe sonar (el servicio nativo ya lo descarta; aquí también)
+          const expires = Number(data?.pushExpiresAt);
+          if (expires && Date.now() / 1000 > expires) {
+            console.log("[Push] NEW_ORDER vencido — no suena");
+            return;
+          }
+          if (this.notifConfig.isSound()) {
+            await this.startAlarm(data?.orderUuid);
+          }
+        }
+      }
+    );
+
+    FirebaseMessaging.addListener(
+      "notificationActionPerformed",
+      async (action: any) => {
+        await this.stopAlarm();
+
+        const data = action.notification?.data;
+        if (data?.type === "WB_CASE_UPDATED") {
+          this.router.navigate(["/support"]);
+          return;
+        }
+        if (data && data.orderUuid) {
+          this.router.navigate(["/main"], {
+            queryParams: { order: data.orderUuid },
+          });
+        } else {
+          await this.checkPendingOrder();
+        }
+      }
+    );
+
+    // FCM renovó el token: se registra en el backend al instante (antes quedaba el viejo hasta el siguiente init)
+    FirebaseMessaging.addListener("tokenReceived", async (ev: any) => {
+      const token = ev?.token;
+      if (!token) return;
+      console.log("[Push] tokenReceived — registrando token renovado");
+      this.registerService(token).subscribe({
+        next: () => console.log("[Push] Token renovado registrado ✔"),
+        error: (err) => console.error("[Push] Error registrando token renovado:", err),
+      });
+    });
+
+    App.addListener("appStateChange", async ({ isActive }) => {
+      if (!isActive) {
+        await this.stopAlarm();
+      }
+    });
+  }
+
+  private scheduleTokenRetry(FirebaseMessaging: any): void {
+    if (this.tokenRetryTimer) return; // ya hay un reintento en espera
+    if (this.tokenRetryCount >= TOKEN_RETRY_MS.length) {
+      console.warn("[Push] Sin token tras " + this.tokenRetryCount + " reintentos; se vuelve a intentar al volver a la app");
+      this.tokenRetryCount = 0; // el próximo init() (resume) empieza de nuevo
+      return;
+    }
+    const wait = TOKEN_RETRY_MS[this.tokenRetryCount++];
+    console.log("[Push] Reintentando token en " + wait / 1000 + " s (intento " + this.tokenRetryCount + ")");
+    this.tokenRetryTimer = setTimeout(async () => {
+      this.tokenRetryTimer = undefined;
+      await this.refreshAndRegisterNativeToken(FirebaseMessaging);
+    }, wait);
+  }
+
   private async refreshAndRegisterNativeToken(
     FirebaseMessaging: any
   ): Promise<void> {
+    const t0 = Date.now();
     try {
+      console.log("[Push][perm] 3. getToken → pidiendo token a FCM…");
       const { token } = await FirebaseMessaging.getToken();
+      console.log("[Push][perm] 3. getToken ← en " + (Date.now() - t0) + " ms, longitud=" + (token ? token.length : 0));
       console.log("[Push] Token FCM nativo obtenido:", token ? "✔" : "✘ vacío");
+      if (!token) {
+        this.scheduleTokenRetry(FirebaseMessaging);
+        return;
+      }
+      this.tokenRetryCount = 0;
       if (token) {
         this.registerService(token).subscribe({
           next: () =>
@@ -159,7 +251,13 @@ export class PushService {
         });
       }
     } catch (e) {
+      console.error(
+        "[Push][perm] 3. getToken FALLÓ tras " + (Date.now() - t0) + " ms:",
+        (e as any)?.message ?? e,
+        "| online=" + navigator.onLine
+      );
       console.error("[Push] Error obteniendo token FCM nativo:", e);
+      this.scheduleTokenRetry(FirebaseMessaging);
     }
   }
 
@@ -307,22 +405,40 @@ export class PushService {
   // Alarma nativa
   // ─────────────────────────────────────────────────────────────────
 
-  async stopAlarm(): Promise<void> {
+  // orderUuid solo cuando esa orden fue CANCELADA (así el nativo no suena si su "orden nueva" llega tarde).
+  // Para apagar porque el comercio la abrió/atendió, sin uuid.
+  async stopAlarm(orderUuid?: string): Promise<void> {
     if (!Capacitor.isNativePlatform()) return;
     try {
-      await AlarmPlugin.stopAlarm();
+      await AlarmPlugin.stopAlarm(orderUuid ? { orderUuid } : undefined);
       console.log("[Push] Alarma detenida");
     } catch (e) {
       console.error("[Push] Error deteniendo alarma:", e);
     }
   }
 
-  async startAlarm(): Promise<void> {
+  async startAlarm(orderUuid?: string): Promise<void> {
     if (!Capacitor.isNativePlatform() || !this.notifConfig.isSound()) return;
     try {
-      await AlarmPlugin.startAlarm();
+      const r = await AlarmPlugin.startAlarm(orderUuid ? { orderUuid } : undefined);
+      if (r && r.started === false) console.log("[Push] startAlarm omitido:", r.reason);
     } catch (e) {
       console.error("[Push] Error iniciando alarma:", e);
+    }
+  }
+
+  /**
+   * Red de seguridad: si NO hay ninguna orden pendiente de aceptar y la alarma sigue sonando (la orden se canceló
+   * o la atendió otro y el aviso de cancelación nunca llegó), el nativo la apaga. Solo con >30 s sonando.
+   * Con una orden pendiente en la lista no hace nada: el aviso de orden nueva se queda hasta que la abran.
+   */
+  async reconcileAlarm(openOrders: number): Promise<void> {
+    if (!Capacitor.isNativePlatform()) return;
+    try {
+      const r = await AlarmPlugin.reconcile({ openOrders });
+      if (r?.stopped) console.log("[Push] Alarma apagada: ya no hay órdenes pendientes");
+    } catch (e) {
+      console.error("[Push] Error reconciliando alarma:", e);
     }
   }
 

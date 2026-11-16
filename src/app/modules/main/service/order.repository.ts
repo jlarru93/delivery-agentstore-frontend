@@ -20,6 +20,8 @@ import { WokerHandler } from "../../service/worker.service";
 export class OrderRepository{
 
     orders:BehaviorSubject<OrderBean[]>= new BehaviorSubject<OrderBean[]>([]);
+    // true cuando el servidor ya respondió al menos una vez con las órdenes (la lista dejó de ser el [] inicial)
+    loaded:boolean=false
     orderChat:Subject<OrderBean>=new Subject<OrderBean>()
     newOrder:BehaviorSubject<OrderBean> = new BehaviorSubject<OrderBean>(null);
     updatedOrder:BehaviorSubject<OrderBean> = new BehaviorSubject<OrderBean>(null);
@@ -181,6 +183,8 @@ export class OrderRepository{
             //console.log("Puente",this.orders.value)
             const ordesStoreSelected=this.orders.value.filter((o)=> storeID.includes(o.store.id+""))
             const orderInProcess=ordesStoreSelected.filter((o=>inputOrderId.includes(o.id)))
+            // Antes de esta marca la lista es el [] inicial: no sirve para decidir que "no hay órdenes"
+            this.loaded=true
             this.orders.next(orderInProcess)
 
             //console.log("Puente y Mega",this.orders.value)

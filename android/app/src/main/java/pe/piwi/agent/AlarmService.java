@@ -38,6 +38,12 @@ public class AlarmService extends Service {
     /** Hay una orden sonando en bucle: un aviso que suena N veces no debe cortarla. */
     public static volatile boolean orderRinging = false;
 
+    /** Desde cuándo suena la orden (ms). Para no cortar una alarma recién lanzada mientras la lista de órdenes aún no la trae. */
+    public static volatile long orderRingingSince = 0L;
+
+    /** El servicio está vivo (suena una orden o una incidencia): la app muestra el botón "Silenciar". */
+    public static volatile boolean alive = false;
+
     private MediaPlayer           mediaPlayer;
     private int                   playsLeft; // 0 = bucle
     private Vibrator              vibrator;
@@ -58,7 +64,11 @@ public class AlarmService extends Service {
         String body  = intent != null && intent.getStringExtra("body") != null
                 ? intent.getStringExtra("body")  : "Toca para ver la orden";
         playsLeft    = intent != null ? Math.max(0, intent.getIntExtra(EXTRA_PLAYS, 0)) : 0;
+        // Una orden que ya suena conserva su hora de inicio aunque llegue otro aviso encima
+        if (playsLeft == 0 && !orderRinging) orderRingingSince = System.currentTimeMillis();
         orderRinging = playsLeft == 0;
+        alive = true;
+        AlarmPlugin.emitState(true);
 
         SharedPreferences config = getSharedPreferences(AlarmPlugin.PREFS_NAME, MODE_PRIVATE);
         boolean soundEnabled     = config.getBoolean(AlarmPlugin.KEY_SOUND,         true);
@@ -304,6 +314,8 @@ public class AlarmService extends Service {
     public void onDestroy() {
         super.onDestroy();
         orderRinging = false;
+        alive = false;
+        AlarmPlugin.emitState(false);
         if (mediaPlayer != null) { mediaPlayer.stop(); mediaPlayer.release(); mediaPlayer = null; }
         if (vibrator != null)    { vibrator.cancel(); vibrator = null; }
         if (wakeLock != null && wakeLock.isHeld()) { wakeLock.release(); wakeLock = null; }

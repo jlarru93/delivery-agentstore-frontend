@@ -42,7 +42,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
     // ✅ Firebase Messaging — declarado explícitamente para que persista tras npx cap sync
-    implementation 'com.google.firebase:firebase-messaging:24.1.0'
+    implementation 'com.google.firebase:firebase-messaging:26.0.2'
 }
 
 apply from: 'capacitor.build.gradle'

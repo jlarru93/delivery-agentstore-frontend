@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "146697692384",
+    "project_id": "agent-store-piwi-prod",
+    "storage_bucket": "agent-store-piwi-prod.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:146697692384:android:eb8edf1a79328d23045c85",
+        "android_client_info": {
+          "package_name": "pe.piwi.agent"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbjP68Ji2KKDi9nzYg2Cor_A8VXhLsziE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

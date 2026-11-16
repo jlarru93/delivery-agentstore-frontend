@@ -94,9 +94,14 @@ export class NotificationConfigModalComponent implements OnInit {
     if (this.isNative) {
       try {
         const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
+        console.log('[NotifConfig][perm] checkPermissions → consultando…');
         const result = await FirebaseMessaging.checkPermissions();
+        console.log('[NotifConfig][perm] checkPermissions ←', JSON.stringify(result));
         this.permStatus = result.receive === 'granted' ? 'granted' : 'denied';
-      } catch { this.permStatus = 'idle'; }
+      } catch (e) {
+        console.error('[NotifConfig][perm] checkPermissions FALLÓ:', e);
+        this.permStatus = 'idle';
+      }
     } else {
       if (!('Notification' in window)) { this.permStatus = 'denied'; return; }
       if (Notification.permission === 'granted')     this.permStatus = 'granted';
@@ -110,7 +115,9 @@ export class NotificationConfigModalComponent implements OnInit {
     try {
       if (this.isNative) {
         const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
+        console.log('[NotifConfig][perm] requestPermissions → mostrando diálogo…');
         const result = await FirebaseMessaging.requestPermissions();
+        console.log('[NotifConfig][perm] requestPermissions ←', JSON.stringify(result));
         if (result.receive === 'granted') {
           this.permStatus = 'granted';
           await this.registerNativeToken();
@@ -133,7 +140,9 @@ export class NotificationConfigModalComponent implements OnInit {
   private async registerNativeToken(): Promise<void> {
     try {
       const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
+      console.log('[NotifConfig][perm] getToken → pidiendo token a FCM…');
       const { token } = await FirebaseMessaging.getToken();
+      console.log('[NotifConfig][perm] getToken ← longitud=' + (token ? token.length : 0));
       if (token) {
         this.push.registerService(token).subscribe({
           next: () => console.log('[NotifConfig] Token registrado ✔'),
