@@ -25,8 +25,41 @@ public class AlarmPlugin extends Plugin {
     // ✅ NUEVO: controla si la alarma bypasea silencio/DND
     static final String KEY_BYPASS_SILENT  = "bypassSilent";
 
+    /** Una orden que ya suena lleva esto como mínimo antes de que la lista de órdenes pueda detenerla. */
+    private static final long RECONCILE_GRACE_MS = 30_000L;
+
+    // La instancia viva (con la app abierta) para avisar a Angular cuando la alarma empieza o termina
+    private static AlarmPlugin instance;
+
+    @Override
+    public void load() {
+        instance = this;
+    }
+
+    /**
+     * AlarmService avisa aquí: el topbar muestra el botón "Silenciar" mientras haya una alarma sonando.
+     *   AlarmPlugin.addListener('alarmState', ({ ringing }) => ...)
+     */
+    static void emitState(boolean ringing) {
+        AlarmPlugin plugin = instance;
+        if (plugin == null) return;
+        JSObject data = new JSObject();
+        data.put("ringing", ringing);
+        plugin.notifyListeners("alarmState", data);
+    }
+
+    /** Estado actual, para pintar el botón al abrir la app con la alarma ya sonando. */
+    @PluginMethod
+    public void isRinging(PluginCall call) {
+        JSObject result = new JSObject();
+        result.put("ringing", AlarmService.alive);
+        call.resolve(result);
+    }
+
     @PluginMethod
     public void stopAlarm(PluginCall call) {
+        // Si viene el uuid, es porque esa orden fue cancelada: se recuerda para que un "orden nueva" tardío no suene
+        AlarmGuard.markCancelled(getContext(), call.getString("orderUuid"));
         Intent stopIntent = new Intent(getContext(), AlarmService.class);
         getContext().stopService(stopIntent);
         call.resolve();
@@ -34,9 +67,47 @@ public class AlarmPlugin extends Plugin {
 
     @PluginMethod
     public void startAlarm(PluginCall call) {
+        JSObject result = new JSObject();
+        String orderUuid = call.getString("orderUuid");
+
+        // La orden ya fue cancelada: no hay nada que atender
+        if (AlarmGuard.isCancelled(getContext(), orderUuid)) {
+            result.put("started", false);
+            result.put("reason", "cancelled");
+            call.resolve(result);
+            return;
+        }
+        // El servicio nativo ya la hizo sonar con el mismo aviso: no se reinicia el audio
+        if (AlarmService.orderRinging) {
+            result.put("started", false);
+            result.put("reason", "already");
+            call.resolve(result);
+            return;
+        }
+
         Intent startIntent = new Intent(getContext(), AlarmService.class);
         ContextCompat.startForegroundService(getContext(), startIntent);
-        call.resolve();
+        result.put("started", true);
+        call.resolve(result);
+    }
+
+    /**
+     * La app compara con la lista de órdenes: si NO hay ninguna orden pendiente de aceptar y una alarma de orden lleva sonando
+     * más de 30 s, se apaga (la orden se canceló o la atendió otro y el aviso nunca llegó).
+     * Si hay al menos una orden pendiente, o la alarma es reciente, no se toca.
+     */
+    @PluginMethod
+    public void reconcile(PluginCall call) {
+        int openOrders = call.getInt("openOrders", 1);
+        boolean stopped = false;
+        if (openOrders <= 0 && AlarmService.orderRinging
+                && System.currentTimeMillis() - AlarmService.orderRingingSince > RECONCILE_GRACE_MS) {
+            getContext().stopService(new Intent(getContext(), AlarmService.class));
+            stopped = true;
+        }
+        JSObject result = new JSObject();
+        result.put("stopped", stopped);
+        call.resolve(result);
     }
 
     @PluginMethod

@@ -70,6 +70,19 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('quickActionsPanel') quickActionsPanel: OverlayPanel;
 
     private openStoreDialogSubscription: Subscription;
+    private alarmSubscription: Subscription;
+
+    // Suena una alarma nativa (orden nueva / incidencia)
+    alarmRinging = false;
+
+    // El botón "Silenciar" se ve mientras suene la alarma de Android o el audio de la versión web
+    get soundOn(): boolean { return this.alarmRinging || this.audioService.isPlaying; }
+
+    // Detiene la alarma nativa y el audio web. No marca la orden como atendida: sigue pendiente en la lista.
+    silenciar() {
+        this.push.stopAlarm();
+        this.audioService.stopAudio();
+    }
 
     constructor(
         private auth: AuthService,
@@ -92,6 +105,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // ==================== LIFECYCLE HOOKS ====================
     ngOnInit(): void {
+        this.alarmSubscription = this.push.alarmRinging$.subscribe((r) => (this.alarmRinging = r));
         this.caseWatch.start(); // casos de Piwi: aviso en Órdenes y etiqueta CASO en el pedido
         this.getFirstLogin();
         this.checkDevice();
@@ -471,6 +485,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     async logout() {
+        await this.push.unregisterFromEngine();
         await this.auth.signOut();
         localStorage.clear();
         try {
@@ -525,6 +540,7 @@ export class AppTopBarComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.openStoreDialogSubscription) {
             this.openStoreDialogSubscription.unsubscribe();
         }
+        this.alarmSubscription?.unsubscribe();
     }
     
 }

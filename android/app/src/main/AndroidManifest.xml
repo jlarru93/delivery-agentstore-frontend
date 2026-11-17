@@ -27,10 +27,7 @@
         </activity>
 
         <!-- AlarmService: foreground service para sonido + vibración + overlay -->
-        <service
-            android:name=".AlarmService"
-            android:foregroundServiceType="mediaPlayback"
-            android:exported="false" />
+        <service android:name=".AlarmService" android:foregroundServiceType="mediaPlayback" android:exported="false" />
 
         <!-- FCM: intercepta push en background -->
         <service android:name=".PiwiFirebaseMessagingService" android:exported="false">
@@ -44,9 +41,7 @@
             android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
     </application>
 
@@ -65,5 +60,4 @@
     <!-- Ubicación: precisión alta (GPS) y aproximada (red/WiFi) — JIT via @capacitor/geolocation -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
 </manifest>

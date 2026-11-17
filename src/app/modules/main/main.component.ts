@@ -129,6 +129,12 @@ import { PushService } from "../service/push.service";
           this.orders=order
           console.log("Order:::",order)
           this.sortOrders()
+          // Red de seguridad de la alarma: sin órdenes pendientes de aceptar, no debe seguir sonando (orden cancelada / atendida por otro).
+          // Se cuenta TODA orden abierta (sin el filtro del motorizado) para no apagar un aviso por error; el nativo además espera 30 s.
+          if (this.orderRepository.loaded) {
+            const pending = this.orders.filter(o => o.statusForAgentStore == CONSTANTES.OPEN_ORDER_STATUS).length
+            this.push.reconcileAlarm(pending)
+          }
           if(this.orders.length > 0){
             if (!this.audioService.audioAlreadyPlayed) {
                 this.audioService.audioAlreadyPlayed = true;

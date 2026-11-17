@@ -33,7 +33,9 @@ public class PiwiFirebaseMessagingService extends FirebaseMessagingService {
 
         // ── CANCEL_ORDER: detener alarma si está sonando ────────────
         if ("CANCEL_ORDER".equals(type)) {
-            Log.d(TAG, "CANCEL_ORDER recibido — deteniendo AlarmService");
+            Log.d(TAG, "CANCEL_ORDER recibido — deteniendo AlarmService. orderUuid=" + orderUuid);
+            // Se recuerda: si "orden nueva" de esta misma orden llega después, no debe sonar
+            AlarmGuard.markCancelled(this, orderUuid);
             stopService(new Intent(this, AlarmService.class));
             return;
         }
@@ -55,6 +57,12 @@ public class PiwiFirebaseMessagingService extends FirebaseMessagingService {
 
         boolean isNewOrder = "NEW_ORDER".equals(type) || type == null;
         if (!isNewOrder) return;
+
+        // ── La orden ya fue cancelada (el aviso de cancelación llegó primero) ──
+        if (AlarmGuard.isCancelled(this, orderUuid)) {
+            Log.d(TAG, "Orden ya cancelada — ignorando alarma. orderUuid=" + orderUuid);
+            return;
+        }
 
         // ── Verificar si el push sigue vigente ──────────────────────
         long nowSeconds = System.currentTimeMillis() / 1000;

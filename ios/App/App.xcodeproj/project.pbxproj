@@ -93,7 +93,18 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		19B4A1B12F93E469000BAF7C /* ShareExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (19B4A1BB2F93E469000BAF7C /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ShareExtension; sourceTree = "<group>"; };
+		19B4A1B12F93E469000BAF7C /* ShareExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				19B4A1BB2F93E469000BAF7C /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = ShareExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,7 +228,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 2640;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 920;
 				TargetAttributes = {
 					19B4A1AF2F93E469000BAF7C = {
 						CreatedOnToolsVersion = 26.4;

@@ -8,6 +8,31 @@ $text-secondary: #888888;
 $text-muted: #666666;
 $border-subtle: rgba(255, 255, 255, 0.1);
 $danger-red: #ff5252;
+// Botón "Silenciar": rojo y pulsante para que se vea a la primera mientras suena una orden
+.stop-alarm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: $danger-red;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  cursor: pointer;
+  animation: stop-alarm-pulse 1.2s ease-in-out infinite;
+  i { font-size: 1.1rem; }
+  @media (max-width: 991px) {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+}
+@keyframes stop-alarm-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.6); }
+  50% { box-shadow: 0 0 0 8px rgba(255, 82, 82, 0); }
+}
 .search-img{
   height: 50px;
   width: 45px;

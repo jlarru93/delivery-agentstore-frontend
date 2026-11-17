@@ -39,6 +39,11 @@
             <div class="logo-image" id="logoImagen">
                 <img src="assets/images/LOGOTIPO_BLANK.png" alt="LogoPIWI" class="image-container">
             </div>
+            <!-- Mientras suena la alarma de una orden: el agente la pausa desde aquí, sin entrar al detalle -->
+            <button *ngIf="soundOn" type="button" class="stop-alarm-btn" (click)="silenciar()" aria-label="Silenciar alarma">
+                <i class="pi pi-volume-off"></i>
+                <span>Silenciar</span>
+            </button>
             <a href="#" class="sidebar-menu-button" (click)="appMain.onMenuButtonClick($event)">
                 <i class="pi pi-bars" style="color: #FFFFFF;"></i>
             </a>
